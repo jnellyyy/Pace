@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Life Ops</title>
-
 <style>
 :root{
   --bg:#0d0d0f;
@@ -27,10 +26,7 @@ body{
   font-family:Arial,sans-serif;
   padding:20px;
 }
-.wrap{
-  max-width:860px;
-  margin:0 auto;
-}
+.wrap{max-width:860px;margin:0 auto}
 .card{
   background:rgba(23,23,27,.96);
   border:1px solid var(--line);
@@ -40,14 +36,8 @@ body{
   box-shadow:0 10px 30px rgba(0,0,0,.22);
 }
 h1,h2,h3,p{margin-top:0}
-.sub,.meta,.notice,.empty{
-  color:var(--muted);
-}
-.input,.select,.button{
-  width:100%;
-  border-radius:12px;
-  font:inherit;
-}
+.sub,.meta,.notice,.empty{color:var(--muted)}
+.input,.select,.button{width:100%;border-radius:12px;font:inherit}
 .input,.select{
   padding:13px 14px;
   margin-top:10px;
@@ -65,12 +55,8 @@ h1,h2,h3,p{margin-top:0}
   color:#fff;
 }
 .button:hover{background:var(--accent-dark)}
-.button.secondary{
-  background:var(--button);
-}
-.button.secondary:hover{
-  background:#35353e;
-}
+.button.secondary{background:var(--button)}
+.button.secondary:hover{background:#35353e}
 .hidden{display:none !important}
 .topbar{
   display:flex;
@@ -180,52 +166,28 @@ h1,h2,h3,p{margin-top:0}
 .small-btn.delete:hover{
   background:#4a2529;
 }
-.kpi-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-top:14px;
-}
-.kpi{
-  background:var(--card2);
-  border:1px solid #2f2f38;
-  border-radius:14px;
-  padding:14px;
-}
-.kpi-label{
+.placeholder{
   color:var(--muted);
-  font-size:14px;
-  margin-bottom:6px;
+  padding:8px 0;
 }
-.kpi-value{
-  font-size:20px;
-  font-weight:700;
-}
-.status-good{color:var(--success)}
-.status-bad{color:var(--danger)}
 @media (max-width:760px){
   .tabs{grid-template-columns:repeat(2,1fr)}
   .task-form{grid-template-columns:1fr}
   .task-form .button{width:100%}
   .task-right{flex-direction:column}
-  .kpi-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-
 <div class="wrap">
 
   <div id="authBox" class="card">
     <h1>Life Ops</h1>
-    <p class="sub">One place for life admin, money, attendance and bookings.</p>
-
+    <p class="sub">Sign in once and it should keep you in.</p>
     <input id="email" class="input" type="email" placeholder="Email">
     <input id="password" class="input" type="password" placeholder="Password">
-
-    <button class="button" onclick="signUp()">Sign Up</button>
-    <button class="button secondary" onclick="signIn()">Sign In</button>
-
+    <button id="signUpBtn" class="button" type="button">Sign Up</button>
+    <button id="signInBtn" class="button secondary" type="button">Sign In</button>
     <p id="msg" class="notice"></p>
   </div>
 
@@ -234,16 +196,16 @@ h1,h2,h3,p{margin-top:0}
       <div class="topbar">
         <div>
           <h1 style="margin-bottom:6px;">Life Ops</h1>
-          <p class="meta" id="sessionText">Signed in</p>
+          <p id="sessionText" class="meta">Signed in</p>
         </div>
-        <button class="button secondary logout-btn" onclick="logout()">Log out</button>
+        <button id="logoutBtn" class="button secondary logout-btn" type="button">Log out</button>
       </div>
 
       <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('life', this)">Life</button>
-        <button class="tab-btn" onclick="showTab('finance', this)">Finance</button>
-        <button class="tab-btn" onclick="showTab('attendance', this)">Attendance</button>
-        <button class="tab-btn" onclick="showTab('bookings', this)">Bookings</button>
+        <button class="tab-btn active" type="button" data-tab="life">Life</button>
+        <button class="tab-btn" type="button" data-tab="finance">Finance</button>
+        <button class="tab-btn" type="button" data-tab="attendance">Attendance</button>
+        <button class="tab-btn" type="button" data-tab="bookings">Bookings</button>
       </div>
     </div>
 
@@ -258,7 +220,7 @@ h1,h2,h3,p{margin-top:0}
           <option value="business">Business</option>
         </select>
         <input id="taskCategory" class="input" placeholder="Category">
-        <button class="button" onclick="addTask()">Add task</button>
+        <button id="addTaskBtn" class="button" type="button">Add task</button>
       </div>
 
       <p id="taskMsg" class="notice"></p>
@@ -267,69 +229,17 @@ h1,h2,h3,p{margin-top:0}
 
     <div id="finance" class="card tab-panel">
       <h2>Finance</h2>
-      <p class="sub">Control mode: monthly budget, spend, and money left.</p>
-
-      <input id="budgetInput" class="input" type="number" placeholder="Monthly budget">
-      <button class="button" onclick="saveBudget()">Save budget</button>
-      <p id="budgetMsg" class="notice"></p>
-
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="kpi-label">This month spent</div>
-          <div class="kpi-value">£<span id="monthSpent">0.00</span></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Budget</div>
-          <div class="kpi-value">£<span id="monthBudget">0.00</span></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Money left</div>
-          <div class="kpi-value">£<span id="moneyLeft">0.00</span></div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Status</div>
-          <div class="kpi-value" id="budgetStatus">No budget</div>
-        </div>
-      </div>
-
-      <input id="amount" class="input" type="number" placeholder="Amount">
-      <input id="category" class="input" placeholder="Category">
-      <input id="financeNote" class="input" placeholder="Note">
-      <button class="button" onclick="addFinance()">Save spend</button>
-      <p id="financeMsg" class="notice"></p>
-      <div id="financeList" class="task-list"></div>
+      <p class="placeholder">Finance tab comes next.</p>
     </div>
 
     <div id="attendance" class="card tab-panel">
       <h2>Attendance</h2>
-      <p class="sub">Basic saving is live.</p>
-
-      <input id="attDate" class="input" type="date">
-      <select id="attStatus" class="select">
-        <option>Office</option>
-        <option>WFH</option>
-        <option>Sick</option>
-        <option>Holiday</option>
-      </select>
-      <button class="button" onclick="addAttendance()">Save attendance</button>
-      <p id="attMsg" class="notice"></p>
-      <div id="attList" class="task-list"></div>
+      <p class="placeholder">Attendance tab comes next.</p>
     </div>
 
     <div id="bookings" class="card tab-panel">
       <h2>Bookings</h2>
-      <p class="sub">Basic saving is live.</p>
-
-      <input id="client" class="input" placeholder="Client name">
-      <select id="status" class="select">
-        <option>Enquiry</option>
-        <option>Pending</option>
-        <option>Booked</option>
-        <option>Completed</option>
-      </select>
-      <button class="button" onclick="addBooking()">Save booking</button>
-      <p id="bookMsg" class="notice"></p>
-      <div id="bookList" class="task-list"></div>
+      <p class="placeholder">Bookings tab comes next.</p>
     </div>
   </div>
 </div>
@@ -344,30 +254,55 @@ const supabase = createClient(
 
 const authBox = document.getElementById("authBox");
 const appBox = document.getElementById("appBox");
+const msg = document.getElementById("msg");
 const sessionText = document.getElementById("sessionText");
 
-window.showTab = function(tabName, btn){
-  document.querySelectorAll(".tab-panel").forEach(panel => {
-    panel.classList.remove("active");
-    panel.style.display = "none";
-  });
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const signUpBtn = document.getElementById("signUpBtn");
+const signInBtn = document.getElementById("signInBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-  const panel = document.getElementById(tabName);
-  panel.style.display = "block";
-  panel.classList.add("active");
-
-  document.querySelectorAll(".tab-btn").forEach(button => button.classList.remove("active"));
-  btn.classList.add("active");
-};
+const taskInput = document.getElementById("taskInput");
+const taskArea = document.getElementById("taskArea");
+const taskCategory = document.getElementById("taskCategory");
+const addTaskBtn = document.getElementById("addTaskBtn");
+const taskMsg = document.getElementById("taskMsg");
+const taskList = document.getElementById("taskList");
 
 function setAuthMessage(text){
-  document.getElementById("msg").textContent = text;
+  msg.textContent = text;
+}
+
+function setTaskMessage(text){
+  taskMsg.textContent = text;
 }
 
 async function getCurrentUser(){
   const { data } = await supabase.auth.getUser();
   return data.user;
 }
+
+function showTabByName(tabName){
+  document.querySelectorAll(".tab-panel").forEach(panel => {
+    panel.classList.remove("active");
+    panel.style.display = "none";
+  });
+
+  const selected = document.getElementById(tabName);
+  if (selected) {
+    selected.style.display = "block";
+    selected.classList.add("active");
+  }
+
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  });
+}
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => showTabByName(btn.dataset.tab));
+});
 
 async function showAppForSession(){
   const { data } = await supabase.auth.getSession();
@@ -377,16 +312,16 @@ async function showAppForSession(){
     authBox.classList.add("hidden");
     appBox.classList.remove("hidden");
     sessionText.textContent = session.user?.email || "Signed in";
-    await loadAll();
+    await loadTasks();
   } else {
     appBox.classList.add("hidden");
     authBox.classList.remove("hidden");
   }
 }
 
-window.signUp = async function(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+signUpBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
   if(!email || !password){
     setAuthMessage("Enter email and password.");
@@ -395,11 +330,11 @@ window.signUp = async function(){
 
   const { error } = await supabase.auth.signUp({ email, password });
   setAuthMessage(error ? error.message : "Signed up. Now sign in.");
-};
+});
 
-window.signIn = async function(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+signInBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
   if(!email || !password){
     setAuthMessage("Enter email and password.");
@@ -415,39 +350,26 @@ window.signIn = async function(){
 
   setAuthMessage("");
   await showAppForSession();
-};
-
-window.logout = async function(){
-  await supabase.auth.signOut();
-  location.reload();
-};
-
-supabase.auth.onAuthStateChange(async () => {
-  await showAppForSession();
 });
 
-async function loadAll(){
-  await loadTasks();
-  await loadFinance();
-  await loadAttendance();
-  await loadBookings();
-}
+logoutBtn.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
 
-/* TASKS */
-window.addTask = async function(){
+addTaskBtn.addEventListener("click", async () => {
   const user = await getCurrentUser();
-  const title = document.getElementById("taskInput").value.trim();
-  const area = document.getElementById("taskArea").value;
-  const category = document.getElementById("taskCategory").value.trim() || "General";
-  const taskMsg = document.getElementById("taskMsg");
+  const title = taskInput.value.trim();
+  const area = taskArea.value;
+  const category = taskCategory.value.trim() || "General";
 
   if(!user){
-    taskMsg.textContent = "You are not signed in.";
+    setTaskMessage("You are not signed in.");
     return;
   }
 
   if(!title){
-    taskMsg.textContent = "Enter a task.";
+    setTaskMessage("Enter a task.");
     return;
   }
 
@@ -463,15 +385,15 @@ window.addTask = async function(){
     }]);
 
   if(error){
-    taskMsg.textContent = error.message;
+    setTaskMessage(error.message);
     return;
   }
 
-  document.getElementById("taskInput").value = "";
-  document.getElementById("taskCategory").value = "";
-  taskMsg.textContent = "";
+  taskInput.value = "";
+  taskCategory.value = "";
+  setTaskMessage("");
   await loadTasks();
-};
+});
 
 window.toggleTask = async function(id, currentStatus){
   const nextStatus = currentStatus === "done" ? "open" : "done";
@@ -482,7 +404,7 @@ window.toggleTask = async function(id, currentStatus){
     .eq("id", id);
 
   if(error){
-    document.getElementById("taskMsg").textContent = error.message;
+    setTaskMessage(error.message);
     return;
   }
 
@@ -496,7 +418,7 @@ window.deleteTask = async function(id){
     .eq("id", id);
 
   if(error){
-    document.getElementById("taskMsg").textContent = error.message;
+    setTaskMessage(error.message);
     return;
   }
 
@@ -505,7 +427,6 @@ window.deleteTask = async function(id){
 
 async function loadTasks(){
   const user = await getCurrentUser();
-  const taskList = document.getElementById("taskList");
 
   if(!user){
     taskList.innerHTML = `<div class="empty">Sign in to see tasks.</div>`;
@@ -519,7 +440,7 @@ async function loadTasks(){
     .order("created_at", { ascending: false });
 
   if(error){
-    document.getElementById("taskMsg").textContent = error.message;
+    setTaskMessage(error.message);
     return;
   }
 
@@ -538,294 +459,22 @@ async function loadTasks(){
           onchange="toggleTask('${task.id}','${task.status}')"
         >
         <div>
-          <div class="task-title ${task.status === "done" ? "done" : ""}">
-            ${task.title || ""}
-          </div>
-          <div class="task-sub">
-            ${task.area || "life"} · ${task.category || "General"}
-          </div>
+          <div class="task-title ${task.status === "done" ? "done" : ""}">${task.title || ""}</div>
+          <div class="task-sub">${task.area || "life"} · ${task.category || "General"}</div>
         </div>
       </div>
       <div class="task-right">
-        <button class="small-btn delete" onclick="deleteTask('${task.id}')">Delete</button>
+        <button class="small-btn delete" type="button" onclick="deleteTask('${task.id}')">Delete</button>
       </div>
     </div>
   `).join("");
 }
 
-/* FINANCE */
-window.saveBudget = async function(){
-  const user = await getCurrentUser();
-  const budgetValue = Number(document.getElementById("budgetInput").value || 0);
-  const budgetMsg = document.getElementById("budgetMsg");
-
-  if(!user){
-    budgetMsg.textContent = "You are not signed in.";
-    return;
-  }
-
-  if(!budgetValue){
-    budgetMsg.textContent = "Enter a budget amount.";
-    return;
-  }
-
-  const { error } = await supabase
-    .from("finance")
-    .insert([{
-      user_id: user.id,
-      amount: 0,
-      category: "BUDGET",
-      note: String(budgetValue)
-    }]);
-
-  if(error){
-    budgetMsg.textContent = error.message;
-    return;
-  }
-
-  document.getElementById("budgetInput").value = "";
-  budgetMsg.textContent = "Budget saved.";
-  await loadFinance();
-};
-
-window.addFinance = async function(){
-  const user = await getCurrentUser();
-  const amountValue = Number(document.getElementById("amount").value || 0);
-  const categoryValue = document.getElementById("category").value.trim() || "General";
-  const noteValue = document.getElementById("financeNote").value.trim();
-  const financeMsg = document.getElementById("financeMsg");
-
-  if(!user){
-    financeMsg.textContent = "You are not signed in.";
-    return;
-  }
-
-  if(!amountValue){
-    financeMsg.textContent = "Enter an amount.";
-    return;
-  }
-
-  const { error } = await supabase
-    .from("finance")
-    .insert([{
-      user_id: user.id,
-      amount: amountValue,
-      category: categoryValue,
-      note: noteValue
-    }]);
-
-  if(error){
-    financeMsg.textContent = error.message;
-    return;
-  }
-
-  document.getElementById("amount").value = "";
-  document.getElementById("category").value = "";
-  document.getElementById("financeNote").value = "";
-  financeMsg.textContent = "";
-  await loadFinance();
-};
-
-async function loadFinance(){
-  const user = await getCurrentUser();
-  const financeList = document.getElementById("financeList");
-
-  if(!user){
-    financeList.innerHTML = `<div class="empty">Sign in to see finance entries.</div>`;
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("finance")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
-
-  if(error){
-    document.getElementById("financeMsg").textContent = error.message;
-    return;
-  }
-
-  const now = new Date();
-  const month = now.getMonth();
-  const year = now.getFullYear();
-
-  const monthRows = (data || []).filter(row => {
-    const d = new Date(row.created_at);
-    return d.getMonth() === month && d.getFullYear() === year;
-  });
-
-  const budgetRow = monthRows.find(row => row.category === "BUDGET");
-  const budget = budgetRow ? Number(budgetRow.note || 0) : 0;
-
-  const spendRows = monthRows.filter(row => row.category !== "BUDGET");
-  const spent = spendRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-  const left = budget - spent;
-
-  document.getElementById("monthSpent").textContent = spent.toFixed(2);
-  document.getElementById("monthBudget").textContent = budget.toFixed(2);
-  document.getElementById("moneyLeft").textContent = left.toFixed(2);
-
-  const budgetStatus = document.getElementById("budgetStatus");
-  budgetStatus.className = "kpi-value";
-
-  if(!budget){
-    budgetStatus.textContent = "No budget";
-  } else if(left >= 0){
-    budgetStatus.textContent = "On track";
-    budgetStatus.classList.add("status-good");
-  } else {
-    budgetStatus.textContent = "Over budget";
-    budgetStatus.classList.add("status-bad");
-  }
-
-  if(spendRows.length === 0){
-    financeList.innerHTML = `<div class="empty">No finance entries this month.</div>`;
-    return;
-  }
-
-  financeList.innerHTML = spendRows.map(row => `
-    <div class="task-row">
-      <div class="task-left">
-        <div class="task-title">£${Number(row.amount || 0).toFixed(2)} · ${row.category || "General"}</div>
-      </div>
-      <div class="meta">${row.note || ""}</div>
-    </div>
-  `).join("");
-}
-
-/* ATTENDANCE */
-window.addAttendance = async function(){
-  const user = await getCurrentUser();
-  const attMsg = document.getElementById("attMsg");
-
-  if(!user){
-    attMsg.textContent = "You are not signed in.";
-    return;
-  }
-
-  const { error } = await supabase
-    .from("attendance")
-    .insert([{
-      user_id: user.id,
-      date: document.getElementById("attDate").value,
-      status: document.getElementById("attStatus").value
-    }]);
-
-  if(error){
-    attMsg.textContent = error.message;
-    return;
-  }
-
-  attMsg.textContent = "";
-  await loadAttendance();
-};
-
-async function loadAttendance(){
-  const user = await getCurrentUser();
-  const attList = document.getElementById("attList");
-
-  if(!user){
-    attList.innerHTML = `<div class="empty">Sign in to see attendance.</div>`;
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("attendance")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("date", { ascending: false });
-
-  if(error){
-    document.getElementById("attMsg").textContent = error.message;
-    return;
-  }
-
-  if(!data || data.length === 0){
-    attList.innerHTML = `<div class="empty">No attendance saved yet.</div>`;
-    return;
-  }
-
-  attList.innerHTML = data.map(row => `
-    <div class="task-row">
-      <div class="task-left">
-        <div class="task-title">${row.date || ""} · ${row.status || ""}</div>
-      </div>
-    </div>
-  `).join("");
-}
-
-/* BOOKINGS */
-window.addBooking = async function(){
-  const user = await getCurrentUser();
-  const bookMsg = document.getElementById("bookMsg");
-
-  if(!user){
-    bookMsg.textContent = "You are not signed in.";
-    return;
-  }
-
-  const clientValue = document.getElementById("client").value.trim();
-
-  if(!clientValue){
-    bookMsg.textContent = "Enter a client name.";
-    return;
-  }
-
-  const { error } = await supabase
-    .from("bookings")
-    .insert([{
-      user_id: user.id,
-      name: clientValue,
-      status: document.getElementById("status").value
-    }]);
-
-  if(error){
-    bookMsg.textContent = error.message;
-    return;
-  }
-
-  document.getElementById("client").value = "";
-  bookMsg.textContent = "";
-  await loadBookings();
-};
-
-async function loadBookings(){
-  const user = await getCurrentUser();
-  const bookList = document.getElementById("bookList");
-
-  if(!user){
-    bookList.innerHTML = `<div class="empty">Sign in to see bookings.</div>`;
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("bookings")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
-
-  if(error){
-    document.getElementById("bookMsg").textContent = error.message;
-    return;
-  }
-
-  if(!data || data.length === 0){
-    bookList.innerHTML = `<div class="empty">No bookings saved yet.</div>`;
-    return;
-  }
-
-  bookList.innerHTML = data.map(row => `
-    <div class="task-row">
-      <div class="task-left">
-        <div class="task-title">${row.name || ""} · ${row.status || ""}</div>
-      </div>
-    </div>
-  `).join("");
-}
+supabase.auth.onAuthStateChange(async () => {
+  await showAppForSession();
+});
 
 showAppForSession();
 </script>
-
 </body>
 </html>
