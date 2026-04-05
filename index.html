@@ -3,34 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Ops Auth Test</title>
+<title>Life Ops</title>
 <style>
-body{background:#111;color:#fff;font-family:Arial,sans-serif;padding:24px;margin:0}
-.wrap{max-width:520px;margin:0 auto}
-.card{background:#1b1b1b;border:1px solid #333;border-radius:16px;padding:20px}
-input,button{width:100%;padding:12px;margin-top:10px;border-radius:10px;font:inherit;box-sizing:border-box}
-input{background:#0f0f0f;color:#fff;border:1px solid #333}
-button{background:#d41425;color:#fff;border:none;font-weight:700;cursor:pointer}
-.secondary{background:#333}
-.notice{color:#bbb;white-space:pre-wrap}
-.hidden{display:none}
+:root{
+  --bg:#0d0d10;
+  --card:#17171c;
+  --card2:#1f1f26;
+  --line:#2d2d36;
+  --text:#f5f5f7;
+  --muted:#a1a1aa;
+  --accent:#d41425;
+  --accent2:#2a2a32;
+  --ok:#22c55e;
+  --bad:#ef4444;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:linear-gradient(180deg,#0b0b0d 0%, #121216 100%);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  padding:20px;
+}
+.wrap{max-width:960px;margin:0 auto}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin-top:18px;
+}
+h1,h2,h3,p{margin-top:0}
+.sub,.meta,.notice,.empty{color:var(--muted)}
+.input,.select,.button{
+  width:100%;
+  font:inherit;
+  border-radius:12px;
+}
+.input,.select{
+  background:#101015;
+  color:var(--text);
+  border:1px solid #31313a;
+  padding:13px 14px;
+  margin-top:10px;
+}
+.button{
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  padding:13px 14px;
+  margin-top:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.button.secondary{background:var(--accent2)}
+.hidden{display:none !important}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:flex-start;
+}
+.logout-btn{
+  width:auto;
+  margin-top:0;
+  padding:10px 14px;
+}
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:16px;
+}
+.tab-btn{
+  background:var(--accent2);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+.tab-btn.active{background:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.row-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:14px;
+  border-radius:14px;
+  background:var(--card2);
+  border:1px solid #31313a;
+  margin-top:10px;
+}
+.left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex:1;
+  min-width:0;
+}
+.checkbox{
+  width:20px;
+  height:20px;
+  margin:0;
+}
+.title{
+  font-size:16px;
+}
+.title.done{
+  text-decoration:line-through;
+  opacity:.55;
+}
+.small{
+  font-size:13px;
+  color:var(--muted);
+}
+.mini{
+  width:auto;
+  margin:0;
+  padding:9px 12px;
+  border-radius:10px;
+  background:#34343d;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:700;
+}
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+.kpi{
+  background:var(--card2);
+  border:1px solid #31313a;
+  border-radius:14px;
+  padding:14px;
+}
+.kpi-label{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:6px;
+}
+.kpi-value{
+  font-size:20px;
+  font-weight:700;
+}
+.good{color:var(--ok)}
+.bad{color:var(--bad)}
+@media (max-width:760px){
+  .tabs{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <div id="authBox" class="card">
-    <h1>Auth test</h1>
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <button id="signUpBtn" type="button">Sign Up</button>
-    <button id="signInBtn" class="secondary" type="button">Sign In</button>
-    <button id="signOutBtn" class="secondary" type="button">Sign Out</button>
+    <h1>Life Ops</h1>
+    <p class="sub">Sign in once, then use the tabs.</p>
+    <input id="email" class="input" type="email" placeholder="Email">
+    <input id="password" class="input" type="password" placeholder="Password">
+    <button id="signUpBtn" class="button" type="button">Sign Up</button>
+    <button id="signInBtn" class="button secondary" type="button">Sign In</button>
     <p id="msg" class="notice"></p>
   </div>
 
-  <div id="appBox" class="card hidden">
-    <h2>Signed in</h2>
-    <p id="sessionText" class="notice"></p>
+  <div id="appBox" class="hidden">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1 style="margin-bottom:6px;">Life Ops</h1>
+          <p id="sessionText" class="meta">Signed in</p>
+        </div>
+        <button id="logoutBtn" class="button secondary logout-btn" type="button">Log out</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" type="button" data-tab="life">Life</button>
+        <button class="tab-btn" type="button" data-tab="finance">Finance</button>
+        <button class="tab-btn" type="button" data-tab="attendance">Attendance</button>
+        <button class="tab-btn" type="button" data-tab="bookings">Bookings</button>
+      </div>
+    </div>
+
+    <div id="life" class="card tab-panel active">
+      <h2>To do</h2>
+      <div class="row">
+        <input id="taskInput" class="input" placeholder="Add task">
+        <button id="addTaskBtn" class="button" type="button">Add task</button>
+      </div>
+      <p id="taskMsg" class="notice"></p>
+      <div id="taskList"></div>
+    </div>
+
+    <div id="finance" class="card tab-panel">
+      <h2>Finance</h2>
+
+      <div class="row">
+        <input id="budgetInput" class="input" type="number" placeholder="Monthly budget">
+        <button id="saveBudgetBtn" class="button" type="button">Save budget</button>
+      </div>
+      <p id="budgetMsg" class="notice"></p>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-label">This month spent</div>
+          <div class="kpi-value">£<span id="monthSpent">0.00</span></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Budget</div>
+          <div class="kpi-value">£<span id="monthBudget">0.00</span></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Money left</div>
+          <div class="kpi-value">£<span id="moneyLeft">0.00</span></div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Status</div>
+          <div class="kpi-value" id="budgetStatus">No budget</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <input id="amount" class="input" type="number" placeholder="Amount">
+        <input id="financeNote" class="input" placeholder="Note">
+      </div>
+      <button id="addFinanceBtn" class="button" type="button">Save finance</button>
+      <p id="financeMsg" class="notice"></p>
+      <div id="financeList"></div>
+    </div>
+
+    <div id="attendance" class="card tab-panel">
+      <h2>Attendance</h2>
+      <div class="row">
+        <input id="attDate" class="input" type="date">
+        <select id="attStatus" class="select">
+          <option>Office</option>
+          <option>WFH</option>
+          <option>Sick</option>
+          <option>Holiday</option>
+        </select>
+      </div>
+      <button id="addAttendanceBtn" class="button" type="button">Save attendance</button>
+      <p id="attMsg" class="notice"></p>
+      <div id="attList"></div>
+    </div>
+
+    <div id="bookings" class="card tab-panel">
+      <h2>Bookings</h2>
+      <div class="row">
+        <input id="clientInput" class="input" placeholder="Client name">
+        <select id="bookingStatus" class="select">
+          <option>Enquiry</option>
+          <option>Pending</option>
+          <option>Booked</option>
+          <option>Completed</option>
+        </select>
+      </div>
+      <button id="addBookingBtn" class="button" type="button">Save booking</button>
+      <p id="bookMsg" class="notice"></p>
+      <div id="bookList"></div>
+    </div>
   </div>
 </div>
 
@@ -49,101 +296,443 @@ const supabase = createClient(
   }
 );
 
-const emailEl = document.getElementById("email");
-const passwordEl = document.getElementById("password");
-const msgEl = document.getElementById("msg");
 const authBox = document.getElementById("authBox");
 const appBox = document.getElementById("appBox");
+const msg = document.getElementById("msg");
 const sessionText = document.getElementById("sessionText");
 
-function setMsg(text){
-  msgEl.textContent = text;
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const signUpBtn = document.getElementById("signUpBtn");
+const signInBtn = document.getElementById("signInBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const taskInput = document.getElementById("taskInput");
+const addTaskBtn = document.getElementById("addTaskBtn");
+const taskMsg = document.getElementById("taskMsg");
+const taskList = document.getElementById("taskList");
+
+const budgetInput = document.getElementById("budgetInput");
+const saveBudgetBtn = document.getElementById("saveBudgetBtn");
+const budgetMsg = document.getElementById("budgetMsg");
+const addFinanceBtn = document.getElementById("addFinanceBtn");
+const financeMsg = document.getElementById("financeMsg");
+const financeList = document.getElementById("financeList");
+const amountInput = document.getElementById("amount");
+const financeNoteInput = document.getElementById("financeNote");
+const monthSpentEl = document.getElementById("monthSpent");
+const monthBudgetEl = document.getElementById("monthBudget");
+const moneyLeftEl = document.getElementById("moneyLeft");
+const budgetStatusEl = document.getElementById("budgetStatus");
+
+const attDate = document.getElementById("attDate");
+const attStatus = document.getElementById("attStatus");
+const addAttendanceBtn = document.getElementById("addAttendanceBtn");
+const attMsg = document.getElementById("attMsg");
+const attList = document.getElementById("attList");
+
+const clientInput = document.getElementById("clientInput");
+const bookingStatus = document.getElementById("bookingStatus");
+const addBookingBtn = document.getElementById("addBookingBtn");
+const bookMsg = document.getElementById("bookMsg");
+const bookList = document.getElementById("bookList");
+
+function setAuthMessage(text){ msg.textContent = text; }
+
+async function getCurrentUser(){
+  const { data } = await supabase.auth.getUser();
+  return data.user;
 }
 
-async function refreshSessionUI(){
-  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-  const { data: userData, error: userError } = await supabase.auth.getUser();
+function showTab(tabName){
+  document.querySelectorAll(".tab-panel").forEach(panel => panel.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+  document.getElementById(tabName).classList.add("active");
+  document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add("active");
+}
 
-  const session = sessionData?.session || null;
-  const user = userData?.user || null;
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => showTab(btn.dataset.tab));
+});
 
-  if (session && user) {
-    authBox.classList.remove("hidden");
+async function showAppForSession(){
+  const { data } = await supabase.auth.getSession();
+  const session = data.session;
+
+  if(session){
+    authBox.classList.add("hidden");
     appBox.classList.remove("hidden");
-    sessionText.textContent =
-      `User: ${user.email}\n` +
-      `User ID: ${user.id}\n` +
-      `Session present: yes`;
+    sessionText.textContent = session.user?.email || "Signed in";
+    await loadAll();
   } else {
     appBox.classList.add("hidden");
-    sessionText.textContent = "";
+    authBox.classList.remove("hidden");
   }
-
-  if (sessionError) setMsg(`Session error: ${sessionError.message}`);
-  if (userError) setMsg(`User error: ${userError.message}`);
 }
 
-document.getElementById("signUpBtn").addEventListener("click", async () => {
-  const email = emailEl.value.trim();
-  const password = passwordEl.value;
-
-  if (!email || !password) {
-    setMsg("Enter email and password.");
+signUpBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  if(!email || !password){
+    setAuthMessage("Enter email and password.");
     return;
   }
-
-  const { data, error } = await supabase.auth.signUp({ email, password });
-
-  if (error) {
-    setMsg(`Sign up error: ${error.message}`);
-    return;
-  }
-
-  setMsg(
-    `Sign up ok.\n` +
-    `User created: ${data.user ? "yes" : "no"}\n` +
-    `Session returned: ${data.session ? "yes" : "no"}`
-  );
-
-  await refreshSessionUI();
+  const { error } = await supabase.auth.signUp({ email, password });
+  setAuthMessage(error ? error.message : "Signed up. Now sign in.");
 });
 
-document.getElementById("signInBtn").addEventListener("click", async () => {
-  const email = emailEl.value.trim();
-  const password = passwordEl.value;
-
-  if (!email || !password) {
-    setMsg("Enter email and password.");
+signInBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  if(!email || !password){
+    setAuthMessage("Enter email and password.");
     return;
   }
-
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){
+    setAuthMessage(error.message || "Sign in failed.");
+    return;
+  }
+  if(!data.session){
+    setAuthMessage("No session returned.");
+    return;
+  }
+  setAuthMessage("");
+  await showAppForSession();
+});
 
-  if (error) {
-    setMsg(`Sign in error: ${error.message}`);
+logoutBtn.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+/* TASKS */
+addTaskBtn.addEventListener("click", async () => {
+  const user = await getCurrentUser();
+  const title = taskInput.value.trim();
+
+  if(!user){
+    taskMsg.textContent = "You are not signed in.";
+    return;
+  }
+  if(!title){
+    taskMsg.textContent = "Enter a task.";
     return;
   }
 
-  setMsg(
-    `Sign in ok.\n` +
-    `Session returned: ${data.session ? "yes" : "no"}\n` +
-    `User returned: ${data.user ? "yes" : "no"}`
-  );
+  const { error } = await supabase.from("tasks").insert([{
+    user_id: user.id,
+    title,
+    status: "open"
+  }]);
 
-  await refreshSessionUI();
+  if(error){
+    taskMsg.textContent = error.message;
+    return;
+  }
+
+  taskInput.value = "";
+  taskMsg.textContent = "";
+  await loadTasks();
 });
 
-document.getElementById("signOutBtn").addEventListener("click", async () => {
-  const { error } = await supabase.auth.signOut();
-  setMsg(error ? `Sign out error: ${error.message}` : "Signed out.");
-  await refreshSessionUI();
+window.toggleTask = async (id, currentStatus) => {
+  const nextStatus = currentStatus === "done" ? "open" : "done";
+  const { error } = await supabase.from("tasks").update({ status: nextStatus }).eq("id", id);
+  if(error){
+    taskMsg.textContent = error.message;
+    return;
+  }
+  await loadTasks();
+};
+
+window.deleteTask = async (id) => {
+  const { error } = await supabase.from("tasks").delete().eq("id", id);
+  if(error){
+    taskMsg.textContent = error.message;
+    return;
+  }
+  await loadTasks();
+};
+
+async function loadTasks(){
+  const user = await getCurrentUser();
+  if(!user){
+    taskList.innerHTML = `<div class="empty">Sign in to see tasks.</div>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if(error){
+    taskMsg.textContent = error.message;
+    return;
+  }
+
+  if(!data || data.length === 0){
+    taskList.innerHTML = `<div class="empty">No tasks yet.</div>`;
+    return;
+  }
+
+  taskList.innerHTML = data.map(task => `
+    <div class="row-item">
+      <div class="left">
+        <input class="checkbox" type="checkbox" ${task.status === "done" ? "checked" : ""} onchange="toggleTask('${task.id}','${task.status}')">
+        <div class="title ${task.status === "done" ? "done" : ""}">${task.title || ""}</div>
+      </div>
+      <button class="mini" type="button" onclick="deleteTask('${task.id}')">Delete</button>
+    </div>
+  `).join("");
+}
+
+/* FINANCE */
+saveBudgetBtn.addEventListener("click", async () => {
+  const user = await getCurrentUser();
+  const budgetValue = Number(budgetInput.value || 0);
+
+  if(!user){
+    budgetMsg.textContent = "You are not signed in.";
+    return;
+  }
+  if(!budgetValue){
+    budgetMsg.textContent = "Enter a budget amount.";
+    return;
+  }
+
+  const { error } = await supabase.from("finance").insert([{
+    user_id: user.id,
+    amount: 0,
+    note: `BUDGET:${budgetValue}`
+  }]);
+
+  if(error){
+    budgetMsg.textContent = error.message;
+    return;
+  }
+
+  budgetInput.value = "";
+  budgetMsg.textContent = "";
+  await loadFinance();
 });
+
+addFinanceBtn.addEventListener("click", async () => {
+  const user = await getCurrentUser();
+  const amountValue = Number(amountInput.value || 0);
+  const noteValue = financeNoteInput.value.trim();
+
+  if(!user){
+    financeMsg.textContent = "You are not signed in.";
+    return;
+  }
+  if(!amountValue){
+    financeMsg.textContent = "Enter an amount.";
+    return;
+  }
+
+  const { error } = await supabase.from("finance").insert([{
+    user_id: user.id,
+    amount: amountValue,
+    note: noteValue
+  }]);
+
+  if(error){
+    financeMsg.textContent = error.message;
+    return;
+  }
+
+  amountInput.value = "";
+  financeNoteInput.value = "";
+  financeMsg.textContent = "";
+  await loadFinance();
+});
+
+async function loadFinance(){
+  const user = await getCurrentUser();
+  if(!user){
+    financeList.innerHTML = `<div class="empty">Sign in to see finance.</div>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("finance")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if(error){
+    financeMsg.textContent = error.message;
+    return;
+  }
+
+  const now = new Date();
+  const month = now.getMonth();
+  const year = now.getFullYear();
+
+  const monthRows = (data || []).filter(row => {
+    const d = new Date(row.created_at);
+    return d.getMonth() === month && d.getFullYear() === year;
+  });
+
+  const budgetRow = monthRows.find(row => String(row.note || "").startsWith("BUDGET:"));
+  const budget = budgetRow ? Number(String(budgetRow.note).replace("BUDGET:","")) : 0;
+
+  const spendRows = monthRows.filter(row => !String(row.note || "").startsWith("BUDGET:"));
+  const spent = spendRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const left = budget - spent;
+
+  monthSpentEl.textContent = spent.toFixed(2);
+  monthBudgetEl.textContent = budget.toFixed(2);
+  moneyLeftEl.textContent = left.toFixed(2);
+
+  budgetStatusEl.textContent = !budget ? "No budget" : left >= 0 ? "On track" : "Over budget";
+
+  if(!spendRows.length){
+    financeList.innerHTML = `<div class="empty">No finance entries yet.</div>`;
+    return;
+  }
+
+  financeList.innerHTML = spendRows.map(row => `
+    <div class="row-item">
+      <div class="left">
+        <div>${Number(row.amount || 0).toFixed(2)} · ${row.note || ""}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ATTENDANCE */
+addAttendanceBtn.addEventListener("click", async () => {
+  const user = await getCurrentUser();
+  if(!user){
+    attMsg.textContent = "You are not signed in.";
+    return;
+  }
+
+  const { error } = await supabase.from("attendance").insert([{
+    user_id: user.id,
+    entry_date: attDate.value,
+    status: attStatus.value
+  }]);
+
+  if(error){
+    attMsg.textContent = error.message;
+    return;
+  }
+
+  attMsg.textContent = "";
+  await loadAttendance();
+});
+
+async function loadAttendance(){
+  const user = await getCurrentUser();
+  if(!user){
+    attList.innerHTML = `<div class="empty">Sign in to see attendance.</div>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("attendance")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("entry_date", { ascending: false });
+
+  if(error){
+    attMsg.textContent = error.message;
+    return;
+  }
+
+  if(!data || !data.length){
+    attList.innerHTML = `<div class="empty">No attendance saved yet.</div>`;
+    return;
+  }
+
+  attList.innerHTML = data.map(row => `
+    <div class="row-item">
+      <div class="left">
+        <div>${row.entry_date || ""} · ${row.status || ""}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* BOOKINGS */
+addBookingBtn.addEventListener("click", async () => {
+  const user = await getCurrentUser();
+  const clientValue = clientInput.value.trim();
+
+  if(!user){
+    bookMsg.textContent = "You are not signed in.";
+    return;
+  }
+  if(!clientValue){
+    bookMsg.textContent = "Enter a client name.";
+    return;
+  }
+
+  const { error } = await supabase.from("bookings").insert([{
+    user_id: user.id,
+    client_name: clientValue,
+    status: bookingStatus.value
+  }]);
+
+  if(error){
+    bookMsg.textContent = error.message;
+    return;
+  }
+
+  clientInput.value = "";
+  bookMsg.textContent = "";
+  await loadBookings();
+});
+
+async function loadBookings(){
+  const user = await getCurrentUser();
+  if(!user){
+    bookList.innerHTML = `<div class="empty">Sign in to see bookings.</div>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if(error){
+    bookMsg.textContent = error.message;
+    return;
+  }
+
+  if(!data || !data.length){
+    bookList.innerHTML = `<div class="empty">No bookings yet.</div>`;
+    return;
+  }
+
+  bookList.innerHTML = data.map(row => `
+    <div class="row-item">
+      <div class="left">
+        <div>${row.client_name || ""} · ${row.status || ""}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function loadAll(){
+  await loadTasks();
+  await loadFinance();
+  await loadAttendance();
+  await loadBookings();
+}
 
 supabase.auth.onAuthStateChange(async () => {
-  await refreshSessionUI();
+  await showAppForSession();
 });
 
-await refreshSessionUI();
+await showAppForSession();
 </script>
 </body>
 </html>
