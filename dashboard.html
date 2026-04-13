@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Ops Dashboard</title>
+  <style>
+    :root{
+      --bg:#111214;
+      --card:#1b1d22;
+      --line:#2c3138;
+      --text:#f5f7fb;
+      --muted:#a7afbe;
+    }
+
+    * { box-sizing: border-box; }
+
+    body{
+      margin:0;
+      padding:18px;
+      background:linear-gradient(180deg,#0e1014,#171b22);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:0 18px 40px rgba(0,0,0,0.28);
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .logout{
+      width:auto;
+      padding:10px 14px;
+      border:none;
+      border-radius:14px;
+      background:#333;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .user-pill{
+      color:var(--muted);
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:14px;
+      padding:10px 12px;
+      margin-bottom:14px;
+      word-break:break-word;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+    }
+
+    .tile{
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:20px;
+      padding:18px;
+      min-height:150px;
+    }
+
+    .tile:hover{
+      background:rgba(255,255,255,0.07);
+    }
+
+    .tile-icon{
+      width:52px;
+      height:52px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,0.08);
+      font-size:22px;
+      margin-bottom:16px;
+    }
+
+    .tile-title{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .tile-desc{
+      color:var(--muted);
+      line-height:1.4;
+      font-size:13px;
+    }
+
+    @media (max-width:700px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      body{
+        padding:14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h2 style="margin:0 0 6px 0;">Life Ops</h2>
+          <p class="muted" style="margin:0;">Dashboard</p>
+        </div>
+        <button id="logoutBtn" class="logout" type="button">Log out</button>
+      </div>
+
+      <div id="userPill" class="user-pill"></div>
+
+      <div class="grid">
+        <a class="tile" href="life-test.html">
+          <div class="tile-icon">✓</div>
+          <div class="tile-title">Ultimate To Do</div>
+          <div class="tile-desc">Life, house, money, business and work tasks.</div>
+        </a>
+
+        <a class="tile" href="attendance-test.html">
+          <div class="tile-icon">◫</div>
+          <div class="tile-title">Attendance</div>
+          <div class="tile-desc">Office days, policy tracking and monthly view.</div>
+        </a>
+
+        <a class="tile" href="bookings-test.html">
+          <div class="tile-icon">◌</div>
+          <div class="tile-title">Bookings</div>
+          <div class="tile-desc">Jobs, payments, balances, due dates and overdue items.</div>
+        </a>
+
+        <a class="tile" href="finance-test.html">
+          <div class="tile-icon">◍</div>
+          <div class="tile-title">Finance</div>
+          <div class="tile-desc">Life, bills, business and combined money tracking.</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabase = createClient(
+      "https://grgagroautlpphjsjpjh.supabase.co",
+      "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storage: localStorage
+        }
+      }
+    );
+
+    const userPill = document.getElementById("userPill");
+
+    async function checkSession() {
+      const { data } = await supabase.auth.getSession();
+
+      if (!data.session) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      userPill.textContent = `Signed in as ${data.session.user.email}`;
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = "index.html";
+    });
+
+    await checkSession();
+  </script>
+</body>
+</html>
