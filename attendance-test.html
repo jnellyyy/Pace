@@ -197,6 +197,17 @@ function formatDate(d) {
   return `${year}-${month}-${day}`;
 }
 
+function formatDisplayDate(d) {
+  return d.toLocaleDateString("en-GB");
+}
+
+function formatMonthLabel(d) {
+  return d.toLocaleString("default", {
+    month: "long",
+    year: "numeric"
+  });
+}
+
 async function getUser() {
   const { data } = await supabase.auth.getUser();
   return data.user;
@@ -214,7 +225,8 @@ function getViewedPeriod() {
       type: "month",
       start: new Date(viewedYear, viewedMonth, 1),
       end: new Date(viewedYear, viewedMonth + 1, 0),
-      target: 13
+      target: 13,
+      label: formatMonthLabel(viewedMonthStart)
     };
   }
 
@@ -222,7 +234,8 @@ function getViewedPeriod() {
     type: "rolling",
     start: new Date(viewedYear, viewedMonth, 1),
     end: new Date(viewedYear, viewedMonth + 1, 0),
-    target: 12
+    target: 12,
+    label: `${formatDisplayDate(new Date(viewedYear, viewedMonth, 1))} - ${formatDisplayDate(new Date(viewedYear, viewedMonth + 1, 0))}`
   };
 }
 
@@ -248,19 +261,15 @@ function getStatus(count, target) {
 
 function renderStats() {
   const stats = document.getElementById("stats");
-  const { start, end, target, type } = getViewedPeriod();
+  const { label, target, type } = getViewedPeriod();
   const count = countOfficeInViewedPeriod();
   const status = getStatus(count, target);
-
-  const label = type === "month" ? "Monthly Period" : "Period Used";
 
   stats.innerHTML = `
     <div class="stats-box">
       <div class="stat">
-        <div class="stat-title">${label}</div>
-        <div class="stat-value">
-          ${start.toLocaleDateString()} - ${end.toLocaleDateString()}
-        </div>
+        <div class="stat-title">Period Used</div>
+        <div class="stat-value">${label}</div>
       </div>
 
       <div class="stat">
