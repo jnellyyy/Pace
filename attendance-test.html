@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Attendance</title>
-
 <style>
 :root {
   --bg:#111;
@@ -18,9 +17,7 @@
   --holiday:#ca8a04;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   background: var(--bg);
@@ -31,7 +28,7 @@ body {
 }
 
 .wrap {
-  max-width: 900px;
+  max-width: 980px;
   margin: 0 auto;
 }
 
@@ -55,7 +52,7 @@ body {
   border: 1px solid #333;
   border-radius: 10px;
   padding: 10px 14px;
-  min-width: 140px;
+  min-width: 150px;
 }
 
 .stat-title {
@@ -129,6 +126,42 @@ button.secondary {
 .notice {
   color: #aaa;
   margin-top: 10px;
+}
+
+.progress-wrap {
+  margin-top: 14px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 12px;
+  border-radius: 999px;
+  background: #2a2a2a;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #16a34a;
+}
+
+.summary-lines {
+  margin-top: 12px;
+  color: #ddd;
+  line-height: 1.5;
+}
+
+.summary-lines strong {
+  color: #fff;
 }
 
 @media (max-width: 700px) {
@@ -213,29 +246,59 @@ async function getUser() {
   return data.user;
 }
 
+function getViewedMonthBounds() {
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth();
+  return {
+    start: new Date(y, m, 1),
+    end: new Date(y, m + 1, 0)
+  };
+}
+
+function isWeekend(date) {
+  const day = date.getDay();
+  return day === 0 || day === 6;
+}
+
+function countEligibleWorkingDays(start, end) {
+  let count = 0;
+  const d = new Date(start);
+
+  while (d <= end) {
+    if (!isWeekend(d)) {
+      count++;
+    }
+    d.setDate(d.getDate() + 1);
+  }
+
+  return count;
+}
+
 function getViewedPeriod() {
-  const viewedYear = currentDate.getFullYear();
-  const viewedMonth = currentDate.getMonth();
-
+  const { start, end } = getViewedMonthBounds();
   const policyChange = new Date("2026-03-01");
-  const viewedMonthStart = new Date(viewedYear, viewedMonth, 1);
 
-  if (viewedMonthStart < policyChange) {
+  if (start < policyChange) {
+    const eligibleDays = countEligibleWorkingDays(start, end);
+    const target = Math.ceil((eligibleDays / 5) * 3);
+
     return {
       type: "month",
-      start: new Date(viewedYear, viewedMonth, 1),
-      end: new Date(viewedYear, viewedMonth + 1, 0),
-      target: 13,
-      label: formatMonthLabel(viewedMonthStart)
+      start,
+      end,
+      eligibleDays,
+      target,
+      label: formatMonthLabel(start)
     };
   }
 
   return {
     type: "rolling",
-    start: new Date(viewedYear, viewedMonth, 1),
-    end: new Date(viewedYear, viewedMonth + 1, 0),
+    start,
+    end,
+    eligibleDays: countEligibleWorkingDays(start, end),
     target: 12,
-    label: `${formatDisplayDate(new Date(viewedYear, viewedMonth, 1))} - ${formatDisplayDate(new Date(viewedYear, viewedMonth + 1, 0))}`
+    label: `${formatDisplayDate(start)} - ${formatDisplayDate(end)}`
   };
 }
 
@@ -255,26 +318,35 @@ function countOfficeInViewedPeriod() {
 
 function getStatus(count, target) {
   if (count >= target) return { t: "On track", c: "status-on" };
-  if (count >= target - 2) return { t: "Off track", c: "status-off" };
+  if (count >= Math.max(target - 1, 0)) return { t: "Off track", c: "status-off" };
   return { t: "Not met", c: "status-bad" };
+}
+
+function progressPercent(actual, target) {
+  if (!target || target <= 0) return 0;
+  return Math.min((actual / target) * 100, 100);
 }
 
 function renderStats() {
   const stats = document.getElementById("stats");
-  const { label, target, type } = getViewedPeriod();
-  const count = countOfficeInViewedPeriod();
-  const status = getStatus(count, target);
+  const { label, target, type, eligibleDays } = getViewedPeriod();
+  const actual = countOfficeInViewedPeriod();
+  const status = getStatus(actual, target);
+  const progress = progressPercent(actual, target);
+
+  const title = type === "month" ? "Month Status" : "28 Day Status";
+  const periodTitle = "Period Used";
 
   stats.innerHTML = `
     <div class="stats-box">
       <div class="stat">
-        <div class="stat-title">Period Used</div>
+        <div class="stat-title">${periodTitle}</div>
         <div class="stat-value">${label}</div>
       </div>
 
       <div class="stat">
         <div class="stat-title">Actual Days Attended</div>
-        <div class="stat-value">${count}</div>
+        <div class="stat-value">${actual}</div>
       </div>
 
       <div class="stat">
@@ -283,9 +355,25 @@ function renderStats() {
       </div>
 
       <div class="stat">
-        <div class="stat-title">${type === "month" ? "Month Status" : "28 Day Status"}</div>
+        <div class="stat-title">${title}</div>
         <div class="stat-value ${status.c}">${status.t}</div>
       </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress to target</span>
+        <span>${actual} / ${target} office days</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${progress}%"></div>
+      </div>
+    </div>
+
+    <div class="summary-lines">
+      <div><strong>Target:</strong> ${target} office days</div>
+      <div><strong>Actual:</strong> ${actual} office days out of ${eligibleDays} eligible days</div>
+      <div><strong>Period used:</strong> ${type === "month" ? `${label} monthly` : label}</div>
     </div>
   `;
 }
