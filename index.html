@@ -3,283 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Life Ops</title>
+  <title>Life Ops Login</title>
   <style>
-    :root{
-      --bg:#111214;
-      --card:#1b1d22;
-      --line:#2c3138;
-      --text:#f5f7fb;
-      --muted:#a7afbe;
-      --accent:#ff3b30;
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 24px;
+      margin: 0;
     }
 
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      padding:18px;
-      background:linear-gradient(180deg,#0e1014,#171b22);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+    .card {
+      max-width: 420px;
+      margin: 40px auto;
+      background: #1b1b1b;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 20px;
     }
 
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
+    h1 {
+      margin-top: 0;
+      margin-bottom: 6px;
     }
 
-    .card{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:22px;
-      padding:20px;
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
-      box-shadow:0 18px 40px rgba(0,0,0,0.28);
+    .sub {
+      color: #bbb;
+      margin-bottom: 14px;
     }
 
-    .hidden{display:none !important}
-
-    .auth-wrap{
-      min-height:calc(100vh - 36px);
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    input, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      font: inherit;
     }
 
-    .auth-card{
-      width:100%;
-      max-width:420px;
+    input {
+      background: #0f0f0f;
+      color: #fff;
+      border: 1px solid #333;
     }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin-bottom:14px;
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
-    .icon{
-      width:48px;
-      height:48px;
-      border-radius:16px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,0.08);
-      font-size:20px;
+    button {
+      background: #d41425;
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
     }
 
-    h1,h2,h3,p{margin-top:0}
-    h1{margin-bottom:4px}
-    .muted{color:var(--muted)}
-
-    .field{
-      width:100%;
-      margin-top:10px;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.10);
-      background:rgba(255,255,255,0.05);
-      color:var(--text);
-      font:inherit;
-      outline:none;
+    .secondary {
+      background: #333;
     }
 
-    .field::placeholder{color:#97a0af}
-
-    .btn-row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:12px;
+    #msg {
+      white-space: pre-wrap;
+      color: #bbb;
+      margin-top: 12px;
+      min-height: 40px;
     }
 
-    .btn{
-      border:none;
-      border-radius:16px;
-      padding:14px;
-      font:inherit;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .btn.primary{
-      background:var(--accent);
-      color:#fff;
-    }
-
-    .btn.secondary{
-      background:rgba(255,255,255,0.08);
-      color:#fff;
-    }
-
-    .msg{
-      min-height:22px;
-      margin-top:12px;
-      color:var(--muted);
-      white-space:pre-wrap;
-    }
-
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-    }
-
-    .logout{
-      width:auto;
-      padding:10px 14px;
-      margin:0;
-    }
-
-    .user-pill{
-      color:var(--muted);
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:14px;
-      padding:10px 12px;
-      margin-bottom:14px;
-      word-break:break-word;
-    }
-
-    .hero{
-      margin-bottom:16px;
-    }
-
-    .hero h2{
-      margin-bottom:6px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:14px;
-    }
-
-    .tile{
-      display:block;
-      text-decoration:none;
-      color:inherit;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:20px;
-      padding:18px;
-      min-height:150px;
-      transition:transform .15s ease, background .15s ease;
-    }
-
-    .tile:hover{
-      transform:translateY(-2px);
-      background:rgba(255,255,255,0.07);
-    }
-
-    .tile-icon{
-      width:52px;
-      height:52px;
-      border-radius:18px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,0.08);
-      font-size:22px;
-      margin-bottom:16px;
-    }
-
-    .tile-title{
-      font-size:18px;
-      font-weight:700;
-      margin-bottom:6px;
-    }
-
-    .tile-desc{
-      color:var(--muted);
-      line-height:1.4;
-      font-size:13px;
-    }
-
-    @media (max-width:700px){
-      .btn-row,
-      .grid{
-        grid-template-columns:1fr;
+    @media (max-width: 600px) {
+      .btn-row {
+        grid-template-columns: 1fr;
       }
-
-      body{padding:14px}
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div id="authWrap" class="auth-wrap">
-      <div class="auth-card card">
-        <div class="brand">
-          <div class="icon">◉</div>
-          <div>
-            <h1>Life Ops</h1>
-            <p class="muted">Sign in, then open your trackers.</p>
-          </div>
-        </div>
+  <div class="card">
+    <h1>Life Ops</h1>
+    <div class="sub">Sign in to open your dashboard.</div>
 
-        <input id="email" class="field" type="email" placeholder="Email" />
-        <input id="password" class="field" type="password" placeholder="Password" />
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
 
-        <div class="btn-row">
-          <button id="signInBtn" class="btn primary" type="button">Sign in</button>
-          <button id="signUpBtn" class="btn secondary" type="button">Sign up</button>
-        </div>
-
-        <p id="authMsg" class="msg"></p>
-      </div>
+    <div class="btn-row">
+      <button id="signInBtn" type="button">Sign In</button>
+      <button id="signUpBtn" class="secondary" type="button">Sign Up</button>
     </div>
 
-    <div id="appWrap" class="hidden">
-      <div class="card">
-        <div class="topbar">
-          <div>
-            <h2 style="margin-bottom:4px;">Life Ops</h2>
-            <p class="muted" style="margin:0;">Dashboard</p>
-          </div>
-          <button id="logoutBtn" class="btn secondary logout" type="button">Log out</button>
-        </div>
-
-        <div id="userPill" class="user-pill"></div>
-
-        <div class="hero">
-          <h2>Everything in one place</h2>
-          <p class="muted">Open your trackers below. This keeps the login stable and the tools separate.</p>
-        </div>
-
-        <div class="grid">
-          <a class="tile" href="life-test.html">
-            <div class="tile-icon">✓</div>
-            <div class="tile-title">Ultimate To Do</div>
-            <div class="tile-desc">Life, house, money, business and work tasks.</div>
-          </a>
-
-          <a class="tile" href="attendance-test.html">
-            <div class="tile-icon">◫</div>
-            <div class="tile-title">Attendance</div>
-            <div class="tile-desc">Office days, policy tracking and monthly view.</div>
-          </a>
-
-          <a class="tile" href="bookings-test.html">
-            <div class="tile-icon">◌</div>
-            <div class="tile-title">Bookings</div>
-            <div class="tile-desc">Jobs, payments, balances, due dates and overdue items.</div>
-          </a>
-
-          <a class="tile" href="finance-test.html">
-            <div class="tile-icon">◍</div>
-            <div class="tile-title">Finance</div>
-            <div class="tile-desc">Life, bills, business and combined money tracking.</div>
-          </a>
-        </div>
-      </div>
-    </div>
+    <p id="msg"></p>
   </div>
 
   <script type="module">
@@ -298,121 +111,78 @@
       }
     );
 
-    const authWrap = document.getElementById("authWrap");
-    const appWrap = document.getElementById("appWrap");
-    const authMsg = document.getElementById("authMsg");
-    const emailEl = document.getElementById("email");
-    const passwordEl = document.getElementById("password");
-    const signInBtn = document.getElementById("signInBtn");
-    const signUpBtn = document.getElementById("signUpBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const userPill = document.getElementById("userPill");
+    const msg = document.getElementById("msg");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
 
-    function setAuthMsg(text) {
-      authMsg.textContent = text;
+    function setMsg(text) {
+      msg.textContent = text;
     }
 
-    async function showDashboard() {
+    async function goIfLoggedIn() {
       const { data, error } = await supabase.auth.getSession();
 
       if (error) {
-        setAuthMsg(error.message);
+        setMsg("Session error:\n" + error.message);
         return;
       }
 
-      const session = data?.session || null;
-
-      if (session) {
-        authWrap.classList.add("hidden");
-        appWrap.classList.remove("hidden");
-        userPill.textContent = `Signed in as ${session.user.email}`;
-      } else {
-        authWrap.classList.remove("hidden");
-        appWrap.classList.add("hidden");
+      if (data.session) {
+        window.location.href = "dashboard.html";
       }
     }
 
-    signInBtn.addEventListener("click", async () => {
-      const email = emailEl.value.trim();
-      const password = passwordEl.value;
-
-      if (!email || !password) {
-        setAuthMsg("Enter email and password.");
-        return;
-      }
-
-      setAuthMsg("Signing in...");
+    document.getElementById("signInBtn").addEventListener("click", async () => {
+      setMsg("Trying sign in...");
 
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
+          email: email.value.trim(),
+          password: password.value
         });
 
         if (error) {
-          setAuthMsg(`Sign in error: ${error.message}`);
+          setMsg("Sign in error:\n" + error.message);
           return;
         }
 
-        if (!data?.session) {
-          setAuthMsg("Sign in failed: no session returned.");
+        if (!data.session) {
+          setMsg("Sign in failed: no session returned.");
           return;
         }
 
-        setAuthMsg("Signed in.");
-        await showDashboard();
+        setMsg("Sign in ok. Redirecting...");
+        window.location.href = "dashboard.html";
       } catch (err) {
-        setAuthMsg(`Sign in error: ${err.message}`);
+        setMsg("Catch error:\n" + err.message);
       }
     });
 
-    signUpBtn.addEventListener("click", async () => {
-      const email = emailEl.value.trim();
-      const password = passwordEl.value;
-
-      if (!email || !password) {
-        setAuthMsg("Enter email and password.");
-        return;
-      }
+    document.getElementById("signUpBtn").addEventListener("click", async () => {
+      setMsg("Creating account...");
 
       try {
         const { data, error } = await supabase.auth.signUp({
-          email,
-          password
+          email: email.value.trim(),
+          password: password.value
         });
 
         if (error) {
-          setAuthMsg(`Sign up error: ${error.message}`);
+          setMsg("Sign up error:\n" + error.message);
           return;
         }
 
-        setAuthMsg(
-          `Sign up ok.\n` +
-          `User created: ${data.user ? "yes" : "no"}\n` +
-          `Session returned: ${data.session ? "yes" : "no"}`
+        setMsg(
+          "Sign up ok.\n" +
+          "User created: " + (data.user ? "yes" : "no") + "\n" +
+          "Now sign in."
         );
       } catch (err) {
-        setAuthMsg(`Sign up error: ${err.message}`);
+        setMsg("Catch error:\n" + err.message);
       }
     });
 
-    logoutBtn.addEventListener("click", async () => {
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        setAuthMsg(error.message);
-        return;
-      }
-
-      await showDashboard();
-      setAuthMsg("Signed out.");
-    });
-
-    supabase.auth.onAuthStateChange(async () => {
-      await showDashboard();
-    });
-
-    await showDashboard();
+    await goIfLoggedIn();
   </script>
 </body>
 </html>
