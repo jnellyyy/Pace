@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Test</title>
+
+<style>
+body{
+  background:#111;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  padding:24px;
+  margin:0;
+}
+.wrap{
+  max-width:600px;
+  margin:0 auto;
+}
+.card{
+  background:#1b1b1b;
+  border:1px solid #333;
+  border-radius:16px;
+  padding:20px;
+  margin-top:16px;
+}
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  font:inherit;
+  box-sizing:border-box;
+}
+input{
+  background:#0f0f0f;
+  color:#fff;
+  border:1px solid #333;
+}
+button{
+  background:#d41425;
+  color:#fff;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+.secondary{
+  background:#333;
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  background:#222;
+  padding:12px;
+  border-radius:10px;
+}
+.left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.done{
+  text-decoration:line-through;
+  opacity:0.6;
+}
+.notice{
+  color:#bbb;
+  margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>Life Test (To Do)</h2>
+
+    <input id="taskInput" placeholder="Enter task">
+    <button onclick="addTask()">Add Task</button>
+
+    <p id="msg" class="notice"></p>
+
+    <div id="taskList"></div>
+  </div>
+
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+);
+
+const taskInput = document.getElementById("taskInput");
+const msg = document.getElementById("msg");
+const taskList = document.getElementById("taskList");
+
+async function getUser(){
+  const { data } = await supabase.auth.getUser();
+  return data.user;
+}
+
+/* ADD TASK */
+window.addTask = async function(){
+  const user = await getUser();
+  const title = taskInput.value.trim();
+
+  if(!user){
+    msg.textContent = "Not logged in.";
+    return;
+  }
+
+  if(!title){
+    msg.textContent = "Enter a task.";
+    return;
+  }
+
+  const { error } = await supabase.from("tasks").insert([{
+    user_id: user.id,
+    title,
+    status: "open"
+  }]);
+
+  if(error){
+    msg.textContent = error.message;
+    return;
+  }
+
+  taskInput.value = "";
+  msg.textContent = "";
+  loadTasks();
+};
+
+/* TOGGLE */
+window.toggleTask = async function(id, status){
+  const newStatus = status === "done" ? "open" : "done";
+
+  await supabase
+    .from("tasks")
+    .update({ status: newStatus })
+    .eq("id", id);
+
+  loadTasks();
+};
+
+/* DELETE */
+window.deleteTask = async function(id){
+  await supabase.from("tasks").delete().eq("id", id);
+  loadTasks();
+};
+
+/* LOAD */
+async function loadTasks(){
+  const user = await getUser();
+
+  if(!user){
+    taskList.innerHTML = "Not logged in.";
+    return;
+  }
+
+  const { data } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending:false });
+
+  if(!data || data.length === 0){
+    taskList.innerHTML = "No tasks yet.";
+    return;
+  }
+
+  taskList.innerHTML = data.map(t => `
+    <div class="row">
+      <div class="left">
+        <input type="checkbox"
+          ${t.status === "done" ? "checked" : ""}
+          onchange="toggleTask('${t.id}','${t.status}')">
+
+        <span class="${t.status === "done" ? "done" : ""}">
+          ${t.title}
+        </span>
+      </div>
+
+      <button class="secondary" onclick="deleteTask('${t.id}')">
+        Delete
+      </button>
+    </div>
+  `).join("");
+}
+
+loadTasks();
+</script>
+
+</body>
+</html>
