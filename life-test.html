@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Life Test</title>
+  <title>Ultimate To Do List</title>
   <style>
     body {
       background: #111;
@@ -14,7 +14,7 @@
     }
 
     .wrap {
-      max-width: 680px;
+      max-width: 760px;
       margin: 0 auto;
     }
 
@@ -26,12 +26,12 @@
       margin-top: 16px;
     }
 
-    input, button {
+    input, select, button {
       box-sizing: border-box;
       font: inherit;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 12px;
       margin-top: 10px;
@@ -39,6 +39,13 @@
       background: #0f0f0f;
       color: #fff;
       border: 1px solid #333;
+    }
+
+    .top-row {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 10px;
+      margin-top: 10px;
     }
 
     .add-btn {
@@ -58,8 +65,15 @@
       margin-top: 10px;
     }
 
-    .task-list {
-      margin-top: 14px;
+    .section {
+      margin-top: 24px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
     }
 
     .task-row {
@@ -115,18 +129,41 @@
     .delete-btn:hover {
       background: #4a4a4a;
     }
+
+    .empty-text {
+      color: #888;
+      font-size: 14px;
+      padding: 4px 0 0;
+    }
+
+    @media (max-width: 640px) {
+      .top-row {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h2>Life Test (To Do)</h2>
+      <h2>Ultimate To Do List</h2>
 
-      <input id="taskInput" placeholder="Enter task" />
+      <div class="top-row">
+        <input id="taskInput" placeholder="Enter task" />
+        <select id="taskCategory">
+          <option value="Life">Life</option>
+          <option value="House">House</option>
+          <option value="Money">Money</option>
+          <option value="Business">Business</option>
+          <option value="Work">Work</option>
+        </select>
+      </div>
+
       <button class="add-btn" onclick="addTask()">Add Task</button>
 
       <p id="msg" class="notice"></p>
-      <div id="taskList" class="task-list"></div>
+
+      <div id="taskSections"></div>
     </div>
   </div>
 
@@ -146,8 +183,11 @@
     );
 
     const taskInput = document.getElementById("taskInput");
+    const taskCategory = document.getElementById("taskCategory");
     const msg = document.getElementById("msg");
-    const taskList = document.getElementById("taskList");
+    const taskSections = document.getElementById("taskSections");
+
+    const sectionOrder = ["Life", "House", "Money", "Business", "Work"];
 
     async function getUser() {
       const { data } = await supabase.auth.getUser();
@@ -157,6 +197,7 @@
     window.addTask = async function () {
       const user = await getUser();
       const title = taskInput.value.trim();
+      const category = taskCategory.value;
 
       if (!user) {
         msg.textContent = "Not logged in.";
@@ -171,6 +212,7 @@
       const { error } = await supabase.from("tasks").insert([{
         user_id: user.id,
         title,
+        category,
         status: "open"
       }]);
 
@@ -218,7 +260,7 @@
       const user = await getUser();
 
       if (!user) {
-        taskList.innerHTML = '<div class="notice">Not logged in.</div>';
+        taskSections.innerHTML = '<div class="notice">Not logged in.</div>';
         return;
       }
 
@@ -233,32 +275,42 @@
         return;
       }
 
-      if (!data || data.length === 0) {
-        taskList.innerHTML = '<div class="notice">No tasks yet.</div>';
-        return;
-      }
+      const tasks = data || [];
 
-      taskList.innerHTML = data.map(t => `
-        <div class="task-row">
-          <input
-            class="task-check"
-            type="checkbox"
-            ${t.status === "done" ? "checked" : ""}
-            onchange="toggleTask('${t.id}','${t.status}')"
-          />
-          <div class="task-text ${t.status === "done" ? "done" : ""}">
-            ${t.title}
+      taskSections.innerHTML = sectionOrder.map(section => {
+        const sectionTasks = tasks.filter(task => (task.category || "Life") === section);
+
+        return `
+          <div class="section">
+            <div class="section-title">${section}</div>
+            ${
+              sectionTasks.length === 0
+                ? `<div class="empty-text">No tasks yet.</div>`
+                : sectionTasks.map(task => `
+                    <div class="task-row">
+                      <input
+                        class="task-check"
+                        type="checkbox"
+                        ${task.status === "done" ? "checked" : ""}
+                        onchange="toggleTask('${task.id}','${task.status}')"
+                      />
+                      <div class="task-text ${task.status === "done" ? "done" : ""}">
+                        ${task.title}
+                      </div>
+                      <button
+                        class="delete-btn"
+                        onclick="deleteTask('${task.id}')"
+                        aria-label="Delete task"
+                        title="Delete"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  `).join("")
+            }
           </div>
-          <button
-            class="delete-btn"
-            onclick="deleteTask('${t.id}')"
-            aria-label="Delete task"
-            title="Delete"
-          >
-            ×
-          </button>
-        </div>
-      `).join("");
+        `;
+      }).join("");
     }
 
     loadTasks();
