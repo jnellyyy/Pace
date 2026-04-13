@@ -18,122 +18,141 @@
   --holiday:#ca8a04;
 }
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,sans-serif;
-  padding:24px;
-  margin:0;
+* {
+  box-sizing: border-box;
 }
 
-.wrap{max-width:900px;margin:0 auto;}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  padding: 24px;
+  margin: 0;
+}
 
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:20px;
-  margin-top:16px;
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 16px;
 }
 
 /* KPI */
-.stats-box{
-  display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  gap:12px;
+.stats-box {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.stat{
-  background:#222;
-  border:1px solid #333;
-  border-radius:10px;
-  padding:10px 14px;
-  min-width:140px;
+.stat {
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 140px;
 }
 
-.stat-title{
-  font-size:12px;
-  color:#aaa;
+.stat-title {
+  font-size: 12px;
+  color: #aaa;
 }
 
-.stat-value{
-  font-size:18px;
-  font-weight:700;
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
 }
 
-.status-on{ color:#16a34a; }
-.status-off{ color:#ca8a04; }
-.status-bad{ color:#dc2626; }
+.status-on { color: #16a34a; }
+.status-off { color: #ca8a04; }
+.status-bad { color: #dc2626; }
 
 /* HEADER */
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:10px;
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-button{
-  background:#d41425;
-  color:#fff;
-  border:none;
-  padding:10px 14px;
-  border-radius:10px;
-  font-weight:700;
-  cursor:pointer;
+button {
+  background: #d41425;
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-button.secondary{ background:#333; }
+button.secondary {
+  background: #333;
+}
 
 /* CALENDAR */
-.calendar{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:8px;
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
 }
 
-.dow{
-  text-align:center;
-  font-size:12px;
-  color:#aaa;
+.dow {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
 }
 
-.day{
-  background:#222;
-  border:1px solid #333;
-  border-radius:10px;
-  min-height:80px;
-  padding:8px;
-  cursor:pointer;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+.day {
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 10px;
+  min-height: 80px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.day.office{ border-color:var(--office); }
-.day.wfh{ border-color:var(--wfh); }
-.day.sick{ border-color:var(--sick); }
-.day.holiday{ border-color:var(--holiday); }
+.day.office { border-color: var(--office); }
+.day.wfh { border-color: var(--wfh); }
+.day.sick { border-color: var(--sick); }
+.day.holiday { border-color: var(--holiday); }
 
-.day-number{ font-weight:700; }
-.day-status{ font-size:11px; color:#aaa; }
+.day-number { font-weight: 700; }
+.day-status { font-size: 11px; color: #aaa; }
 
-.notice{ color:#aaa; margin-top:10px; }
+.notice {
+  color: #aaa;
+  margin-top: 10px;
+}
 
+@media (max-width: 700px) {
+  .calendar {
+    gap: 6px;
+  }
+
+  .day {
+    min-height: 72px;
+  }
+}
 </style>
 </head>
 <body>
 
 <div class="wrap">
 
-  <!-- KPI -->
   <div class="card">
     <div id="stats"></div>
   </div>
 
-  <!-- CALENDAR -->
   <div class="card">
     <div class="topbar">
       <h2 id="monthTitle"></h2>
@@ -155,7 +174,14 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   "https://grgagroautlpphjsjpjh.supabase.co",
-  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
 );
 
 const calendar = document.getElementById("calendar");
@@ -165,177 +191,241 @@ const msg = document.getElementById("msg");
 let currentDate = new Date();
 let attendanceMap = {};
 
-const order = ["blank","Office","WFH","Sick","Holiday"];
+const order = ["blank", "Office", "WFH", "Sick", "Holiday"];
 
-/* HELPERS */
-function formatDate(d){
-  return d.toISOString().split("T")[0];
+function formatDate(d) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
-function getUser(){
-  return supabase.auth.getUser().then(res=>res.data.user);
+async function getUser() {
+  const { data } = await supabase.auth.getUser();
+  return data.user;
 }
 
-function getPeriod(){
+function getPeriod() {
+  const now = new Date();
+  const policyChange = new Date("2026-03-01");
+
+  if (now < policyChange) {
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    return {
+      type: "month",
+      start,
+      end,
+      target: 13
+    };
+  }
+
   const end = new Date();
   const start = new Date();
-  start.setDate(end.getDate()-27);
-  return {start,end};
+  start.setDate(end.getDate() - 27);
+
+  return {
+    type: "rolling",
+    start,
+    end,
+    target: 12
+  };
 }
 
-/* KPI */
-function countOffice(){
-  let count=0;
-  const {start,end}=getPeriod();
+function countOffice() {
+  let count = 0;
+  const { start, end } = getPeriod();
 
-  for(const d in attendanceMap){
-    const date=new Date(d);
-    if(date>=start && date<=end && attendanceMap[d]==="Office"){
+  for (const d in attendanceMap) {
+    const date = new Date(d + "T00:00:00");
+    if (date >= start && date <= end && attendanceMap[d] === "Office") {
       count++;
     }
   }
+
   return count;
 }
 
-function getStatus(n){
-  if(n>=12) return {t:"On track",c:"status-on"};
-  if(n>=10) return {t:"Off track",c:"status-off"};
-  return {t:"Not met",c:"status-bad"};
+function getStatus(count, target) {
+  if (count >= target) return { t: "On track", c: "status-on" };
+  if (count >= target - 2) return { t: "Off track", c: "status-off" };
+  return { t: "Not met", c: "status-bad" };
 }
 
-function renderStats(){
-  const stats=document.getElementById("stats");
-  const {start,end}=getPeriod();
-  const count=countOffice();
-  const status=getStatus(count);
+function renderStats() {
+  const stats = document.getElementById("stats");
+  const { start, end, target, type } = getPeriod();
+  const count = countOffice();
+  const status = getStatus(count, target);
+  const label = type === "month" ? "Monthly Period" : "Last 28 Days";
 
-  stats.innerHTML=`
+  stats.innerHTML = `
     <div class="stats-box">
       <div class="stat">
-        <div class="stat-title">Period</div>
+        <div class="stat-title">Period Used</div>
         <div class="stat-value">
           ${start.toLocaleDateString()} - ${end.toLocaleDateString()}
         </div>
       </div>
 
       <div class="stat">
-        <div class="stat-title">Office Days</div>
+        <div class="stat-title">Actual Days Attended</div>
         <div class="stat-value">${count}</div>
       </div>
 
       <div class="stat">
         <div class="stat-title">Target</div>
-        <div class="stat-value">12</div>
+        <div class="stat-value">${target}</div>
       </div>
 
       <div class="stat">
-        <div class="stat-title">Status</div>
+        <div class="stat-title">${label}</div>
         <div class="stat-value ${status.c}">${status.t}</div>
       </div>
     </div>
   `;
 }
 
-/* LOAD */
-async function load(){
-  const user=await getUser();
-  if(!user){ msg.textContent="Not logged in"; return;}
+function renderCalendar() {
+  calendar.innerHTML = "";
 
-  const {data}=await supabase
-    .from("attendance")
-    .select("*")
-    .eq("user_id",user.id);
-
-  attendanceMap={};
-  (data||[]).forEach(r=>{
-    attendanceMap[r.entry_date]=r.status;
-  });
-
-  renderCalendar();
-  renderStats();
-}
-
-/* CALENDAR */
-function renderCalendar(){
-  calendar.innerHTML="";
-
-  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-  days.forEach(d=>{
-    const el=document.createElement("div");
-    el.className="dow";
-    el.textContent=d;
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  days.forEach(d => {
+    const el = document.createElement("div");
+    el.className = "dow";
+    el.textContent = d;
     calendar.appendChild(el);
   });
 
-  const y=currentDate.getFullYear();
-  const m=currentDate.getMonth();
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth();
 
-  monthTitle.textContent=currentDate.toLocaleString("default",{month:"long",year:"numeric"});
+  monthTitle.textContent = currentDate.toLocaleString("default", {
+    month: "long",
+    year: "numeric"
+  });
 
-  const first=new Date(y,m,1);
-  let offset=first.getDay();
-  offset = offset===0?6:offset-1;
+  const first = new Date(y, m, 1);
+  let offset = first.getDay();
+  offset = offset === 0 ? 6 : offset - 1;
 
-  for(let i=0;i<offset;i++){
-    calendar.appendChild(document.createElement("div"));
+  for (let i = 0; i < offset; i++) {
+    const blank = document.createElement("div");
+    calendar.appendChild(blank);
   }
 
-  const last=new Date(y,m+1,0).getDate();
+  const last = new Date(y, m + 1, 0).getDate();
 
-  for(let d=1;d<=last;d++){
-    const date=new Date(y,m,d);
-    const key=formatDate(date);
-    const status=attendanceMap[key]||"blank";
+  for (let d = 1; d <= last; d++) {
+    const date = new Date(y, m, d);
+    const key = formatDate(date);
+    const status = attendanceMap[key] || "blank";
 
-    const cell=document.createElement("div");
-    cell.className="day "+status.toLowerCase();
+    const cell = document.createElement("div");
+    cell.className = "day " + status.toLowerCase();
+    cell.onclick = () => cycle(key, status);
 
-    cell.onclick=()=>cycle(key,status);
-
-    cell.innerHTML=`
+    cell.innerHTML = `
       <div class="day-number">${d}</div>
-      <div class="day-status">${status==="blank"?"":status}</div>
+      <div class="day-status">${status === "blank" ? "" : status}</div>
     `;
 
     calendar.appendChild(cell);
   }
 }
 
-/* CLICK */
-async function cycle(date,status){
-  const user=await getUser();
-  if(!user) return;
+async function load() {
+  const user = await getUser();
 
-  const next=order[(order.indexOf(status)+1)%order.length];
-
-  if(next==="blank"){
-    await supabase.from("attendance").delete().eq("entry_date",date);
-    delete attendanceMap[date];
-  } else {
-    if(attendanceMap[date]){
-      await supabase.from("attendance").update({status:next}).eq("entry_date",date);
-    } else {
-      await supabase.from("attendance").insert([{entry_date:date,status:next,user_id:user.id}]);
-    }
-    attendanceMap[date]=next;
+  if (!user) {
+    msg.textContent = "Not logged in";
+    return;
   }
+
+  const { data, error } = await supabase
+    .from("attendance")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (error) {
+    msg.textContent = error.message;
+    return;
+  }
+
+  attendanceMap = {};
+  (data || []).forEach(r => {
+    attendanceMap[r.entry_date] = r.status;
+  });
 
   renderCalendar();
   renderStats();
 }
 
-/* NAV */
-window.changeMonth=(n)=>{
-  currentDate=new Date(currentDate.getFullYear(),currentDate.getMonth()+n,1);
+async function cycle(date, status) {
+  const user = await getUser();
+  if (!user) return;
+
+  const next = order[(order.indexOf(status) + 1) % order.length];
+
+  if (next === "blank") {
+    const { error } = await supabase
+      .from("attendance")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("entry_date", date);
+
+    if (error) {
+      msg.textContent = error.message;
+      return;
+    }
+
+    delete attendanceMap[date];
+  } else {
+    if (attendanceMap[date]) {
+      const { error } = await supabase
+        .from("attendance")
+        .update({ status: next })
+        .eq("user_id", user.id)
+        .eq("entry_date", date);
+
+      if (error) {
+        msg.textContent = error.message;
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from("attendance")
+        .insert([{
+          entry_date: date,
+          status: next,
+          user_id: user.id
+        }]);
+
+      if (error) {
+        msg.textContent = error.message;
+        return;
+      }
+    }
+
+    attendanceMap[date] = next;
+  }
+
+  msg.textContent = `Saved: ${date}`;
+  renderCalendar();
+  renderStats();
+}
+
+window.changeMonth = function(n) {
+  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + n, 1);
   renderCalendar();
 };
 
-window.goToday=()=>{
-  currentDate=new Date();
+window.goToday = function() {
+  currentDate = new Date();
   renderCalendar();
 };
 
-/* INIT */
 load();
 </script>
 
