@@ -13,13 +13,13 @@
       --muted:#aaa;
 
       --enquiry:#666;
-      --will:#2563eb;
       --pending:#ca8a04;
       --booked:#16a34a;
       --completed:#065f46;
       --cancelled:#dc2626;
       --lost:#555;
       --overdue:#b91c1c;
+      --coming:#2563eb;
     }
 
     * { box-sizing: border-box; }
@@ -211,6 +211,10 @@
       background: var(--overdue);
     }
 
+    .coming-badge {
+      background: var(--coming);
+    }
+
     .delete {
       background: none;
       border: none;
@@ -264,8 +268,34 @@
       border-top: 1px dashed #333;
     }
 
+    .move-row {
+      display: flex;
+      gap: 8px;
+      align-items: end;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .move-row select {
+      flex: 1;
+      min-width: 180px;
+      margin-top: 0;
+    }
+
+    .coming-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .coming-card {
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
     .enquiry { background: var(--enquiry); }
-    .will { background: var(--will); }
     .pending { background: var(--pending); }
     .booked { background: var(--booked); }
     .completed { background: var(--completed); }
@@ -285,9 +315,15 @@
 
   <div class="card">
     <h2 style="margin:0 0 6px 0;">Bookings</h2>
-    <p class="notice" style="margin:0;">Track enquiries, jobs, deposits, balances and due dates.</p>
+    <p class="notice" style="margin:0;">Track enquiries, jobs, deposits, balances and what is next.</p>
 
     <div class="kpi" id="kpi"></div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-bottom:8px;">Coming Up</h2>
+    <p class="notice" style="margin-top:0;">Nearest upcoming jobs first.</p>
+    <div id="comingUp"></div>
   </div>
 
   <div class="card">
@@ -302,12 +338,12 @@
     <div class="row">
       <select id="bookingStatus">
         <option>Enquiry</option>
-        <option>Said they will book</option>
         <option>Pending deposit</option>
         <option>Booked</option>
         <option>Completed</option>
         <option>Cancelled</option>
         <option>Lost lead</option>
+        <option>Said they will book</option>
       </select>
       <input id="dueDate" type="date" />
     </div>
@@ -348,15 +384,25 @@
   const sectionsEl = document.getElementById("sections");
   const kpiEl = document.getElementById("kpi");
   const msgEl = document.getElementById("msg");
+  const comingUpEl = document.getElementById("comingUp");
 
   const order = [
     "Enquiry",
-    "Said they will book",
     "Pending deposit",
     "Booked",
     "Completed",
     "Cancelled",
     "Lost lead"
+  ];
+
+  const allStatuses = [
+    "Enquiry",
+    "Pending deposit",
+    "Booked",
+    "Completed",
+    "Cancelled",
+    "Lost lead",
+    "Said they will book"
   ];
 
   function setMsg(text) {
@@ -366,12 +412,12 @@
   function badgeClass(status) {
     return {
       "Enquiry":"enquiry",
-      "Said they will book":"will",
       "Pending deposit":"pending",
       "Booked":"booked",
       "Completed":"completed",
       "Cancelled":"cancelled",
-      "Lost lead":"lost"
+      "Lost lead":"lost",
+      "Said they will book":"pending"
     }[status] || "";
   }
 
@@ -417,6 +463,19 @@
     today.setHours(0,0,0,0);
 
     return due < today;
+  }
+
+  function isUpcoming(booking) {
+    if (!booking.event_date) return false;
+    if (booking.status === "Completed" || booking.status === "Cancelled" || booking.status === "Lost lead") return false;
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const event = new Date(booking.event_date + "T00:00:00");
+    event.setHours(0,0,0,0);
+
+    return event >= today;
   }
 
   async function addBooking() {
@@ -599,12 +658,71 @@
     await load();
   };
 
+  window.moveBooking = async function(id) {
+    const nextStatus = document.getElementById(`move-status-${id}`).value;
+
+    const { error } = await supabase
+      .from("bookings")
+      .update({ status: nextStatus })
+      .eq("id", id);
+
+    if (error) {
+      setMsg(error.message);
+      return;
+    }
+
+    setMsg("Booking moved.");
+    await load();
+  };
+
+  function renderComingUp(bookings, paymentsMap) {
+    const upcoming = bookings
+      .filter(isUpcoming)
+      .sort((a, b) => new Date(a.event_date) - new Date(b.event_date))
+      .slice(0, 8);
+
+    if (!upcoming.length) {
+      comingUpEl.innerHTML = `<div class="empty">No upcoming jobs.</div>`;
+      return;
+    }
+
+    comingUpEl.innerHTML = `
+      <div class="coming-list">
+        ${upcoming.map(b => {
+          const paid = getPaidTotal(paymentsMap[b.id] || []);
+          const remaining = Math.max(Number(b.price || 0) - paid, 0);
+          const overdue = isOverdue(b, paid);
+
+          return `
+            <div class="coming-card">
+              <div class="top">
+                <div>
+                  <div class="name">${b.client_name} — ${b.job_name}</div>
+                  <div class="meta">
+                    Event: ${formatDate(b.event_date)} • Due: ${formatDate(b.due_date)} • Remaining: ${formatMoney(remaining)}
+                  </div>
+                </div>
+              </div>
+
+              <div class="badge-row">
+                <span class="badge ${badgeClass(b.status)}">${b.status}</span>
+                <span class="badge coming-badge">Coming up</span>
+                ${overdue ? `<span class="badge overdue-badge">Overdue</span>` : ``}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
   async function load() {
     const user = await getUser();
 
     if (!user) {
       sectionsEl.innerHTML = `<div class="empty">Not logged in.</div>`;
       kpiEl.innerHTML = "";
+      comingUpEl.innerHTML = "";
       return;
     }
 
@@ -662,6 +780,8 @@
       </div>
     `;
 
+    renderComingUp(bookings, paymentsMap);
+
     sectionsEl.innerHTML = order.map(section => {
       const items = bookings.filter(b => (b.status || "Enquiry") === section);
 
@@ -712,7 +832,11 @@
 
                       ${b.plain_note ? `<div class="meta" style="margin-top:10px;">${b.plain_note}</div>` : ""}
 
-                      <div class="mini-actions">
+                      <div class="move-row">
+                        <select id="move-status-${b.id}">
+                          ${allStatuses.map(s => `<option value="${s}" ${b.status===s ? "selected" : ""}>${s}</option>`).join("")}
+                        </select>
+                        <button class="small-btn" type="button" onclick="moveBooking('${b.id}')">Move</button>
                         <button class="small-btn" type="button" onclick="toggleEdit('${b.id}')">Edit</button>
                       </div>
 
@@ -729,13 +853,7 @@
                         </div>
 
                         <select id="edit-status-${b.id}">
-                          <option ${b.status==="Enquiry"?"selected":""}>Enquiry</option>
-                          <option ${b.status==="Said they will book"?"selected":""}>Said they will book</option>
-                          <option ${b.status==="Pending deposit"?"selected":""}>Pending deposit</option>
-                          <option ${b.status==="Booked"?"selected":""}>Booked</option>
-                          <option ${b.status==="Completed"?"selected":""}>Completed</option>
-                          <option ${b.status==="Cancelled"?"selected":""}>Cancelled</option>
-                          <option ${b.status==="Lost lead"?"selected":""}>Lost lead</option>
+                          ${allStatuses.map(s => `<option ${b.status===s ? "selected" : ""}>${s}</option>`).join("")}
                         </select>
 
                         <textarea id="edit-note-${b.id}" placeholder="Notes">${b.plain_note || ""}</textarea>
@@ -786,6 +904,5 @@
 
   load();
 </script>
-
 </body>
 </html>
