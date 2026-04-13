@@ -6,35 +6,730 @@
 <title>Attendance</title>
 <style>
 :root {
-  --bg:#111;
-  --card:#1b1b1b;
-  --line:#333;
-  --text:#fff;
-  --muted:#aaa;
-  --office:#16a34a;
-  --wfh:#2563eb;
-  --sick:#dc2626;
-  --holiday:#ca8a04;
-  --bank:#7c3aed;
-  --weekend:#555;
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel-strong:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.10);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --accent:#ff3b30;
+  --office:#22c55e;
+  --wfh:#60a5fa;
+  --sick:#ef4444;
+  --holiday:#f59e0b;
+  --bank:#a855f7;
+  --weekend:#6b7280;
+  --shadow:0 20px 50px rgba(0,0,0,0.35);
+  --blur:18px;
+  --radius:22px;
 }
 
 * { box-sizing: border-box; }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-  padding: 24px;
-  margin: 0;
+  margin:0;
+  padding:18px;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
+    radial-gradient(circle at top right, rgba(255,59,48,0.10), transparent 28%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
 }
 
 .wrap {
-  max-width: 980px;
+  max-width: 1040px;
   margin: 0 auto;
 }
 
+.glass {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  backdrop-filter:blur(var(--blur));
+  -webkit-backdrop-filter:blur(var(--blur));
+  box-shadow:var(--shadow);
+}
+
 .card {
+  padding:20px;
+  margin-top:16px;
+}
+
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:16px;
+}
+
+.back-btn {
+  width:auto;
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.muted { color:var(--muted); }
+
+.stats-box {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  background: var(--panel-strong);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 12px 14px;
+}
+
+.stat-title {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top:4px;
+}
+
+.status-on { color: var(--office); }
+.status-off { color: var(--holiday); }
+.status-bad { color: var(--sick); }
+
+.calendar-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font:inherit;
+}
+
+button.secondary {
+  background: rgba(255,255,255,0.08);
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-top:12px;
+}
+
+.dow {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  padding-bottom:4px;
+}
+
+.day {
+  background: var(--panel-strong);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  min-height: 96px;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.day.office { border-color: rgba(34,197,94,0.65); }
+.day.wfh { border-color: rgba(96,165,250,0.65); }
+.day.sick { border-color: rgba(239,68,68,0.65); }
+.day.holiday { border-color: rgba(245,158,11,0.65); }
+
+.day.bank-holiday {
+  border-color: rgba(168,85,247,0.70);
+  box-shadow: inset 0 0 0 1px rgba(168,85,247,0.50);
+  cursor: not-allowed;
+  background: rgba(168,85,247,0.10);
+}
+
+.day.weekend {
+  border-color: rgba(107,114,128,0.45);
+  background: rgba(255,255,255,0.03);
+  color: #8a93a2;
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.day-number { font-weight: 700; }
+
+.day-status {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.notice {
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.progress-wrap {
+  margin-top: 16px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--office);
+}
+
+.summary-lines {
+  margin-top: 12px;
+  color: #d6dbe4;
+  line-height: 1.5;
+}
+
+.summary-lines strong {
+  color: #fff;
+}
+
+.legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+@media (max-width: 900px) {
+  .stats-box {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  body{
+    padding:14px;
+  }
+
+  .calendar {
+    gap: 6px;
+  }
+
+  .day {
+    min-height: 78px;
+  }
+
+  .stats-box {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="glass card">
+    <div class="topbar">
+      <div>
+        <h2 style="margin:0;">Attendance</h2>
+        <p class="muted" style="margin:6px 0 0 0;">Track office days and policy progress</p>
+      </div>
+      <a class="back-btn" href="dashboard.html">← Dashboard</a>
+    </div>
+
+    <div id="stats"></div>
+  </div>
+
+  <div class="glass card">
+    <div class="calendar-head">
+      <h2 id="monthTitle" style="margin:0;"></h2>
+      <div>
+        <button class="secondary" onclick="changeMonth(-1)">Prev</button>
+        <button class="secondary" onclick="goToday()">Today</button>
+        <button class="secondary" onclick="changeMonth(1)">Next</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="dot" style="background:#22c55e;"></span> Office</div>
+      <div class="legend-item"><span class="dot" style="background:#60a5fa;"></span> WFH</div>
+      <div class="legend-item"><span class="dot" style="background:#ef4444;"></span> Sick</div>
+      <div class="legend-item"><span class="dot" style="background:#f59e0b;"></span> Holiday</div>
+      <div class="legend-item"><span class="dot" style="background:#a855f7;"></span> Bank holiday</div>
+      <div class="legend-item"><span class="dot" style="background:#6b7280;"></span> Weekend</div>
+    </div>
+
+    <div class="calendar" id="calendar"></div>
+    <p class="notice" id="msg"></p>
+  </div>
+
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
+);
+
+const BANK_HOLIDAYS = {
+  "2025-01-01": "New Year's Day",
+  "2025-04-18": "Good Friday",
+  "2025-04-21": "Easter Monday",
+  "2025-05-05": "Early May bank holiday",
+  "2025-05-26": "Spring bank holiday",
+  "2025-08-25": "Summer bank holiday",
+  "2025-12-25": "Christmas Day",
+  "2025-12-26": "Boxing Day",
+
+  "2026-01-01": "New Year's Day",
+  "2026-04-03": "Good Friday",
+  "2026-04-06": "Easter Monday",
+  "2026-05-04": "Early May bank holiday",
+  "2026-05-25": "Spring bank holiday",
+  "2026-08-31": "Summer bank holiday",
+  "2026-12-25": "Christmas Day",
+  "2026-12-28": "Boxing Day (substitute day)",
+
+  "2027-01-01": "New Year's Day",
+  "2027-03-26": "Good Friday",
+  "2027-03-29": "Easter Monday",
+  "2027-05-03": "Early May bank holiday",
+  "2027-05-31": "Spring bank holiday",
+  "2027-08-30": "Summer bank holiday",
+  "2027-12-27": "Christmas Day (substitute day)",
+  "2027-12-28": "Boxing Day (substitute day)",
+
+  "2028-01-03": "New Year's Day (substitute day)",
+  "2028-04-14": "Good Friday",
+  "2028-04-17": "Easter Monday",
+  "2028-05-01": "Early May bank holiday",
+  "2028-05-29": "Spring bank holiday",
+  "2028-08-28": "Summer bank holiday",
+  "2028-12-25": "Christmas Day",
+  "2028-12-26": "Boxing Day"
+};
+
+const calendar = document.getElementById("calendar");
+const monthTitle = document.getElementById("monthTitle");
+const msg = document.getElementById("msg");
+
+let currentDate = new Date();
+let attendanceMap = {};
+
+const order = ["blank", "Office", "WFH", "Sick", "Holiday"];
+const OFFICE_TARGET_RATIO = 0.6;
+const POLICY_CHANGE_DATE = new Date("2026-03-01");
+
+function formatDate(d) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function formatDisplayDate(d) {
+  return d.toLocaleDateString("en-GB");
+}
+
+function formatMonthLabel(d) {
+  return d.toLocaleString("default", {
+    month: "long",
+    year: "numeric"
+  });
+}
+
+async function getUser() {
+  const { data } = await supabase.auth.getUser();
+  return data.user;
+}
+
+function isWeekend(date) {
+  const day = date.getDay();
+  return day === 0 || day === 6;
+}
+
+function isBankHoliday(date) {
+  return !!BANK_HOLIDAYS[formatDate(date)];
+}
+
+function getBankHolidayTitle(date) {
+  return BANK_HOLIDAYS[formatDate(date)] || "";
+}
+
+function getViewedMonthBounds() {
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth();
+  return {
+    start: new Date(y, m, 1),
+    end: new Date(y, m + 1, 0)
+  };
+}
+
+function countBaseWorkingDays(start, end) {
+  let count = 0;
+  const d = new Date(start);
+
+  while (d <= end) {
+    if (!isWeekend(d) && !isBankHoliday(d)) {
+      count++;
+    }
+    d.setDate(d.getDate() + 1);
+  }
+
+  return count;
+}
+
+function countExcludedWeekdays(start, end) {
+  let count = 0;
+
+  for (const key in attendanceMap) {
+    const date = new Date(key + "T00:00:00");
+    const status = attendanceMap[key];
+
+    if (
+      date >= start &&
+      date <= end &&
+      !isWeekend(date) &&
+      !isBankHoliday(date) &&
+      (status === "Sick" || status === "Holiday")
+    ) {
+      count++;
+    }
+  }
+
+  return count;
+}
+
+function countEligibleDays(start, end) {
+  const baseWorkingDays = countBaseWorkingDays(start, end);
+  const excludedDays = countExcludedWeekdays(start, end);
+  return Math.max(baseWorkingDays - excludedDays, 0);
+}
+
+function getViewedPeriod() {
+  const { start, end } = getViewedMonthBounds();
+  const eligibleDays = countEligibleDays(start, end);
+  const target = Math.ceil(eligibleDays * OFFICE_TARGET_RATIO);
+
+  if (start < POLICY_CHANGE_DATE) {
+    return {
+      type: "month",
+      start,
+      end,
+      eligibleDays,
+      target,
+      label: formatMonthLabel(start)
+    };
+  }
+
+  return {
+    type: "rolling",
+    start,
+    end,
+    eligibleDays,
+    target,
+    label: `${formatDisplayDate(start)} - ${formatDisplayDate(end)}`
+  };
+}
+
+function countOfficeInViewedPeriod() {
+  let count = 0;
+  const { start, end } = getViewedPeriod();
+
+  for (const key in attendanceMap) {
+    const date = new Date(key + "T00:00:00");
+    if (date >= start && date <= end && attendanceMap[key] === "Office") {
+      count++;
+    }
+  }
+
+  return count;
+}
+
+function getStatus(count, target) {
+  if (count >= target) return { t: "On track", c: "status-on" };
+  if (count >= Math.max(target - 1, 0)) return { t: "Off track", c: "status-off" };
+  return { t: "Not met", c: "status-bad" };
+}
+
+function progressPercent(actual, target) {
+  if (!target || target <= 0) return 0;
+  return Math.min((actual / target) * 100, 100);
+}
+
+function renderStats() {
+  const stats = document.getElementById("stats");
+  const { label, target, type, eligibleDays } = getViewedPeriod();
+  const actual = countOfficeInViewedPeriod();
+  const status = getStatus(actual, target);
+  const progress = progressPercent(actual, target);
+
+  const title = type === "month" ? "Month Status" : "28 Day Status";
+
+  stats.innerHTML = `
+    <div class="stats-box">
+      <div class="stat">
+        <div class="stat-title">Period Used</div>
+        <div class="stat-value">${label}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">Actual Days Attended</div>
+        <div class="stat-value">${actual}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">Eligible Days</div>
+        <div class="stat-value">${eligibleDays}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">Target</div>
+        <div class="stat-value">${target}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">${title}</div>
+        <div class="stat-value ${status.c}">${status.t}</div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progress to target</span>
+        <span>${actual} / ${target} office days</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${progress}%"></div>
+      </div>
+    </div>
+
+    <div class="summary-lines">
+      <div><strong>Target:</strong> ${target} office days</div>
+      <div><strong>Actual:</strong> ${actual} office days out of ${eligibleDays} eligible days</div>
+      <div><strong>Period used:</strong> ${type === "month" ? `${label} monthly` : label}</div>
+    </div>
+  `;
+}
+
+function renderCalendar() {
+  calendar.innerHTML = "";
+
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  days.forEach(d => {
+    const el = document.createElement("div");
+    el.className = "dow";
+    el.textContent = d;
+    calendar.appendChild(el);
+  });
+
+  const y = currentDate.getFullYear();
+  const m = currentDate.getMonth();
+
+  monthTitle.textContent = currentDate.toLocaleString("default", {
+    month: "long",
+    year: "numeric"
+  });
+
+  const first = new Date(y, m, 1);
+  let offset = first.getDay();
+  offset = offset === 0 ? 6 : offset - 1;
+
+  for (let i = 0; i < offset; i++) {
+    const blank = document.createElement("div");
+    calendar.appendChild(blank);
+  }
+
+  const last = new Date(y, m + 1, 0).getDate();
+
+  for (let d = 1; d <= last; d++) {
+    const date = new Date(y, m, d);
+    const key = formatDate(date);
+    const status = attendanceMap[key] || "blank";
+    const bankHolidayTitle = getBankHolidayTitle(date);
+    const bankHoliday = !!bankHolidayTitle;
+    const weekend = isWeekend(date);
+
+    const cell = document.createElement("div");
+
+    if (weekend) {
+      cell.className = "day weekend";
+    } else if (bankHoliday) {
+      cell.className = "day bank-holiday";
+    } else {
+      cell.className = "day " + status.toLowerCase();
+      cell.onclick = () => cycle(key, status);
+    }
+
+    let label = "";
+    if (weekend) label = "Weekend";
+    else if (bankHoliday) label = bankHolidayTitle;
+    else if (status !== "blank") label = status;
+
+    cell.innerHTML = `
+      <div class="day-number">${d}</div>
+      <div class="day-status">${label}</div>
+    `;
+
+    calendar.appendChild(cell);
+  }
+
+  renderStats();
+}
+
+async function load() {
+  const user = await getUser();
+
+  if (!user) {
+    msg.textContent = "Not logged in";
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("attendance")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (error) {
+    msg.textContent = error.message;
+    return;
+  }
+
+  attendanceMap = {};
+  (data || []).forEach(r => {
+    attendanceMap[r.entry_date] = r.status;
+  });
+
+  renderCalendar();
+}
+
+async function cycle(date, status) {
+  const user = await getUser();
+  if (!user) return;
+
+  const next = order[(order.indexOf(status) + 1) % order.length];
+
+  if (next === "blank") {
+    const { error } = await supabase
+      .from("attendance")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("entry_date", date);
+
+    if (error) {
+      msg.textContent = error.message;
+      return;
+    }
+
+    delete attendanceMap[date];
+  } else {
+    if (attendanceMap[date]) {
+      const { error } = await supabase
+        .from("attendance")
+        .update({ status: next })
+        .eq("user_id", user.id)
+        .eq("entry_date", date);
+
+      if (error) {
+        msg.textContent = error.message;
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from("attendance")
+        .insert([{
+          entry_date: date,
+          status: next,
+          user_id: user.id
+        }]);
+
+      if (error) {
+        msg.textContent = error.message;
+        return;
+      }
+    }
+
+    attendanceMap[date] = next;
+  }
+
+  msg.textContent = `Saved: ${date}`;
+  renderCalendar();
+}
+
+window.changeMonth = function(n) {
+  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + n, 1);
+  renderCalendar();
+};
+
+window.goToday = function() {
+  currentDate = new Date();
+  renderCalendar();
+};
+
+load();
+</script>
+
+</body>
+</html>.card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 16px;
