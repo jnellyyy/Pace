@@ -1,433 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Attendance Test</title>
-  <style>
-    :root {
-      --bg: #111;
-      --card: #1b1b1b;
-      --line: #333;
-      --text: #fff;
-      --muted: #aaa;
-      --office: #16a34a;
-      --wfh: #2563eb;
-      --sick: #dc2626;
-      --holiday: #ca8a04;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance</title>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root {
+  --bg:#111;
+  --card:#1b1b1b;
+  --line:#333;
+  --text:#fff;
+  --muted:#aaa;
+  --office:#16a34a;
+  --wfh:#2563eb;
+  --sick:#dc2626;
+  --holiday:#ca8a04;
+}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, sans-serif;
-      padding: 24px;
-      margin: 0;
-    }
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  padding:24px;
+  margin:0;
+}
 
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+.wrap{max-width:900px;margin:0 auto;}
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 20px;
-      margin-top: 16px;
-    }
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  margin-top:16px;
+}
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
+/* KPI */
+.stats-box{
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+}
 
-    .month-title {
-      font-size: 24px;
-      font-weight: 700;
-    }
+.stat{
+  background:#222;
+  border:1px solid #333;
+  border-radius:10px;
+  padding:10px 14px;
+  min-width:140px;
+}
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+.stat-title{
+  font-size:12px;
+  color:#aaa;
+}
 
-    button {
-      background: #d41425;
-      color: #fff;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
+.stat-value{
+  font-size:18px;
+  font-weight:700;
+}
 
-    button.secondary {
-      background: #333;
-    }
+.status-on{ color:#16a34a; }
+.status-off{ color:#ca8a04; }
+.status-bad{ color:#dc2626; }
 
-    .legend {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 12px 0 18px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+/* HEADER */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+button{
+  background:#d41425;
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      display: inline-block;
-    }
+button.secondary{ background:#333; }
 
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-    }
+/* CALENDAR */
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+}
 
-    .dow {
-      color: var(--muted);
-      text-align: center;
-      font-size: 13px;
-      padding-bottom: 4px;
-    }
+.dow{
+  text-align:center;
+  font-size:12px;
+  color:#aaa;
+}
 
-    .day,
-    .empty {
-      border-radius: 12px;
-      min-height: 92px;
-      padding: 10px;
-    }
+.day{
+  background:#222;
+  border:1px solid #333;
+  border-radius:10px;
+  min-height:80px;
+  padding:8px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
 
-    .empty {
-      background: transparent;
-      border: 1px dashed transparent;
-    }
+.day.office{ border-color:var(--office); }
+.day.wfh{ border-color:var(--wfh); }
+.day.sick{ border-color:var(--sick); }
+.day.holiday{ border-color:var(--holiday); }
 
-    .day {
-      background: #222;
-      border: 1px solid #333;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+.day-number{ font-weight:700; }
+.day-status{ font-size:11px; color:#aaa; }
 
-    .day:hover {
-      border-color: #555;
-    }
+.notice{ color:#aaa; margin-top:10px; }
 
-    .day-number {
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .day-status {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
-      line-height: 1.2;
-    }
-
-    .day.office {
-      border-color: var(--office);
-      box-shadow: inset 0 0 0 1px var(--office);
-    }
-
-    .day.wfh {
-      border-color: var(--wfh);
-      box-shadow: inset 0 0 0 1px var(--wfh);
-    }
-
-    .day.sick {
-      border-color: var(--sick);
-      box-shadow: inset 0 0 0 1px var(--sick);
-    }
-
-    .day.holiday {
-      border-color: var(--holiday);
-      box-shadow: inset 0 0 0 1px var(--holiday);
-    }
-
-    .notice {
-      color: var(--muted);
-      margin-top: 14px;
-      min-height: 20px;
-    }
-
-    @media (max-width: 700px) {
-      .calendar {
-        gap: 6px;
-      }
-
-      .day,
-      .empty {
-        min-height: 74px;
-        padding: 8px;
-      }
-
-      .day-number {
-        font-size: 14px;
-      }
-
-      .day-status {
-        font-size: 11px;
-      }
-    }
-  </style>
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="topbar">
-        <div class="month-title" id="monthTitle">Attendance</div>
-        <div class="controls">
-          <button class="secondary" onclick="changeMonth(-1)">Previous</button>
-          <button class="secondary" onclick="goToToday()">Today</button>
-          <button class="secondary" onclick="changeMonth(1)">Next</button>
+
+<div class="wrap">
+
+  <!-- KPI -->
+  <div class="card">
+    <div id="stats"></div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="card">
+    <div class="topbar">
+      <h2 id="monthTitle"></h2>
+      <div>
+        <button class="secondary" onclick="changeMonth(-1)">Prev</button>
+        <button class="secondary" onclick="goToday()">Today</button>
+        <button class="secondary" onclick="changeMonth(1)">Next</button>
+      </div>
+    </div>
+
+    <div class="calendar" id="calendar"></div>
+    <p class="notice" id="msg"></p>
+  </div>
+
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+);
+
+const calendar = document.getElementById("calendar");
+const monthTitle = document.getElementById("monthTitle");
+const msg = document.getElementById("msg");
+
+let currentDate = new Date();
+let attendanceMap = {};
+
+const order = ["blank","Office","WFH","Sick","Holiday"];
+
+/* HELPERS */
+function formatDate(d){
+  return d.toISOString().split("T")[0];
+}
+
+function getUser(){
+  return supabase.auth.getUser().then(res=>res.data.user);
+}
+
+function getPeriod(){
+  const end = new Date();
+  const start = new Date();
+  start.setDate(end.getDate()-27);
+  return {start,end};
+}
+
+/* KPI */
+function countOffice(){
+  let count=0;
+  const {start,end}=getPeriod();
+
+  for(const d in attendanceMap){
+    const date=new Date(d);
+    if(date>=start && date<=end && attendanceMap[d]==="Office"){
+      count++;
+    }
+  }
+  return count;
+}
+
+function getStatus(n){
+  if(n>=12) return {t:"On track",c:"status-on"};
+  if(n>=10) return {t:"Off track",c:"status-off"};
+  return {t:"Not met",c:"status-bad"};
+}
+
+function renderStats(){
+  const stats=document.getElementById("stats");
+  const {start,end}=getPeriod();
+  const count=countOffice();
+  const status=getStatus(count);
+
+  stats.innerHTML=`
+    <div class="stats-box">
+      <div class="stat">
+        <div class="stat-title">Period</div>
+        <div class="stat-value">
+          ${start.toLocaleDateString()} - ${end.toLocaleDateString()}
         </div>
       </div>
 
-      <div class="legend">
-        <div class="legend-item"><span class="dot" style="background:#16a34a;"></span> Office</div>
-        <div class="legend-item"><span class="dot" style="background:#2563eb;"></span> WFH</div>
-        <div class="legend-item"><span class="dot" style="background:#dc2626;"></span> Sick</div>
-        <div class="legend-item"><span class="dot" style="background:#ca8a04;"></span> Holiday</div>
+      <div class="stat">
+        <div class="stat-title">Office Days</div>
+        <div class="stat-value">${count}</div>
       </div>
 
-      <div class="calendar" id="calendar"></div>
-      <p class="notice" id="msg"></p>
+      <div class="stat">
+        <div class="stat-title">Target</div>
+        <div class="stat-value">12</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">Status</div>
+        <div class="stat-value ${status.c}">${status.t}</div>
+      </div>
     </div>
-  </div>
+  `;
+}
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+/* LOAD */
+async function load(){
+  const user=await getUser();
+  if(!user){ msg.textContent="Not logged in"; return;}
 
-    const supabase = createClient(
-      "https://grgagroautlpphjsjpjh.supabase.co",
-      "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true
-        }
-      }
-    );
+  const {data}=await supabase
+    .from("attendance")
+    .select("*")
+    .eq("user_id",user.id);
 
-    const monthTitle = document.getElementById("monthTitle");
-    const calendar = document.getElementById("calendar");
-    const msg = document.getElementById("msg");
+  attendanceMap={};
+  (data||[]).forEach(r=>{
+    attendanceMap[r.entry_date]=r.status;
+  });
 
-    const statusOrder = ["blank", "Office", "WFH", "Sick", "Holiday"];
+  renderCalendar();
+  renderStats();
+}
 
-    let currentDate = new Date();
-    let attendanceMap = {};
+/* CALENDAR */
+function renderCalendar(){
+  calendar.innerHTML="";
 
-    function formatDateLocal(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
+  const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  days.forEach(d=>{
+    const el=document.createElement("div");
+    el.className="dow";
+    el.textContent=d;
+    calendar.appendChild(el);
+  });
+
+  const y=currentDate.getFullYear();
+  const m=currentDate.getMonth();
+
+  monthTitle.textContent=currentDate.toLocaleString("default",{month:"long",year:"numeric"});
+
+  const first=new Date(y,m,1);
+  let offset=first.getDay();
+  offset = offset===0?6:offset-1;
+
+  for(let i=0;i<offset;i++){
+    calendar.appendChild(document.createElement("div"));
+  }
+
+  const last=new Date(y,m+1,0).getDate();
+
+  for(let d=1;d<=last;d++){
+    const date=new Date(y,m,d);
+    const key=formatDate(date);
+    const status=attendanceMap[key]||"blank";
+
+    const cell=document.createElement("div");
+    cell.className="day "+status.toLowerCase();
+
+    cell.onclick=()=>cycle(key,status);
+
+    cell.innerHTML=`
+      <div class="day-number">${d}</div>
+      <div class="day-status">${status==="blank"?"":status}</div>
+    `;
+
+    calendar.appendChild(cell);
+  }
+}
+
+/* CLICK */
+async function cycle(date,status){
+  const user=await getUser();
+  if(!user) return;
+
+  const next=order[(order.indexOf(status)+1)%order.length];
+
+  if(next==="blank"){
+    await supabase.from("attendance").delete().eq("entry_date",date);
+    delete attendanceMap[date];
+  } else {
+    if(attendanceMap[date]){
+      await supabase.from("attendance").update({status:next}).eq("entry_date",date);
+    } else {
+      await supabase.from("attendance").insert([{entry_date:date,status:next,user_id:user.id}]);
     }
+    attendanceMap[date]=next;
+  }
 
-    function monthName(date) {
-      return date.toLocaleDateString("en-GB", {
-        month: "long",
-        year: "numeric"
-      });
-    }
+  renderCalendar();
+  renderStats();
+}
 
-    function cssStatus(status) {
-      if (status === "Office") return "office";
-      if (status === "WFH") return "wfh";
-      if (status === "Sick") return "sick";
-      if (status === "Holiday") return "holiday";
-      return "";
-    }
+/* NAV */
+window.changeMonth=(n)=>{
+  currentDate=new Date(currentDate.getFullYear(),currentDate.getMonth()+n,1);
+  renderCalendar();
+};
 
-    async function getUser() {
-      const { data } = await supabase.auth.getUser();
-      return data.user;
-    }
+window.goToday=()=>{
+  currentDate=new Date();
+  renderCalendar();
+};
 
-    async function loadAttendance() {
-      const user = await getUser();
+/* INIT */
+load();
+</script>
 
-      if (!user) {
-        msg.textContent = "Not logged in.";
-        attendanceMap = {};
-        renderCalendar();
-        return;
-      }
-
-      const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-
-      const { data, error } = await supabase
-        .from("attendance")
-        .select("*")
-        .eq("user_id", user.id)
-        .gte("entry_date", formatDateLocal(monthStart))
-        .lte("entry_date", formatDateLocal(monthEnd))
-        .order("entry_date", { ascending: true });
-
-      if (error) {
-        msg.textContent = error.message;
-        return;
-      }
-
-      attendanceMap = {};
-      for (const row of data || []) {
-        attendanceMap[row.entry_date] = row.status;
-      }
-
-      msg.textContent = "";
-      renderCalendar();
-    }
-
-    function renderCalendar() {
-      calendar.innerHTML = "";
-
-      monthTitle.textContent = monthName(currentDate);
-
-      const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-      daysOfWeek.forEach(day => {
-        const el = document.createElement("div");
-        el.className = "dow";
-        el.textContent = day;
-        calendar.appendChild(el);
-      });
-
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-
-      const firstDay = new Date(year, month, 1);
-      const lastDay = new Date(year, month + 1, 0);
-
-      let startOffset = firstDay.getDay();
-      startOffset = startOffset === 0 ? 6 : startOffset - 1;
-
-      for (let i = 0; i < startOffset; i++) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        calendar.appendChild(empty);
-      }
-
-      for (let day = 1; day <= lastDay.getDate(); day++) {
-        const date = new Date(year, month, day);
-        const dateKey = formatDateLocal(date);
-        const status = attendanceMap[dateKey] || "blank";
-
-        const cell = document.createElement("div");
-        cell.className = `day ${cssStatus(status)}`;
-        cell.onclick = () => cycleStatus(dateKey, status);
-
-        const number = document.createElement("div");
-        number.className = "day-number";
-        number.textContent = day;
-
-        const label = document.createElement("div");
-        label.className = "day-status";
-        label.textContent = status === "blank" ? "" : status;
-
-        cell.appendChild(number);
-        cell.appendChild(label);
-        calendar.appendChild(cell);
-      }
-    }
-
-    async function cycleStatus(dateKey, currentStatus) {
-      const user = await getUser();
-
-      if (!user) {
-        msg.textContent = "Not logged in.";
-        return;
-      }
-
-      const currentIndex = statusOrder.indexOf(currentStatus);
-      const nextStatus = statusOrder[(currentIndex + 1) % statusOrder.length];
-
-      if (nextStatus === "blank") {
-        const { error } = await supabase
-          .from("attendance")
-          .delete()
-          .eq("user_id", user.id)
-          .eq("entry_date", dateKey);
-
-        if (error) {
-          msg.textContent = error.message;
-          return;
-        }
-
-        delete attendanceMap[dateKey];
-      } else {
-        const existing = attendanceMap[dateKey];
-
-        if (existing) {
-          const { error } = await supabase
-            .from("attendance")
-            .update({ status: nextStatus })
-            .eq("user_id", user.id)
-            .eq("entry_date", dateKey);
-
-          if (error) {
-            msg.textContent = error.message;
-            return;
-          }
-        } else {
-          const { error } = await supabase
-            .from("attendance")
-            .insert([{
-              user_id: user.id,
-              entry_date: dateKey,
-              status: nextStatus
-            }]);
-
-          if (error) {
-            msg.textContent = error.message;
-            return;
-          }
-        }
-
-        attendanceMap[dateKey] = nextStatus;
-      }
-
-      msg.textContent = `Saved: ${dateKey}`;
-      renderCalendar();
-    }
-
-    window.changeMonth = async function(step) {
-      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + step, 1);
-      await loadAttendance();
-    };
-
-    window.goToToday = async function() {
-      currentDate = new Date();
-      await loadAttendance();
-    };
-
-    await loadAttendance();
-  </script>
 </body>
 </html>
