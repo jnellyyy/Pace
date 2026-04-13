@@ -9,6 +9,7 @@
       --bg1:#0f1115;
       --bg2:#171a20;
       --panel:rgba(255,255,255,0.06);
+      --panel-strong:rgba(255,255,255,0.08);
       --line:rgba(255,255,255,0.10);
       --text:#f5f7fb;
       --muted:#a7afbe;
@@ -24,7 +25,7 @@
       margin:0;
       padding:18px;
       color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
       background:
         radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
         radial-gradient(circle at top right, rgba(255,59,48,0.10), transparent 28%),
@@ -161,21 +162,10 @@
     }
 
     @media (max-width:760px){
-      body{
-        padding:14px;
-      }
-
-      .grid{
-        grid-template-columns:1fr;
-      }
-
-      .topbar h1{
-        font-size:26px;
-      }
-
-      .hero h2{
-        font-size:21px;
-      }
+      body{padding:14px}
+      .grid{grid-template-columns:1fr}
+      .topbar h1{font-size:26px}
+      .hero h2{font-size:21px}
     }
   </style>
 </head>
@@ -195,7 +185,7 @@
 
     <div class="hero glass">
       <h2>Everything in one place</h2>
-      <p>Open the section you need and move quickly. Keep login stable, keep each tool separate, and improve the interface without touching auth again.</p>
+      <p>Open the section you need and move quickly. Each tracker stays separate, but the whole app now feels like one product.</p>
     </div>
 
     <div class="grid">
@@ -227,13 +217,13 @@
         <div>
           <div class="tile-icon">◍</div>
           <div class="tile-title">Finance</div>
-          <div class="tile-desc">Life, business and combined totals with bills separated properly.</div>
+          <div class="tile-desc">Life and business split clearly, with active fixed bills feeding totals.</div>
         </div>
       </a>
     </div>
 
     <div class="footer-note glass">
-      Stable login is now separate. Only improve the pages and visuals from here.
+      Stable login is separate. Only improve visuals and page UX from here.
     </div>
   </div>
 
