@@ -1,359 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bookings Test</title>
-  <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      padding: 24px;
-      margin: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bookings</title>
 
-    .wrap {
-      max-width: 860px;
-      margin: 0 auto;
-    }
+<style>
+:root {
+  --bg:#111;
+  --card:#1b1b1b;
+  --line:#333;
+  --text:#fff;
+  --muted:#aaa;
 
-    .card {
-      background: #1b1b1b;
-      border: 1px solid #333;
-      border-radius: 16px;
-      padding: 20px;
-      margin-top: 16px;
-    }
+  --enquiry:#666;
+  --will:#2563eb;
+  --pending:#ca8a04;
+  --booked:#16a34a;
+  --completed:#065f46;
+  --cancelled:#dc2626;
+  --lost:#555;
+}
 
-    input, select, textarea, button {
-      box-sizing: border-box;
-      font: inherit;
-    }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  margin: 0;
+}
 
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      background: #0f0f0f;
-      color: #fff;
-      border: 1px solid #333;
-    }
+.wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+}
 
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
+/* KPI STRIP */
+.kpi {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
-    .row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+.kpi-box {
+  background: #1b1b1b;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 120px;
+}
 
-    .add-btn {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      background: #d41425;
-      color: #fff;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-    }
+.kpi-title {
+  font-size: 12px;
+  color: #aaa;
+}
 
-    .notice {
-      color: #bbb;
-      margin-top: 10px;
-      white-space: pre-wrap;
-    }
+.kpi-value {
+  font-size: 18px;
+  font-weight: 700;
+}
 
-    .section {
-      margin-top: 24px;
-    }
+/* FORM */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 16px;
+}
 
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: #fff;
-    }
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: #0f0f0f;
+  color: #fff;
+  border: 1px solid #333;
+}
 
-    .booking-card {
-      background: #222;
-      border: 1px solid #333;
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 10px;
-    }
+textarea {
+  min-height: 80px;
+}
 
-    .booking-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-    }
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
-    .booking-name {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
+button {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #d41425;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-    .booking-meta {
-      color: #bbb;
-      font-size: 14px;
-      line-height: 1.45;
-    }
+/* SECTIONS */
+.section {
+  margin-top: 24px;
+}
 
-    .booking-note {
-      margin-top: 10px;
-      color: #ddd;
-      font-size: 14px;
-      line-height: 1.45;
-      white-space: pre-wrap;
-    }
+.section-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
 
-    .delete-btn {
-      width: 32px;
-      height: 32px;
-      min-width: 32px;
-      padding: 0;
-      margin: 0;
-      border-radius: 999px;
-      background: #333;
-      color: #fff;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      line-height: 1;
-      cursor: pointer;
-      flex: 0 0 auto;
-    }
+/* CARD */
+.booking {
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+}
 
-    .delete-btn:hover {
-      background: #4a4a4a;
-    }
+.top {
+  display: flex;
+  justify-content: space-between;
+}
 
-    .empty-text {
-      color: #888;
-      font-size: 14px;
-      padding-top: 4px;
-    }
+.name {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
 
-    @media (max-width: 640px) {
-      .row-2 {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+.meta {
+  font-size: 13px;
+  color: #bbb;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.delete {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* STATUS COLORS */
+.enquiry { background: var(--enquiry); }
+.will { background: var(--will); }
+.pending { background: var(--pending); }
+.booked { background: var(--booked); }
+.completed { background: var(--completed); }
+.cancelled { background: var(--cancelled); }
+.lost { background: var(--lost); }
+
+.empty {
+  color: #666;
+  font-size: 14px;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h2>Bookings Test</h2>
+<div class="wrap">
 
-      <input id="clientName" placeholder="Client name" />
+<div class="kpi" id="kpi"></div>
 
-      <div class="row-2">
-        <input id="eventDate" type="date" />
-        <input id="price" type="number" placeholder="Package price" />
-      </div>
+<div class="card">
+  <input id="name" placeholder="Client name">
 
-      <select id="status">
-        <option value="Enquiry">Enquiry</option>
-        <option value="Said they will book">Said they will book</option>
-        <option value="Pending deposit">Pending deposit</option>
-        <option value="Booked">Booked</option>
-        <option value="Completed">Completed</option>
-        <option value="Cancelled">Cancelled</option>
-        <option value="Lost lead">Lost lead</option>
-      </select>
-
-      <textarea id="note" placeholder="Notes"></textarea>
-
-      <button class="add-btn" onclick="addBooking()">Save Booking</button>
-
-      <p id="msg" class="notice"></p>
-
-      <div id="bookingSections"></div>
-    </div>
+  <div class="row">
+    <input id="date" type="date">
+    <input id="price" type="number" placeholder="Price">
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  <select id="status">
+    <option>Enquiry</option>
+    <option>Said they will book</option>
+    <option>Pending deposit</option>
+    <option>Booked</option>
+    <option>Completed</option>
+    <option>Cancelled</option>
+    <option>Lost lead</option>
+  </select>
 
-    const supabase = createClient(
-      "https://grgagroautlpphjsjpjh.supabase.co",
-      "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true
-        }
-      }
-    );
+  <textarea id="note" placeholder="Notes"></textarea>
 
-    const clientName = document.getElementById("clientName");
-    const eventDate = document.getElementById("eventDate");
-    const price = document.getElementById("price");
-    const status = document.getElementById("status");
-    const note = document.getElementById("note");
-    const msg = document.getElementById("msg");
-    const bookingSections = document.getElementById("bookingSections");
+  <button onclick="addBooking()">Save booking</button>
+</div>
 
-    const sectionOrder = [
-      "Enquiry",
-      "Said they will book",
-      "Pending deposit",
-      "Booked",
-      "Completed",
-      "Cancelled",
-      "Lost lead"
-    ];
+<div id="sections"></div>
 
-    async function getUser() {
-      const { data } = await supabase.auth.getUser();
-      return data.user;
-    }
+</div>
 
-    function formatMoney(value) {
-      const num = Number(value || 0);
-      return `£${num.toFixed(2)}`;
-    }
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    function formatDateValue(value) {
-      if (!value) return "No date set";
-      const d = new Date(value + "T00:00:00");
-      return d.toLocaleDateString("en-GB");
-    }
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+);
 
-    window.addBooking = async function () {
-      const user = await getUser();
-      const client = clientName.value.trim();
-      const bookingStatus = status.value;
-      const bookingDate = eventDate.value || null;
-      const bookingPrice = Number(price.value || 0);
-      const bookingNote = note.value.trim();
+const sectionsEl = document.getElementById("sections");
+const kpiEl = document.getElementById("kpi");
 
-      if (!user) {
-        msg.textContent = "Not logged in.";
-        return;
-      }
+const order = [
+  "Enquiry",
+  "Said they will book",
+  "Pending deposit",
+  "Booked",
+  "Completed",
+  "Cancelled",
+  "Lost lead"
+];
 
-      if (!client) {
-        msg.textContent = "Enter a client name.";
-        return;
-      }
+function badgeClass(status) {
+  return {
+    "Enquiry":"enquiry",
+    "Said they will book":"will",
+    "Pending deposit":"pending",
+    "Booked":"booked",
+    "Completed":"completed",
+    "Cancelled":"cancelled",
+    "Lost lead":"lost"
+  }[status] || "";
+}
 
-      const { error } = await supabase.from("bookings").insert([{
-        user_id: user.id,
-        client_name: client,
-        status: bookingStatus,
-        event_date: bookingDate,
-        price: bookingPrice,
-        note: bookingNote
-      }]);
+async function getUser() {
+  const { data } = await supabase.auth.getUser();
+  return data.user;
+}
 
-      if (error) {
-        msg.textContent = error.message;
-        return;
-      }
+window.addBooking = async function() {
+  const user = await getUser();
 
-      clientName.value = "";
-      eventDate.value = "";
-      price.value = "";
-      status.value = "Enquiry";
-      note.value = "";
-      msg.textContent = "";
-      loadBookings();
-    };
+  await supabase.from("bookings").insert([{
+    user_id: user.id,
+    client_name: name.value,
+    event_date: date.value,
+    price: Number(price.value || 0),
+    status: status.value,
+    note: note.value
+  }]);
 
-    window.deleteBooking = async function (id) {
-      const { error } = await supabase
-        .from("bookings")
-        .delete()
-        .eq("id", id);
+  location.reload();
+};
 
-      if (error) {
-        msg.textContent = error.message;
-        return;
-      }
+window.del = async function(id) {
+  await supabase.from("bookings").delete().eq("id", id);
+  location.reload();
+};
 
-      loadBookings();
-    };
+function formatDate(d) {
+  if (!d) return "";
+  return new Date(d).toLocaleDateString("en-GB");
+}
 
-    async function loadBookings() {
-      const user = await getUser();
+function formatMoney(v) {
+  return "£" + Number(v || 0).toFixed(0);
+}
 
-      if (!user) {
-        bookingSections.innerHTML = '<div class="notice">Not logged in.</div>';
-        return;
-      }
+async function load() {
+  const user = await getUser();
 
-      const { data, error } = await supabase
-        .from("bookings")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+  const { data } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("user_id", user.id);
 
-      if (error) {
-        msg.textContent = error.message;
-        return;
-      }
+  const bookings = data || [];
 
-      const bookings = data || [];
+  /* KPI */
+  const booked = bookings.filter(b => b.status === "Booked").length;
+  const completed = bookings.filter(b => b.status === "Completed").length;
+  const pipeline = bookings
+    .filter(b => b.status !== "Lost lead" && b.status !== "Cancelled")
+    .reduce((sum, b) => sum + Number(b.price || 0), 0);
 
-      bookingSections.innerHTML = sectionOrder.map(section => {
-        const sectionBookings = bookings.filter(b => (b.status || "Enquiry") === section);
+  kpiEl.innerHTML = `
+    <div class="kpi-box">
+      <div class="kpi-title">Enquiries</div>
+      <div class="kpi-value">${bookings.length}</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-title">Booked</div>
+      <div class="kpi-value">${booked}</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-title">Completed</div>
+      <div class="kpi-value">${completed}</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-title">Pipeline £</div>
+      <div class="kpi-value">£${pipeline}</div>
+    </div>
+  `;
 
-        return `
-          <div class="section">
-            <div class="section-title">${section}</div>
-            ${
-              sectionBookings.length === 0
-                ? `<div class="empty-text">No bookings here yet.</div>`
-                : sectionBookings.map(b => `
-                    <div class="booking-card">
-                      <div class="booking-top">
-                        <div>
-                          <div class="booking-name">${b.client_name || ""}</div>
-                          <div class="booking-meta">
-                            <div><strong>Date:</strong> ${formatDateValue(b.event_date)}</div>
-                            <div><strong>Price:</strong> ${formatMoney(b.price)}</div>
-                            <div><strong>Status:</strong> ${b.status || ""}</div>
-                          </div>
-                        </div>
+  sectionsEl.innerHTML = order.map(section => {
+    const items = bookings.filter(b => b.status === section);
 
-                        <button
-                          class="delete-btn"
-                          onclick="deleteBooking('${b.id}')"
-                          aria-label="Delete booking"
-                          title="Delete"
-                        >
-                          ×
-                        </button>
-                      </div>
+    return `
+      <div class="section">
+        <div class="section-title">${section}</div>
 
-                      ${
-                        b.note
-                          ? `<div class="booking-note">${b.note}</div>`
-                          : ``
-                      }
+        ${
+          items.length === 0
+            ? `<div class="empty">No bookings</div>`
+            : items.map(b => `
+              <div class="booking">
+                <div class="top">
+                  <div>
+                    <div class="name">${b.client_name}</div>
+                    <div class="meta">
+                      ${formatDate(b.event_date)} • ${formatMoney(b.price)}
                     </div>
-                  `).join("")
-            }
-          </div>
-        `;
-      }).join("");
-    }
+                  </div>
 
-    loadBookings();
-  </script>
+                  <button class="delete" onclick="del('${b.id}')">×</button>
+                </div>
+
+                <div style="margin-top:8px;">
+                  <span class="badge ${badgeClass(b.status)}">${b.status}</span>
+                </div>
+
+                ${b.note ? `<div class="meta" style="margin-top:6px;">${b.note}</div>` : ""}
+              </div>
+            `).join("")
+        }
+      </div>
+    `;
+  }).join("");
+}
+
+load();
+</script>
+
 </body>
 </html>
