@@ -6,43 +6,58 @@
   <title>Life Ops Dashboard</title>
   <style>
     :root{
-      --bg:#111214;
-      --card:#1b1d22;
-      --line:#2c3138;
+      --bg1:#0f1115;
+      --bg2:#171a20;
+      --panel:rgba(255,255,255,0.06);
+      --line:rgba(255,255,255,0.10);
       --text:#f5f7fb;
       --muted:#a7afbe;
+      --accent:#ff3b30;
+      --shadow:0 20px 50px rgba(0,0,0,0.35);
+      --blur:18px;
+      --radius:24px;
     }
 
-    * { box-sizing: border-box; }
+    *{box-sizing:border-box}
 
     body{
       margin:0;
       padding:18px;
-      background:linear-gradient(180deg,#0e1014,#171b22);
       color:var(--text);
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
+        radial-gradient(circle at top right, rgba(255,59,48,0.10), transparent 28%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
     .wrap{
-      max-width:1100px;
+      max-width:1180px;
       margin:0 auto;
     }
 
-    .card{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:22px;
-      padding:20px;
-      box-shadow:0 18px 40px rgba(0,0,0,0.28);
+    .glass{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      backdrop-filter:blur(var(--blur));
+      -webkit-backdrop-filter:blur(var(--blur));
+      box-shadow:var(--shadow);
     }
 
     .topbar{
+      padding:20px;
       display:flex;
       justify-content:space-between;
+      gap:16px;
       align-items:flex-start;
-      gap:12px;
       flex-wrap:wrap;
-      margin-bottom:14px;
+    }
+
+    .topbar h1{
+      margin:0 0 6px 0;
+      font-size:30px;
+      letter-spacing:-0.03em;
     }
 
     .muted{
@@ -51,119 +66,174 @@
 
     .logout{
       width:auto;
-      padding:10px 14px;
+      padding:12px 14px;
       border:none;
-      border-radius:14px;
-      background:#333;
+      border-radius:16px;
+      background:rgba(255,255,255,0.08);
       color:#fff;
+      font:inherit;
       font-weight:700;
       cursor:pointer;
     }
 
     .user-pill{
-      color:var(--muted);
+      margin:0 20px 20px;
+      padding:12px 14px;
+      border-radius:16px;
       background:rgba(255,255,255,0.05);
       border:1px solid rgba(255,255,255,0.08);
-      border-radius:14px;
-      padding:10px 12px;
-      margin-bottom:14px;
+      color:var(--muted);
       word-break:break-word;
     }
 
+    .hero{
+      margin-top:16px;
+      padding:20px;
+    }
+
+    .hero h2{
+      margin:0 0 8px 0;
+      font-size:24px;
+      letter-spacing:-0.03em;
+    }
+
+    .hero p{
+      margin:0;
+      line-height:1.5;
+      color:var(--muted);
+      max-width:760px;
+    }
+
     .grid{
+      margin-top:16px;
       display:grid;
       grid-template-columns:repeat(2,1fr);
-      gap:14px;
+      gap:16px;
     }
 
     .tile{
-      display:block;
       text-decoration:none;
       color:inherit;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:20px;
-      padding:18px;
-      min-height:150px;
+      padding:22px;
+      min-height:190px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease;
     }
 
     .tile:hover{
-      background:rgba(255,255,255,0.07);
+      transform:translateY(-2px);
+      background:rgba(255,255,255,0.08);
+      border-color:rgba(255,255,255,0.16);
     }
 
     .tile-icon{
-      width:52px;
-      height:52px;
-      border-radius:18px;
+      width:60px;
+      height:60px;
+      border-radius:20px;
       display:flex;
       align-items:center;
       justify-content:center;
       background:rgba(255,255,255,0.08);
-      font-size:22px;
-      margin-bottom:16px;
+      font-size:26px;
+      margin-bottom:18px;
     }
 
     .tile-title{
-      font-size:18px;
+      font-size:22px;
       font-weight:700;
-      margin-bottom:6px;
+      letter-spacing:-0.02em;
+      margin-bottom:8px;
     }
 
     .tile-desc{
       color:var(--muted);
-      line-height:1.4;
+      line-height:1.45;
+      font-size:14px;
+    }
+
+    .footer-note{
+      margin-top:16px;
+      padding:16px 20px;
+      color:var(--muted);
       font-size:13px;
     }
 
-    @media (max-width:700px){
+    @media (max-width:760px){
+      body{
+        padding:14px;
+      }
+
       .grid{
         grid-template-columns:1fr;
       }
 
-      body{
-        padding:14px;
+      .topbar h1{
+        font-size:26px;
+      }
+
+      .hero h2{
+        font-size:21px;
       }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
+    <div class="glass">
       <div class="topbar">
         <div>
-          <h2 style="margin:0 0 6px 0;">Life Ops</h2>
-          <p class="muted" style="margin:0;">Dashboard</p>
+          <h1>Life Ops</h1>
+          <div class="muted">Dashboard</div>
         </div>
         <button id="logoutBtn" class="logout" type="button">Log out</button>
       </div>
 
       <div id="userPill" class="user-pill"></div>
+    </div>
 
-      <div class="grid">
-        <a class="tile" href="life-test.html">
+    <div class="hero glass">
+      <h2>Everything in one place</h2>
+      <p>Open the section you need and move quickly. Keep login stable, keep each tool separate, and improve the interface without touching auth again.</p>
+    </div>
+
+    <div class="grid">
+      <a class="tile glass" href="life-test.html">
+        <div>
           <div class="tile-icon">✓</div>
           <div class="tile-title">Ultimate To Do</div>
-          <div class="tile-desc">Life, house, money, business and work tasks.</div>
-        </a>
+          <div class="tile-desc">Life, house, money, business and work tasks with editable items.</div>
+        </div>
+      </a>
 
-        <a class="tile" href="attendance-test.html">
+      <a class="tile glass" href="attendance-test.html">
+        <div>
           <div class="tile-icon">◫</div>
           <div class="tile-title">Attendance</div>
-          <div class="tile-desc">Office days, policy tracking and monthly view.</div>
-        </a>
+          <div class="tile-desc">Office days, policy tracking, bank holidays and monthly progress.</div>
+        </div>
+      </a>
 
-        <a class="tile" href="bookings-test.html">
+      <a class="tile glass" href="bookings-test.html">
+        <div>
           <div class="tile-icon">◌</div>
           <div class="tile-title">Bookings</div>
-          <div class="tile-desc">Jobs, payments, balances, due dates and overdue items.</div>
-        </a>
+          <div class="tile-desc">Jobs, payments, balances, due dates, overdue items and coming up.</div>
+        </div>
+      </a>
 
-        <a class="tile" href="finance-test.html">
+      <a class="tile glass" href="finance-test.html">
+        <div>
           <div class="tile-icon">◍</div>
           <div class="tile-title">Finance</div>
-          <div class="tile-desc">Life, bills, business and combined money tracking.</div>
-        </a>
-      </div>
+          <div class="tile-desc">Life, business and combined totals with bills separated properly.</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="footer-note glass">
+      Stable login is now separate. Only improve the pages and visuals from here.
     </div>
   </div>
 
