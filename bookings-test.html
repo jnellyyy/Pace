@@ -35,7 +35,6 @@ body {
   margin: 0 auto;
 }
 
-/* KPI STRIP */
 .kpi {
   display: flex;
   gap: 10px;
@@ -60,7 +59,6 @@ body {
   font-weight: 700;
 }
 
-/* FORM */
 .card {
   background: var(--card);
   border: 1px solid var(--line);
@@ -77,10 +75,13 @@ input, select, textarea {
   background: #0f0f0f;
   color: #fff;
   border: 1px solid #333;
+  box-sizing: border-box;
+  font: inherit;
 }
 
 textarea {
   min-height: 80px;
+  resize: vertical;
 }
 
 .row {
@@ -98,9 +99,15 @@ button {
   border: none;
   font-weight: 700;
   cursor: pointer;
+  font: inherit;
 }
 
-/* SECTIONS */
+.notice {
+  color: #bbb;
+  margin-top: 10px;
+  white-space: pre-wrap;
+}
+
 .section {
   margin-top: 24px;
 }
@@ -110,7 +117,6 @@ button {
   margin-bottom: 10px;
 }
 
-/* CARD */
 .booking {
   background: #222;
   border: 1px solid #333;
@@ -122,6 +128,8 @@ button {
 .top {
   display: flex;
   justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
 }
 
 .name {
@@ -132,6 +140,7 @@ button {
 .meta {
   font-size: 13px;
   color: #bbb;
+  line-height: 1.45;
 }
 
 .badge {
@@ -146,9 +155,16 @@ button {
   color: #888;
   font-size: 18px;
   cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: auto;
 }
 
-/* STATUS COLORS */
+.empty {
+  color: #666;
+  font-size: 14px;
+}
+
 .enquiry { background: var(--enquiry); }
 .will { background: var(--will); }
 .pending { background: var(--pending); }
@@ -157,9 +173,10 @@ button {
 .cancelled { background: var(--cancelled); }
 .lost { background: var(--lost); }
 
-.empty {
-  color: #666;
-  font-size: 14px;
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
@@ -167,32 +184,33 @@ button {
 <body>
 <div class="wrap">
 
-<div class="kpi" id="kpi"></div>
+  <div class="kpi" id="kpi"></div>
 
-<div class="card">
-  <input id="name" placeholder="Client name">
+  <div class="card">
+    <input id="clientName" placeholder="Client name">
 
-  <div class="row">
-    <input id="date" type="date">
-    <input id="price" type="number" placeholder="Price">
+    <div class="row">
+      <input id="eventDate" type="date">
+      <input id="price" type="number" placeholder="Price">
+    </div>
+
+    <select id="bookingStatus">
+      <option>Enquiry</option>
+      <option>Said they will book</option>
+      <option>Pending deposit</option>
+      <option>Booked</option>
+      <option>Completed</option>
+      <option>Cancelled</option>
+      <option>Lost lead</option>
+    </select>
+
+    <textarea id="bookingNote" placeholder="Notes"></textarea>
+
+    <button id="saveBtn" type="button">Save booking</button>
+    <p id="msg" class="notice"></p>
   </div>
 
-  <select id="status">
-    <option>Enquiry</option>
-    <option>Said they will book</option>
-    <option>Pending deposit</option>
-    <option>Booked</option>
-    <option>Completed</option>
-    <option>Cancelled</option>
-    <option>Lost lead</option>
-  </select>
-
-  <textarea id="note" placeholder="Notes"></textarea>
-
-  <button onclick="addBooking()">Save booking</button>
-</div>
-
-<div id="sections"></div>
+  <div id="sections"></div>
 
 </div>
 
@@ -201,11 +219,25 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   "https://grgagroautlpphjsjpjh.supabase.co",
-  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
 );
 
+const clientNameEl = document.getElementById("clientName");
+const eventDateEl = document.getElementById("eventDate");
+const priceEl = document.getElementById("price");
+const bookingStatusEl = document.getElementById("bookingStatus");
+const bookingNoteEl = document.getElementById("bookingNote");
+const saveBtn = document.getElementById("saveBtn");
 const sectionsEl = document.getElementById("sections");
 const kpiEl = document.getElementById("kpi");
+const msgEl = document.getElementById("msg");
 
 const order = [
   "Enquiry",
@@ -216,6 +248,10 @@ const order = [
   "Cancelled",
   "Lost lead"
 ];
+
+function setMsg(text) {
+  msgEl.textContent = text;
+}
 
 function badgeClass(status) {
   return {
@@ -230,50 +266,99 @@ function badgeClass(status) {
 }
 
 async function getUser() {
-  const { data } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+  if (error) return null;
   return data.user;
 }
 
-window.addBooking = async function() {
+function formatDate(value) {
+  if (!value) return "No date set";
+  return new Date(value + "T00:00:00").toLocaleDateString("en-GB");
+}
+
+function formatMoney(value) {
+  return `£${Number(value || 0).toFixed(0)}`;
+}
+
+saveBtn.addEventListener("click", addBooking);
+
+async function addBooking() {
   const user = await getUser();
 
-  await supabase.from("bookings").insert([{
+  if (!user) {
+    setMsg("Not logged in.");
+    return;
+  }
+
+  const clientName = clientNameEl.value.trim();
+  const eventDate = eventDateEl.value || null;
+  const price = Number(priceEl.value || 0);
+  const status = bookingStatusEl.value;
+  const note = bookingNoteEl.value.trim();
+
+  if (!clientName) {
+    setMsg("Enter a client name.");
+    return;
+  }
+
+  const { error } = await supabase.from("bookings").insert([{
     user_id: user.id,
-    client_name: name.value,
-    event_date: date.value,
-    price: Number(price.value || 0),
-    status: status.value,
-    note: note.value
+    client_name: clientName,
+    event_date: eventDate,
+    price,
+    status,
+    note
   }]);
 
-  location.reload();
-};
+  if (error) {
+    setMsg(error.message);
+    return;
+  }
 
-window.del = async function(id) {
-  await supabase.from("bookings").delete().eq("id", id);
-  location.reload();
-};
+  clientNameEl.value = "";
+  eventDateEl.value = "";
+  priceEl.value = "";
+  bookingStatusEl.value = "Enquiry";
+  bookingNoteEl.value = "";
+  setMsg("Booking saved.");
 
-function formatDate(d) {
-  if (!d) return "";
-  return new Date(d).toLocaleDateString("en-GB");
+  await load();
 }
 
-function formatMoney(v) {
-  return "£" + Number(v || 0).toFixed(0);
-}
+window.delBooking = async function(id) {
+  const { error } = await supabase.from("bookings").delete().eq("id", id);
+
+  if (error) {
+    setMsg(error.message);
+    return;
+  }
+
+  setMsg("Booking deleted.");
+  await load();
+};
 
 async function load() {
   const user = await getUser();
 
-  const { data } = await supabase
+  if (!user) {
+    sectionsEl.innerHTML = `<div class="empty">Not logged in.</div>`;
+    kpiEl.innerHTML = "";
+    return;
+  }
+
+  const { data, error } = await supabase
     .from("bookings")
     .select("*")
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    setMsg(error.message);
+    return;
+  }
 
   const bookings = data || [];
 
-  /* KPI */
   const booked = bookings.filter(b => b.status === "Booked").length;
   const completed = bookings.filter(b => b.status === "Completed").length;
   const pipeline = bookings
@@ -300,12 +385,11 @@ async function load() {
   `;
 
   sectionsEl.innerHTML = order.map(section => {
-    const items = bookings.filter(b => b.status === section);
+    const items = bookings.filter(b => (b.status || "Enquiry") === section);
 
     return `
       <div class="section">
         <div class="section-title">${section}</div>
-
         ${
           items.length === 0
             ? `<div class="empty">No bookings</div>`
@@ -313,13 +397,13 @@ async function load() {
               <div class="booking">
                 <div class="top">
                   <div>
-                    <div class="name">${b.client_name}</div>
+                    <div class="name">${b.client_name || ""}</div>
                     <div class="meta">
                       ${formatDate(b.event_date)} • ${formatMoney(b.price)}
                     </div>
                   </div>
 
-                  <button class="delete" onclick="del('${b.id}')">×</button>
+                  <button class="delete" onclick="delBooking('${b.id}')" aria-label="Delete">×</button>
                 </div>
 
                 <div style="margin-top:8px;">
