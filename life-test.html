@@ -14,7 +14,7 @@ body{
   margin:0;
 }
 .wrap{
-  max-width:600px;
+  max-width:680px;
   margin:0 auto;
 }
 .card{
@@ -35,6 +35,230 @@ input,button{
 input{
   background:#0f0f0f;
   color:#fff;
+  border:1px solid #333;
+}
+button{
+  background:#d41425;
+  color:#fff;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+.notice{
+  color:#bbb;
+  margin-top:10px;
+  white-space:pre-wrap;
+}
+.hidden{
+  display:none !important;
+}
+.task-list{
+  margin-top:14px;
+}
+.task-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#222;
+  border:1px solid #333;
+  border-radius:12px;
+  padding:12px 14px;
+  margin-top:10px;
+}
+.task-check{
+  width:18px;
+  height:18px;
+  margin:0;
+  flex:0 0 auto;
+}
+.task-text{
+  flex:1;
+  min-width:0;
+  font-size:15px;
+  line-height:1.35;
+  word-break:break-word;
+}
+.task-text.done{
+  text-decoration:line-through;
+  opacity:0.6;
+}
+.delete-btn{
+  width:32px;
+  height:32px;
+  min-width:32px;
+  padding:0;
+  margin:0;
+  border-radius:999px;
+  background:#333;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  line-height:1;
+  flex:0 0 auto;
+}
+.delete-btn:hover{
+  background:#4a4a4a;
+}
+.add-btn{
+  margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <h2>Life Test (To Do)</h2>
+
+    <input id="taskInput" placeholder="Enter task">
+    <button class="add-btn" onclick="addTask()">Add Task</button>
+
+    <p id="msg" class="notice"></p>
+
+    <div id="taskList" class="task-list"></div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
+);
+
+const taskInput = document.getElementById("taskInput");
+const msg = document.getElementById("msg");
+const taskList = document.getElementById("taskList");
+
+async function getUser(){
+  const { data } = await supabase.auth.getUser();
+  return data.user;
+}
+
+window.addTask = async function(){
+  const user = await getUser();
+  const title = taskInput.value.trim();
+
+  if(!user){
+    msg.textContent = "Not logged in.";
+    return;
+  }
+
+  if(!title){
+    msg.textContent = "Enter a task.";
+    return;
+  }
+
+  const { error } = await supabase.from("tasks").insert([{
+    user_id: user.id,
+    title,
+    status: "open"
+  }]);
+
+  if(error){
+    msg.textContent = error.message;
+    return;
+  }
+
+  taskInput.value = "";
+  msg.textContent = "";
+  loadTasks();
+};
+
+window.toggleTask = async function(id, status){
+  const newStatus = status === "done" ? "open" : "done";
+
+  const { error } = await supabase
+    .from("tasks")
+    .update({ status: newStatus })
+    .eq("id", id);
+
+  if(error){
+    msg.textContent = error.message;
+    return;
+  }
+
+  loadTasks();
+};
+
+window.deleteTask = async function(id){
+  const { error } = await supabase
+    .from("tasks")
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    msg.textContent = error.message;
+    return;
+  }
+
+  loadTasks();
+};
+
+async function loadTasks(){
+  const user = await getUser();
+
+  if(!user){
+    taskList.innerHTML = `<div class="notice">Not logged in.</div>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending:false });
+
+  if(error){
+    msg.textContent = error.message;
+    return;
+  }
+
+  if(!data || data.length === 0){
+    taskList.innerHTML = `<div class="notice">No tasks yet.</div>`;
+    return;
+  }
+
+  taskList.innerHTML = data.map(t => `
+    <div class="task-row">
+      <input
+        class="task-check"
+        type="checkbox"
+        ${t.status === "done" ? "checked" : ""}
+        onchange="toggleTask('${t.id}','${t.status}')"
+      >
+
+      <div class="task-text ${t.status === "done" ? "done" : ""}">
+        ${t.title}
+      </div>
+
+      <button
+        class="delete-btn"
+        onclick="deleteTask('${t.id}')"
+        aria-label="Delete task"
+        title="Delete"
+      >
+        ×
+      </button>
+    </div>
+  `).join("");
+}
+
+loadTasks();
+</script>
+
+</body>
+</html>  color:#fff;
   border:1px solid #333;
 }
 button{
