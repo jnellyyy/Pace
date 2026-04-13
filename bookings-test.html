@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookings Test</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 24px;
+      margin: 0;
+    }
+
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #1b1b1b;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+
+    input, select, textarea, button {
+      box-sizing: border-box;
+      font: inherit;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      background: #0f0f0f;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      background: #d41425;
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .notice {
+      color: #bbb;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+
+    .section {
+      margin-top: 24px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .booking-card {
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .booking-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .booking-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .booking-meta {
+      color: #bbb;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .booking-note {
+      margin-top: 10px;
+      color: #ddd;
+      font-size: 14px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .delete-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      padding: 0;
+      margin: 0;
+      border-radius: 999px;
+      background: #333;
+      color: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .delete-btn:hover {
+      background: #4a4a4a;
+    }
+
+    .empty-text {
+      color: #888;
+      font-size: 14px;
+      padding-top: 4px;
+    }
+
+    @media (max-width: 640px) {
+      .row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h2>Bookings Test</h2>
+
+      <input id="clientName" placeholder="Client name" />
+
+      <div class="row-2">
+        <input id="eventDate" type="date" />
+        <input id="price" type="number" placeholder="Package price" />
+      </div>
+
+      <select id="status">
+        <option value="Enquiry">Enquiry</option>
+        <option value="Said they will book">Said they will book</option>
+        <option value="Pending deposit">Pending deposit</option>
+        <option value="Booked">Booked</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Lost lead">Lost lead</option>
+      </select>
+
+      <textarea id="note" placeholder="Notes"></textarea>
+
+      <button class="add-btn" onclick="addBooking()">Save Booking</button>
+
+      <p id="msg" class="notice"></p>
+
+      <div id="bookingSections"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabase = createClient(
+      "https://grgagroautlpphjsjpjh.supabase.co",
+      "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+    const clientName = document.getElementById("clientName");
+    const eventDate = document.getElementById("eventDate");
+    const price = document.getElementById("price");
+    const status = document.getElementById("status");
+    const note = document.getElementById("note");
+    const msg = document.getElementById("msg");
+    const bookingSections = document.getElementById("bookingSections");
+
+    const sectionOrder = [
+      "Enquiry",
+      "Said they will book",
+      "Pending deposit",
+      "Booked",
+      "Completed",
+      "Cancelled",
+      "Lost lead"
+    ];
+
+    async function getUser() {
+      const { data } = await supabase.auth.getUser();
+      return data.user;
+    }
+
+    function formatMoney(value) {
+      const num = Number(value || 0);
+      return `£${num.toFixed(2)}`;
+    }
+
+    function formatDateValue(value) {
+      if (!value) return "No date set";
+      const d = new Date(value + "T00:00:00");
+      return d.toLocaleDateString("en-GB");
+    }
+
+    window.addBooking = async function () {
+      const user = await getUser();
+      const client = clientName.value.trim();
+      const bookingStatus = status.value;
+      const bookingDate = eventDate.value || null;
+      const bookingPrice = Number(price.value || 0);
+      const bookingNote = note.value.trim();
+
+      if (!user) {
+        msg.textContent = "Not logged in.";
+        return;
+      }
+
+      if (!client) {
+        msg.textContent = "Enter a client name.";
+        return;
+      }
+
+      const { error } = await supabase.from("bookings").insert([{
+        user_id: user.id,
+        client_name: client,
+        status: bookingStatus,
+        event_date: bookingDate,
+        price: bookingPrice,
+        note: bookingNote
+      }]);
+
+      if (error) {
+        msg.textContent = error.message;
+        return;
+      }
+
+      clientName.value = "";
+      eventDate.value = "";
+      price.value = "";
+      status.value = "Enquiry";
+      note.value = "";
+      msg.textContent = "";
+      loadBookings();
+    };
+
+    window.deleteBooking = async function (id) {
+      const { error } = await supabase
+        .from("bookings")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        msg.textContent = error.message;
+        return;
+      }
+
+      loadBookings();
+    };
+
+    async function loadBookings() {
+      const user = await getUser();
+
+      if (!user) {
+        bookingSections.innerHTML = '<div class="notice">Not logged in.</div>';
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("bookings")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        msg.textContent = error.message;
+        return;
+      }
+
+      const bookings = data || [];
+
+      bookingSections.innerHTML = sectionOrder.map(section => {
+        const sectionBookings = bookings.filter(b => (b.status || "Enquiry") === section);
+
+        return `
+          <div class="section">
+            <div class="section-title">${section}</div>
+            ${
+              sectionBookings.length === 0
+                ? `<div class="empty-text">No bookings here yet.</div>`
+                : sectionBookings.map(b => `
+                    <div class="booking-card">
+                      <div class="booking-top">
+                        <div>
+                          <div class="booking-name">${b.client_name || ""}</div>
+                          <div class="booking-meta">
+                            <div><strong>Date:</strong> ${formatDateValue(b.event_date)}</div>
+                            <div><strong>Price:</strong> ${formatMoney(b.price)}</div>
+                            <div><strong>Status:</strong> ${b.status || ""}</div>
+                          </div>
+                        </div>
+
+                        <button
+                          class="delete-btn"
+                          onclick="deleteBooking('${b.id}')"
+                          aria-label="Delete booking"
+                          title="Delete"
+                        >
+                          ×
+                        </button>
+                      </div>
+
+                      ${
+                        b.note
+                          ? `<div class="booking-note">${b.note}</div>`
+                          : ``
+                      }
+                    </div>
+                  `).join("")
+            }
+          </div>
+        `;
+      }).join("");
+    }
+
+    loadBookings();
+  </script>
+</body>
+</html>
