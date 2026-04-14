@@ -386,7 +386,7 @@
       signInTab.classList.toggle("active", isSignIn);
       signUpTab.classList.toggle("active", !isSignIn);
 
-      authBtn.textContent = isSignIn ? "Sign in" : "Create account";
+      authBtn.textContent = isSignIn ? "Continue" : "Create account";
       modeNote.textContent = isSignIn
         ? "Use your email and password to access Pace."
         : "Create an account to keep your data private and synced to you.";
@@ -406,7 +406,7 @@
       }
 
       authBtn.disabled = true;
-      authBtn.textContent = mode === "signin" ? "Signing in..." : "Creating account...";
+      authBtn.textContent = mode === "signin" ? "Please wait..." : "Creating account...";
       statusEl.textContent = "";
 
       try {
@@ -426,7 +426,7 @@
         statusEl.textContent = err.message || "Something went wrong.";
       } finally {
         authBtn.disabled = false;
-        authBtn.textContent = mode === "signin" ? "Sign in" : "Create account";
+        authBtn.textContent = mode === "signin" ? "Continue" : "Create account";
       }
     }
 
