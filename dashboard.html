@@ -3,44 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pace</title>
+
+  <!-- App setup -->
   <link rel="manifest" href="site.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-32.png">
-<meta name="theme-color" content="#0f1115">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" href="icon-32.png">
+  <meta name="theme-color" content="#0f1115">
+
+  <title>Pace</title>
+
   <style>
     :root{
       --bg1:#0f1115;
       --bg2:#171a20;
       --panel:rgba(255,255,255,0.06);
-      --panel-strong:rgba(255,255,255,0.08);
       --line:rgba(255,255,255,0.10);
       --text:#f5f7fb;
       --muted:#a7afbe;
-      --accent:#ff3b30;
       --shadow:0 20px 50px rgba(0,0,0,0.35);
       --blur:18px;
       --radius:24px;
     }
 
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
+    *{ box-sizing:border-box; }
 
     body{
       margin:0;
       padding:18px;
       color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
-        radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
+        radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 25%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
     .wrap{
-      max-width:1180px;
+      max-width:1100px;
       margin:0 auto;
     }
 
@@ -49,7 +47,6 @@
       border:1px solid var(--line);
       border-radius:var(--radius);
       backdrop-filter:blur(var(--blur));
-      -webkit-backdrop-filter:blur(var(--blur));
       box-shadow:var(--shadow);
     }
 
@@ -61,60 +58,44 @@
     .topbar{
       display:flex;
       justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      flex-wrap:wrap;
+      align-items:center;
     }
 
-    .brand-wrap{
+    .brand{
       display:flex;
       align-items:center;
-      gap:14px;
+      gap:12px;
     }
 
     .brand-icon{
-      width:54px;
-      height:54px;
-      border-radius:18px;
+      width:50px;
+      height:50px;
+      border-radius:16px;
       display:flex;
       align-items:center;
       justify-content:center;
       background:rgba(255,255,255,0.08);
-      font-size:22px;
-      color:#fff;
-      flex:0 0 auto;
+    }
+
+    .brand-icon img{
+      width:26px;
+      height:26px;
+      border-radius:6px;
     }
 
     .brand-title{
-      margin:0 0 4px 0;
-      font-size:26px;
-      letter-spacing:-0.03em;
-    }
-
-    .muted{
-      color:var(--muted);
+      font-size:24px;
+      font-weight:700;
     }
 
     .logout{
-      width:auto;
       padding:10px 14px;
       border:none;
-      border-radius:14px;
+      border-radius:12px;
       background:rgba(255,255,255,0.08);
       color:#fff;
-      font:inherit;
-      font-weight:700;
       cursor:pointer;
-    }
-
-    .user-pill{
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.08);
-      color:var(--muted);
-      word-break:break-word;
+      font-weight:600;
     }
 
     .hero{
@@ -123,18 +104,13 @@
     }
 
     .hero h1{
-      margin:0 0 10px 0;
-      font-size:34px;
-      letter-spacing:-0.05em;
-      line-height:1.05;
+      margin:0 0 8px 0;
+      font-size:32px;
     }
 
     .hero p{
       margin:0;
       color:var(--muted);
-      line-height:1.55;
-      max-width:760px;
-      font-size:16px;
     }
 
     .grid{
@@ -145,205 +121,146 @@
     }
 
     .tile{
-      display:block;
+      padding:22px;
+      min-height:150px;
       text-decoration:none;
       color:inherit;
-      padding:22px;
-      min-height:170px;
-      transition:transform .15s ease, background .15s ease, border-color .15s ease;
+      transition:0.15s;
     }
 
     .tile:hover{
       transform:translateY(-2px);
       background:rgba(255,255,255,0.08);
-      border-color:rgba(255,255,255,0.16);
     }
 
     .tile-head{
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:14px;
-      margin-bottom:14px;
-      text-align:center;
+      gap:12px;
+      margin-bottom:10px;
     }
 
     .tile-icon{
-      width:54px;
-      height:54px;
-      border-radius:18px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,0.08);
-      font-size:24px;
-      flex:0 0 auto;
-      filter:grayscale(1) saturate(0);
+      font-size:26px;
+      filter:grayscale(1);
     }
 
     .tile-title{
-      font-size:24px;
+      font-size:22px;
       font-weight:700;
-      letter-spacing:-0.03em;
-      line-height:1.1;
     }
 
     .tile-desc{
-      color:var(--muted);
-      line-height:1.5;
-      font-size:15px;
       text-align:center;
-      max-width:420px;
-      margin:0 auto;
-    }
-
-    .footer-note{
-      margin-top:16px;
-      padding:16px 18px;
       color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
+      font-size:14px;
     }
 
-    @media (max-width:860px){
+    @media(max-width:800px){
       .grid{
         grid-template-columns:1fr;
       }
     }
-
-    @media (max-width:700px){
-      body{
-        padding:14px;
-      }
-
-      .hero h1{
-        font-size:28px;
-      }
-
-      .tile-title{
-        font-size:22px;
-      }
-
-      .brand-title{
-        font-size:24px;
-      }
-    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
 
-    <div class="glass card">
-      <div class="topbar">
-        <div class="brand-wrap">
-          <div class="brand-icon">◌</div>
-          <div>
-            <h2 class="brand-title">Pace</h2>
-            <div class="muted">Dashboard</div>
-          </div>
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <div class="glass card">
+    <div class="topbar">
+
+      <div class="brand">
+        <div class="brand-icon">
+          <img src="icon-192.png">
         </div>
-
-        <button id="logoutBtn" class="logout" type="button">Log out</button>
+        <div class="brand-title">Pace</div>
       </div>
 
-      <div id="userPill" class="user-pill"></div>
+      <button id="logoutBtn" class="logout">Log out</button>
+
     </div>
+  </div>
 
-    <div class="glass hero">
-      <h1 id="heroTitle">Move at your own pace.</h1>
-      <p id="heroBlurb">Your personal system for planning, work, attendance, bookings and money — calm, private and easy to use.</p>
-    </div>
+  <!-- HERO -->
+  <div class="glass hero">
+    <h1>Move at your own pace.</h1>
+    <p>Your system for life, work, bookings and money — all in one place.</p>
+  </div>
 
-    <div class="grid">
-      <a class="tile glass" href="life-test.html">
-        <div class="tile-head">
-          <div class="tile-icon">✅</div>
-          <div class="tile-title">To Do</div>
-        </div>
-        <div class="tile-desc">Life, house, money, business and work tasks with editable items.</div>
-      </a>
+  <!-- GRID -->
+  <div class="grid">
 
-      <a class="tile glass" href="attendance-test.html">
-        <div class="tile-head">
-          <div class="tile-icon">🏢</div>
-          <div class="tile-title">Office</div>
-        </div>
-        <div class="tile-desc">Office days, policy tracking, bank holidays and attendance progress.</div>
-      </a>
+    <a class="tile glass" href="life-test.html">
+      <div class="tile-head">
+        <div class="tile-icon">✅</div>
+        <div class="tile-title">To Do</div>
+      </div>
+      <div class="tile-desc">
+        Tasks across life, house, work and business.
+      </div>
+    </a>
 
-      <a class="tile glass" href="bookings-test.html">
-        <div class="tile-head">
-          <div class="tile-icon">📆</div>
-          <div class="tile-title">Bookings</div>
-        </div>
-        <div class="tile-desc">Jobs, payments, balances, due dates, overdue items and what is coming up next.</div>
-      </a>
+    <a class="tile glass" href="attendance-test.html">
+      <div class="tile-head">
+        <div class="tile-icon">🏢</div>
+        <div class="tile-title">Office</div>
+      </div>
+      <div class="tile-desc">
+        Track office days, rules and attendance targets.
+      </div>
+    </a>
 
-      <a class="tile glass" href="finance-test.html">
-        <div class="tile-head">
-          <div class="tile-icon">💷</div>
-          <div class="tile-title">Finance</div>
-        </div>
-        <div class="tile-desc">Life and business money tracking with personalised fixed bills and cleaner totals.</div>
-      </a>
-    </div>
+    <a class="tile glass" href="bookings-test.html">
+      <div class="tile-head">
+        <div class="tile-icon">📆</div>
+        <div class="tile-title">Bookings</div>
+      </div>
+      <div class="tile-desc">
+        Manage jobs, deposits, balances and due dates.
+      </div>
+    </a>
+
+    <a class="tile glass" href="finance-test.html">
+      <div class="tile-head">
+        <div class="tile-icon">💷</div>
+        <div class="tile-title">Finance</div>
+      </div>
+      <div class="tile-desc">
+        Track personal and business money cleanly.
+      </div>
+    </a>
 
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+</div>
 
-    const supabase = createClient(
-      "https://grgagroautlpphjsjpjh.supabase.co",
-      "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storage: localStorage
-        }
-      }
-    );
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    const userPill = document.getElementById("userPill");
-    const heroTitle = document.getElementById("heroTitle");
-    const heroBlurb = document.getElementById("heroBlurb");
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+);
 
-    async function checkSession() {
-      const { data } = await supabase.auth.getSession();
+async function checkSession(){
+  const { data } = await supabase.auth.getSession();
 
-      if (!data.session) {
-        window.location.href = "index.html";
-        return null;
-      }
+  if(!data.session){
+    window.location.href = "index.html";
+  }
+}
 
-      userPill.textContent = `${data.session.user.email}`;
-      return data.session.user;
-    }
+document.getElementById("logoutBtn").onclick = async () => {
+  await supabase.auth.signOut();
+  window.location.href = "index.html";
+};
 
-    async function loadSettings(userId) {
-      const { data } = await supabase
-        .from("app_settings")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
+checkSession();
+</script>
 
-      if (data?.business_name) {
-        heroTitle.textContent = `${data.business_name}, organised.`;
-        heroBlurb.textContent = `Everything for ${data.business_name} in one clean place — tasks, office, bookings and money.`;
-      }
-    }
-
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      window.location.href = "index.html";
-    });
-
-    const user = await checkSession();
-    if (user) {
-      await loadSettings(user.id);
-    }
-  </script>
 </body>
 </html>
