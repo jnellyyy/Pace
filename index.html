@@ -16,14 +16,15 @@
       --bg1:#0f1115;
       --bg2:#171a20;
       --panel:rgba(255,255,255,0.06);
-      --panel-strong:rgba(255,255,255,0.08);
       --line:rgba(255,255,255,0.10);
+      --line-strong:rgba(255,255,255,0.16);
       --text:#f5f7fb;
       --muted:#a7afbe;
       --accent:#ff3b30;
       --shadow:0 24px 60px rgba(0,0,0,0.40);
+      --shadow-soft:0 10px 30px rgba(0,0,0,0.22);
       --blur:18px;
-      --radius:26px;
+      --radius:24px;
     }
 
     *{
@@ -31,7 +32,7 @@
       -webkit-tap-highlight-color:transparent;
     }
 
-    html, body {
+    html, body{
       height:100%;
     }
 
@@ -41,8 +42,8 @@
       color:var(--text);
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
-        radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
+        radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 24%),
+        radial-gradient(circle at top right, rgba(255,255,255,0.03), transparent 22%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
       overflow:hidden;
     }
@@ -63,8 +64,21 @@
     }
 
     .auth-card{
-      width:min(100%, 460px);
-      padding:26px;
+      width:min(100%, 470px);
+      padding:24px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .auth-card::after{
+      content:"";
+      position:absolute;
+      inset:auto -30px -60px auto;
+      width:180px;
+      height:180px;
+      background:radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
+      pointer-events:none;
+      filter:blur(10px);
     }
 
     .brand{
@@ -72,57 +86,61 @@
       align-items:center;
       gap:14px;
       margin-bottom:18px;
+      position:relative;
+      z-index:1;
     }
 
     .brand-icon{
-      width:62px;
-      height:62px;
-      border-radius:20px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.08);
+      width:58px;
+      height:58px;
+      border-radius:18px;
       overflow:hidden;
       flex:0 0 auto;
+      box-shadow:var(--shadow-soft);
+      border:1px solid rgba(255,255,255,0.06);
+      background:#111;
     }
 
     .brand-icon img{
-      width:42px;
-      height:42px;
+      width:100%;
+      height:100%;
       object-fit:cover;
-      border-radius:12px;
+      border-radius:18px;
       display:block;
     }
 
     .brand-copy h1{
       margin:0;
-      font-size:30px;
-      letter-spacing:-0.04em;
+      font-size:29px;
+      letter-spacing:-0.05em;
       line-height:1;
     }
 
     .brand-copy p{
       margin:6px 0 0 0;
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
     }
 
     .hero-copy{
-      margin:4px 0 18px 0;
+      margin:2px 0 18px 0;
+      position:relative;
+      z-index:1;
     }
 
     .hero-copy h2{
       margin:0 0 8px 0;
-      font-size:24px;
-      letter-spacing:-0.03em;
+      font-size:26px;
+      letter-spacing:-0.04em;
+      line-height:1.05;
     }
 
     .hero-copy p{
       margin:0;
       color:var(--muted);
-      line-height:1.55;
-      font-size:15px;
+      line-height:1.58;
+      font-size:14px;
+      max-width:360px;
     }
 
     .auth-tabs{
@@ -130,6 +148,8 @@
       grid-template-columns:1fr 1fr;
       gap:8px;
       margin:18px 0 10px 0;
+      position:relative;
+      z-index:1;
     }
 
     .tab-btn{
@@ -141,15 +161,23 @@
       font:inherit;
       font-weight:700;
       cursor:pointer;
+      transition:background .15s ease, transform .15s ease, border-color .15s ease;
+      border:1px solid transparent;
+    }
+
+    .tab-btn:hover{
+      background:rgba(255,255,255,0.09);
     }
 
     .tab-btn.active{
       background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.08);
+      border-color:rgba(255,255,255,0.08);
     }
 
     .field{
       margin-top:12px;
+      position:relative;
+      z-index:1;
     }
 
     .field label{
@@ -168,6 +196,7 @@
       color:#fff;
       font:inherit;
       outline:none;
+      transition:border-color .15s ease, background .15s ease, transform .15s ease;
     }
 
     .field input::placeholder{
@@ -175,7 +204,7 @@
     }
 
     .field input:focus{
-      border-color:rgba(255,255,255,0.18);
+      border-color:var(--line-strong);
       background:rgba(255,255,255,0.07);
     }
 
@@ -190,6 +219,21 @@
       font:inherit;
       font-weight:800;
       cursor:pointer;
+      position:relative;
+      z-index:1;
+      transition:transform .15s ease, filter .15s ease;
+    }
+
+    .primary-btn:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.02);
+    }
+
+    .primary-btn:disabled{
+      opacity:0.72;
+      cursor:default;
+      transform:none;
+      filter:none;
     }
 
     .muted-note{
@@ -197,6 +241,8 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.5;
+      position:relative;
+      z-index:1;
     }
 
     .status{
@@ -205,6 +251,8 @@
       color:#d7dbe3;
       font-size:13px;
       white-space:pre-wrap;
+      position:relative;
+      z-index:1;
     }
 
     .splash{
@@ -240,20 +288,17 @@
       width:96px;
       height:96px;
       border-radius:28px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.08);
-      box-shadow:0 20px 60px rgba(0,0,0,0.35);
       overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.08);
+      background:#111;
     }
 
     .splash-logo-wrap img{
-      width:72px;
-      height:72px;
+      width:100%;
+      height:100%;
       object-fit:cover;
-      border-radius:20px;
+      border-radius:28px;
       display:block;
     }
 
@@ -289,11 +334,11 @@
       }
 
       .brand-copy h1{
-        font-size:28px;
+        font-size:27px;
       }
 
       .hero-copy h2{
-        font-size:22px;
+        font-size:23px;
       }
     }
   </style>
