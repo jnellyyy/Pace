@@ -1,102 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="site.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-32.png">
-<meta name="theme-color" content="#0f1115">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pace Sign in</title>
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" href="icon-32.png">
+  <meta name="theme-color" content="#0f1115">
+
+  <title>Pace — Sign in</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      padding: 24px;
-      margin: 0;
+    :root{
+      --bg1:#0f1115;
+      --bg2:#171a20;
+      --panel:rgba(255,255,255,0.06);
+      --panel-strong:rgba(255,255,255,0.08);
+      --line:rgba(255,255,255,0.10);
+      --text:#f5f7fb;
+      --muted:#a7afbe;
+      --accent:#ff3b30;
+      --shadow:0 24px 60px rgba(0,0,0,0.40);
+      --blur:18px;
+      --radius:26px;
     }
 
-    .card {
-      max-width: 420px;
-      margin: 40px auto;
-      background: #1b1b1b;
-      border: 1px solid #333;
-      border-radius: 16px;
-      padding: 20px;
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
     }
 
-    h1 {
-      margin-top: 0;
-      margin-bottom: 6px;
+    html, body {
+      height:100%;
     }
 
-    .sub {
-      color: #bbb;
-      margin-bottom: 14px;
+    body{
+      margin:0;
+      padding:18px;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
+        radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
     }
 
-    input, button {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      font: inherit;
+    .shell{
+      min-height:100%;
+      display:grid;
+      place-items:center;
     }
 
-    input {
-      background: #0f0f0f;
-      color: #fff;
-      border: 1px solid #333;
+    .glass{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      backdrop-filter:blur(var(--blur));
+      -webkit-backdrop-filter:blur(var(--blur));
+      box-shadow:var(--shadow);
     }
 
-    .btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .auth-card{
+      width:min(100%, 460px);
+      padding:26px;
     }
 
-    button {
-      background: #d41425;
-      color: #fff;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
     }
 
-    .secondary {
-      background: #333;
+    .brand-icon{
+      width:62px;
+      height:62px;
+      border-radius:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.08);
+      overflow:hidden;
+      flex:0 0 auto;
     }
 
-    #msg {
-      white-space: pre-wrap;
-      color: #bbb;
-      margin-top: 12px;
-      min-height: 40px;
+    .brand-icon img{
+      width:42px;
+      height:42px;
+      object-fit:cover;
+      border-radius:12px;
+      display:block;
     }
 
-    @media (max-width: 600px) {
-      .btn-row {
-        grid-template-columns: 1fr;
+    .brand-copy h1{
+      margin:0;
+      font-size:30px;
+      letter-spacing:-0.04em;
+      line-height:1;
+    }
+
+    .brand-copy p{
+      margin:6px 0 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .hero-copy{
+      margin:4px 0 18px 0;
+    }
+
+    .hero-copy h2{
+      margin:0 0 8px 0;
+      font-size:24px;
+      letter-spacing:-0.03em;
+    }
+
+    .hero-copy p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
+    }
+
+    .auth-tabs{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin:18px 0 10px 0;
+    }
+
+    .tab-btn{
+      border:none;
+      background:rgba(255,255,255,0.06);
+      color:#fff;
+      padding:12px;
+      border-radius:14px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .tab-btn.active{
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.08);
+    }
+
+    .field{
+      margin-top:12px;
+    }
+
+    .field label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .field input{
+      width:100%;
+      padding:14px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.05);
+      color:#fff;
+      font:inherit;
+      outline:none;
+    }
+
+    .field input::placeholder{
+      color:#9da6b5;
+    }
+
+    .field input:focus{
+      border-color:rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.07);
+    }
+
+    .primary-btn{
+      width:100%;
+      margin-top:16px;
+      padding:14px;
+      border:none;
+      border-radius:16px;
+      background:var(--accent);
+      color:#fff;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .muted-note{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .status{
+      margin-top:12px;
+      min-height:18px;
+      color:#d7dbe3;
+      font-size:13px;
+      white-space:pre-wrap;
+    }
+
+    .splash{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.04), transparent 22%),
+        linear-gradient(180deg, #0d1015, #151920);
+      z-index:9999;
+      opacity:1;
+      visibility:visible;
+      transition:opacity .5s ease, visibility .5s ease;
+    }
+
+    .splash.hide{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+
+    .splash-inner{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+      text-align:center;
+    }
+
+    .splash-logo-wrap{
+      width:96px;
+      height:96px;
+      border-radius:28px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      overflow:hidden;
+    }
+
+    .splash-logo-wrap img{
+      width:72px;
+      height:72px;
+      object-fit:cover;
+      border-radius:20px;
+      display:block;
+    }
+
+    .splash-title{
+      font-size:32px;
+      font-weight:800;
+      letter-spacing:-0.05em;
+    }
+
+    .splash-sub{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .page{
+      opacity:0;
+      transform:translateY(8px);
+      transition:opacity .45s ease, transform .45s ease;
+    }
+
+    .page.ready{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    @media (max-width:640px){
+      body{
+        padding:14px;
+      }
+
+      .auth-card{
+        padding:22px;
+      }
+
+      .brand-copy h1{
+        font-size:28px;
+      }
+
+      .hero-copy h2{
+        font-size:22px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Pace</h1>
-    <div class="sub">sign in to keep the pace.</div>
-
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-
-    <div class="btn-row">
-      <button id="signInBtn" type="button">Sign In</button>
-      <button id="signUpBtn" class="secondary" type="button">Sign Up</button>
+  <div id="splash" class="splash">
+    <div class="splash-inner">
+      <div class="splash-logo-wrap">
+        <img src="icon-192.png" alt="Pace icon">
+      </div>
+      <div class="splash-title">Pace</div>
+      <div class="splash-sub">Move at your own pace.</div>
     </div>
+  </div>
 
-    <p id="msg"></p>
+  <div id="page" class="page shell">
+    <div class="glass auth-card">
+      <div class="brand">
+        <div class="brand-icon">
+          <img src="icon-192.png" alt="Pace icon">
+        </div>
+        <div class="brand-copy">
+          <h1>Pace</h1>
+          <p>Your personal system</p>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+        <h2>Sign in</h2>
+        <p>Keep your tasks, office attendance, bookings and finances in one calm place.</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="signInTab" class="tab-btn active" type="button">Sign in</button>
+        <button id="signUpTab" class="tab-btn" type="button">Create account</button>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter password" autocomplete="current-password">
+      </div>
+
+      <button id="authBtn" class="primary-btn" type="button">Sign in</button>
+
+      <div class="muted-note" id="modeNote">
+        Use your email and password to access Pace.
+      </div>
+
+      <div id="status" class="status"></div>
+    </div>
   </div>
 
   <script type="module">
@@ -115,78 +367,95 @@
       }
     );
 
-    const msg = document.getElementById("msg");
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
+    const splash = document.getElementById("splash");
+    const page = document.getElementById("page");
+    const signInTab = document.getElementById("signInTab");
+    const signUpTab = document.getElementById("signUpTab");
+    const authBtn = document.getElementById("authBtn");
+    const modeNote = document.getElementById("modeNote");
+    const statusEl = document.getElementById("status");
+    const emailEl = document.getElementById("email");
+    const passwordEl = document.getElementById("password");
 
-    function setMsg(text) {
-      msg.textContent = text;
+    let mode = "signin";
+
+    function setMode(nextMode) {
+      mode = nextMode;
+
+      const isSignIn = mode === "signin";
+      signInTab.classList.toggle("active", isSignIn);
+      signUpTab.classList.toggle("active", !isSignIn);
+
+      authBtn.textContent = isSignIn ? "Sign in" : "Create account";
+      modeNote.textContent = isSignIn
+        ? "Use your email and password to access Pace."
+        : "Create an account to keep your data private and synced to you.";
+      statusEl.textContent = "";
     }
 
-    async function goIfLoggedIn() {
-      const { data, error } = await supabase.auth.getSession();
+    signInTab.addEventListener("click", () => setMode("signin"));
+    signUpTab.addEventListener("click", () => setMode("signup"));
 
-      if (error) {
-        setMsg("Session error:\n" + error.message);
+    async function handleAuth() {
+      const email = emailEl.value.trim();
+      const password = passwordEl.value;
+
+      if (!email || !password) {
+        statusEl.textContent = "Enter your email and password.";
         return;
       }
 
-      if (data.session) {
-        window.location.href = "dashboard.html";
+      authBtn.disabled = true;
+      authBtn.textContent = mode === "signin" ? "Signing in..." : "Creating account...";
+      statusEl.textContent = "";
+
+      try {
+        if (mode === "signin") {
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+
+        statusEl.textContent = "Account created. If your project uses email confirmation, check your inbox before signing in.";
+        setMode("signin");
+      } catch (err) {
+        statusEl.textContent = err.message || "Something went wrong.";
+      } finally {
+        authBtn.disabled = false;
+        authBtn.textContent = mode === "signin" ? "Sign in" : "Create account";
       }
     }
 
-    document.getElementById("signInBtn").addEventListener("click", async () => {
-      setMsg("Trying sign in...");
+    authBtn.addEventListener("click", handleAuth);
 
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email.value.trim(),
-          password: password.value
-        });
-
-        if (error) {
-          setMsg("Sign in error:\n" + error.message);
-          return;
-        }
-
-        if (!data.session) {
-          setMsg("Sign in failed: no session returned.");
-          return;
-        }
-
-        setMsg("Sign in ok. Redirecting...");
-        window.location.href = "dashboard.html";
-      } catch (err) {
-        setMsg("Catch error:\n" + err.message);
-      }
+    passwordEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleAuth();
     });
 
-    document.getElementById("signUpBtn").addEventListener("click", async () => {
-      setMsg("Creating account...");
-
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email: email.value.trim(),
-          password: password.value
-        });
-
-        if (error) {
-          setMsg("Sign up error:\n" + error.message);
-          return;
-        }
-
-        setMsg(
-          "Sign up ok.\n" +
-          "User created: " + (data.user ? "yes" : "no") + "\n" +
-          "Now sign in."
-        );
-      } catch (err) {
-        setMsg("Catch error:\n" + err.message);
-      }
+    emailEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleAuth();
     });
 
-    await goIfLoggedIn();
+    async function boot() {
+      const { data } = await supabase.auth.getSession();
+
+      setTimeout(() => {
+        splash.classList.add("hide");
+        page.classList.add("ready");
+      }, 850);
+
+      if (data.session) {
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 900);
+      }
+    }
+
+    boot();
   </script>
 </body>
 </html>
