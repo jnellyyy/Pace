@@ -17,7 +17,6 @@
       --line:rgba(255,255,255,0.10);
       --text:#f5f7fb;
       --muted:#a7afbe;
-
       --accent:#ff3b30;
       --enquiry:#6b7280;
       --pending:#f59e0b;
@@ -27,7 +26,6 @@
       --lost:#4b5563;
       --overdue:#b91c1c;
       --coming:#60a5fa;
-
       --shadow:0 20px 50px rgba(0,0,0,0.35);
       --blur:18px;
       --radius:24px;
@@ -88,43 +86,44 @@
     }
 
     .muted { color:var(--muted); }
-    .notice { color: #bbb; margin-top: 10px; white-space: pre-wrap; }
+    .notice { color:#bbb; margin-top:10px; white-space:pre-wrap; }
+    .success { color:#8ff0b2; }
 
     .kpi {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-      margin-top: 14px;
+      display:grid;
+      grid-template-columns:repeat(6, 1fr);
+      gap:12px;
+      margin-top:14px;
     }
 
     .kpi-box {
-      background: var(--panel-strong);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 12px 14px;
+      background:var(--panel-strong);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:18px;
+      padding:12px 14px;
     }
 
     .kpi-title {
-      font-size: 12px;
-      color: var(--muted);
+      font-size:12px;
+      color:var(--muted);
     }
 
     .kpi-value {
-      font-size: 18px;
-      font-weight: 700;
+      font-size:18px;
+      font-weight:700;
       margin-top:4px;
     }
 
     input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.10);
-      box-sizing: border-box;
-      font: inherit;
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.05);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.10);
+      box-sizing:border-box;
+      font:inherit;
     }
 
     input::placeholder,
@@ -133,241 +132,259 @@
     }
 
     textarea {
-      min-height: 88px;
-      resize: vertical;
+      min-height:88px;
+      resize:vertical;
     }
 
     .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
     }
 
     .row-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
     }
 
     button {
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 14px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-      font: inherit;
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      background:var(--accent);
+      color:#fff;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      font:inherit;
+      transition:transform .12s ease, opacity .12s ease;
+    }
+
+    button:hover {
+      transform:translateY(-1px);
+    }
+
+    button:active {
+      transform:translateY(0);
+      opacity:0.92;
     }
 
     .small-btn {
-      width: auto;
-      margin-top: 8px;
-      padding: 8px 10px;
-      background: rgba(255,255,255,0.10);
-      font-size: 13px;
+      width:auto;
+      margin-top:8px;
+      padding:8px 10px;
+      background:rgba(255,255,255,0.10);
+      font-size:13px;
     }
 
     .warn-btn {
-      background: rgba(185,28,28,0.85);
+      background:rgba(185,28,28,0.85);
+    }
+
+    .danger-btn {
+      background:rgba(239,68,68,0.18);
     }
 
     .section {
-      margin-top: 24px;
+      margin-top:24px;
     }
 
     .section-title {
-      font-weight: 700;
-      margin-bottom: 10px;
-      font-size: 18px;
+      font-weight:700;
+      margin-bottom:10px;
+      font-size:18px;
       letter-spacing:-0.02em;
     }
 
     .booking {
-      background: var(--panel-strong);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 16px;
-      margin-top: 10px;
+      background:var(--panel-strong);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:18px;
+      padding:16px;
+      margin-top:10px;
     }
 
     .top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
     }
 
     .name {
-      font-weight: 700;
-      margin-bottom: 4px;
-      font-size: 16px;
+      font-weight:700;
+      margin-bottom:4px;
+      font-size:16px;
     }
 
     .meta {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.45;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.45;
     }
 
     .money-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 12px;
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:10px;
+      margin-top:12px;
     }
 
     .money-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 10px 12px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      padding:10px 12px;
     }
 
     .money-label {
-      font-size: 11px;
-      color: var(--muted);
+      font-size:11px;
+      color:var(--muted);
     }
 
     .money-value {
-      font-size: 15px;
-      font-weight: 700;
-      margin-top: 4px;
+      font-size:15px;
+      font-weight:700;
+      margin-top:4px;
     }
 
     .badge-row {
-      margin-top: 8px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
     }
 
     .badge {
-      display: inline-block;
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      color: #fff;
+      display:inline-block;
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      color:#fff;
     }
 
-    .overdue-badge {
-      background: var(--overdue);
-    }
-
-    .coming-badge {
-      background: var(--coming);
-    }
+    .overdue-badge { background:var(--overdue); }
+    .coming-badge { background:var(--coming); }
 
     .delete {
-      background: none;
-      border: none;
-      color: #aab2c0;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 0;
-      margin: 0;
-      width: auto;
-      line-height: 1;
+      background:none;
+      border:none;
+      color:#aab2c0;
+      font-size:20px;
+      cursor:pointer;
+      padding:0;
+      margin:0;
+      width:auto;
+      line-height:1;
     }
 
     .delete:hover {
-      color: #fff;
+      color:#fff;
     }
 
     .empty {
-      color: var(--muted);
-      font-size: 14px;
+      color:var(--muted);
+      font-size:14px;
     }
 
     .payments {
-      margin-top: 14px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 12px;
+      margin-top:14px;
+      border-top:1px solid rgba(255,255,255,0.08);
+      padding-top:12px;
     }
 
     .payment-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 13px;
-      color: #d7dbe3;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      font-size:13px;
+      color:#d7dbe3;
+      padding:10px 0;
+      border-bottom:1px solid rgba(255,255,255,0.08);
     }
 
     .payment-row:last-child {
-      border-bottom: none;
+      border-bottom:none;
+    }
+
+    .payment-left {
+      flex:1;
+      min-width:0;
+    }
+
+    .payment-actions {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-left:10px;
     }
 
     .payment-form {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed rgba(255,255,255,0.12);
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px dashed rgba(255,255,255,0.12);
     }
 
     .edit-form {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px dashed rgba(255,255,255,0.12);
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px dashed rgba(255,255,255,0.12);
     }
 
     .move-row {
-      display: flex;
-      gap: 8px;
-      align-items: end;
-      flex-wrap: wrap;
-      margin-top: 10px;
+      display:flex;
+      gap:8px;
+      align-items:end;
+      flex-wrap:wrap;
+      margin-top:10px;
     }
 
     .move-row select {
-      flex: 1;
-      min-width: 180px;
-      margin-top: 0;
+      flex:1;
+      min-width:180px;
+      margin-top:0;
     }
 
     .coming-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
+      display:grid;
+      gap:10px;
+      margin-top:12px;
     }
 
     .coming-card {
-      background: var(--panel-strong);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      padding: 14px;
+      background:var(--panel-strong);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:18px;
+      padding:14px;
     }
 
     .settings-box {
       display:grid;
-      grid-template-columns: 1fr 200px;
+      grid-template-columns:1fr 200px;
       gap:10px;
       align-items:end;
     }
 
-    .enquiry { background: var(--enquiry); }
-    .pending { background: var(--pending); }
-    .booked { background: var(--booked); }
-    .completed { background: var(--completed); }
-    .cancelled { background: var(--cancelled); }
-    .lost { background: var(--lost); }
+    .enquiry { background:var(--enquiry); }
+    .pending { background:var(--pending); }
+    .booked { background:var(--booked); }
+    .completed { background:var(--completed); }
+    .cancelled { background:var(--cancelled); }
+    .lost { background:var(--lost); }
 
-    @media (max-width: 980px) {
+    @media (max-width:980px) {
       .kpi {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 760px) {
-      body{
-        padding:14px;
-      }
-
-      .row, .row-3, .money-grid, .kpi, .settings-box {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width:760px) {
+      body { padding:14px; }
+      .row, .row-3, .money-grid, .kpi, .settings-box { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -481,8 +498,14 @@
     "Said they will book"
   ];
 
-  function setMsg(text) {
+  function setMsg(text, good = false) {
     msgEl.textContent = text;
+    msgEl.className = good ? "notice success" : "notice";
+  }
+
+  function setBusinessMsg(text, good = false) {
+    businessSavedEl.textContent = text;
+    businessSavedEl.className = good ? "notice success" : "notice";
   }
 
   function badgeClass(status) {
@@ -530,11 +553,11 @@
     const error = await upsertSettings(user.id, { business_name: businessName || null });
 
     if (error) {
-      businessSavedEl.textContent = error.message;
+      setBusinessMsg(error.message);
       return;
     }
 
-    businessSavedEl.textContent = "Business name saved.";
+    setBusinessMsg("Business name saved.", true);
   });
 
   function formatDate(value) {
@@ -638,7 +661,7 @@
     bookingStatusEl.value = "Enquiry";
     dueDateEl.value = "";
     bookingNoteEl.value = "";
-    setMsg("Booking saved.");
+    setMsg("Booking saved.", true);
 
     await load();
   }
@@ -715,11 +738,27 @@
     dateEl.value = "";
     noteEl.value = "";
 
-    setMsg("Payment saved.");
+    setMsg("Payment saved.", true);
+    await load();
+  }
+
+  async function deletePayment(paymentId) {
+    const { error } = await supabase
+      .from("payments")
+      .delete()
+      .eq("id", paymentId);
+
+    if (error) {
+      setMsg(error.message);
+      return;
+    }
+
+    setMsg("Payment deleted.", true);
     await load();
   }
 
   window.savePayment = addPayment;
+  window.deletePayment = deletePayment;
 
   window.delBooking = async function(id) {
     const { error } = await supabase
@@ -732,7 +771,7 @@
       return;
     }
 
-    setMsg("Booking deleted.");
+    setMsg("Booking deleted.", true);
     await load();
   };
 
@@ -778,7 +817,7 @@
       return;
     }
 
-    setMsg("Booking updated.");
+    setMsg("Booking updated.", true);
     await load();
   };
 
@@ -795,7 +834,7 @@
       return;
     }
 
-    setMsg("Booking moved.");
+    setMsg("Booking moved.", true);
     await load();
   };
 
@@ -994,8 +1033,13 @@
                             ? `<div class="empty">No payments yet</div>`
                             : payments.map(p => `
                               <div class="payment-row">
-                                <div>${p.payment_type || "Payment"} • ${formatDate(p.payment_date)}${p.note ? ` • ${p.note}` : ""}</div>
-                                <div>${formatMoney(p.amount)}</div>
+                                <div class="payment-left">
+                                  ${p.payment_type || "Payment"} • ${formatDate(p.payment_date)}${p.note ? ` • ${p.note}` : ""}
+                                </div>
+                                <div class="payment-actions">
+                                  <div>${formatMoney(p.amount)}</div>
+                                  <button class="small-btn danger-btn" type="button" onclick="deletePayment('${p.id}')">Delete</button>
+                                </div>
                               </div>
                             `).join("")
                         }
