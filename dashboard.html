@@ -22,7 +22,10 @@
       --radius:24px;
     }
 
-    * { box-sizing: border-box; }
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
 
     body{
       margin:0;
@@ -31,7 +34,7 @@
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
       background:
         radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
-        radial-gradient(circle at top right, rgba(255,59,48,0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
@@ -50,7 +53,7 @@
     }
 
     .card{
-      padding:18px;
+      padding:20px;
       margin-top:16px;
     }
 
@@ -60,6 +63,35 @@
       align-items:flex-start;
       gap:16px;
       flex-wrap:wrap;
+    }
+
+    .brand-wrap{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand-icon{
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,0.08);
+      font-size:22px;
+      color:#fff;
+      flex:0 0 auto;
+    }
+
+    .brand-title{
+      margin:0 0 4px 0;
+      font-size:26px;
+      letter-spacing:-0.03em;
+    }
+
+    .muted{
+      color:var(--muted);
     }
 
     .logout{
@@ -74,26 +106,6 @@
       cursor:pointer;
     }
 
-    .muted{ color:var(--muted); }
-
-    .hero{
-      margin-top:16px;
-      padding:22px;
-    }
-
-    .hero h1{
-      margin:0 0 8px 0;
-      font-size:34px;
-      letter-spacing:-0.04em;
-    }
-
-    .hero p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.55;
-      max-width:760px;
-    }
-
     .user-pill{
       margin-top:14px;
       padding:12px 14px;
@@ -102,6 +114,26 @@
       border:1px solid rgba(255,255,255,0.08);
       color:var(--muted);
       word-break:break-word;
+    }
+
+    .hero{
+      padding:24px;
+      margin-top:16px;
+    }
+
+    .hero h1{
+      margin:0 0 10px 0;
+      font-size:34px;
+      letter-spacing:-0.05em;
+      line-height:1.05;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      max-width:760px;
+      font-size:16px;
     }
 
     .grid{
@@ -115,7 +147,7 @@
       display:block;
       text-decoration:none;
       color:inherit;
-      padding:20px;
+      padding:22px;
       min-height:170px;
       transition:transform .15s ease, background .15s ease, border-color .15s ease;
     }
@@ -129,8 +161,10 @@
     .tile-head{
       display:flex;
       align-items:center;
+      justify-content:center;
       gap:14px;
       margin-bottom:14px;
+      text-align:center;
     }
 
     .tile-icon{
@@ -143,22 +177,34 @@
       background:rgba(255,255,255,0.08);
       font-size:24px;
       flex:0 0 auto;
+      filter:grayscale(1) saturate(0);
     }
 
     .tile-title{
-      font-size:22px;
+      font-size:24px;
       font-weight:700;
-      letter-spacing:-0.02em;
+      letter-spacing:-0.03em;
       line-height:1.1;
     }
 
     .tile-desc{
       color:var(--muted);
-      line-height:1.45;
+      line-height:1.5;
       font-size:15px;
+      text-align:center;
+      max-width:420px;
+      margin:0 auto;
     }
 
-    @media (max-width:820px){
+    .footer-note{
+      margin-top:16px;
+      padding:16px 18px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    @media (max-width:860px){
       .grid{
         grid-template-columns:1fr;
       }
@@ -174,7 +220,11 @@
       }
 
       .tile-title{
-        font-size:20px;
+        font-size:22px;
+      }
+
+      .brand-title{
+        font-size:24px;
       }
     }
   </style>
@@ -184,10 +234,14 @@
 
     <div class="glass card">
       <div class="topbar">
-        <div>
-          <h2 style="margin:0 0 6px 0;">Pace</h2>
-          <div class="muted">Dashboard</div>
+        <div class="brand-wrap">
+          <div class="brand-icon">◌</div>
+          <div>
+            <h2 class="brand-title">Pace</h2>
+            <div class="muted">Dashboard</div>
+          </div>
         </div>
+
         <button id="logoutBtn" class="logout" type="button">Log out</button>
       </div>
 
@@ -196,13 +250,13 @@
 
     <div class="glass hero">
       <h1 id="heroTitle">Move at your own pace.</h1>
-      <p id="heroBlurb">Your personal system for planning, bookings, attendance and money — clean, private and easy to return to.</p>
+      <p id="heroBlurb">Your personal system for planning, work, attendance, bookings and money — calm, private and easy to use.</p>
     </div>
 
     <div class="grid">
       <a class="tile glass" href="life-test.html">
         <div class="tile-head">
-          <div class="tile-icon">✓</div>
+          <div class="tile-icon">✅</div>
           <div class="tile-title">To Do</div>
         </div>
         <div class="tile-desc">Life, house, money, business and work tasks with editable items.</div>
@@ -210,26 +264,26 @@
 
       <a class="tile glass" href="attendance-test.html">
         <div class="tile-head">
-          <div class="tile-icon">◫</div>
-          <div class="tile-title">Attendance</div>
+          <div class="tile-icon">🏢</div>
+          <div class="tile-title">Office</div>
         </div>
-        <div class="tile-desc">Office days, policy tracking, bank holidays and monthly progress.</div>
+        <div class="tile-desc">Office days, policy tracking, bank holidays and attendance progress.</div>
       </a>
 
       <a class="tile glass" href="bookings-test.html">
         <div class="tile-head">
-          <div class="tile-icon">◌</div>
+          <div class="tile-icon">📆</div>
           <div class="tile-title">Bookings</div>
         </div>
-        <div class="tile-desc">Jobs, payments, balances, due dates, overdue items and coming up.</div>
+        <div class="tile-desc">Jobs, payments, balances, due dates, overdue items and what is coming up next.</div>
       </a>
 
       <a class="tile glass" href="finance-test.html">
         <div class="tile-head">
-          <div class="tile-icon">◍</div>
+          <div class="tile-icon">💷</div>
           <div class="tile-title">Finance</div>
         </div>
-        <div class="tile-desc">Life and business money tracking with personalised fixed bills.</div>
+        <div class="tile-desc">Life and business money tracking with personalised fixed bills and cleaner totals.</div>
       </a>
     </div>
 
@@ -263,7 +317,7 @@
         return null;
       }
 
-      userPill.textContent = `Signed in as ${data.session.user.email}`;
+      userPill.textContent = `${data.session.user.email}`;
       return data.session.user;
     }
 
@@ -276,7 +330,7 @@
 
       if (data?.business_name) {
         heroTitle.textContent = `${data.business_name}, organised.`;
-        heroBlurb.textContent = `Everything for ${data.business_name} in one clean place — tasks, attendance, bookings and money.`;
+        heroBlurb.textContent = `Everything for ${data.business_name} in one clean place — tasks, office, bookings and money.`;
       }
     }
 
