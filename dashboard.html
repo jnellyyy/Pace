@@ -488,7 +488,8 @@
     const page = document.getElementById("page");
     const heroTitle = document.getElementById("heroTitle");
     const heroBlurb = document.getElementById("heroBlurb");
-
+    const creatorsTile = document.getElementById("creatorsTile");
+    const OWNER_EMAIL = "janelle.lamptey@gmail.com";
     async function checkSession(){
       const { data } = await supabase.auth.getSession();
 
