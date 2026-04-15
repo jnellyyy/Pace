@@ -27,9 +27,7 @@
       --blur:18px;
       --radius:24px;
     }
-
     *{box-sizing:border-box}
-
     body{
       margin:0;
       padding:18px;
@@ -40,12 +38,7 @@
         radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
-
-    .wrap{
-      max-width:1220px;
-      margin:0 auto;
-    }
-
+    .wrap{max-width:1220px;margin:0 auto;}
     .glass{
       background:var(--panel);
       border:1px solid var(--line);
@@ -54,230 +47,93 @@
       -webkit-backdrop-filter:blur(var(--blur));
       box-shadow:var(--shadow);
     }
-
-    .card{
-      padding:18px;
-      margin-top:16px;
-    }
-
+    .card{padding:18px;margin-top:16px;}
     .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px;
     }
-
     .back-btn{
-      width:auto;
-      padding:10px 14px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.08);
-      color:#fff;
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-block;
+      width:auto;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,0.08);
+      color:#fff;border:none;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;
     }
-
-    .muted{ color:var(--muted); }
-    .notice{ color:#bbb; white-space:pre-wrap; margin-top:10px; min-height:18px; }
-    .success{ color:#8ff0b2; }
-
+    .muted{color:var(--muted);}
+    .notice{color:#bbb;white-space:pre-wrap;margin-top:10px;min-height:18px;}
+    .success{color:#8ff0b2;}
     .settings-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr auto;
-      gap:10px;
-      align-items:end;
+      display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end;
     }
-
     .kpis{
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:12px;
-      margin-top:12px;
+      display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-top:12px;
     }
-
     .kpi{
-      background:var(--panel-strong);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:14px;
+      background:var(--panel-strong);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:14px;
     }
-
-    .kpi-title{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-
-    .kpi-value{
-      font-size:22px;
-      font-weight:700;
-      letter-spacing:-0.03em;
-    }
-
-    .good{ color:var(--green); }
-    .bad{ color:var(--red); }
-    .blue{ color:var(--blue); }
-    .amber{ color:var(--amber); }
-    .purple{ color:var(--purple); }
-
+    .kpi-title{font-size:12px;color:var(--muted);margin-bottom:6px;}
+    .kpi-value{font-size:22px;font-weight:700;letter-spacing:-0.03em;}
+    .good{color:var(--green);}
+    .bad{color:var(--red);}
+    .blue{color:var(--blue);}
+    .amber{color:var(--amber);}
+    .purple{color:var(--purple);}
     .split{
-      display:grid;
-      grid-template-columns:0.95fr 1.05fr;
-      gap:16px;
-      margin-top:16px;
+      display:grid;grid-template-columns:0.95fr 1.05fr;gap:16px;margin-top:16px;
     }
-
     .subcard{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:16px;
-      margin-top:14px;
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:16px;margin-top:14px;
     }
-
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .row-3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
-    }
-
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
     input, select, button{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.10);
-      color:#fff;
-      font:inherit;
+      width:100%;padding:12px;margin-top:10px;border-radius:14px;background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.10);color:#fff;font:inherit;
     }
-
-    input::placeholder{
-      color:#9da6b5;
-    }
-
+    input::placeholder{color:#9da6b5;}
     button{
-      background:var(--accent);
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-      transition:transform .12s ease, opacity .12s ease;
+      background:var(--accent);border:none;font-weight:700;cursor:pointer;transition:transform .12s ease, opacity .12s ease;
     }
-
-    button:hover{ transform:translateY(-1px); }
-    button:active{ transform:translateY(0); opacity:0.92; }
-
+    button:hover{transform:translateY(-1px);}
+    button:active{transform:translateY(0);opacity:0.92;}
     .small-btn{
-      width:auto;
-      margin:0;
-      padding:8px 10px;
-      background:rgba(255,255,255,0.10);
-      font-size:13px;
-      border-radius:12px;
+      width:auto;margin:0;padding:8px 10px;background:rgba(255,255,255,0.10);font-size:13px;border-radius:12px;
     }
-
-    .danger-btn{ background:rgba(239,68,68,0.18); }
-    .save-btn{ background:rgba(34,197,94,0.22); }
-
-    .progress-wrap{ margin-top:12px; }
+    .danger-btn{background:rgba(239,68,68,0.18);}
+    .save-btn{background:rgba(34,197,94,0.22);}
+    .progress-wrap{margin-top:12px;}
     .progress-label{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:6px;
+      display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);margin-bottom:6px;
     }
     .progress-bar{
-      height:12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.08);
-      overflow:hidden;
+      height:12px;border-radius:999px;background:rgba(255,255,255,0.08);overflow:hidden;
     }
     .progress-fill{
-      height:100%;
-      border-radius:999px;
-      background:linear-gradient(90deg, var(--accent), #ff6b63);
-      width:0%;
-      transition:width .25s ease;
+      height:100%;border-radius:999px;background:linear-gradient(90deg, var(--accent), #ff6b63);width:0%;transition:width .25s ease;
     }
-
     .item{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:14px 0;
-      border-bottom:1px solid rgba(255,255,255,0.08);
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);
     }
-
-    .item:last-child{ border-bottom:none; }
-
-    .item-title{
-      font-weight:700;
-      margin-bottom:4px;
-    }
-
-    .item-meta{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .item-money{
-      font-weight:700;
-      white-space:nowrap;
-    }
-
-    .inline-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:8px;
-    }
-
-    .edit-box{
-      margin-top:10px;
-      padding-top:10px;
-      border-top:1px dashed rgba(255,255,255,0.12);
-    }
-
-    .empty{
-      color:var(--muted);
-      padding:8px 0 2px;
-    }
-
+    .item:last-child{border-bottom:none;}
+    .item-title{font-weight:700;margin-bottom:4px;}
+    .item-meta{font-size:12px;color:var(--muted);line-height:1.45;}
+    .item-money{font-weight:700;white-space:nowrap;}
+    .inline-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+    .edit-box{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.12);}
+    .empty{color:var(--muted);padding:8px 0 2px;}
     .pill{
-      display:inline-block;
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      color:#fff;
-      margin-top:6px;
+      display:inline-block;font-size:11px;padding:4px 8px;border-radius:999px;color:#fff;margin-top:6px;
     }
-
-    .pill-below{ background:rgba(34,197,94,0.85); }
-    .pill-over{ background:rgba(239,68,68,0.85); }
-
+    .pill-below{background:rgba(34,197,94,0.85);}
+    .pill-over{background:rgba(239,68,68,0.85);}
+    .celebrate{
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(34,197,94,0.16);
+      border:1px solid rgba(34,197,94,0.35);
+      color:#bdf7cc;
+      font-weight:700;
+      display:none;
+    }
     @media (max-width:1100px){
-      .split,
-      .kpis,
-      .settings-grid,
-      .row,
-      .row-3{
-        grid-template-columns:1fr;
-      }
+      .split,.kpis,.settings-grid,.row,.row-3{grid-template-columns:1fr;}
     }
   </style>
 </head>
@@ -288,13 +144,14 @@
       <div class="topbar">
         <div>
           <h2 style="margin:0;">Pace Creators</h2>
-          <p class="muted" style="margin:6px 0 0 0;">Live target, order log, tax-year total and suggested set-aside in one place.</p>
+          <p class="muted" style="margin:6px 0 0 0;">Daily target plus tax-year tracking from the same order log.</p>
         </div>
         <a class="back-btn" href="dashboard.html">← Dashboard</a>
       </div>
 
       <div class="settings-grid">
-        <input id="targetAmount" type="number" placeholder="Target amount e.g. 300">
+        <input id="targetDate" type="date">
+        <input id="dailyTarget" type="number" placeholder="Daily target e.g. 30">
         <input id="thresholdAmount" type="number" placeholder="Threshold e.g. 1000">
         <input id="setAsideRate" type="number" placeholder="Set-aside % e.g. 20">
         <button id="saveSettingsBtn" type="button">Save</button>
@@ -306,12 +163,16 @@
 
       <div class="progress-wrap">
         <div class="progress-label">
-          <span>Progress to target</span>
-          <span id="progressText">£0 / £0</span>
+          <span>Progress to today’s target</span>
+          <span id="progressText">£0.00 / £0.00</span>
         </div>
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
+      </div>
+
+      <div class="celebrate" id="celebrateBox">
+        🎉 Daily target hit. Anything extra today is above target.
       </div>
     </div>
 
@@ -319,7 +180,7 @@
       <div class="glass card">
         <div class="subcard" style="margin-top:0;">
           <h3 style="margin-bottom:6px;">Add earning</h3>
-          <p class="muted" style="margin-bottom:0;">Add each order, or one weekly total if that is easier.</p>
+          <p class="muted" style="margin-bottom:0;">Use single order for daily tracking. Use weekly total if you just want tax logging.</p>
 
           <div class="row">
             <input id="entryAmount" type="number" placeholder="Amount">
@@ -369,7 +230,8 @@
       }
     );
 
-    const targetAmountEl = document.getElementById("targetAmount");
+    const targetDateEl = document.getElementById("targetDate");
+    const dailyTargetEl = document.getElementById("dailyTarget");
     const thresholdAmountEl = document.getElementById("thresholdAmount");
     const setAsideRateEl = document.getElementById("setAsideRate");
     const saveSettingsBtn = document.getElementById("saveSettingsBtn");
@@ -387,9 +249,11 @@
     const entriesListEl = document.getElementById("entriesList");
     const progressFillEl = document.getElementById("progressFill");
     const progressTextEl = document.getElementById("progressText");
+    const celebrateBoxEl = document.getElementById("celebrateBox");
 
     let settings = {
-      target_amount: 0,
+      target_date: "",
+      daily_target: 0,
       threshold_amount: 1000,
       set_aside_rate: 20
     };
@@ -439,14 +303,15 @@
     }
 
     function calculateFigures() {
-      const target = Number(settings.target_amount || 0);
+      const targetDate = settings.target_date || todayString();
+      const dailyTarget = Number(settings.daily_target || 0);
       const threshold = Number(settings.threshold_amount || 1000);
       const setAsideRate = Number(settings.set_aside_rate || 20);
 
-      const totalMade = entries.reduce((sum, e) => sum + Number(e.amount || 0), 0);
-      const leftToTarget = Math.max(target - totalMade, 0);
-      const progress = target > 0 ? Math.min((totalMade / target) * 100, 100) : 0;
-      const entryCount = entries.length;
+      const todaysEntries = entries.filter(e => e.entry_date === targetDate);
+      const todayMade = todaysEntries.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+      const leftToday = Math.max(dailyTarget - todayMade, 0);
+      const progress = dailyTarget > 0 ? Math.min((todayMade / dailyTarget) * 100, 100) : 0;
 
       const taxYear = getTaxYearRange(new Date());
       const taxYearTotal = entries
@@ -458,18 +323,18 @@
       const setAsideSoFar = taxYearTotal * (setAsideRate / 100);
 
       return {
-        target,
-        threshold,
-        setAsideRate,
-        totalMade,
-        leftToTarget,
+        targetDate,
+        dailyTarget,
+        todayMade,
+        leftToday,
         progress,
-        entryCount,
+        taxYearLabel: taxYear.label,
         taxYearTotal,
+        threshold,
         overThreshold,
         thresholdLeft,
-        setAsideSoFar,
-        taxYearLabel: taxYear.label
+        setAsideRate,
+        setAsideSoFar
       };
     }
 
@@ -478,20 +343,20 @@
 
       kpisEl.innerHTML = `
         <div class="kpi">
-          <div class="kpi-title">Target</div>
-          <div class="kpi-value">${money(f.target)}</div>
+          <div class="kpi-title">Target date</div>
+          <div class="kpi-value">${f.targetDate || "-"}</div>
         </div>
         <div class="kpi">
-          <div class="kpi-title">Made so far</div>
-          <div class="kpi-value good">${money(f.totalMade)}</div>
+          <div class="kpi-title">Daily target</div>
+          <div class="kpi-value">${money(f.dailyTarget)}</div>
         </div>
         <div class="kpi">
-          <div class="kpi-title">Left to target</div>
-          <div class="kpi-value ${f.leftToTarget > 0 ? "amber" : "good"}">${money(f.leftToTarget)}</div>
+          <div class="kpi-title">Today made</div>
+          <div class="kpi-value good">${money(f.todayMade)}</div>
         </div>
         <div class="kpi">
-          <div class="kpi-title">Progress</div>
-          <div class="kpi-value blue">${f.progress.toFixed(0)}%</div>
+          <div class="kpi-title">Left today</div>
+          <div class="kpi-value ${f.leftToday > 0 ? "amber" : "good"}">${money(f.leftToday)}</div>
         </div>
         <div class="kpi">
           <div class="kpi-title">Tax year ${f.taxYearLabel}</div>
@@ -509,8 +374,9 @@
         </div>
       `;
 
-      progressTextEl.textContent = `${money(f.totalMade)} / ${money(f.target)}`;
+      progressTextEl.textContent = `${money(f.todayMade)} / ${money(f.dailyTarget)}`;
       progressFillEl.style.width = `${f.progress}%`;
+      celebrateBoxEl.style.display = f.dailyTarget > 0 && f.leftToday === 0 ? "block" : "none";
     }
 
     function renderEntries() {
@@ -574,10 +440,6 @@
       return user;
     }
 
-    async function ensureSettingsColumns() {
-      // no-op in frontend; just here for readability
-    }
-
     async function loadSettings(userId) {
       const { data, error } = await supabase
         .from("creators_settings")
@@ -591,12 +453,14 @@
       }
 
       settings = {
-        target_amount: Number(data?.target_amount || 0),
+        target_date: data?.target_date || todayString(),
+        daily_target: Number(data?.daily_target || 0),
         threshold_amount: Number(data?.threshold_amount || 1000),
         set_aside_rate: Number(data?.set_aside_rate || 20)
       };
 
-      targetAmountEl.value = settings.target_amount || "";
+      targetDateEl.value = settings.target_date || "";
+      dailyTargetEl.value = settings.daily_target || "";
       thresholdAmountEl.value = settings.threshold_amount || "";
       setAsideRateEl.value = settings.set_aside_rate || "";
     }
@@ -621,7 +485,8 @@
       const user = await getUser();
       if (!user) return;
 
-      const target = Number(targetAmountEl.value || 0);
+      const targetDate = targetDateEl.value || todayString();
+      const dailyTarget = Number(dailyTargetEl.value || 0);
       const threshold = Number(thresholdAmountEl.value || 1000);
       const setAsideRate = Number(setAsideRateEl.value || 20);
 
@@ -629,7 +494,8 @@
         .from("creators_settings")
         .upsert([{
           user_id: user.id,
-          target_amount: target,
+          target_date: targetDate,
+          daily_target: dailyTarget,
           threshold_amount: threshold,
           set_aside_rate: setAsideRate
         }], { onConflict: "user_id" });
