@@ -397,62 +397,76 @@
         <p id="heroBlurb">Your system for life, work, bookings and money — all in one place.</p>
       </div>
 
-      <div class="grid">
-        <a class="tile glass" href="life-test.html">
-          <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">✅</div>
-            </div>
-            <h3 class="tile-title">To Do</h3>
-          </div>
-          <div class="tile-desc">
-            Tasks across life, house, work and business.
-          </div>
-          <div class="tile-arrow">↗</div>
-        </a>
-
-        <a class="tile glass" href="attendance-test.html">
-          <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">🏢</div>
-            </div>
-            <h3 class="tile-title">Office</h3>
-          </div>
-          <div class="tile-desc">
-            Track office days, rules and attendance targets.
-          </div>
-          <div class="tile-arrow">↗</div>
-        </a>
-
-        <a class="tile glass" href="bookings-test.html">
-          <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">📆</div>
-            </div>
-            <h3 class="tile-title">Bookings</h3>
-          </div>
-          <div class="tile-desc">
-            Manage jobs, deposits, balances and due dates.
-          </div>
-          <div class="tile-arrow">↗</div>
-        </a>
-
-        <a class="tile glass" href="finance-test.html">
-          <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">💷</div>
-            </div>
-            <h3 class="tile-title">Finance</h3>
-          </div>
-          <div class="tile-desc">
-            Track personal and business money cleanly.
-          </div>
-          <div class="tile-arrow">↗</div>
-        </a>
+<div class="grid">
+  <a class="tile glass" href="life-test.html">
+    <div class="tile-head">
+      <div class="tile-icon-wrap">
+        <div class="tile-icon">✅</div>
       </div>
-
+      <h3 class="tile-title">To Do</h3>
     </div>
-  </div>
+    <div class="tile-desc">
+      Tasks across life, house, work and business.
+    </div>
+    <div class="tile-arrow">↗</div>
+  </a>
+
+  <a class="tile glass" href="attendance-test.html">
+    <div class="tile-head">
+      <div class="tile-icon-wrap">
+        <div class="tile-icon">🏢</div>
+      </div>
+      <h3 class="tile-title">Office</h3>
+    </div>
+    <div class="tile-desc">
+      Track office days, rules and attendance targets.
+    </div>
+    <div class="tile-arrow">↗</div>
+  </a>
+
+  <a class="tile glass" href="bookings-test.html">
+    <div class="tile-head">
+      <div class="tile-icon-wrap">
+        <div class="tile-icon">📆</div>
+      </div>
+      <h3 class="tile-title">Bookings</h3>
+    </div>
+    <div class="tile-desc">
+      Manage jobs, deposits, balances and due dates.
+    </div>
+    <div class="tile-arrow">↗</div>
+  </a>
+
+  <a class="tile glass" href="finance-test.html">
+    <div class="tile-head">
+      <div class="tile-icon-wrap">
+        <div class="tile-icon">💷</div>
+      </div>
+      <h3 class="tile-title">Finance</h3>
+    </div>
+    <div class="tile-desc">
+      Track personal and business money cleanly.
+    </div>
+    <div class="tile-arrow">↗</div>
+  </a>
+
+  <!-- 🔒 PRIVATE: CREATORS -->
+  <a class="tile glass" href="creators-test.html" id="creatorsTile" style="display:none;">
+    <div class="tile-head">
+      <div class="tile-icon-wrap">
+        <div class="tile-icon">🎬</div>
+      </div>
+      <h3 class="tile-title">Creators</h3>
+    </div>
+    <div class="tile-desc">
+      Track income, target progress and threshold status.
+    </div>
+    <div class="tile-arrow">↗</div>
+  </a>
+</div>
+
+</div>
+</div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -506,6 +520,9 @@
 
     async function boot() {
       const user = await checkSession();
+      if (user && (user.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+  creatorsTile.style.display = "block";
+}
 
       if (user) {
         await loadSettings(user.id);
