@@ -9,12 +9,13 @@
 <link rel="manifest" href="/Pace/site.webmanifest">
 <link rel="apple-touch-icon" href="/Pace/icon-180.png">
 <link rel="icon" href="/Pace/icon-32.png">
-<meta name="theme-color" content="#0f1115">
+<meta name="theme-color" content="#050507">
 
 <style>
 :root{
   --bg:#050507;
   --card:#1c1d21;
+  --sheet:#111216;
   --line:rgba(255,255,255,.12);
   --text:#f5f5f7;
   --muted:#8e8e93;
@@ -22,7 +23,15 @@
   --green:#22c55e;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  max-width:100%;
+  overflow-x:hidden;
+}
 
 body{
   margin:0;
@@ -34,11 +43,17 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
 }
 
+.page{
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+}
+
 .top{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:42px;
+  margin-bottom:38px;
 }
 
 .circle-btn{
@@ -53,34 +68,41 @@ body{
   align-items:center;
   justify-content:center;
   text-decoration:none;
+  flex:0 0 auto;
 }
 
 h1{
   font-size:44px;
   margin:0;
   letter-spacing:-.06em;
+  line-height:1;
 }
 
 .count{
   color:var(--muted);
-  margin-top:4px;
+  margin-top:8px;
   font-size:18px;
 }
 
 .grid{
+  width:100%;
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:26px 18px;
+  grid-template-columns:repeat(auto-fill, minmax(170px, 1fr));
+  gap:28px 20px;
   margin-top:34px;
 }
 
 .note-card{
+  min-width:0;
   cursor:pointer;
 }
 
 .preview{
-  height:132px;
-  border-radius:12px;
+  width:100%;
+  aspect-ratio:1.45 / 1;
+  min-height:116px;
+  max-height:150px;
+  border-radius:14px;
   background:var(--card);
   border:1px solid rgba(255,255,255,.16);
   padding:12px;
@@ -92,6 +114,9 @@ h1{
   font-size:12px;
   font-weight:800;
   margin-bottom:7px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .preview-line{
@@ -105,30 +130,39 @@ h1{
 
 .note-title{
   margin-top:12px;
-  font-size:20px;
-  line-height:1.1;
+  font-size:19px;
+  line-height:1.12;
   text-align:center;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  word-break:break-word;
 }
 
 .note-date{
   color:var(--muted);
-  font-size:16px;
+  font-size:15px;
   text-align:center;
-  margin-top:3px;
+  margin-top:4px;
 }
 
 .bottom-bar{
   position:fixed;
-  left:18px;
-  right:18px;
+  left:50%;
   bottom:20px;
+  transform:translateX(-50%);
+  width:calc(100% - 36px);
+  max-width:760px;
   display:flex;
   gap:14px;
   align-items:center;
+  z-index:5;
 }
 
 .search{
   flex:1;
+  min-width:0;
   height:58px;
   border-radius:999px;
   background:#1c1c1e;
@@ -146,6 +180,7 @@ h1{
   border:1px solid var(--line);
   color:#fff;
   font-size:28px;
+  flex:0 0 auto;
 }
 
 .modal{
@@ -161,10 +196,16 @@ h1{
   width:100%;
   max-height:92vh;
   overflow:auto;
-  background:#111216;
+  background:var(--sheet);
   border-radius:28px 28px 0 0;
   padding:22px;
   border-top:1px solid var(--line);
+}
+
+.sheet-inner{
+  width:100%;
+  max-width:720px;
+  margin:0 auto;
 }
 
 .sheet-top{
@@ -229,7 +270,9 @@ button{
 
 .item-text{
   flex:1;
+  min-width:0;
   line-height:1.4;
+  word-break:break-word;
 }
 
 .item-text.done{
@@ -244,6 +287,7 @@ button{
   background:rgba(239,68,68,.18);
   margin-top:0;
   font-size:12px;
+  flex:0 0 auto;
 }
 
 .status{
@@ -253,652 +297,64 @@ button{
   margin-top:10px;
 }
 
-@media(max-width:720px){
-  body{padding:18px;padding-bottom:100px;}
-  h1{font-size:40px;}
-  .grid{grid-template-columns:repeat(2,1fr);}
-  .preview{height:116px;}
+@media(max-width:900px){
+  .page{
+    max-width:100%;
+  }
+
+  .grid{
+    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+    gap:24px 16px;
+  }
+}
+
+@media(max-width:520px){
+  body{
+    padding:18px;
+    padding-bottom:100px;
+  }
+
+  h1{
+    font-size:40px;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:24px 14px;
+  }
+
+  .preview{
+    min-height:110px;
+  }
+
+  .note-title{
+    font-size:18px;
+  }
+}
+
+@media(max-width:360px){
+  .grid{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="top">
-  <a href="dashboard.html" class="circle-btn">‹</a>
-  <button class="circle-btn" onclick="openNew()">＋</button>
-</div>
+<div class="page">
 
-<h1>Lists</h1>
-<div class="count" id="count">0 lists</div>
-
-<div class="grid" id="notesGrid"></div>
-
-<div class="bottom-bar">
-  <input id="search" class="search" placeholder="Search" oninput="render()">
-  <button class="add-btn" onclick="openNew()">✎</button>
-</div>
-
-<div class="modal" id="modal">
-  <div class="sheet">
-    <div class="sheet-top">
-      <button class="circle-btn" style="width:44px;height:44px;font-size:22px;margin:0;" onclick="closeModal()">×</button>
-    </div>
-
-    <input id="listTitle" placeholder="List title">
-    <button onclick="saveListTitle()">Save list title</button>
-
-    <div id="itemsWrap" style="margin-top:16px;"></div>
-
-    <input id="newItemText" placeholder="Add checklist item e.g. black dress / charger / passport">
-    <button onclick="addItem()">Add item</button>
-
-    <button class="danger" onclick="deleteList()">Delete whole list</button>
-
-    <div id="status" class="status"></div>
+  <div class="top">
+    <a href="dashboard.html" class="circle-btn">‹</a>
+    <button class="circle-btn" onclick="openNew()">＋</button>
   </div>
+
+  <h1>Lists</h1>
+  <div class="count" id="count">0 lists</div>
+
+  <div class="grid" id="notesGrid"></div>
+
 </div>
-
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const supabase = createClient(
-  "https://grgagroautlpphjsjpjh.supabase.co",
-  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true,
-      storage:localStorage
-    }
-  }
-);
-
-const notesGrid = document.getElementById("notesGrid");
-const countEl = document.getElementById("count");
-const modal = document.getElementById("modal");
-const listTitle = document.getElementById("listTitle");
-const newItemText = document.getElementById("newItemText");
-const itemsWrap = document.getElementById("itemsWrap");
-const searchEl = document.getElementById("search");
-const statusEl = document.getElementById("status");
-
-let user = null;
-let lists = [];
-let items = [];
-let activeId = null;
-
-function setStatus(text){
-  statusEl.textContent = text;
-}
-
-async function getUser(){
-  const { data } = await supabase.auth.getUser();
-  return data.user;
-}
-
-function formatDate(value){
-  if(!value) return "";
-  return new Date(value).toLocaleDateString("en-GB");
-}
-
-function itemsFor(listId){
-  return items.filter(i => i.list_id === listId);
-}
-
-async function load(){
-  user = await getUser();
-
-  if(!user){
-    window.location.href = "index.html";
-    return;
-  }
-
-  const [listsRes, itemsRes] = await Promise.all([
-    supabase
-      .from("lists")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending:false }),
-
-    supabase
-      .from("list_items")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending:true })
-  ]);
-
-  if(listsRes.error){
-    alert(listsRes.error.message);
-    return;
-  }
-
-  if(itemsRes.error){
-    alert(itemsRes.error.message);
-    return;
-  }
-
-  lists = listsRes.data || [];
-  items = itemsRes.data || [];
-
-  render();
-}
-
-window.render = function(){
-  const q = searchEl.value.toLowerCase();
-
-  const filtered = lists.filter(list => {
-    const listItems = itemsFor(list.id);
-    return (
-      (list.title || "").toLowerCase().includes(q) ||
-      listItems.some(item => (item.text || "").toLowerCase().includes(q))
-    );
-  });
-
-  countEl.textContent = `${filtered.length} ${filtered.length === 1 ? "list" : "lists"}`;
-
-  if(!filtered.length){
-    notesGrid.innerHTML = `<div style="color:#8e8e93;">No lists yet.</div>`;
-    return;
-  }
-
-  notesGrid.innerHTML = filtered.map(list => {
-    const previewItems = itemsFor(list.id).slice(0,5);
-
-    return `
-      <div class="note-card" onclick="openList('${list.id}')">
-        <div class="preview">
-          <div class="preview-title">${list.title || "Untitled"}</div>
-          ${
-            previewItems.length
-              ? previewItems.map(item => `
-                <div class="preview-line">
-                  ${item.done ? "☑" : "☐"} ${item.text || ""}
-                </div>
-              `).join("")
-              : `<div class="preview-line">No items yet</div>`
-          }
-        </div>
-        <div class="note-title">${list.title || "Untitled"}</div>
-        <div class="note-date">${formatDate(list.created_at)}</div>
-      </div>
-    `;
-  }).join("");
-}
-
-function renderActiveItems(){
-  const activeItems = itemsFor(activeId);
-
-  if(!activeId){
-    itemsWrap.innerHTML = `<div class="status">Save the list title first, then add items.</div>`;
-    return;
-  }
-
-  if(!activeItems.length){
-    itemsWrap.innerHTML = `<div class="status">No checklist items yet.</div>`;
-    return;
-  }
-
-  itemsWrap.innerHTML = activeItems.map(item => `
-    <div class="item-row" onclick="toggleItem('${item.id}', ${item.done ? "false" : "true"})">
-      <div class="check ${item.done ? "done" : ""}">
-        ${item.done ? "✓" : ""}
-      </div>
-
-      <div class="item-text ${item.done ? "done" : ""}">
-        ${item.text || ""}
-      </div>
-
-      <button class="delete-small" onclick="event.stopPropagation(); deleteItem('${item.id}')">Delete</button>
-    </div>
-  `).join("");
-}
-
-window.openNew = function(){
-  activeId = null;
-  listTitle.value = "";
-  newItemText.value = "";
-  setStatus("");
-  renderActiveItems();
-  modal.style.display = "flex";
-  setTimeout(() => listTitle.focus(), 150);
-}
-
-window.openList = function(id){
-  const list = lists.find(l => l.id === id);
-  if(!list) return;
-
-  activeId = id;
-  listTitle.value = list.title || "";
-  newItemText.value = "";
-  setStatus("");
-  renderActiveItems();
-  modal.style.display = "flex";
-  setTimeout(() => newItemText.focus(), 150);
-}
-
-window.closeModal = function(){
-  modal.style.display = "none";
-  activeId = null;
-}
-
-window.saveListTitle = async function(){
-  const title = listTitle.value.trim() || "Untitled";
-
-  if(activeId){
-    const { error } = await supabase
-      .from("lists")
-      .update({ title })
-      .eq("id", activeId);
-
-    if(error){
-      setStatus(error.message);
-      return;
-    }
-
-    setStatus("List title saved.");
-  } else {
-    const { data, error } = await supabase
-      .from("lists")
-      .insert([{ user_id:user.id, title }])
-      .select()
-      .single();
-
-    if(error){
-      setStatus(error.message);
-      return;
-    }
-
-    activeId = data.id;
-    setStatus("List created. Now add items.");
-  }
-
-  await load();
-  renderActiveItems();
-  newItemText.focus();
-}
-
-window.addItem = async function(){
-  const text = newItemText.value.trim();
-
-  if(!activeId){
-    setStatus("Save the list title first.");
-    return;
-  }
-
-  if(!text){
-    setStatus("Type an item first.");
-    return;
-  }
-
-  const { error } = await supabase
-    .from("list_items")
-    .insert([{
-      user_id:user.id,
-      list_id:activeId,
-      text,
-      done:false
-    }]);
-
-  if(error){
-    setStatus(error.message);
-    return;
-  }
-
-  newItemText.value = "";
-  setStatus("Item added.");
-  await load();
-  renderActiveItems();
-  newItemText.focus();
-}
-
-window.toggleItem = async function(id, done){
-  const { error } = await supabase
-    .from("list_items")
-    .update({ done })
-    .eq("id", id);
-
-  if(error){
-    setStatus(error.message);
-    return;
-  }
-
-  await load();
-  renderActiveItems();
-}
-
-window.deleteItem = async function(id){
-  const { error } = await supabase
-    .from("list_items")
-    .delete()
-    .eq("id", id);
-
-  if(error){
-    setStatus(error.message);
-    return;
-  }
-
-  await load();
-  renderActiveItems();
-}
-
-window.deleteList = async function(){
-  if(!activeId){
-    closeModal();
-    return;
-  }
-
-  const ok = confirm("Delete this whole list?");
-  if(!ok) return;
-
-  const { error } = await supabase
-    .from("lists")
-    .delete()
-    .eq("id", activeId);
-
-  if(error){
-    setStatus(error.message);
-    return;
-  }
-
-  closeModal();
-  await load();
-}
-
-newItemText.addEventListener("keydown", (e) => {
-  if(e.key === "Enter"){
-    e.preventDefault();
-    addItem();
-  }
-});
-
-listTitle.addEventListener("keydown", (e) => {
-  if(e.key === "Enter"){
-    e.preventDefault();
-    saveListTitle();
-  }
-});
-
-load();
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Pace Lists</title>
-
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
-<meta name="theme-color" content="#0f1115">
-
-<style>
-:root{
-  --bg:#050507;
-  --card:#1c1d21;
-  --line:rgba(255,255,255,.12);
-  --text:#f5f5f7;
-  --muted:#8e8e93;
-  --accent:#ff3b30;
-  --green:#22c55e;
-}
-
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  min-height:100vh;
-  padding:22px;
-  padding-bottom:100px;
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
-}
-
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:42px;
-}
-
-.circle-btn{
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  font-size:26px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-}
-
-h1{
-  font-size:44px;
-  margin:0;
-  letter-spacing:-.06em;
-}
-
-.count{
-  color:var(--muted);
-  margin-top:4px;
-  font-size:18px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:26px 18px;
-  margin-top:34px;
-}
-
-.note-card{
-  cursor:pointer;
-}
-
-.preview{
-  height:132px;
-  border-radius:12px;
-  background:var(--card);
-  border:1px solid rgba(255,255,255,.16);
-  padding:12px;
-  overflow:hidden;
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
-}
-
-.preview-title{
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:7px;
-}
-
-.preview-line{
-  font-size:10px;
-  color:#c7c7cc;
-  line-height:1.45;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.note-title{
-  margin-top:12px;
-  font-size:20px;
-  line-height:1.1;
-  text-align:center;
-}
-
-.note-date{
-  color:var(--muted);
-  font-size:16px;
-  text-align:center;
-  margin-top:3px;
-}
-
-.bottom-bar{
-  position:fixed;
-  left:18px;
-  right:18px;
-  bottom:20px;
-  display:flex;
-  gap:14px;
-  align-items:center;
-}
-
-.search{
-  flex:1;
-  height:58px;
-  border-radius:999px;
-  background:#1c1c1e;
-  border:1px solid var(--line);
-  color:#fff;
-  padding:0 18px;
-  font-size:20px;
-}
-
-.add-btn{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:#1c1c1e;
-  border:1px solid var(--line);
-  color:#fff;
-  font-size:28px;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.72);
-  display:none;
-  align-items:flex-end;
-  z-index:10;
-}
-
-.sheet{
-  width:100%;
-  max-height:92vh;
-  overflow:auto;
-  background:#111216;
-  border-radius:28px 28px 0 0;
-  padding:22px;
-  border-top:1px solid var(--line);
-}
-
-.sheet-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:14px;
-}
-
-input{
-  width:100%;
-  background:#1c1d21;
-  border:1px solid var(--line);
-  color:#fff;
-  border-radius:16px;
-  padding:14px;
-  font:inherit;
-  margin-top:10px;
-}
-
-button{
-  margin-top:12px;
-  width:100%;
-  padding:14px;
-  border-radius:16px;
-  border:none;
-  background:var(--accent);
-  color:#fff;
-  font-weight:800;
-  font:inherit;
-}
-
-.danger{
-  background:rgba(239,68,68,.22);
-}
-
-.item-row{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  cursor:pointer;
-}
-
-.check{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex:0 0 auto;
-}
-
-.check.done{
-  background:var(--green);
-}
-
-.item-text{
-  flex:1;
-  line-height:1.4;
-}
-
-.item-text.done{
-  text-decoration:line-through;
-  color:var(--muted);
-}
-
-.delete-small{
-  width:auto;
-  padding:7px 10px;
-  border-radius:10px;
-  background:rgba(239,68,68,.18);
-  margin-top:0;
-  font-size:12px;
-}
-
-.status{
-  color:var(--muted);
-  min-height:18px;
-  font-size:13px;
-  margin-top:10px;
-}
-
-@media(max-width:720px){
-  body{padding:18px;padding-bottom:100px;}
-  h1{font-size:40px;}
-  .grid{grid-template-columns:repeat(2,1fr);}
-  .preview{height:116px;}
-}
-</style>
-</head>
-
-<body>
-
-<div class="top">
-  <a href="dashboard.html" class="circle-btn">‹</a>
-  <button class="circle-btn" onclick="openNew()">＋</button>
-</div>
-
-<h1>Lists</h1>
-<div class="count" id="count">0 lists</div>
-
-<div class="grid" id="notesGrid"></div>
 
 <div class="bottom-bar">
   <input id="search" class="search" placeholder="Search" oninput="render()">
@@ -907,21 +363,23 @@ button{
 
 <div class="modal" id="modal">
   <div class="sheet">
-    <div class="sheet-top">
-      <button class="circle-btn" style="width:44px;height:44px;font-size:22px;margin:0;" onclick="closeModal()">×</button>
+    <div class="sheet-inner">
+      <div class="sheet-top">
+        <button class="circle-btn" style="width:44px;height:44px;font-size:22px;margin:0;" onclick="closeModal()">×</button>
+      </div>
+
+      <input id="listTitle" placeholder="List title">
+      <button onclick="saveListTitle()">Save list title</button>
+
+      <div id="itemsWrap" style="margin-top:16px;"></div>
+
+      <input id="newItemText" placeholder="Add checklist item e.g. black dress / charger / passport">
+      <button onclick="addItem()">Add item</button>
+
+      <button class="danger" onclick="deleteList()">Delete whole list</button>
+
+      <div id="status" class="status"></div>
     </div>
-
-    <input id="listTitle" placeholder="List title">
-    <button onclick="saveListTitle()">Save list title</button>
-
-    <div id="itemsWrap" style="margin-top:16px;"></div>
-
-    <input id="newItemText" placeholder="Add checklist item e.g. black dress / charger / passport">
-    <button onclick="addItem()">Add item</button>
-
-    <button class="danger" onclick="deleteList()">Delete whole list</button>
-
-    <div id="status" class="status"></div>
   </div>
 </div>
 
