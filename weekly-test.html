@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Pace Weekly Plan</title>
+
+<link rel="manifest" href="/Pace/site.webmanifest">
+<link rel="apple-touch-icon" href="/Pace/icon-180.png">
+<link rel="icon" href="/Pace/icon-32.png">
+<meta name="theme-color" content="#0f1115">
+
+<style>
+:root{
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel-strong:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.10);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --accent:#ff3b30;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --shadow:0 20px 50px rgba(0,0,0,0.35);
+  --blur:18px;
+  --radius:24px;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  padding:18px;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
+    radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+.wrap{max-width:1180px;margin:0 auto;}
+
+.glass{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  backdrop-filter:blur(var(--blur));
+  -webkit-backdrop-filter:blur(var(--blur));
+  box-shadow:var(--shadow);
+}
+
+.card{
+  padding:18px;
+  margin-top:16px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.back-btn{
+  width:auto;
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  border:none;
+  font-weight:700;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.muted{color:var(--muted);}
+.notice{color:#bbb;min-height:18px;margin-top:10px;}
+.success{color:#8ff0b2;}
+
+input,select,textarea,button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#fff;
+  font:inherit;
+}
+
+input::placeholder, textarea::placeholder{color:#9da6b5}
+
+textarea{
+  min-height:74px;
+  resize:vertical;
+}
+
+button{
+  background:var(--accent);
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button:hover{filter:brightness(1.05)}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.row-3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
+.days-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+  margin-top:16px;
+}
+
+.day-card{
+  padding:16px;
+}
+
+.day-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.day-title{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-0.04em;
+  margin:0;
+}
+
+.target-pill{
+  display:inline-block;
+  margin-top:6px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(245,158,11,0.18);
+  color:#ffd37a;
+  font-size:12px;
+  font-weight:700;
+}
+
+.section{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.section-title{
+  font-size:13px;
+  font-weight:800;
+  color:#fff;
+  margin-bottom:8px;
+}
+
+.item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+  padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.item:last-child{border-bottom:none}
+
+.item-left{
+  flex:1;
+  min-width:0;
+}
+
+.item-text{
+  font-size:14px;
+  line-height:1.45;
+}
+
+.item-time{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:2px;
+}
+
+.item-amount{
+  color:#ffd37a;
+  font-size:12px;
+  margin-top:3px;
+}
+
+.done .item-text{
+  text-decoration:line-through;
+  color:var(--muted);
+}
+
+.actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.small-btn{
+  width:auto;
+  margin:0;
+  padding:7px 9px;
+  border-radius:11px;
+  background:rgba(255,255,255,0.10);
+  font-size:12px;
+}
+
+.danger-btn{
+  background:rgba(239,68,68,0.18);
+}
+
+.add-box{
+  margin-top:12px;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.empty{
+  color:var(--muted);
+  font-size:13px;
+  padding:4px 0;
+}
+
+@media(max-width:900px){
+  .days-grid,.row,.row-3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="glass card">
+    <div class="topbar">
+      <div>
+        <h2 style="margin:0;">Weekly Plan</h2>
+        <p class="muted" style="margin:6px 0 0 0;">Plan your week by target, locations, tasks and pots.</p>
+      </div>
+      <a class="back-btn" href="dashboard.html">← Dashboard</a>
+    </div>
+    <p id="msg" class="notice"></p>
+  </div>
+
+  <div class="glass card">
+    <h3 style="margin:0 0 6px 0;">Add day</h3>
+
+    <div class="row-3">
+      <input id="dayDate" type="date">
+      <select id="dayName">
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+        <option>Saturday</option>
+        <option>Sunday</option>
+      </select>
+      <input id="dayTarget" placeholder="£ Target e.g. 30–35">
+    </div>
+
+    <textarea id="dayNotes" placeholder="Optional notes"></textarea>
+    <button id="saveDayBtn" type="button">Save day</button>
+  </div>
+
+  <div id="days" class="days-grid"></div>
+
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true,
+      storage:localStorage
+    }
+  }
+);
+
+const msgEl = document.getElementById("msg");
+const dayDateEl = document.getElementById("dayDate");
+const dayNameEl = document.getElementById("dayName");
+const dayTargetEl = document.getElementById("dayTarget");
+const dayNotesEl = document.getElementById("dayNotes");
+const saveDayBtn = document.getElementById("saveDayBtn");
+const daysEl = document.getElementById("days");
+
+let user = null;
+let days = [];
+let items = [];
+
+function setMsg(text, good=false){
+  msgEl.textContent = text;
+  msgEl.className = good ? "notice success" : "notice";
+}
+
+async function getUser(){
+  const { data } = await supabase.auth.getUser();
+  return data.user;
+}
+
+function formatDate(value){
+  if(!value) return "";
+  return new Date(value + "T00:00:00").toLocaleDateString("en-GB");
+}
+
+function itemsFor(dayId,type){
+  return items.filter(i => i.day_id === dayId && i.item_type === type);
+}
+
+function renderItemRows(rows){
+  if(!rows.length) return `<div class="empty">Nothing added yet.</div>`;
+
+  return rows.map(item => `
+    <div class="item ${item.done ? "done" : ""}">
+      <div class="item-left">
+        ${item.time_label ? `<div class="item-time">${item.time_label}</div>` : ""}
+        <div class="item-text">${item.text || ""}</div>
+        ${item.amount ? `<div class="item-amount">${item.amount}</div>` : ""}
+      </div>
+
+      <div class="actions">
+        <button class="small-btn" onclick="toggleItem('${item.id}', ${item.done ? "false" : "true"})">
+          ${item.done ? "Undo" : "Done"}
+        </button>
+        <button class="small-btn danger-btn" onclick="deleteItem('${item.id}')">Delete</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function render(){
+  if(!days.length){
+    daysEl.innerHTML = `<div class="glass card"><div class="empty">No weekly plan days yet.</div></div>`;
+    return;
+  }
+
+  daysEl.innerHTML = days.map(day => {
+    const locations = itemsFor(day.id,"location");
+    const plans = itemsFor(day.id,"plan");
+    const pots = itemsFor(day.id,"pot");
+
+    return `
+      <div class="glass day-card">
+        <div class="day-head">
+          <div>
+            <h3 class="day-title">${day.day_name || "Day"}</h3>
+            <div class="muted">${formatDate(day.day_date)}</div>
+            ${day.target ? `<div class="target-pill">£ Target ${day.target}</div>` : ""}
+          </div>
+
+          <button class="small-btn danger-btn" onclick="deleteDay('${day.id}')">Delete day</button>
+        </div>
+
+        ${day.notes ? `<p class="muted" style="margin-top:10px;">${day.notes}</p>` : ""}
+
+        <div class="section">
+          <div class="section-title">Locations</div>
+          ${renderItemRows(locations)}
+        </div>
+
+        <div class="section">
+          <div class="section-title">Plan</div>
+          ${renderItemRows(plans)}
+        </div>
+
+        <div class="section">
+          <div class="section-title">Pots</div>
+          ${renderItemRows(pots)}
+        </div>
+
+        <div class="add-box">
+          <div class="row-3">
+            <select id="type-${day.id}">
+              <option value="plan">Plan</option>
+              <option value="location">Location</option>
+              <option value="pot">Pot</option>
+            </select>
+            <input id="time-${day.id}" placeholder="Time e.g. 17:45–21:00">
+            <input id="amount-${day.id}" placeholder="Amount e.g. ~£35 / £25">
+          </div>
+
+          <input id="text-${day.id}" placeholder="What are you doing / adding?">
+          <button type="button" onclick="addItem('${day.id}')">Add to ${day.day_name}</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function load(){
+  user = await getUser();
+
+  if(!user){
+    window.location.href = "index.html";
+    return;
+  }
+
+  const [daysRes, itemsRes] = await Promise.all([
+    supabase
+      .from("weekly_days")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("day_date", { ascending:true }),
+    supabase
+      .from("weekly_items")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending:true })
+  ]);
+
+  if(daysRes.error){
+    setMsg(daysRes.error.message);
+    return;
+  }
+
+  if(itemsRes.error){
+    setMsg(itemsRes.error.message);
+    return;
+  }
+
+  days = daysRes.data || [];
+  items = itemsRes.data || [];
+
+  render();
+}
+
+saveDayBtn.addEventListener("click", async () => {
+  const dayDate = dayDateEl.value;
+  const dayName = dayNameEl.value;
+  const target = dayTargetEl.value.trim();
+  const notes = dayNotesEl.value.trim();
+
+  if(!dayDate){
+    setMsg("Choose a date.");
+    return;
+  }
+
+  const { error } = await supabase.from("weekly_days").insert([{
+    user_id:user.id,
+    day_date:dayDate,
+    day_name:dayName,
+    target,
+    notes:notes || null
+  }]);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  dayDateEl.value = "";
+  dayTargetEl.value = "";
+  dayNotesEl.value = "";
+
+  setMsg("Day saved.", true);
+  await load();
+});
+
+window.addItem = async function(dayId){
+  const type = document.getElementById(`type-${dayId}`).value;
+  const time = document.getElementById(`time-${dayId}`).value.trim();
+  const amount = document.getElementById(`amount-${dayId}`).value.trim();
+  const text = document.getElementById(`text-${dayId}`).value.trim();
+
+  if(!text){
+    setMsg("Add some text first.");
+    return;
+  }
+
+  const { error } = await supabase.from("weekly_items").insert([{
+    user_id:user.id,
+    day_id:dayId,
+    item_type:type,
+    time_label:time || null,
+    text,
+    amount:amount || null,
+    done:false
+  }]);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  setMsg("Item added.", true);
+  await load();
+};
+
+window.toggleItem = async function(id, done){
+  const { error } = await supabase
+    .from("weekly_items")
+    .update({ done })
+    .eq("id", id);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  await load();
+};
+
+window.deleteItem = async function(id){
+  const { error } = await supabase
+    .from("weekly_items")
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  setMsg("Item deleted.", true);
+  await load();
+};
+
+window.deleteDay = async function(id){
+  const { error } = await supabase
+    .from("weekly_days")
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  setMsg("Day deleted.", true);
+  await load();
+};
+
+load();
+</script>
+
+</body>
+</html>
