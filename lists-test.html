@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pace Lists</title>
+
+<style>
+body{
+  margin:0;
+  padding:18px;
+  background:#0f1115;
+  color:#fff;
+  font-family:-apple-system;
+}
+
+.card{
+  background:rgba(255,255,255,0.06);
+  padding:16px;
+  border-radius:16px;
+  margin-bottom:14px;
+}
+
+input, button{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:12px;
+  border:none;
+}
+
+button{
+  background:#ff3b30;
+  color:white;
+  font-weight:700;
+}
+
+.list{
+  margin-top:12px;
+}
+
+.item{
+  display:flex;
+  justify-content:space-between;
+  margin-top:8px;
+}
+
+.small-btn{
+  width:auto;
+  padding:6px 10px;
+  margin-left:6px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Lists</h2>
+
+<div class="card">
+  <input id="listTitle" placeholder="New list name">
+  <button onclick="createList()">Create list</button>
+</div>
+
+<div id="lists"></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+);
+
+let user;
+let lists = [];
+
+async function init(){
+  const { data } = await supabase.auth.getUser();
+  user = data.user;
+
+  if(!user){
+    window.location.href="index.html";
+    return;
+  }
+
+  loadLists();
+}
+
+async function loadLists(){
+  const { data } = await supabase
+    .from("lists")
+    .select("*")
+    .eq("user_id", user.id);
+
+  lists = data || [];
+
+  render();
+}
+
+function render(){
+  const container = document.getElementById("lists");
+
+  container.innerHTML = lists.map(list => `
+    <div class="card">
+      <h3>${list.title}</h3>
+
+      <input placeholder="Add item"
+        onkeydown="if(event.key==='Enter') addItem('${list.id}', this.value, this)">
+      
+      <div class="list" id="items-${list.id}"></div>
+    </div>
+  `).join("");
+
+  lists.forEach(loadItems);
+}
+
+async function loadItems(listId){
+  const { data } = await supabase
+    .from("list_items")
+    .select("*")
+    .eq("list_id", listId);
+
+  const el = document.getElementById(`items-${listId}`);
+
+  el.innerHTML = (data || []).map(item => `
+    <div class="item">
+      <span style="text-decoration:${item.done ? 'line-through':'none'}">
+        ${item.text}
+      </span>
+
+      <div>
+        <button class="small-btn" onclick="toggleDone('${item.id}', ${!item.done})">✔</button>
+        <button class="small-btn" onclick="deleteItem('${item.id}')">✕</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+window.createList = async function(){
+  const title = document.getElementById("listTitle").value;
+
+  if(!title) return;
+
+  await supabase.from("lists").insert([{
+    user_id:user.id,
+    title
+  }]);
+
+  document.getElementById("listTitle").value="";
+  loadLists();
+}
+
+window.addItem = async function(listId, text, input){
+  if(!text) return;
+
+  await supabase.from("list_items").insert([{
+    list_id:listId,
+    text
+  }]);
+
+  input.value="";
+  loadItems(listId);
+}
+
+window.toggleDone = async function(id, done){
+  await supabase.from("list_items")
+    .update({done})
+    .eq("id", id);
+
+  loadLists();
+}
+
+window.deleteItem = async function(id){
+  await supabase.from("list_items")
+    .delete()
+    .eq("id", id);
+
+  loadLists();
+}
+
+init();
+</script>
+
+</body>
+</html>
