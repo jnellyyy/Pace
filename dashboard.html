@@ -16,7 +16,6 @@
       --bg1:#0f1115;
       --bg2:#171a20;
       --panel:rgba(255,255,255,0.06);
-      --panel-strong:rgba(255,255,255,0.08);
       --line:rgba(255,255,255,0.10);
       --line-strong:rgba(255,255,255,0.16);
       --text:#f5f7fb;
@@ -27,14 +26,7 @@
       --radius:24px;
     }
 
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    html{
-      scroll-behavior:smooth;
-    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
     body{
       margin:0;
@@ -48,10 +40,7 @@
       overflow-x:hidden;
     }
 
-    .wrap{
-      max-width:1120px;
-      margin:0 auto;
-    }
+    .wrap{max-width:1120px;margin:0 auto}
 
     .glass{
       background:var(--panel);
@@ -62,10 +51,7 @@
       box-shadow:var(--shadow);
     }
 
-    .card{
-      padding:20px;
-      margin-top:16px;
-    }
+    .card{padding:20px;margin-top:16px}
 
     .topbar{
       display:flex;
@@ -79,7 +65,6 @@
       display:flex;
       align-items:center;
       gap:14px;
-      min-width:0;
     }
 
     .brand-icon{
@@ -87,7 +72,6 @@
       height:54px;
       border-radius:18px;
       overflow:hidden;
-      flex:0 0 auto;
       box-shadow:var(--shadow-soft);
       border:1px solid rgba(255,255,255,0.06);
       background:#111;
@@ -96,9 +80,8 @@
     .brand-icon img{
       width:100%;
       height:100%;
-      display:block;
       object-fit:cover;
-      border-radius:18px;
+      display:block;
     }
 
     .brand-title{
@@ -124,12 +107,6 @@
       cursor:pointer;
       font-weight:700;
       font:inherit;
-      transition:transform .15s ease, background .15s ease;
-    }
-
-    .logout:hover{
-      transform:translateY(-1px);
-      background:rgba(255,255,255,0.12);
     }
 
     .hero{
@@ -139,24 +116,11 @@
       overflow:hidden;
     }
 
-    .hero::after{
-      content:"";
-      position:absolute;
-      inset:auto -40px -60px auto;
-      width:220px;
-      height:220px;
-      background:radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
-      pointer-events:none;
-      filter:blur(10px);
-    }
-
     .hero h1{
       margin:0 0 10px 0;
       font-size:34px;
       letter-spacing:-0.06em;
       line-height:1.02;
-      position:relative;
-      z-index:1;
     }
 
     .hero p{
@@ -165,9 +129,14 @@
       line-height:1.6;
       max-width:760px;
       font-size:15px;
-      position:relative;
-      z-index:1;
     }
+
+    .reminder-row{
+      padding:10px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+
+    .reminder-row:last-child{border-bottom:none}
 
     .grid{
       margin-top:16px;
@@ -181,28 +150,15 @@
       min-height:178px;
       text-decoration:none;
       color:inherit;
-      transition:transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
       position:relative;
       overflow:hidden;
-    }
-
-    .tile::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(135deg, rgba(255,255,255,0.03), transparent 45%);
-      pointer-events:none;
+      transition:transform .16s ease, background .16s ease;
     }
 
     .tile:hover{
       transform:translateY(-2px);
       background:rgba(255,255,255,0.08);
       border-color:var(--line-strong);
-      box-shadow:0 24px 50px rgba(0,0,0,0.28);
-    }
-
-    .tile:active{
-      transform:translateY(0);
     }
 
     .tile-head{
@@ -223,13 +179,11 @@
       justify-content:center;
       background:rgba(255,255,255,0.08);
       border:1px solid rgba(255,255,255,0.08);
-      flex:0 0 auto;
     }
 
     .tile-icon{
       font-size:25px;
       filter:grayscale(1) saturate(0);
-      line-height:1;
     }
 
     .tile-title{
@@ -245,8 +199,6 @@
       font-size:14px;
       line-height:1.55;
       max-width:420px;
-      position:relative;
-      z-index:1;
     }
 
     .tile-arrow{
@@ -256,7 +208,6 @@
       color:rgba(255,255,255,0.34);
       font-size:18px;
       font-weight:700;
-      z-index:1;
     }
 
     .splash{
@@ -265,9 +216,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.04), transparent 22%),
-        linear-gradient(180deg, #0d1015, #151920);
+      background:linear-gradient(180deg, #0d1015, #151920);
       z-index:9999;
       opacity:1;
       visibility:visible;
@@ -302,7 +251,6 @@
       width:100%;
       height:100%;
       object-fit:cover;
-      border-radius:28px;
       display:block;
     }
 
@@ -329,27 +277,13 @@
     }
 
     @media(max-width:860px){
-      .grid{
-        grid-template-columns:1fr;
-      }
+      .grid{grid-template-columns:1fr}
     }
 
     @media(max-width:700px){
-      body{
-        padding:14px;
-      }
-
-      .hero h1{
-        font-size:29px;
-      }
-
-      .tile-title{
-        font-size:21px;
-      }
-
-      .tile{
-        min-height:166px;
-      }
+      body{padding:14px}
+      .hero h1{font-size:29px}
+      .tile{min-height:166px}
     }
   </style>
 </head>
@@ -386,15 +320,18 @@
 
       <div class="glass hero">
         <h1 id="heroTitle">Move at your own pace.</h1>
-        <p id="heroBlurb">Your system for life, work, bookings, money, lists and weekly planning — all in one place.</p>
+        <p id="heroBlurb">Your system for life, work, bookings, money, lists, reminders and weekly planning.</p>
+      </div>
+
+      <div class="glass card" id="reminderBanner" style="display:none;">
+        <h3 style="margin:0 0 8px 0;">Today’s reminders</h3>
+        <div id="reminderBannerList"></div>
       </div>
 
       <div class="grid">
         <a class="tile glass" href="life-test.html">
           <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">✅</div>
-            </div>
+            <div class="tile-icon-wrap"><div class="tile-icon">✅</div></div>
             <h3 class="tile-title">To Do</h3>
           </div>
           <div class="tile-desc">Tasks across life, house, work and business.</div>
@@ -403,9 +340,7 @@
 
         <a class="tile glass" href="attendance-test.html">
           <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">🏢</div>
-            </div>
+            <div class="tile-icon-wrap"><div class="tile-icon">🏢</div></div>
             <h3 class="tile-title">Office</h3>
           </div>
           <div class="tile-desc">Track office days, rules and attendance targets.</div>
@@ -414,9 +349,7 @@
 
         <a class="tile glass" href="bookings-test.html">
           <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">📆</div>
-            </div>
+            <div class="tile-icon-wrap"><div class="tile-icon">📆</div></div>
             <h3 class="tile-title">Bookings</h3>
           </div>
           <div class="tile-desc">Manage jobs, deposits, balances and due dates.</div>
@@ -425,9 +358,7 @@
 
         <a class="tile glass" href="finance-test.html">
           <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">💷</div>
-            </div>
+            <div class="tile-icon-wrap"><div class="tile-icon">💷</div></div>
             <h3 class="tile-title">Finance</h3>
           </div>
           <div class="tile-desc">Track personal and business money cleanly.</div>
@@ -436,31 +367,34 @@
 
         <a class="tile glass" href="lists-test.html">
           <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">🧾</div>
-            </div>
+            <div class="tile-icon-wrap"><div class="tile-icon">🧾</div></div>
             <h3 class="tile-title">Lists</h3>
           </div>
-          <div class="tile-desc">Store ideas, purchases, links and random life lists.</div>
+          <div class="tile-desc">Store ideas, purchases, client lists and checklists.</div>
           <div class="tile-arrow">↗</div>
         </a>
 
         <a class="tile glass" href="weekly-test.html">
           <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">🗓️</div>
-            </div>
+            <div class="tile-icon-wrap"><div class="tile-icon">🗓️</div></div>
             <h3 class="tile-title">Weekly Plan</h3>
           </div>
-          <div class="tile-desc">Plan your week by targets, locations, tasks and pots.</div>
+          <div class="tile-desc">Plan your week with a whiteboard-style timetable.</div>
+          <div class="tile-arrow">↗</div>
+        </a>
+
+        <a class="tile glass" href="reminders-test.html">
+          <div class="tile-head">
+            <div class="tile-icon-wrap"><div class="tile-icon">⏰</div></div>
+            <h3 class="tile-title">Reminders</h3>
+          </div>
+          <div class="tile-desc">See upcoming dates, appointments and things due soon.</div>
           <div class="tile-arrow">↗</div>
         </a>
 
         <a class="tile glass" href="creators-test.html" id="creatorsTile" style="display:none;">
           <div class="tile-head">
-            <div class="tile-icon-wrap">
-              <div class="tile-icon">🎬</div>
-            </div>
+            <div class="tile-icon-wrap"><div class="tile-icon">🎬</div></div>
             <h3 class="tile-title">Creators</h3>
           </div>
           <div class="tile-desc">Track income, daily targets, tax threshold and private reminders.</div>
@@ -478,11 +412,11 @@
       "https://grgagroautlpphjsjpjh.supabase.co",
       "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
       {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storage: localStorage
+        auth:{
+          persistSession:true,
+          autoRefreshToken:true,
+          detectSessionInUrl:true,
+          storage:localStorage
         }
       }
     );
@@ -492,7 +426,31 @@
     const heroTitle = document.getElementById("heroTitle");
     const heroBlurb = document.getElementById("heroBlurb");
     const creatorsTile = document.getElementById("creatorsTile");
+    const reminderBanner = document.getElementById("reminderBanner");
+    const reminderBannerList = document.getElementById("reminderBannerList");
+
     const OWNER_EMAIL = "janelle.lamptey@gmail.com";
+
+    async function setupBrowserNotifications(){
+      if("serviceWorker" in navigator){
+        await navigator.serviceWorker.register("/Pace/sw.js");
+      }
+
+      if("Notification" in window && Notification.permission === "default"){
+        await Notification.requestPermission();
+      }
+    }
+
+    function notifyToday(reminders){
+      if(!("Notification" in window)) return;
+      if(Notification.permission !== "granted") return;
+      if(!reminders.length) return;
+
+      new Notification("Pace reminders", {
+        body:`${reminders.length} reminder${reminders.length === 1 ? "" : "s"} due today/overdue.`,
+        icon:"/Pace/icon-192.png"
+      });
+    }
 
     async function checkSession(){
       const { data } = await supabase.auth.getSession();
@@ -514,8 +472,39 @@
 
       if (data?.business_name) {
         heroTitle.textContent = `${data.business_name}, organised.`;
-        heroBlurb.textContent = `Everything for ${data.business_name} in one clean place — tasks, office, bookings, money, lists and planning.`;
+        heroBlurb.textContent = `Everything for ${data.business_name} in one clean place.`;
       }
+    }
+
+    async function loadReminderBanner(userId){
+      const today = new Date().toISOString().split("T")[0];
+
+      const { data, error } = await supabase
+        .from("reminders")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("done", false)
+        .lte("reminder_date", today)
+        .order("reminder_date", { ascending:true })
+        .order("reminder_time", { ascending:true });
+
+      if(error || !data || !data.length){
+        reminderBanner.style.display = "none";
+        return;
+      }
+
+      reminderBanner.style.display = "block";
+
+      reminderBannerList.innerHTML = data.map(r => `
+        <div class="reminder-row">
+          <strong>${r.title}</strong>
+          <div style="color:#a7afbe;font-size:13px;margin-top:3px;">
+            ${r.reminder_date}${r.reminder_time ? " • " + String(r.reminder_time).slice(0,5) : ""}${r.source ? " • " + r.source : ""}
+          </div>
+        </div>
+      `).join("");
+
+      notifyToday(data);
     }
 
     document.getElementById("logoutBtn").onclick = async () => {
@@ -524,6 +513,8 @@
     };
 
     async function boot() {
+      await setupBrowserNotifications();
+
       const user = await checkSession();
 
       if (user && (user.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase()) {
@@ -532,6 +523,7 @@
 
       if (user) {
         await loadSettings(user.id);
+        await loadReminderBanner(user.id);
       }
 
       setTimeout(() => {
