@@ -1,16 +1,15 @@
+Yes — replace your whole lists-test.html with this.
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Pace Lists</title>
-
 <link rel="manifest" href="/Pace/site.webmanifest">
 <link rel="apple-touch-icon" href="/Pace/icon-180.png">
 <link rel="icon" href="/Pace/icon-32.png">
 <meta name="theme-color" content="#050507">
-
 <style>
 :root{
   --bg:#050507;
@@ -22,17 +21,14 @@
   --accent:#ff3b30;
   --green:#22c55e;
 }
-
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
 }
-
 html,body{
   max-width:100%;
   overflow-x:hidden;
 }
-
 body{
   margin:0;
   min-height:100vh;
@@ -42,20 +38,17 @@ body{
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
 }
-
 .page{
   width:100%;
   max-width:1180px;
   margin:0 auto;
 }
-
 .top{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:38px;
 }
-
 .circle-btn{
   width:54px;
   height:54px;
@@ -70,20 +63,17 @@ body{
   text-decoration:none;
   flex:0 0 auto;
 }
-
 h1{
   font-size:44px;
   margin:0;
   letter-spacing:-.06em;
   line-height:1;
 }
-
 .count{
   color:var(--muted);
   margin-top:8px;
   font-size:18px;
 }
-
 .grid{
   width:100%;
   display:grid;
@@ -91,12 +81,10 @@ h1{
   gap:28px 20px;
   margin-top:34px;
 }
-
 .note-card{
   min-width:0;
   cursor:pointer;
 }
-
 .preview{
   width:100%;
   aspect-ratio:1.45 / 1;
@@ -109,7 +97,6 @@ h1{
   overflow:hidden;
   box-shadow:0 8px 24px rgba(0,0,0,.25);
 }
-
 .preview-title{
   font-size:12px;
   font-weight:800;
@@ -118,7 +105,6 @@ h1{
   overflow:hidden;
   text-overflow:ellipsis;
 }
-
 .preview-line{
   font-size:10px;
   color:#c7c7cc;
@@ -127,7 +113,6 @@ h1{
   overflow:hidden;
   text-overflow:ellipsis;
 }
-
 .note-title{
   margin-top:12px;
   font-size:19px;
@@ -139,14 +124,12 @@ h1{
   -webkit-box-orient:vertical;
   word-break:break-word;
 }
-
 .note-date{
   color:var(--muted);
   font-size:15px;
   text-align:center;
   margin-top:4px;
 }
-
 .bottom-bar{
   position:fixed;
   left:50%;
@@ -159,7 +142,6 @@ h1{
   align-items:center;
   z-index:5;
 }
-
 .search{
   flex:1;
   min-width:0;
@@ -171,7 +153,6 @@ h1{
   padding:0 18px;
   font-size:20px;
 }
-
 .add-btn{
   width:58px;
   height:58px;
@@ -182,7 +163,6 @@ h1{
   font-size:28px;
   flex:0 0 auto;
 }
-
 .modal{
   position:fixed;
   inset:0;
@@ -191,7 +171,6 @@ h1{
   align-items:flex-end;
   z-index:10;
 }
-
 .sheet{
   width:100%;
   max-height:92vh;
@@ -201,21 +180,18 @@ h1{
   padding:22px;
   border-top:1px solid var(--line);
 }
-
 .sheet-inner{
   width:100%;
   max-width:720px;
   margin:0 auto;
 }
-
 .sheet-top{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:14px;
 }
-
-input{
+input, textarea{
   width:100%;
   background:#1c1d21;
   border:1px solid var(--line);
@@ -225,7 +201,11 @@ input{
   font:inherit;
   margin-top:10px;
 }
-
+textarea{
+  min-height:130px;
+  resize:vertical;
+  line-height:1.45;
+}
 button{
   margin-top:12px;
   width:100%;
@@ -237,11 +217,12 @@ button{
   font-weight:800;
   font:inherit;
 }
-
+.secondary{
+  background:rgba(255,255,255,.10);
+}
 .danger{
   background:rgba(239,68,68,.22);
 }
-
 .item-row{
   display:flex;
   align-items:flex-start;
@@ -250,7 +231,6 @@ button{
   border-bottom:1px solid rgba(255,255,255,.08);
   cursor:pointer;
 }
-
 .check{
   width:28px;
   height:28px;
@@ -263,23 +243,19 @@ button{
   justify-content:center;
   flex:0 0 auto;
 }
-
 .check.done{
   background:var(--green);
 }
-
 .item-text{
   flex:1;
   min-width:0;
   line-height:1.4;
   word-break:break-word;
 }
-
 .item-text.done{
   text-decoration:line-through;
   color:var(--muted);
 }
-
 .delete-small{
   width:auto;
   padding:7px 10px;
@@ -289,103 +265,82 @@ button{
   font-size:12px;
   flex:0 0 auto;
 }
-
 .status{
   color:var(--muted);
   min-height:18px;
   font-size:13px;
   margin-top:10px;
 }
-
+.divider{
+  height:1px;
+  background:rgba(255,255,255,.08);
+  margin:18px 0 8px;
+}
 @media(max-width:900px){
-  .page{
-    max-width:100%;
-  }
-
+  .page{ max-width:100%; }
   .grid{
     grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
     gap:24px 16px;
   }
 }
-
 @media(max-width:520px){
   body{
     padding:18px;
     padding-bottom:100px;
   }
-
-  h1{
-    font-size:40px;
-  }
-
+  h1{ font-size:40px; }
   .grid{
     grid-template-columns:repeat(2, minmax(0, 1fr));
     gap:24px 14px;
   }
-
-  .preview{
-    min-height:110px;
-  }
-
-  .note-title{
-    font-size:18px;
-  }
+  .preview{ min-height:110px; }
+  .note-title{ font-size:18px; }
 }
-
 @media(max-width:360px){
-  .grid{
-    grid-template-columns:1fr;
-  }
+  .grid{ grid-template-columns:1fr; }
 }
 </style>
 </head>
-
 <body>
-
 <div class="page">
-
   <div class="top">
     <a href="dashboard.html" class="circle-btn">‹</a>
     <button class="circle-btn" onclick="openNew()">＋</button>
   </div>
-
   <h1>Lists</h1>
   <div class="count" id="count">0 lists</div>
-
   <div class="grid" id="notesGrid"></div>
-
 </div>
-
 <div class="bottom-bar">
   <input id="search" class="search" placeholder="Search" oninput="render()">
   <button class="add-btn" onclick="openNew()">✎</button>
 </div>
-
 <div class="modal" id="modal">
   <div class="sheet">
     <div class="sheet-inner">
       <div class="sheet-top">
         <button class="circle-btn" style="width:44px;height:44px;font-size:22px;margin:0;" onclick="closeModal()">×</button>
       </div>
-
       <input id="listTitle" placeholder="List title">
       <button onclick="saveListTitle()">Save list title</button>
-
+      <div class="divider"></div>
+      <textarea id="quickPasteList" placeholder="Quick paste list here, for example:
+admin
+• pre consultation form completed
+• both client emails received
+• docusign contract sent
+• contract signed by both"></textarea>
+      <button class="secondary" onclick="importQuickList()">Import pasted list</button>
       <div id="itemsWrap" style="margin-top:16px;"></div>
-
       <input id="newItemText" placeholder="Add checklist item e.g. black dress / charger / passport">
       <button onclick="addItem()">Add item</button>
-
       <button class="danger" onclick="deleteList()">Delete whole list</button>
-
       <div id="status" class="status"></div>
     </div>
   </div>
 </div>
-
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
 const supabase = createClient(
   "https://grgagroautlpphjsjpjh.supabase.co",
   "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
@@ -398,80 +353,71 @@ const supabase = createClient(
     }
   }
 );
-
 const notesGrid = document.getElementById("notesGrid");
 const countEl = document.getElementById("count");
 const modal = document.getElementById("modal");
 const listTitle = document.getElementById("listTitle");
+const quickPasteList = document.getElementById("quickPasteList");
 const newItemText = document.getElementById("newItemText");
 const itemsWrap = document.getElementById("itemsWrap");
 const searchEl = document.getElementById("search");
 const statusEl = document.getElementById("status");
-
 let user = null;
 let lists = [];
 let items = [];
 let activeId = null;
-
 function setStatus(text){
   statusEl.textContent = text;
 }
-
 async function getUser(){
   const { data } = await supabase.auth.getUser();
   return data.user;
 }
-
 function formatDate(value){
   if(!value) return "";
   return new Date(value).toLocaleDateString("en-GB");
 }
-
 function itemsFor(listId){
   return items.filter(i => i.list_id === listId);
 }
-
+function cleanBullet(line){
+  return line
+    .replace(/^[-*•◦▪▫‣]\s*/, "")
+    .replace(/^\[[ xX]\]\s*/, "")
+    .trim();
+}
 async function load(){
   user = await getUser();
-
   if(!user){
     window.location.href = "index.html";
     return;
   }
-
   const [listsRes, itemsRes] = await Promise.all([
     supabase
       .from("lists")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending:false }),
-
     supabase
       .from("list_items")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending:true })
   ]);
-
   if(listsRes.error){
     alert(listsRes.error.message);
     return;
   }
-
   if(itemsRes.error){
     alert(itemsRes.error.message);
     return;
   }
-
   lists = listsRes.data || [];
   items = itemsRes.data || [];
-
   render();
 }
-
 window.render = function(){
   const q = searchEl.value.toLowerCase();
-
   const filtered = lists.filter(list => {
     const listItems = itemsFor(list.id);
     return (
@@ -479,17 +425,13 @@ window.render = function(){
       listItems.some(item => (item.text || "").toLowerCase().includes(q))
     );
   });
-
   countEl.textContent = `${filtered.length} ${filtered.length === 1 ? "list" : "lists"}`;
-
   if(!filtered.length){
     notesGrid.innerHTML = `<div style="color:#8e8e93;">No lists yet.</div>`;
     return;
   }
-
   notesGrid.innerHTML = filtered.map(list => {
     const previewItems = itemsFor(list.id).slice(0,5);
-
     return `
       <div class="note-card" onclick="openList('${list.id}')">
         <div class="preview">
@@ -510,77 +452,65 @@ window.render = function(){
     `;
   }).join("");
 }
-
 function renderActiveItems(){
   const activeItems = itemsFor(activeId);
-
   if(!activeId){
-    itemsWrap.innerHTML = `<div class="status">Save the list title first, then add items.</div>`;
+    itemsWrap.innerHTML = `<div class="status">Save the list title first, or use quick paste import.</div>`;
     return;
   }
-
   if(!activeItems.length){
     itemsWrap.innerHTML = `<div class="status">No checklist items yet.</div>`;
     return;
   }
-
   itemsWrap.innerHTML = activeItems.map(item => `
     <div class="item-row" onclick="toggleItem('${item.id}', ${item.done ? "false" : "true"})">
       <div class="check ${item.done ? "done" : ""}">
         ${item.done ? "✓" : ""}
       </div>
-
       <div class="item-text ${item.done ? "done" : ""}">
         ${item.text || ""}
       </div>
-
       <button class="delete-small" onclick="event.stopPropagation(); deleteItem('${item.id}')">Delete</button>
     </div>
   `).join("");
 }
-
 window.openNew = function(){
   activeId = null;
   listTitle.value = "";
+  quickPasteList.value = "";
   newItemText.value = "";
   setStatus("");
   renderActiveItems();
   modal.style.display = "flex";
   setTimeout(() => listTitle.focus(), 150);
 }
-
 window.openList = function(id){
   const list = lists.find(l => l.id === id);
   if(!list) return;
-
   activeId = id;
   listTitle.value = list.title || "";
+  quickPasteList.value = "";
   newItemText.value = "";
   setStatus("");
   renderActiveItems();
   modal.style.display = "flex";
   setTimeout(() => newItemText.focus(), 150);
 }
-
 window.closeModal = function(){
   modal.style.display = "none";
   activeId = null;
 }
-
 window.saveListTitle = async function(){
   const title = listTitle.value.trim() || "Untitled";
-
   if(activeId){
     const { error } = await supabase
       .from("lists")
       .update({ title })
       .eq("id", activeId);
-
     if(error){
       setStatus(error.message);
       return;
     }
-
     setStatus("List title saved.");
   } else {
     const { data, error } = await supabase
@@ -588,34 +518,93 @@ window.saveListTitle = async function(){
       .insert([{ user_id:user.id, title }])
       .select()
       .single();
-
     if(error){
       setStatus(error.message);
       return;
     }
-
     activeId = data.id;
     setStatus("List created. Now add items.");
   }
-
   await load();
   renderActiveItems();
   newItemText.focus();
 }
-
+window.importQuickList = async function(){
+  const raw = quickPasteList.value.trim();
+  if(!raw){
+    setStatus("Paste a list first.");
+    return;
+  }
+  const lines = raw
+    .split("\n")
+    .map(line => line.trim())
+    .filter(Boolean);
+  if(!lines.length){
+    setStatus("Nothing to import.");
+    return;
+  }
+  const title = cleanBullet(lines[0]) || "Untitled";
+  const bulletItems = lines
+    .slice(1)
+    .map(cleanBullet)
+    .filter(Boolean);
+  if(!bulletItems.length){
+    setStatus("Add bullet points under the title.");
+    return;
+  }
+  let listId = activeId;
+  if(listId){
+    const { error } = await supabase
+      .from("lists")
+      .update({ title })
+      .eq("id", listId);
+    if(error){
+      setStatus(error.message);
+      return;
+    }
+  } else {
+    const { data, error } = await supabase
+      .from("lists")
+      .insert([{ user_id:user.id, title }])
+      .select()
+      .single();
+    if(error){
+      setStatus(error.message);
+      return;
+    }
+    listId = data.id;
+    activeId = data.id;
+  }
+  const itemsToInsert = bulletItems.map(item => ({
+    user_id:user.id,
+    list_id:listId,
+    text:item,
+    done:false
+  }));
+  const itemInsert = await supabase
+    .from("list_items")
+    .insert(itemsToInsert);
+  if(itemInsert.error){
+    setStatus(itemInsert.error.message);
+    return;
+  }
+  quickPasteList.value = "";
+  listTitle.value = title;
+  setStatus("List imported.");
+  await load();
+  renderActiveItems();
+  newItemText.focus();
+}
 window.addItem = async function(){
   const text = newItemText.value.trim();
-
   if(!activeId){
     setStatus("Save the list title first.");
     return;
   }
-
   if(!text){
     setStatus("Type an item first.");
     return;
   }
-
   const { error } = await supabase
     .from("list_items")
     .insert([{
@@ -624,88 +613,73 @@ window.addItem = async function(){
       text,
       done:false
     }]);
-
   if(error){
     setStatus(error.message);
     return;
   }
-
   newItemText.value = "";
   setStatus("Item added.");
   await load();
   renderActiveItems();
   newItemText.focus();
 }
-
 window.toggleItem = async function(id, done){
   const { error } = await supabase
     .from("list_items")
     .update({ done })
     .eq("id", id);
-
   if(error){
     setStatus(error.message);
     return;
   }
-
   await load();
   renderActiveItems();
 }
-
 window.deleteItem = async function(id){
   const { error } = await supabase
     .from("list_items")
     .delete()
     .eq("id", id);
-
   if(error){
     setStatus(error.message);
     return;
   }
-
   await load();
   renderActiveItems();
 }
-
 window.deleteList = async function(){
   if(!activeId){
     closeModal();
     return;
   }
-
   const ok = confirm("Delete this whole list?");
   if(!ok) return;
-
   const { error } = await supabase
     .from("lists")
     .delete()
     .eq("id", activeId);
-
   if(error){
     setStatus(error.message);
     return;
   }
-
   closeModal();
   await load();
 }
-
 newItemText.addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
     e.preventDefault();
     addItem();
   }
 });
-
 listTitle.addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
     e.preventDefault();
     saveListTitle();
   }
 });
-
 load();
 </script>
-
 </body>
 </html>
+
+Paste your example into Quick paste list, then press Import pasted list.
