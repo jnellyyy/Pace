@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Pace Quiet Time</title>
+
+<style>
+:root{
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --line:rgba(255,255,255,0.10);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --accent:#ff3b30;
+  --shadow:0 20px 50px rgba(0,0,0,0.35);
+  --radius:24px;
+}
+
+body{
+  margin:0;
+  padding:18px;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial;
+  color:var(--text);
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+}
+
+.wrap{max-width:900px;margin:0 auto;}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+  margin-top:16px;
+  box-shadow:var(--shadow);
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.back{
+  padding:10px 14px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:28px;
+}
+
+.verse{
+  font-size:20px;
+  line-height:1.6;
+  margin-bottom:10px;
+}
+
+.ref{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.section-title{
+  margin-top:18px;
+  font-weight:700;
+}
+
+textarea{
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;
+  font:inherit;
+  min-height:120px;
+}
+
+button{
+  margin-top:10px;
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<div class="card topbar">
+  <h1>Quiet Time</h1>
+  <a href="dashboard.html" class="back">← Dashboard</a>
+</div>
+
+<div class="card">
+  <div id="verse" class="verse"></div>
+  <div id="ref" class="ref"></div>
+</div>
+
+<div class="card">
+  <div class="section-title">Reflection</div>
+  <textarea id="reflection" placeholder="What is God showing you today?"></textarea>
+
+  <div class="section-title">Prayer</div>
+  <textarea id="prayer" placeholder="Write a short prayer..."></textarea>
+
+  <button onclick="save()">Save</button>
+</div>
+
+</div>
+
+<script>
+// simple daily verse rotation
+const verses = [
+  {
+    text: "Trust in the Lord with all your heart and lean not on your own understanding.",
+    ref: "Proverbs 3:5"
+  },
+  {
+    text: "Seek first the kingdom of God and His righteousness, and all these things shall be added to you.",
+    ref: "Matthew 6:33"
+  },
+  {
+    text: "The Lord is my shepherd; I shall not want.",
+    ref: "Psalm 23:1"
+  },
+  {
+    text: "Be still, and know that I am God.",
+    ref: "Psalm 46:10"
+  },
+  {
+    text: "I can do all things through Christ who strengthens me.",
+    ref: "Philippians 4:13"
+  }
+];
+
+// pick verse based on date
+const index = new Date().getDate() % verses.length;
+document.getElementById("verse").textContent = verses[index].text;
+document.getElementById("ref").textContent = verses[index].ref;
+
+// save locally
+function save(){
+  const data = {
+    reflection: document.getElementById("reflection").value,
+    prayer: document.getElementById("prayer").value
+  };
+
+  localStorage.setItem("quietTime", JSON.stringify(data));
+  alert("Saved");
+}
+
+// load saved
+const saved = JSON.parse(localStorage.getItem("quietTime"));
+if(saved){
+  document.getElementById("reflection").value = saved.reflection || "";
+  document.getElementById("prayer").value = saved.prayer || "";
+}
+</script>
+
+</body>
+</html>
