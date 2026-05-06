@@ -1,7 +1,8 @@
-self.addEventListener("install", () => {
-  self.skipWaiting();
-});
+self.addEventListener("push", function(event) {
+  const data = event.data?.json() || {};
 
-self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
+  self.registration.showNotification(data.title || "Reminder", {
+    body: data.body || "You have something to do",
+    icon: "/Pace/icon-192.png"
+  });
 });
