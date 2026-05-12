@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pace Health Reset</title>
+
+<link rel="manifest" href="/Pace/site.webmanifest">
+<link rel="apple-touch-icon" href="/Pace/icon-180.png">
+<link rel="icon" href="/Pace/icon-32.png">
+<meta name="theme-color" content="#050507">
+
+<style>
+:root{
+  --bg:#050507;
+  --card:#1c1d21;
+  --card2:#24262b;
+  --line:rgba(255,255,255,.12);
+  --text:#f5f5f7;
+  --muted:#8e8e93;
+  --accent:#ff3b30;
+  --green:#34c759;
+  --blue:#409cff;
+  --orange:#ff9f0a;
+  --purple:#af52de;
+  --pink:#ff2d55;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+body{
+  margin:0;
+  min-height:100vh;
+  padding:18px;
+  padding-bottom:80px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+}
+
+.wrap{
+  max-width:1150px;
+  margin:0 auto;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:24px;
+}
+
+.circle-btn{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--line);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  font-size:24px;
+}
+
+h1{
+  font-size:42px;
+  letter-spacing:-.06em;
+  margin:0;
+}
+
+.sub{
+  color:var(--muted);
+  margin-top:6px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:18px;
+  margin-top:16px;
+}
+
+.summary{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.ring-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:18px;
+  min-height:180px;
+}
+
+.ring{
+  width:118px;
+  height:118px;
+  border-radius:50%;
+  margin:8px auto 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:conic-gradient(var(--green) 0deg, rgba(255,255,255,.10) 0deg);
+}
+
+.ring-inner{
+  width:86px;
+  height:86px;
+  border-radius:50%;
+  background:var(--card);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:20px;
+}
+
+.ring-title{
+  text-align:center;
+  font-weight:800;
+}
+
+.ring-sub{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:4px;
+}
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.metric{
+  background:var(--card2);
+  border-radius:20px;
+  padding:14px;
+}
+
+.metric-label{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.metric-value{
+  margin-top:5px;
+  font-size:23px;
+  font-weight:900;
+}
+
+.section-title{
+  font-size:24px;
+  margin:0 0 12px;
+  letter-spacing:-.04em;
+}
+
+input,select,textarea,button{
+  width:100%;
+  padding:13px;
+  margin-top:10px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:#24262b;
+  color:white;
+  font:inherit;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+button{
+  background:var(--accent);
+  border:none;
+  font-weight:900;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.row-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.check-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.check{
+  padding:13px;
+  border-radius:16px;
+  background:#24262b;
+  border:1px solid var(--line);
+  cursor:pointer;
+  font-weight:700;
+  color:#ddd;
+}
+
+.check.done{
+  background:rgba(52,199,89,.20);
+  border-color:rgba(52,199,89,.45);
+  color:#d7ffdf;
+}
+
+.progress-track{
+  height:13px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:var(--green);
+}
+
+.workout{
+  background:#24262b;
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.workout-head{
+  padding:15px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.workout-body{
+  display:none;
+  padding:0 15px 15px;
+  color:#d7dbe3;
+  font-size:14px;
+  line-height:1.55;
+}
+
+.log-row{
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.log-row:last-child{
+  border-bottom:none;
+}
+
+.notice{
+  color:var(--muted);
+  min-height:18px;
+  font-size:13px;
+  margin-top:10px;
+}
+
+.private-note{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
+@media(max-width:900px){
+  .summary,.metrics{grid-template-columns:repeat(2,1fr)}
+  .row,.check-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:520px){
+  body{padding:16px;padding-bottom:80px}
+  h1{font-size:38px}
+  .summary,.metrics,.row,.row-2,.check-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <a href="creators-test.html" class="circle-btn">‹</a>
+    <div class="circle-btn">🔒</div>
+  </div>
+
+  <h1>Health Reset</h1>
+  <div class="sub">Private consistency tracker. Low shame. High visibility.</div>
+
+  <div class="summary">
+    <div class="ring-card">
+      <div class="ring" id="weightRing">
+        <div class="ring-inner" id="weightPercent">0%</div>
+      </div>
+      <div class="ring-title">Weight</div>
+      <div class="ring-sub" id="weightSub">130kg → under 100kg</div>
+    </div>
+
+    <div class="ring-card">
+      <div class="ring" id="stepsRing">
+        <div class="ring-inner" id="stepsPercent">0%</div>
+      </div>
+      <div class="ring-title">Steps</div>
+      <div class="ring-sub" id="stepsSub">0 / 7,000</div>
+    </div>
+
+    <div class="ring-card">
+      <div class="ring" id="proteinRing">
+        <div class="ring-inner" id="proteinPercent">0%</div>
+      </div>
+      <div class="ring-title">Protein</div>
+      <div class="ring-sub" id="proteinSub">0g / 130g</div>
+    </div>
+
+    <div class="ring-card">
+      <div class="ring" id="waterRing">
+        <div class="ring-inner" id="waterPercent">0%</div>
+      </div>
+      <div class="ring-title">Water</div>
+      <div class="ring-sub" id="waterSub">0L / 2L</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Today</h2>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">Current weight</div>
+        <div class="metric-value" id="currentWeight">—</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Mini target</div>
+        <div class="metric-value">128–129kg</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Main target</div>
+        <div class="metric-value">&lt;100kg</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Today step goal</div>
+        <div class="metric-value" id="stepGoal">7,000</div>
+      </div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="weightProgress"></div>
+    </div>
+
+    <p class="private-note">
+      Note: Mounjaro/dose tracking here is for routine and side-effect logging only. Follow your prescriber’s instructions.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Daily log</h2>
+
+    <div class="row">
+      <input id="logDate" type="date">
+      <input id="weight" type="number" step="0.1" placeholder="Weight kg">
+      <input id="calories" type="number" placeholder="Calories">
+      <input id="protein" type="number" placeholder="Protein g">
+    </div>
+
+    <div class="row">
+      <input id="water" type="number" step="0.1" placeholder="Water L">
+      <input id="steps" type="number" placeholder="Steps">
+      <select id="workout">
+        <option value="">Workout</option>
+        <option>Workout A</option>
+        <option>Workout B</option>
+        <option>Workout C</option>
+        <option>Easy version</option>
+        <option>Walk only</option>
+        <option>Rest</option>
+      </select>
+      <input id="notes" placeholder="Notes">
+    </div>
+
+    <div class="check-grid">
+      <div class="check" data-key="weighed_in">Weighed in</div>
+      <div class="check" data-key="calories_tracked">Calories tracked</div>
+      <div class="check" data-key="protein_hit">Protein hit</div>
+      <div class="check" data-key="water_hit">2L water</div>
+      <div class="check" data-key="steps_hit">Steps hit</div>
+      <div class="check" data-key="workout_done">Workout done</div>
+      <div class="check" data-key="no_takeaway">No takeaway</div>
+      <div class="check" data-key="slept_properly">Slept properly</div>
+    </div>
+
+    <button onclick="saveHealthLog()">Save today</button>
+    <div id="msg" class="notice"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Mounjaro routine</h2>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">Last dose</div>
+        <div class="metric-value" id="lastDose">—</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Next dose estimate</div>
+        <div class="metric-value" id="nextDose">—</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Last dose amount</div>
+        <div class="metric-value" id="lastDoseAmount">—</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Appetite</div>
+        <div class="metric-value" id="lastAppetite">—</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <input id="doseDate" type="date">
+      <input id="dose" placeholder="Dose e.g. 2.5mg">
+      <select id="appetite">
+        <option value="">Appetite</option>
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+      </select>
+      <select id="energy">
+        <option value="">Energy</option>
+        <option>Low</option>
+        <option>Okay</option>
+        <option>Good</option>
+      </select>
+    </div>
+
+    <div class="row-2">
+      <input id="nausea" placeholder="Nausea e.g. none / mild / bad">
+      <input id="sideEffects" placeholder="Side effects">
+    </div>
+
+    <textarea id="doseNotes" placeholder="Dose notes, digestion, appetite, water, side effects..."></textarea>
+
+    <button onclick="saveDose()">Save dose log</button>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Step build</h2>
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">13–19 May</div>
+        <div class="metric-value">7k</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">20–26 May</div>
+        <div class="metric-value">8k</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">27 May–2 Jun</div>
+        <div class="metric-value">9k</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">From 3 Jun</div>
+        <div class="metric-value">10k</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Workouts</h2>
+
+    <div class="workout">
+      <div class="workout-head" onclick="toggleWorkout(this)">Warm-up</div>
+      <div class="workout-body">
+        March on spot — 60s<br>
+        Arm circles — 30s<br>
+        Shoulder rolls — 30s<br>
+        Hip circles — 30s<br>
+        Side steps — 60s<br>
+        Gentle squats — 10 reps
+      </div>
+    </div>
+
+    <div class="workout">
+      <div class="workout-head" onclick="toggleWorkout(this)">Workout A — beginner full body</div>
+      <div class="workout-body">
+        3 rounds. Rest 60–90s.<br><br>
+        Chair sit-to-stands — 12<br>
+        Wall push-ups — 12<br>
+        Glute bridges — 15<br>
+        Standing knee raises — 20 total<br>
+        Bird dogs — 8 each side<br>
+        Dead bugs — 8 each side
+      </div>
+    </div>
+
+    <div class="workout">
+      <div class="workout-head" onclick="toggleWorkout(this)">Workout B — legs + core</div>
+      <div class="workout-body">
+        3 rounds. Rest 60–90s.<br><br>
+        Box/chair squats — 12<br>
+        Wall sit — 20–30s<br>
+        Standing side leg raises — 12 each side<br>
+        Calf raises — 20<br>
+        Glute bridges — 15<br>
+        Plank on knees — 20s
+      </div>
+    </div>
+
+    <div class="workout">
+      <div class="workout-head" onclick="toggleWorkout(this)">Workout C — cardio + tone</div>
+      <div class="workout-body">
+        4 rounds. Rest 60s.<br><br>
+        March on spot — 60s<br>
+        Side steps — 60s<br>
+        Chair sit-to-stands — 10<br>
+        Wall push-ups — 10<br>
+        Standing punches — 45s<br>
+        Standing knee raises — 20 total<br>
+        Calf raises — 15
+      </div>
+    </div>
+
+    <div class="workout">
+      <div class="workout-head" onclick="toggleWorkout(this)">Easier version</div>
+      <div class="workout-body">
+        2 rounds only.<br>
+        Keep everything slow.<br>
+        No jumping.<br>
+        No pressure.<br>
+        Still counts.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Recent logs</h2>
+    <div id="recentLogs"></div>
+  </div>
+
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true,
+      storage:localStorage
+    }
+  }
+);
+
+let user = null;
+let logs = [];
+let doseLogs = [];
+
+let checkState = {
+  weighed_in:false,
+  calories_tracked:false,
+  protein_hit:false,
+  water_hit:false,
+  steps_hit:false,
+  workout_done:false,
+  no_takeaway:false,
+  slept_properly:false
+};
+
+const msg = document.getElementById("msg");
+
+function today(){
+  return new Date().toISOString().split("T")[0];
+}
+
+function setMsg(text){
+  msg.textContent = text;
+}
+
+function percent(value,target){
+  if(!target || !value) return 0;
+  return Math.min(Math.round((Number(value) / Number(target)) * 100), 100);
+}
+
+function setRing(id, percentValue, colour){
+  document.getElementById(id).style.background =
+    `conic-gradient(${colour} ${percentValue * 3.6}deg, rgba(255,255,255,.10) 0deg)`;
+}
+
+function getStepGoal(dateStr){
+  const start = new Date("2026-05-13T00:00:00");
+  const d = new Date(dateStr + "T00:00:00");
+  const diffDays = Math.floor((d - start) / 86400000);
+
+  if(diffDays < 7) return 7000;
+  if(diffDays < 14) return 8000;
+  if(diffDays < 21) return 9000;
+  return 10000;
+}
+
+function renderRings(todayLog){
+  const stepGoal = getStepGoal(today());
+
+  const currentWeight = todayLog?.weight_kg || logs.find(l => l.weight_kg)?.weight_kg || null;
+  const weightProgress = currentWeight
+    ? Math.min(Math.max(((130 - Number(currentWeight)) / 30) * 100, 0), 100)
+    : 0;
+
+  const stepsP = percent(todayLog?.steps || 0, stepGoal);
+  const proteinP = percent(todayLog?.protein_g || 0, 130);
+  const waterP = percent(todayLog?.water_l || 0, 2);
+
+  setRing("weightRing", weightProgress, "var(--green)");
+  setRing("stepsRing", stepsP, "var(--blue)");
+  setRing("proteinRing", proteinP, "var(--pink)");
+  setRing("waterRing", waterP, "var(--orange)");
+
+  document.getElementById("weightPercent").textContent = `${Math.round(weightProgress)}%`;
+  document.getElementById("stepsPercent").textContent = `${stepsP}%`;
+  document.getElementById("proteinPercent").textContent = `${proteinP}%`;
+  document.getElementById("waterPercent").textContent = `${waterP}%`;
+
+  document.getElementById("stepsSub").textContent = `${todayLog?.steps || 0} / ${stepGoal.toLocaleString()}`;
+  document.getElementById("proteinSub").textContent = `${todayLog?.protein_g || 0}g / 130g`;
+  document.getElementById("waterSub").textContent = `${todayLog?.water_l || 0}L / 2L`;
+
+  document.getElementById("currentWeight").textContent = currentWeight ? `${Number(currentWeight).toFixed(1)}kg` : "—";
+  document.getElementById("stepGoal").textContent = stepGoal.toLocaleString();
+  document.getElementById("weightProgress").style.width = `${weightProgress}%`;
+}
+
+function renderDoseSummary(){
+  const latest = doseLogs[0];
+
+  if(!latest){
+    return;
+  }
+
+  document.getElementById("lastDose").textContent = latest.dose_date || "—";
+  document.getElementById("lastDoseAmount").textContent = latest.dose || "—";
+  document.getElementById("lastAppetite").textContent = latest.appetite || "—";
+
+  const d = new Date(latest.dose_date + "T00:00:00");
+  d.setDate(d.getDate() + 7);
+  document.getElementById("nextDose").textContent = d.toISOString().split("T")[0];
+}
+
+function renderRecent(){
+  const el = document.getElementById("recentLogs");
+
+  if(!logs.length){
+    el.innerHTML = `<p class="sub">No logs yet.</p>`;
+    return;
+  }
+
+  el.innerHTML = logs.slice(0,7).map(l => `
+    <div class="log-row">
+      <strong>${l.log_date}</strong>
+      <div class="sub">
+        ${l.weight_kg ? `${l.weight_kg}kg • ` : ""}
+        ${l.steps ? `${l.steps} steps • ` : ""}
+        ${l.calories ? `${l.calories} cals • ` : ""}
+        ${l.protein_g ? `${l.protein_g}g protein` : ""}
+      </div>
+    </div>
+  `).join("");
+}
+
+function setChecksFromLog(log){
+  Object.keys(checkState).forEach(key => {
+    checkState[key] = Boolean(log?.[key]);
+  });
+
+  renderChecks();
+}
+
+function renderChecks(){
+  document.querySelectorAll(".check").forEach(item => {
+    const key = item.dataset.key;
+    item.classList.toggle("done", Boolean(checkState[key]));
+  });
+}
+
+document.querySelectorAll(".check").forEach(item => {
+  item.onclick = () => {
+    const key = item.dataset.key;
+    checkState[key] = !checkState[key];
+    renderChecks();
+  };
+});
+
+async function load(){
+  const { data } = await supabase.auth.getUser();
+  user = data.user;
+
+  if(!user){
+    window.location.href = "index.html";
+    return;
+  }
+
+  document.getElementById("logDate").value = today();
+  document.getElementById("doseDate").value = today();
+
+  const [logsRes,doseRes] = await Promise.all([
+    supabase
+      .from("health_reset_logs")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("log_date", { ascending:false }),
+
+    supabase
+      .from("mounjaro_logs")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("dose_date", { ascending:false })
+  ]);
+
+  if(logsRes.error){
+    setMsg(logsRes.error.message);
+    return;
+  }
+
+  if(doseRes.error){
+    setMsg(doseRes.error.message);
+    return;
+  }
+
+  logs = logsRes.data || [];
+  doseLogs = doseRes.data || [];
+
+  const todayLog = logs.find(l => l.log_date === today());
+
+  if(todayLog){
+    document.getElementById("weight").value = todayLog.weight_kg || "";
+    document.getElementById("calories").value = todayLog.calories || "";
+    document.getElementById("protein").value = todayLog.protein_g || "";
+    document.getElementById("water").value = todayLog.water_l || "";
+    document.getElementById("steps").value = todayLog.steps || "";
+    document.getElementById("workout").value = todayLog.workout || "";
+    document.getElementById("notes").value = todayLog.notes || "";
+    setChecksFromLog(todayLog);
+  } else {
+    renderChecks();
+  }
+
+  renderRings(todayLog);
+  renderDoseSummary();
+  renderRecent();
+}
+
+window.saveHealthLog = async function(){
+  const logDate = document.getElementById("logDate").value || today();
+
+  const payload = {
+    user_id:user.id,
+    log_date:logDate,
+    weight_kg:document.getElementById("weight").value || null,
+    calories:document.getElementById("calories").value || null,
+    protein_g:document.getElementById("protein").value || null,
+    water_l:document.getElementById("water").value || null,
+    steps:document.getElementById("steps").value || null,
+    workout:document.getElementById("workout").value || null,
+    notes:document.getElementById("notes").value || null,
+    ...checkState
+  };
+
+  const existing = logs.find(l => l.log_date === logDate);
+
+  if(existing){
+    const { error } = await supabase
+      .from("health_reset_logs")
+      .update(payload)
+      .eq("id", existing.id);
+
+    if(error){
+      setMsg(error.message);
+      return;
+    }
+  } else {
+    const { error } = await supabase
+      .from("health_reset_logs")
+      .insert([payload]);
+
+    if(error){
+      setMsg(error.message);
+      return;
+    }
+  }
+
+  setMsg("Saved.");
+  await load();
+}
+
+window.saveDose = async function(){
+  const doseDate = document.getElementById("doseDate").value || today();
+
+  const { error } = await supabase
+    .from("mounjaro_logs")
+    .insert([{
+      user_id:user.id,
+      dose_date:doseDate,
+      dose:document.getElementById("dose").value || null,
+      appetite:document.getElementById("appetite").value || null,
+      nausea:document.getElementById("nausea").value || null,
+      energy:document.getElementById("energy").value || null,
+      side_effects:document.getElementById("sideEffects").value || null,
+      notes:document.getElementById("doseNotes").value || null
+    }]);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  document.getElementById("dose").value = "";
+  document.getElementById("appetite").value = "";
+  document.getElementById("nausea").value = "";
+  document.getElementById("energy").value = "";
+  document.getElementById("sideEffects").value = "";
+  document.getElementById("doseNotes").value = "";
+
+  setMsg("Dose log saved.");
+  await load();
+}
+
+window.toggleWorkout = function(header){
+  const body = header.nextElementSibling;
+  body.style.display = body.style.display === "block" ? "none" : "block";
+}
+
+load();
+</script>
+</body>
+</html>
