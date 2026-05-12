@@ -1,1031 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pace Creators</title>
-  <link rel="manifest" href="/Pace/site.webmanifest">
-  <link rel="apple-touch-icon" href="/Pace/icon-180.png">
-  <link rel="icon" href="/Pace/icon-32.png">
-  <meta name="theme-color" content="#0f1115">
-  <style>
-    :root{
-      --bg1:#0f1115;
-      --bg2:#171a20;
-      --panel:rgba(255,255,255,0.06);
-      --panel-strong:rgba(255,255,255,0.08);
-      --line:rgba(255,255,255,0.10);
-      --text:#f5f7fb;
-      --muted:#a7afbe;
-      --accent:#ff3b30;
-      --green:#22c55e;
-      --red:#ef4444;
-      --blue:#60a5fa;
-      --amber:#f59e0b;
-      --purple:#a855f7;
-      --shadow:0 20px 50px rgba(0,0,0,0.35);
-      --blur:18px;
-      --radius:24px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    *{box-sizing:border-box}
+<title>Pace Creators</title>
 
-    body{
-      margin:0;
-      padding:18px;
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
-        radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-    }
+<link rel="manifest" href="/Pace/site.webmanifest">
+<link rel="apple-touch-icon" href="/Pace/icon-180.png">
+<link rel="icon" href="/Pace/icon-32.png">
+<meta name="theme-color" content="#0f1115">
 
-    .wrap{
-      max-width:1220px;
-      margin:0 auto;
-    }
+<style>
+:root{
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --line:rgba(255,255,255,0.10);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --shadow:0 20px 50px rgba(0,0,0,0.35);
+  --radius:24px;
+}
 
-    .glass{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      backdrop-filter:blur(var(--blur));
-      -webkit-backdrop-filter:blur(var(--blur));
-      box-shadow:var(--shadow);
-    }
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
-    .card{
-      padding:18px;
-      margin-top:16px;
-    }
+body{
+  margin:0;
+  padding:18px;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 24%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+}
 
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
-    }
+.wrap{
+  max-width:1100px;
+  margin:0 auto;
+}
 
-    .back-btn{
-      width:auto;
-      padding:10px 14px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.08);
-      color:#fff;
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-block;
-    }
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+  backdrop-filter:blur(18px);
+  margin-top:16px;
+  box-shadow:var(--shadow);
+}
 
-    .muted{color:var(--muted);}
-    .notice{color:#bbb;white-space:pre-wrap;margin-top:10px;min-height:18px;}
-    .success{color:#8ff0b2;}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .summary-grid{
-      display:grid;
-      grid-template-columns:1.2fr 1fr;
-      gap:16px;
-      margin-top:16px;
-    }
+.back-btn{
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+}
 
-    .kpis{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:12px;
-      margin-top:12px;
-    }
+.hero h1{
+  margin:0;
+  font-size:36px;
+  letter-spacing:-.06em;
+}
 
-    .kpi{
-      background:var(--panel-strong);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:14px;
-    }
+.hero p{
+  margin-top:10px;
+  color:var(--muted);
+  line-height:1.6;
+}
 
-    .kpi-title{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
+.grid{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
 
-    .kpi-value{
-      font-size:22px;
-      font-weight:700;
-      letter-spacing:-0.03em;
-    }
+.tile{
+  text-decoration:none;
+  color:inherit;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;
+  padding:18px;
+  min-height:180px;
+  transition:.18s ease;
+  position:relative;
+  overflow:hidden;
+}
 
-    .good{color:var(--green);}
-    .bad{color:var(--red);}
-    .blue{color:var(--blue);}
-    .amber{color:var(--amber);}
-    .purple{color:var(--purple);}
+.tile:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.08);
+}
 
-    .appointment-card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:16px;
-    }
+.tile-icon{
+  width:54px;
+  height:54px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.08);
+  font-size:24px;
+}
 
-    .appointment-alert{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      font-weight:700;
-      display:none;
-    }
+.tile h3{
+  margin:16px 0 8px;
+  font-size:24px;
+  letter-spacing:-.04em;
+}
 
-    .appointment-alert.today{
-      display:block;
-      background:rgba(239,68,68,0.16);
-      border:1px solid rgba(239,68,68,0.35);
-      color:#ffd2d2;
-    }
+.tile p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
+  font-size:14px;
+}
 
-    .appointment-alert.soon{
-      display:block;
-      background:rgba(245,158,11,0.16);
-      border:1px solid rgba(245,158,11,0.35);
-      color:#ffe6b3;
-    }
+.arrow{
+  position:absolute;
+  right:16px;
+  bottom:14px;
+  color:rgba(255,255,255,.35);
+  font-size:18px;
+}
 
-    .subtle-box{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:16px;
-      margin-top:14px;
-    }
+@media(max-width:700px){
 
-    .two-col{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-top:16px;
-    }
+  body{
+    padding:14px;
+  }
 
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
+  .hero h1{
+    font-size:30px;
+  }
 
-    .row-3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
-    }
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
 
-    input, select, button{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.10);
-      color:#fff;
-      font:inherit;
-    }
+  .tile{
+    min-height:170px;
+  }
 
-    input::placeholder{
-      color:#9da6b5;
-    }
-
-    button{
-      background:var(--accent);
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-      transition:transform .12s ease, opacity .12s ease;
-    }
-
-    button:hover{transform:translateY(-1px);}
-    button:active{transform:translateY(0);opacity:0.92;}
-
-    .small-btn{
-      width:auto;
-      margin:0;
-      padding:8px 10px;
-      background:rgba(255,255,255,0.10);
-      font-size:13px;
-      border-radius:12px;
-    }
-
-    .danger-btn{background:rgba(239,68,68,0.18);}
-    .save-btn{background:rgba(34,197,94,0.22);}
-    .ghost-btn{background:rgba(255,255,255,0.08);}
-
-    .progress-wrap{margin-top:12px;}
-    .progress-label{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-
-    .progress-bar{
-      height:12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.08);
-      overflow:hidden;
-    }
-
-    .progress-fill{
-      height:100%;
-      border-radius:999px;
-      background:linear-gradient(90deg, var(--accent), #ff6b63);
-      width:0%;
-      transition:width .25s ease;
-    }
-
-    .celebrate{
-      margin-top:10px;
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(34,197,94,0.16);
-      border:1px solid rgba(34,197,94,0.35);
-      color:#bdf7cc;
-      font-weight:700;
-      display:none;
-    }
-
-    .collapsible-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      cursor:pointer;
-      user-select:none;
-    }
-
-    .collapse-icon{
-      font-size:18px;
-      color:var(--muted);
-    }
-
-    .item{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:14px 0;
-      border-bottom:1px solid rgba(255,255,255,0.08);
-    }
-
-    .item:last-child{border-bottom:none;}
-
-    .item-title{
-      font-weight:700;
-      margin-bottom:4px;
-    }
-
-    .item-meta{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .item-money{
-      font-weight:700;
-      white-space:nowrap;
-    }
-
-    .inline-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:8px;
-    }
-
-    .edit-box{
-      margin-top:10px;
-      padding-top:10px;
-      border-top:1px dashed rgba(255,255,255,0.12);
-    }
-
-    .empty{
-      color:var(--muted);
-      padding:8px 0 2px;
-    }
-
-    .pill{
-      display:inline-block;
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      color:#fff;
-      margin-top:6px;
-    }
-
-    .pill-below{background:rgba(34,197,94,0.85);}
-    .pill-over{background:rgba(239,68,68,0.85);}
-
-    @media (max-width:1100px){
-      .summary-grid,
-      .two-col,
-      .kpis,
-      .row,
-      .row-3{
-        grid-template-columns:1fr;
-      }
-    }
-  </style>
+  .tile h3{
+    font-size:20px;
+  }
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
 
-    <div class="glass card">
-      <div class="topbar">
-        <div>
-          <h2 style="margin:0;">Pace Creators</h2>
-          <p class="muted" style="margin:6px 0 0 0;">Daily target, order log, tax-year total and ADHD appointment reminders.</p>
+<div class="wrap">
+
+  <div class="card">
+    <div class="topbar">
+      <div>
+        <h2 style="margin:0;">Creators</h2>
+        <div style="color:var(--muted);margin-top:5px;">
+          Private dashboards and creator systems.
         </div>
-        <a class="back-btn" href="dashboard.html">← Dashboard</a>
       </div>
+
+      <a href="dashboard.html" class="back-btn">
+        ← Dashboard
+      </a>
     </div>
+  </div>
 
-    <div class="summary-grid">
-      <div class="glass card">
-        <div class="appointment-card">
-          <h3 style="margin:0 0 6px 0;">ADHD appointments</h3>
-          <div id="nextAppointment"></div>
-          <div id="appointmentAlert" class="appointment-alert"></div>
+  <div class="card hero">
+    <h1>Private Creator Space.</h1>
 
-          <div class="subtle-box" style="margin-top:14px;">
-            <div class="collapsible-head" onclick="toggleCollapse('appointmentsList')">
-              <strong>All appointments</strong>
-              <span class="collapse-icon">⌄</span>
-            </div>
-            <div id="appointmentsList" style="margin-top:10px; display:none;"></div>
-          </div>
-        </div>
-      </div>
+    <p>
+      Income tracking, tax monitoring, health reset systems,
+      reminders and personal performance dashboards —
+      all separated from your main Pace workspace.
+    </p>
+  </div>
 
-      <div class="glass card">
-        <div class="subtle-box" style="margin-top:0;">
-          <h3 style="margin:0 0 6px 0;">Tax tracking</h3>
+  <div class="grid">
 
-          <div class="row">
-            <input id="thresholdAmount" type="number" placeholder="Threshold e.g. 1000">
-            <input id="setAsideRate" type="number" placeholder="Set-aside % e.g. 20">
-          </div>
+    <!-- CREATOR INCOME -->
+    <a class="tile" href="creator-income-test.html">
 
-          <button id="saveTaxSettingsBtn" type="button">Save tax settings</button>
-          <p id="settingsMsg" class="notice"></p>
+      <div class="tile-icon">💷</div>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi-title">Tax year total</div>
-              <div class="kpi-value purple" id="taxYearTotal">£0.00</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-title">Threshold status</div>
-              <div class="kpi-value" id="thresholdStatus">Below</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-title">Left to threshold</div>
-              <div class="kpi-value blue" id="thresholdLeft">£0.00</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-title">Put aside so far</div>
-              <div class="kpi-value amber" id="setAsideSoFar">£0.00</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <h3>Income</h3>
 
-    <div class="two-col">
-      <div class="glass card">
-        <div class="subtle-box" style="margin-top:0;">
-          <h3 style="margin:0 0 6px 0;">Add earning</h3>
-          <p class="muted" style="margin-bottom:0;">Set your daily target here and add orders for that day.</p>
+      <p>
+        Deliveroo targets, order logging,
+        tax threshold tracking and creator income.
+      </p>
 
-          <div class="row">
-            <input id="targetDate" type="date">
-            <input id="dailyTarget" type="number" placeholder="Daily target e.g. 30">
-          </div>
+      <div class="arrow">↗</div>
 
-          <button id="saveTargetBtn" type="button">Save daily target</button>
-          <p id="targetMsg" class="notice"></p>
+    </a>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi-title">Today made</div>
-              <div class="kpi-value good" id="todayMade">£0.00</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi-title">Left today</div>
-              <div class="kpi-value amber" id="leftToday">£0.00</div>
-            </div>
-          </div>
+    <!-- HEALTH RESET -->
+    <a class="tile" href="health-reset-test.html">
 
-          <div class="progress-wrap">
-            <div class="progress-label">
-              <span>Today’s progress</span>
-              <span id="progressText">£0.00 / £0.00</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-          </div>
+      <div class="tile-icon">🏃🏾</div>
 
-          <div class="celebrate" id="celebrateBox">
-            🎉 Daily target hit. Anything extra today is above target.
-          </div>
+      <h3>Health Reset</h3>
 
-          <div class="subtle-box" style="margin-top:14px;">
-            <div class="collapsible-head" onclick="toggleCollapse('addEarningBody')">
-              <strong>Add order / earning</strong>
-              <span class="collapse-icon">⌄</span>
-            </div>
+      <p>
+        Weight loss dashboard, Mounjaro routine,
+        steps, workouts, protein and consistency tracking.
+      </p>
 
-            <div id="addEarningBody" style="margin-top:10px;">
-              <div class="row">
-                <input id="entryAmount" type="number" placeholder="Amount">
-                <input id="entryDate" type="date">
-              </div>
+      <div class="arrow">↗</div>
 
-              <div class="row">
-                <select id="entryMode">
-                  <option value="single">Single order</option>
-                  <option value="weekly">Weekly total</option>
-                  <option value="other">Other income</option>
-                </select>
-                <input id="entrySource" placeholder="Source e.g. Deliveroo, Weekly payout">
-              </div>
-
-              <input id="entryNote" placeholder="Note">
-              <button id="saveEntryBtn" type="button">Add entry</button>
-              <p id="msg" class="notice"></p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="glass card">
-        <div class="subtle-box" style="margin-top:0;">
-          <h3 style="margin:0 0 6px 0;">Income log</h3>
-
-          <div class="subtle-box" style="margin-top:12px;">
-            <div class="collapsible-head" onclick="toggleCollapse('todayEntriesList')">
-              <strong>Today’s entries</strong>
-              <span class="collapse-icon">⌄</span>
-            </div>
-            <div id="todayEntriesList" style="margin-top:10px;"></div>
-          </div>
-
-          <div class="subtle-box" style="margin-top:12px;">
-            <div class="collapsible-head" onclick="toggleCollapse('olderEntriesList')">
-              <strong>Older entries</strong>
-              <span class="collapse-icon">⌄</span>
-            </div>
-            <div id="olderEntriesList" style="margin-top:10px; display:none;"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </a>
 
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+</div>
 
-    const OWNER_EMAIL = "janelle.lamptey@gmail.com";
-
-    const APPOINTMENTS = [
-      {
-        title: "4-Week Titration Review",
-        clinician: "Saif Ghafoory",
-        date: "2026-04-17",
-        time: "17:00",
-        phone: "020 4525 0709"
-      },
-      {
-        title: "8-Week Titration Review",
-        clinician: "Rahul Islam",
-        date: "2026-05-15",
-        time: "10:30",
-        phone: "020 4525 0709"
-      },
-      {
-        title: "12-Week Titration Review",
-        clinician: "Rahul Islam",
-        date: "2026-06-12",
-        time: "10:30",
-        phone: "020 4525 0709"
-      }
-    ];
-
-    const supabase = createClient(
-      "https://grgagroautlpphjsjpjh.supabase.co",
-      "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storage: localStorage
-        }
-      }
-    );
-
-    const thresholdAmountEl = document.getElementById("thresholdAmount");
-    const setAsideRateEl = document.getElementById("setAsideRate");
-    const saveTaxSettingsBtn = document.getElementById("saveTaxSettingsBtn");
-    const settingsMsgEl = document.getElementById("settingsMsg");
-
-    const targetDateEl = document.getElementById("targetDate");
-    const dailyTargetEl = document.getElementById("dailyTarget");
-    const saveTargetBtn = document.getElementById("saveTargetBtn");
-    const targetMsgEl = document.getElementById("targetMsg");
-
-    const entryAmountEl = document.getElementById("entryAmount");
-    const entryDateEl = document.getElementById("entryDate");
-    const entryModeEl = document.getElementById("entryMode");
-    const entrySourceEl = document.getElementById("entrySource");
-    const entryNoteEl = document.getElementById("entryNote");
-    const saveEntryBtn = document.getElementById("saveEntryBtn");
-    const msgEl = document.getElementById("msg");
-    const addEarningBodyEl = document.getElementById("addEarningBody");
-
-    const taxYearTotalEl = document.getElementById("taxYearTotal");
-    const thresholdStatusEl = document.getElementById("thresholdStatus");
-    const thresholdLeftEl = document.getElementById("thresholdLeft");
-    const setAsideSoFarEl = document.getElementById("setAsideSoFar");
-
-    const todayMadeEl = document.getElementById("todayMade");
-    const leftTodayEl = document.getElementById("leftToday");
-    const progressFillEl = document.getElementById("progressFill");
-    const progressTextEl = document.getElementById("progressText");
-    const celebrateBoxEl = document.getElementById("celebrateBox");
-
-    const nextAppointmentEl = document.getElementById("nextAppointment");
-    const appointmentsListEl = document.getElementById("appointmentsList");
-    const appointmentAlertEl = document.getElementById("appointmentAlert");
-
-    const todayEntriesListEl = document.getElementById("todayEntriesList");
-    const olderEntriesListEl = document.getElementById("olderEntriesList");
-
-    let settings = {
-      target_date: "",
-      daily_target: 0,
-      threshold_amount: 1000,
-      set_aside_rate: 20
-    };
-
-    let entries = [];
-
-    function money(v){
-      return `£${Number(v || 0).toFixed(2)}`;
-    }
-
-    function setMsg(text, good=false){
-      msgEl.textContent = text;
-      msgEl.className = good ? "notice success" : "notice";
-    }
-
-    function setSettingsMsg(text, good=false){
-      settingsMsgEl.textContent = text;
-      settingsMsgEl.className = good ? "notice success" : "notice";
-    }
-
-    function setTargetMsg(text, good=false){
-      targetMsgEl.textContent = text;
-      targetMsgEl.className = good ? "notice success" : "notice";
-    }
-
-    function todayString(){
-      return new Date().toISOString().split("T")[0];
-    }
-
-    function getTaxYearRange(date = new Date()) {
-      const year = date.getFullYear();
-      const taxYearStartThisYear = new Date(year, 3, 6);
-      if (date >= taxYearStartThisYear) {
-        return {
-          start: new Date(year, 3, 6),
-          end: new Date(year + 1, 3, 5),
-          label: `${year}/${String(year + 1).slice(-2)}`
-        };
-      }
-      return {
-        start: new Date(year - 1, 3, 6),
-        end: new Date(year, 3, 5),
-        label: `${year - 1}/${String(year).slice(-2)}`
-      };
-    }
-
-    function inTaxYear(entryDateStr) {
-      if (!entryDateStr) return false;
-      const taxYear = getTaxYearRange(new Date());
-      const d = new Date(entryDateStr + "T00:00:00");
-      return d >= taxYear.start && d <= taxYear.end;
-    }
-
-    function calculateFigures() {
-      const targetDate = settings.target_date || todayString();
-      const dailyTarget = Number(settings.daily_target || 0);
-      const threshold = Number(settings.threshold_amount || 1000);
-      const setAsideRate = Number(settings.set_aside_rate || 20);
-
-      const todaysEntries = entries.filter(e => e.entry_date === targetDate);
-      const todayMade = todaysEntries.reduce((sum, e) => sum + Number(e.amount || 0), 0);
-      const leftToday = Math.max(dailyTarget - todayMade, 0);
-      const progress = dailyTarget > 0 ? Math.min((todayMade / dailyTarget) * 100, 100) : 0;
-
-      const taxYear = getTaxYearRange(new Date());
-      const taxYearTotal = entries
-        .filter(e => inTaxYear(e.entry_date))
-        .reduce((sum, e) => sum + Number(e.amount || 0), 0);
-
-      const overThreshold = taxYearTotal >= threshold;
-      const thresholdLeft = Math.max(threshold - taxYearTotal, 0);
-      const setAsideSoFar = taxYearTotal * (setAsideRate / 100);
-
-      return {
-        targetDate,
-        dailyTarget,
-        todayMade,
-        leftToday,
-        progress,
-        taxYearLabel: taxYear.label,
-        taxYearTotal,
-        threshold,
-        overThreshold,
-        thresholdLeft,
-        setAsideRate,
-        setAsideSoFar
-      };
-    }
-
-    function renderTaxAndTarget() {
-      const f = calculateFigures();
-
-      taxYearTotalEl.textContent = money(f.taxYearTotal);
-      thresholdStatusEl.textContent = f.overThreshold ? "Reached" : "Below";
-      thresholdStatusEl.className = `kpi-value ${f.overThreshold ? "bad" : "good"}`;
-      thresholdLeftEl.textContent = money(f.thresholdLeft);
-      setAsideSoFarEl.textContent = money(f.setAsideSoFar);
-
-      todayMadeEl.textContent = money(f.todayMade);
-      leftTodayEl.textContent = money(f.leftToday);
-      leftTodayEl.className = `kpi-value ${f.leftToday > 0 ? "amber" : "good"}`;
-
-      progressTextEl.textContent = `${money(f.todayMade)} / ${money(f.dailyTarget)}`;
-      progressFillEl.style.width = `${f.progress}%`;
-      celebrateBoxEl.style.display = f.dailyTarget > 0 && f.leftToday === 0 ? "block" : "none";
-
-      thresholdAmountEl.value = settings.threshold_amount || "";
-      setAsideRateEl.value = settings.set_aside_rate || "";
-      targetDateEl.value = settings.target_date || todayString();
-      dailyTargetEl.value = settings.daily_target || "";
-    }
-
-    function daysUntil(dateStr) {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const target = new Date(dateStr + "T00:00:00");
-      const diffMs = target - today;
-      return Math.round(diffMs / (1000 * 60 * 60 * 24));
-    }
-
-    function renderAppointments() {
-      const upcoming = APPOINTMENTS
-        .map(a => ({ ...a, daysLeft: daysUntil(a.date) }))
-        .filter(a => a.daysLeft >= 0)
-        .sort((a, b) => a.daysLeft - b.daysLeft);
-
-      if (!upcoming.length) {
-        nextAppointmentEl.innerHTML = `<div class="empty">No upcoming appointments.</div>`;
-        appointmentsListEl.innerHTML = "";
-        appointmentAlertEl.className = "appointment-alert";
-        appointmentAlertEl.textContent = "";
-        return;
-      }
-
-      const next = upcoming[0];
-
-      nextAppointmentEl.innerHTML = `
-        <div class="item" style="padding-top:0;border-bottom:none;">
-          <div style="flex:1;min-width:0;">
-            <div class="item-title">${next.title}</div>
-            <div class="item-meta">
-              ${new Date(next.date + "T00:00:00").toLocaleDateString("en-GB")} • ${next.time}<br>
-              Clinician: ${next.clinician}<br>
-              Call from: ${next.phone}
-            </div>
-            <div class="pill ${next.daysLeft <= 1 ? "pill-over" : "pill-below"}">
-              ${next.daysLeft === 0 ? "Today" : next.daysLeft === 1 ? "Tomorrow" : `${next.daysLeft} days left`}
-            </div>
-          </div>
-        </div>
-      `;
-
-      if (next.daysLeft === 0) {
-        appointmentAlertEl.className = "appointment-alert today";
-        appointmentAlertEl.textContent = `Appointment today at ${next.time}. Watch for a call from ${next.phone}.`;
-      } else if (next.daysLeft <= 3) {
-        appointmentAlertEl.className = "appointment-alert soon";
-        appointmentAlertEl.textContent = `Upcoming appointment in ${next.daysLeft} day${next.daysLeft === 1 ? "" : "s"}.`;
-      } else {
-        appointmentAlertEl.className = "appointment-alert";
-        appointmentAlertEl.textContent = "";
-      }
-
-      appointmentsListEl.innerHTML = upcoming.map(a => `
-        <div class="item">
-          <div style="flex:1;min-width:0;">
-            <div class="item-title">${a.title}</div>
-            <div class="item-meta">
-              ${new Date(a.date + "T00:00:00").toLocaleDateString("en-GB")} • ${a.time}<br>
-              ${a.clinician} • ${a.phone}
-            </div>
-          </div>
-          <div class="item-money">${a.daysLeft === 0 ? "Today" : a.daysLeft === 1 ? "Tomorrow" : `${a.daysLeft}d`}</div>
-        </div>
-      `).join("");
-    }
-
-    function renderEntryRows(targetEl, rows) {
-      if (!rows.length) {
-        targetEl.innerHTML = `<div class="empty">No entries here yet.</div>`;
-        return;
-      }
-
-      targetEl.innerHTML = rows.map(entry => `
-        <div class="item">
-          <div style="flex:1;min-width:0;">
-            <div class="item-title">${entry.source || "Income entry"}</div>
-            <div class="item-meta">${entry.entry_date || ""}${entry.note ? ` • ${entry.note}` : ""}${entry.mode ? ` • ${entry.mode}` : ""}</div>
-
-            <div class="inline-actions">
-              <button class="small-btn ghost-btn" onclick="toggleEntryEdit('${entry.id}')">Edit</button>
-              <button class="small-btn danger-btn" onclick="deleteEntry('${entry.id}')">Delete</button>
-            </div>
-
-            <div id="entry-edit-${entry.id}" class="edit-box" style="display:none;">
-              <div class="row">
-                <input id="entry-edit-amount-${entry.id}" type="number" value="${Number(entry.amount || 0)}">
-                <input id="entry-edit-date-${entry.id}" type="date" value="${entry.entry_date || ""}">
-              </div>
-              <div class="row">
-                <select id="entry-edit-mode-${entry.id}">
-                  <option value="single" ${entry.mode === "single" ? "selected" : ""}>Single order</option>
-                  <option value="weekly" ${entry.mode === "weekly" ? "selected" : ""}>Weekly total</option>
-                  <option value="other" ${entry.mode === "other" ? "selected" : ""}>Other income</option>
-                </select>
-                <input id="entry-edit-source-${entry.id}" value="${(entry.source || "").replace(/"/g, '&quot;')}" placeholder="Source">
-              </div>
-              <input id="entry-edit-note-${entry.id}" value="${(entry.note || "").replace(/"/g, '&quot;')}" placeholder="Note">
-              <button class="small-btn save-btn" style="margin-top:10px;" onclick="saveEntryEdit('${entry.id}')">Save changes</button>
-            </div>
-          </div>
-
-          <div class="item-money good">${money(entry.amount)}</div>
-        </div>
-      `).join("");
-    }
-
-    function renderEntries() {
-      const targetDate = settings.target_date || todayString();
-      const todaysEntries = entries.filter(entry => entry.entry_date === targetDate);
-      const olderEntries = entries.filter(entry => entry.entry_date !== targetDate);
-
-      renderEntryRows(todayEntriesListEl, todaysEntries);
-      renderEntryRows(olderEntriesListEl, olderEntries);
-    }
-
-    window.toggleCollapse = function(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.style.display = el.style.display === "none" ? "block" : "none";
-    };
-
-    window.toggleEntryEdit = function(id) {
-      const box = document.getElementById(`entry-edit-${id}`);
-      if (!box) return;
-      box.style.display = box.style.display === "none" ? "block" : "none";
-    };
-
-    async function getUser() {
-      const { data } = await supabase.auth.getUser();
-      return data.user;
-    }
-
-    async function guardOwnerOnly() {
-      const user = await getUser();
-
-      if (!user) {
-        window.location.href = "index.html";
-        return null;
-      }
-
-      if ((user.email || "").toLowerCase() !== OWNER_EMAIL.toLowerCase()) {
-        window.location.href = "dashboard.html";
-        return null;
-      }
-
-      return user;
-    }
-
-    async function loadSettings(userId) {
-      const { data, error } = await supabase
-        .from("creators_settings")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
-
-      if (error) {
-        setSettingsMsg(error.message);
-        return;
-      }
-
-      settings = {
-        target_date: data?.target_date || todayString(),
-        daily_target: Number(data?.daily_target || 0),
-        threshold_amount: Number(data?.threshold_amount || 1000),
-        set_aside_rate: Number(data?.set_aside_rate || 20)
-      };
-    }
-
-    async function loadEntries(userId) {
-      const { data, error } = await supabase
-        .from("creators_entries")
-        .select("*")
-        .eq("user_id", userId)
-        .order("entry_date", { ascending: false })
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        setMsg(error.message);
-        return;
-      }
-
-      entries = data || [];
-    }
-
-    saveTaxSettingsBtn.addEventListener("click", async () => {
-      const user = await getUser();
-      if (!user) return;
-
-      const threshold = Number(thresholdAmountEl.value || 1000);
-      const setAsideRate = Number(setAsideRateEl.value || 20);
-
-      const { error } = await supabase
-        .from("creators_settings")
-        .upsert([{
-          user_id: user.id,
-          target_date: settings.target_date || todayString(),
-          daily_target: settings.daily_target || 0,
-          threshold_amount: threshold,
-          set_aside_rate: setAsideRate
-        }], { onConflict: "user_id" });
-
-      if (error) {
-        setSettingsMsg(error.message);
-        return;
-      }
-
-      setSettingsMsg("Tax settings saved.", true);
-      await initialise();
-    });
-
-    saveTargetBtn.addEventListener("click", async () => {
-      const user = await getUser();
-      if (!user) return;
-
-      const targetDate = targetDateEl.value || todayString();
-      const dailyTarget = Number(dailyTargetEl.value || 0);
-
-      const { error } = await supabase
-        .from("creators_settings")
-        .upsert([{
-          user_id: user.id,
-          target_date: targetDate,
-          daily_target: dailyTarget,
-          threshold_amount: settings.threshold_amount || 1000,
-          set_aside_rate: settings.set_aside_rate || 20
-        }], { onConflict: "user_id" });
-
-      if (error) {
-        setTargetMsg(error.message);
-        return;
-      }
-
-      setTargetMsg("Daily target saved.", true);
-      await initialise();
-    });
-
-    saveEntryBtn.addEventListener("click", async () => {
-      const user = await getUser();
-      if (!user) return;
-
-      const amount = Number(entryAmountEl.value || 0);
-      const entryDate = entryDateEl.value || todayString();
-      const mode = entryModeEl.value;
-      const source = entrySourceEl.value.trim();
-      const note = entryNoteEl.value.trim();
-
-      if (!amount) {
-        setMsg("Enter an amount.");
-        return;
-      }
-
-      const { error } = await supabase
-        .from("creators_entries")
-        .insert([{
-          user_id: user.id,
-          amount,
-          entry_date: entryDate,
-          mode,
-          source: source || null,
-          note: note || null
-        }]);
-
-      if (error) {
-        setMsg(error.message);
-        return;
-      }
-
-      entryAmountEl.value = "";
-      entryDateEl.value = "";
-      entryModeEl.value = "single";
-      entrySourceEl.value = "";
-      entryNoteEl.value = "";
-
-      setMsg("Entry added.", true);
-      addEarningBodyEl.style.display = "none";
-      await initialise();
-    });
-
-    window.saveEntryEdit = async function(id) {
-      const amount = Number(document.getElementById(`entry-edit-amount-${id}`).value || 0);
-      const entryDate = document.getElementById(`entry-edit-date-${id}`).value || null;
-      const mode = document.getElementById(`entry-edit-mode-${id}`).value;
-      const source = document.getElementById(`entry-edit-source-${id}`).value.trim();
-      const note = document.getElementById(`entry-edit-note-${id}`).value.trim();
-
-      if (!amount) {
-        setMsg("Amount is required.");
-        return;
-      }
-
-      const { error } = await supabase
-        .from("creators_entries")
-        .update({
-          amount,
-          entry_date: entryDate,
-          mode,
-          source: source || null,
-          note: note || null
-        })
-        .eq("id", id);
-
-      if (error) {
-        setMsg(error.message);
-        return;
-      }
-
-      setMsg("Entry updated.", true);
-      await initialise();
-    };
-
-    window.deleteEntry = async function(id) {
-      const { error } = await supabase
-        .from("creators_entries")
-        .delete()
-        .eq("id", id);
-
-      if (error) {
-        setMsg(error.message);
-        return;
-      }
-
-      setMsg("Entry deleted.", true);
-      await initialise();
-    };
-
-    async function initialise() {
-      const user = await guardOwnerOnly();
-      if (!user) return;
-
-      await loadSettings(user.id);
-      await loadEntries(user.id);
-
-      renderTaxAndTarget();
-      renderAppointments();
-      renderEntries();
-    }
-
-    initialise();
-  </script>
 </body>
 </html>
