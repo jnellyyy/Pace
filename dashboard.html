@@ -1,16 +1,15 @@
+Replace your full dashboard.html with this:
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="manifest" href="/Pace/site.webmanifest">
   <link rel="apple-touch-icon" href="/Pace/icon-180.png">
   <link rel="icon" href="/Pace/icon-32.png">
   <meta name="theme-color" content="#0f1115">
-
   <title>Pace</title>
-
   <style>
     :root{
       --bg1:#0f1115;
@@ -25,12 +24,10 @@
       --blur:18px;
       --radius:24px;
     }
-
     *{
       box-sizing:border-box;
       -webkit-tap-highlight-color:transparent;
     }
-
     body{
       margin:0;
       padding:18px;
@@ -42,12 +39,10 @@
         linear-gradient(180deg, var(--bg1), var(--bg2));
       overflow-x:hidden;
     }
-
     .wrap{
       max-width:1120px;
       margin:0 auto;
     }
-
     .glass{
       background:var(--panel);
       border:1px solid var(--line);
@@ -56,12 +51,10 @@
       -webkit-backdrop-filter:blur(var(--blur));
       box-shadow:var(--shadow);
     }
-
     .card{
       padding:20px;
       margin-top:16px;
     }
-
     .topbar{
       display:flex;
       justify-content:space-between;
@@ -69,13 +62,11 @@
       gap:12px;
       flex-wrap:wrap;
     }
-
     .brand{
       display:flex;
       align-items:center;
       gap:14px;
     }
-
     .brand-icon{
       width:54px;
       height:54px;
@@ -85,28 +76,24 @@
       border:1px solid rgba(255,255,255,0.06);
       background:#111;
     }
-
     .brand-icon img{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
     }
-
     .brand-title{
       font-size:25px;
-      font-weight:700;
+      font-weight:800;
       letter-spacing:-0.04em;
       line-height:1;
       margin:0;
     }
-
     .brand-sub{
       margin-top:5px;
       color:var(--muted);
       font-size:13px;
     }
-
     .logout{
       padding:10px 14px;
       border:none;
@@ -117,21 +104,18 @@
       font-weight:700;
       font:inherit;
     }
-
     .hero{
       padding:26px 24px;
       margin-top:16px;
       position:relative;
       overflow:hidden;
     }
-
     .hero h1{
       margin:0 0 10px 0;
       font-size:34px;
       letter-spacing:-0.06em;
       line-height:1.02;
     }
-
     .hero p{
       margin:0;
       color:var(--muted);
@@ -139,23 +123,19 @@
       max-width:760px;
       font-size:15px;
     }
-
     .reminder-row{
       padding:10px 0;
       border-bottom:1px solid rgba(255,255,255,.08);
     }
-
     .reminder-row:last-child{
       border-bottom:none;
     }
-
     .grid{
       margin-top:16px;
       display:grid;
       grid-template-columns:repeat(auto-fit, minmax(145px, 1fr));
       gap:14px;
     }
-
     .tile{
       aspect-ratio:1 / 1;
       min-height:auto;
@@ -166,20 +146,17 @@
       overflow:hidden;
       transition:transform .16s ease, background .16s ease, border-color .16s ease;
     }
-
     .tile:hover{
       transform:translateY(-2px);
       background:rgba(255,255,255,0.08);
       border-color:var(--line-strong);
     }
-
     .tile-head{
       display:block;
       margin-bottom:10px;
       position:relative;
       z-index:1;
     }
-
     .tile-icon-wrap{
       width:46px;
       height:46px;
@@ -190,13 +167,11 @@
       background:rgba(255,255,255,0.08);
       border:1px solid rgba(255,255,255,0.08);
     }
-
     .tile-icon{
       font-size:24px;
       filter:grayscale(1) saturate(0);
       line-height:1;
     }
-
     .tile-title{
       font-size:19px;
       font-weight:800;
@@ -204,7 +179,6 @@
       line-height:1.05;
       margin:12px 0 0;
     }
-
     .tile-desc{
       color:var(--muted);
       font-size:12px;
@@ -213,7 +187,6 @@
       position:relative;
       z-index:1;
     }
-
     .tile-arrow{
       position:absolute;
       right:14px;
@@ -223,7 +196,6 @@
       font-weight:700;
       z-index:1;
     }
-
     .splash{
       position:fixed;
       inset:0;
@@ -236,13 +208,11 @@
       visibility:visible;
       transition:opacity .5s ease, visibility .5s ease;
     }
-
     .splash.hide{
       opacity:0;
       visibility:hidden;
       pointer-events:none;
     }
-
     .splash-inner{
       display:flex;
       flex-direction:column;
@@ -250,7 +220,6 @@
       gap:14px;
       text-align:center;
     }
-
     .splash-logo-wrap{
       width:96px;
       height:96px;
@@ -260,60 +229,49 @@
       border:1px solid rgba(255,255,255,0.08);
       background:#111;
     }
-
     .splash-logo-wrap img{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
     }
-
     .splash-title{
       font-size:32px;
       font-weight:800;
       letter-spacing:-0.05em;
     }
-
     .splash-sub{
       color:var(--muted);
       font-size:14px;
     }
-
     .page{
       opacity:0;
       transform:translateY(8px);
       transition:opacity .45s ease, transform .45s ease;
     }
-
     .page.ready{
       opacity:1;
       transform:translateY(0);
     }
-
     @media(max-width:700px){
       body{
         padding:14px;
       }
-
       .hero h1{
         font-size:29px;
       }
-
       .grid{
         grid-template-columns:repeat(2, minmax(0, 1fr));
       }
-
       .tile-title{
         font-size:18px;
       }
-
       .tile-desc{
         font-size:11px;
       }
     }
   </style>
 </head>
-
 <body>
   <div id="splash" class="splash">
     <div class="splash-inner">
@@ -324,10 +282,8 @@
       <div class="splash-sub">Move at your own pace.</div>
     </div>
   </div>
-
   <div id="page" class="page">
     <div class="wrap">
-
       <div class="glass card">
         <div class="topbar">
           <div class="brand">
@@ -339,21 +295,17 @@
               <div class="brand-sub">Dashboard</div>
             </div>
           </div>
-
           <button id="logoutBtn" class="logout">Log out</button>
         </div>
       </div>
-
       <div class="glass hero">
         <h1 id="heroTitle">Move at your own pace.</h1>
         <p id="heroBlurb">Your system for life, work, bookings, money, lists, reminders, quiet time and weekly planning.</p>
       </div>
-
       <div class="glass card" id="reminderBanner" style="display:none;">
         <h3 style="margin:0 0 8px 0;">Today’s reminders</h3>
         <div id="reminderBannerList"></div>
       </div>
-
       <div class="grid">
         <a class="tile glass" href="life-test.html">
           <div class="tile-head">
@@ -363,7 +315,6 @@
           <div class="tile-desc">Tasks across life, house, work and business.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="attendance-test.html">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">🏢</div></div>
@@ -372,7 +323,6 @@
           <div class="tile-desc">Track office days, rules and attendance targets.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="bookings-test.html">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">📆</div></div>
@@ -381,7 +331,6 @@
           <div class="tile-desc">Manage jobs, deposits, balances and dates.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="finance-test.html">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">💷</div></div>
@@ -390,16 +339,14 @@
           <div class="tile-desc">Track personal and business money cleanly.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="lists-test.html">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">🧾</div></div>
             <h3 class="tile-title">Lists</h3>
           </div>
-          <div class="tile-desc">Store ideas, purchases, client lists and checklists.</div>
+          <div class="tile-desc">Ideas, purchases, clients and checklists.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="weekly-test.html">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">🗓️</div></div>
@@ -408,7 +355,6 @@
           <div class="tile-desc">Plan your week with a whiteboard timetable.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="reminders-test.html">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">⏰</div></div>
@@ -417,7 +363,6 @@
           <div class="tile-desc">Dates, appointments and things due soon.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="quiet-time-test.html">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">📖</div></div>
@@ -426,23 +371,19 @@
           <div class="tile-desc">Daily verse, reflection and prayer prompt.</div>
           <div class="tile-arrow">↗</div>
         </a>
-
         <a class="tile glass" href="creators-test.html" id="creatorsTile" style="display:none;">
           <div class="tile-head">
             <div class="tile-icon-wrap"><div class="tile-icon">🎬</div></div>
             <h3 class="tile-title">Creators</h3>
           </div>
-          <div class="tile-desc">Track income, tax, targets and private reminders.</div>
+          <div class="tile-desc">Income, tax, targets and private trackers.</div>
           <div class="tile-arrow">↗</div>
         </a>
       </div>
-
     </div>
   </div>
-
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
     const supabase = createClient(
       "https://grgagroautlpphjsjpjh.supabase.co",
       "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
@@ -455,7 +396,6 @@
         }
       }
     );
-
     const splash = document.getElementById("splash");
     const page = document.getElementById("page");
     const heroTitle = document.getElementById("heroTitle");
@@ -463,61 +403,49 @@
     const creatorsTile = document.getElementById("creatorsTile");
     const reminderBanner = document.getElementById("reminderBanner");
     const reminderBannerList = document.getElementById("reminderBannerList");
-
     const OWNER_EMAIL = "janelle.lamptey@gmail.com";
-
     async function setupBrowserNotifications(){
       if("serviceWorker" in navigator){
         try{
           await navigator.serviceWorker.register("/Pace/sw.js");
         }catch(e){}
       }
-
       if("Notification" in window && Notification.permission === "default"){
         try{
           await Notification.requestPermission();
         }catch(e){}
       }
     }
-
     function notifyToday(reminders){
       if(!("Notification" in window)) return;
       if(Notification.permission !== "granted") return;
       if(!reminders.length) return;
-
       new Notification("Pace reminders", {
         body:`${reminders.length} reminder${reminders.length === 1 ? "" : "s"} due today/overdue.`,
         icon:"/Pace/icon-192.png"
       });
     }
-
     async function checkSession(){
       const { data } = await supabase.auth.getSession();
-
       if(!data.session){
         window.location.href = "index.html";
         return null;
       }
-
       return data.session.user;
     }
-
     async function loadSettings(userId){
       const { data } = await supabase
         .from("app_settings")
         .select("*")
         .eq("user_id", userId)
         .maybeSingle();
-
       if(data?.business_name){
         heroTitle.textContent = `${data.business_name}, organised.`;
         heroBlurb.textContent = `Everything for ${data.business_name} in one clean place.`;
       }
     }
-
     async function loadReminderBanner(userId){
       const today = new Date().toISOString().split("T")[0];
-
       const { data, error } = await supabase
         .from("reminders")
         .select("*")
@@ -526,14 +454,11 @@
         .lte("reminder_date", today)
         .order("reminder_date", { ascending:true })
         .order("reminder_time", { ascending:true });
-
       if(error || !data || !data.length){
         reminderBanner.style.display = "none";
         return;
       }
-
       reminderBanner.style.display = "block";
-
       reminderBannerList.innerHTML = data.map(r => `
         <div class="reminder-row">
           <strong>${r.title}</strong>
@@ -542,35 +467,27 @@
           </div>
         </div>
       `).join("");
-
       notifyToday(data);
     }
-
     document.getElementById("logoutBtn").onclick = async () => {
       await supabase.auth.signOut();
       window.location.href = "index.html";
     };
-
     async function boot(){
       await setupBrowserNotifications();
-
       const user = await checkSession();
-
       if(user && (user.email || "").toLowerCase() === OWNER_EMAIL.toLowerCase()){
         creatorsTile.style.display = "block";
       }
-
       if(user){
         await loadSettings(user.id);
         await loadReminderBanner(user.id);
       }
-
       setTimeout(() => {
         splash.classList.add("hide");
         page.classList.add("ready");
       }, 700);
     }
-
     boot();
   </script>
 </body>
