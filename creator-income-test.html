@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pace Creator Income</title>
+
+<link rel="manifest" href="/Pace/site.webmanifest">
+<link rel="apple-touch-icon" href="/Pace/icon-180.png">
+<link rel="icon" href="/Pace/icon-32.png">
+<meta name="theme-color" content="#050507">
+
+<style>
+:root{
+  --bg:#050507;
+  --card:#1c1d21;
+  --card2:#24262b;
+  --line:rgba(255,255,255,.12);
+  --text:#f5f5f7;
+  --muted:#8e8e93;
+  --accent:#ff3b30;
+  --green:#34c759;
+  --orange:#ff9f0a;
+  --blue:#409cff;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+body{
+  margin:0;
+  min-height:100vh;
+  padding:18px;
+  background:linear-gradient(180deg,#0f1115,#171a20);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+}
+
+.wrap{max-width:1050px;margin:0 auto}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.circle-btn{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--line);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  font-size:24px;
+}
+
+h1{
+  font-size:40px;
+  letter-spacing:-.06em;
+  margin:0;
+}
+
+.sub{
+  color:var(--muted);
+  margin-top:6px;
+  line-height:1.5;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:18px;
+  margin-top:16px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.metric{
+  background:var(--card2);
+  border-radius:20px;
+  padding:14px;
+}
+
+.metric-label{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.metric-value{
+  font-size:24px;
+  font-weight:900;
+  margin-top:5px;
+}
+
+input,select,button{
+  width:100%;
+  padding:13px;
+  margin-top:10px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:#24262b;
+  color:white;
+  font:inherit;
+}
+
+button{
+  background:var(--accent);
+  border:none;
+  font-weight:900;
+}
+
+.secondary{
+  background:rgba(255,255,255,.10);
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
+.row-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.progress-track{
+  height:14px;
+  background:rgba(255,255,255,.10);
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:12px;
+}
+
+.progress-fill{
+  height:100%;
+  background:var(--green);
+  width:0%;
+}
+
+.entry{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.entry:last-child{border-bottom:none}
+
+.entry-title{font-weight:800}
+.entry-meta{color:var(--muted);font-size:13px;margin-top:4px}
+
+.small-btn{
+  width:auto;
+  padding:8px 10px;
+  margin:0;
+  border-radius:12px;
+  background:rgba(255,59,48,.22);
+  font-size:12px;
+}
+
+.notice{
+  color:var(--muted);
+  font-size:13px;
+  min-height:18px;
+  margin-top:10px;
+}
+
+.warning{
+  background:rgba(255,159,10,.14);
+  border:1px solid rgba(255,159,10,.25);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+  color:#ffd89a;
+  line-height:1.45;
+}
+
+.good{
+  background:rgba(52,199,89,.14);
+  border:1px solid rgba(52,199,89,.25);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+  color:#b7f5c7;
+  line-height:1.45;
+}
+
+@media(max-width:850px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:1fr}
+}
+
+@media(max-width:520px){
+  body{padding:16px}
+  h1{font-size:36px}
+  .grid,.row,.row-2{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <a href="creators-test.html" class="circle-btn">‹</a>
+    <div class="circle-btn">💷</div>
+  </div>
+
+  <h1>Creator Income</h1>
+  <div class="sub">Deliveroo orders, daily target, yearly income and tax threshold tracking.</div>
+
+  <div class="card">
+    <div class="grid">
+      <div class="metric">
+        <div class="metric-label">Today made</div>
+        <div class="metric-value" id="todayMade">£0.00</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Daily target</div>
+        <div class="metric-value" id="dailyTarget">£0.00</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Left today</div>
+        <div class="metric-value" id="leftToday">£0.00</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Tax year total</div>
+        <div class="metric-value" id="taxYearTotal">£0.00</div>
+      </div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="todayProgress"></div>
+    </div>
+
+    <div id="taxWarning"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0;">Daily target</h3>
+
+    <div class="row-2">
+      <input id="targetDate" type="date">
+      <input id="dailyTargetInput" type="number" step="0.01" placeholder="Target e.g. 30">
+    </div>
+
+    <button onclick="saveSettings()">Save target</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0;">Add earning</h3>
+
+    <div class="row">
+      <input id="entryDate" type="date">
+      <input id="amount" type="number" step="0.01" placeholder="Amount">
+      <select id="mode">
+        <option>Order</option>
+        <option>Weekly total</option>
+        <option>Adjustment</option>
+      </select>
+    </div>
+
+    <div class="row-2">
+      <input id="source" placeholder="Source e.g. Deliveroo" value="Deliveroo">
+      <input id="note" placeholder="Note">
+    </div>
+
+    <button onclick="addEntry()">Add entry</button>
+    <div id="msg" class="notice"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0;">Tax snapshot</h3>
+
+    <div class="grid">
+      <div class="metric">
+        <div class="metric-label">Main salary</div>
+        <div class="metric-value" id="salaryDisplay">£35,088</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Threshold</div>
+        <div class="metric-value" id="thresholdDisplay">£1,000</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Suggested set aside</div>
+        <div class="metric-value" id="setAside">£0.00</div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Register status</div>
+        <div class="metric-value" id="registerStatus">—</div>
+      </div>
+    </div>
+
+    <div class="warning">
+      This is only a tracker. If gross self-employed income goes over £1,000 in a tax year, check Self Assessment rules.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0;">Today’s entries</h3>
+    <div id="todayEntries"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0;">Recent entries</h3>
+    <div id="recentEntries"></div>
+  </div>
+
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true,
+      storage:localStorage
+    }
+  }
+);
+
+let user = null;
+let entries = [];
+let settings = null;
+
+const msg = document.getElementById("msg");
+
+function today(){
+  return new Date().toISOString().split("T")[0];
+}
+
+function money(value){
+  return `£${Number(value || 0).toFixed(2)}`;
+}
+
+function setMsg(text){
+  msg.textContent = text;
+}
+
+function taxYearStart(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const april6 = new Date(`${y}-04-06T00:00:00`);
+  return now >= april6 ? `${y}-04-06` : `${y - 1}-04-06`;
+}
+
+function taxYearEnd(){
+  const startYear = Number(taxYearStart().slice(0,4));
+  return `${startYear + 1}-04-05`;
+}
+
+function todayEntries(){
+  return entries.filter(e => e.entry_date === today());
+}
+
+function todayTotal(){
+  return todayEntries().reduce((sum,e) => sum + Number(e.amount || 0), 0);
+}
+
+function taxYearEntries(){
+  const start = taxYearStart();
+  const end = taxYearEnd();
+
+  return entries.filter(e => e.entry_date >= start && e.entry_date <= end);
+}
+
+function taxYearTotal(){
+  return taxYearEntries().reduce((sum,e) => sum + Number(e.amount || 0), 0);
+}
+
+function getDailyTarget(){
+  if(settings?.target_date === today() && settings?.daily_target){
+    return Number(settings.daily_target);
+  }
+
+  if(settings?.daily_target){
+    return Number(settings.daily_target);
+  }
+
+  if(settings?.target_amount){
+    return Number(settings.target_amount);
+  }
+
+  return 0;
+}
+
+function getThreshold(){
+  return Number(settings?.threshold_amount || 1000);
+}
+
+function getSetAsideRate(){
+  return Number(settings?.set_aside_rate || 20);
+}
+
+function renderDashboard(){
+  const made = todayTotal();
+  const target = getDailyTarget();
+  const left = Math.max(target - made, 0);
+  const progress = target ? Math.min((made / target) * 100, 100) : 0;
+  const yearly = taxYearTotal();
+  const threshold = getThreshold();
+  const setAsideRate = getSetAsideRate();
+
+  document.getElementById("todayMade").textContent = money(made);
+  document.getElementById("dailyTarget").textContent = money(target);
+  document.getElementById("leftToday").textContent = money(left);
+  document.getElementById("taxYearTotal").textContent = money(yearly);
+  document.getElementById("todayProgress").style.width = `${progress}%`;
+
+  document.getElementById("thresholdDisplay").textContent = money(threshold);
+  document.getElementById("setAside").textContent = money(yearly * (setAsideRate / 100));
+  document.getElementById("registerStatus").textContent = yearly > threshold ? "Register" : "Not yet";
+
+  if(settings?.main_salary){
+    document.getElementById("salaryDisplay").textContent = money(settings.main_salary);
+  }
+
+  const box = document.getElementById("taxWarning");
+
+  if(yearly > threshold){
+    box.innerHTML = `
+      <div class="warning">
+        You are over ${money(threshold)} gross creator/self-employed income this tax year.
+        Suggested set aside: ${money(yearly * (setAsideRate / 100))}.
+      </div>
+    `;
+  } else {
+    box.innerHTML = `
+      <div class="good">
+        You are still under the ${money(threshold)} tracker threshold.
+      </div>
+    `;
+  }
+
+  if(target && left === 0){
+    setMsg("Target hit 🎉");
+  }
+}
+
+function entryTemplate(e){
+  return `
+    <div class="entry">
+      <div>
+        <div class="entry-title">${money(e.amount)} • ${e.source || "Deliveroo"}</div>
+        <div class="entry-meta">
+          ${e.entry_date}
+          ${e.mode ? " • " + e.mode : ""}
+          ${e.note ? " • " + e.note : ""}
+        </div>
+      </div>
+
+      <button class="small-btn" onclick="deleteEntry('${e.id}')">Delete</button>
+    </div>
+  `;
+}
+
+function renderEntries(){
+  const todayEl = document.getElementById("todayEntries");
+  const recentEl = document.getElementById("recentEntries");
+
+  const todayRows = todayEntries();
+
+  todayEl.innerHTML = todayRows.length
+    ? todayRows.map(entryTemplate).join("")
+    : `<p class="sub">No entries today.</p>`;
+
+  recentEl.innerHTML = entries.length
+    ? entries.slice(0,30).map(entryTemplate).join("")
+    : `<p class="sub">No entries yet.</p>`;
+}
+
+function render(){
+  renderDashboard();
+  renderEntries();
+}
+
+async function load(){
+  const { data } = await supabase.auth.getUser();
+  user = data.user;
+
+  if(!user){
+    window.location.href = "index.html";
+    return;
+  }
+
+  document.getElementById("entryDate").value = today();
+  document.getElementById("targetDate").value = today();
+
+  const [entriesRes, settingsRes] = await Promise.all([
+    supabase
+      .from("creators_entries")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("entry_date", { ascending:false })
+      .order("created_at", { ascending:false }),
+
+    supabase
+      .from("creators_settings")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle()
+  ]);
+
+  if(entriesRes.error){
+    setMsg(entriesRes.error.message);
+    return;
+  }
+
+  if(settingsRes.error){
+    setMsg(settingsRes.error.message);
+    return;
+  }
+
+  entries = entriesRes.data || [];
+  settings = settingsRes.data || null;
+
+  if(settings){
+    document.getElementById("dailyTargetInput").value =
+      settings.daily_target || settings.target_amount || "";
+  }
+
+  render();
+}
+
+window.saveSettings = async function(){
+  const targetDate = document.getElementById("targetDate").value || today();
+  const dailyTarget = Number(document.getElementById("dailyTargetInput").value || 0);
+
+  if(!dailyTarget){
+    setMsg("Add a daily target.");
+    return;
+  }
+
+  const payload = {
+    user_id:user.id,
+    daily_target:dailyTarget,
+    target_amount:dailyTarget,
+    target_date:targetDate,
+    threshold_amount:settings?.threshold_amount || 1000,
+    set_aside_rate:settings?.set_aside_rate || 20,
+    main_salary:settings?.main_salary || 35088
+  };
+
+  if(settings){
+    const { error } = await supabase
+      .from("creators_settings")
+      .update(payload)
+      .eq("user_id", user.id);
+
+    if(error){
+      setMsg(error.message);
+      return;
+    }
+  } else {
+    const { error } = await supabase
+      .from("creators_settings")
+      .insert([payload]);
+
+    if(error){
+      setMsg(error.message);
+      return;
+    }
+  }
+
+  setMsg("Target saved.");
+  await load();
+}
+
+window.addEntry = async function(){
+  const entryDate = document.getElementById("entryDate").value || today();
+  const amount = Number(document.getElementById("amount").value || 0);
+  const source = document.getElementById("source").value.trim() || "Deliveroo";
+  const note = document.getElementById("note").value.trim() || null;
+  const mode = document.getElementById("mode").value || "Order";
+
+  if(!amount){
+    setMsg("Enter the amount.");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("creators_entries")
+    .insert([{
+      user_id:user.id,
+      entry_date:entryDate,
+      amount,
+      source,
+      note,
+      mode
+    }]);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  document.getElementById("amount").value = "";
+  document.getElementById("note").value = "";
+
+  setMsg("Entry added.");
+  await load();
+}
+
+window.deleteEntry = async function(id){
+  const { error } = await supabase
+    .from("creators_entries")
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    setMsg(error.message);
+    return;
+  }
+
+  setMsg("Entry deleted.");
+  await load();
+}
+
+load();
+</script>
+</body>
+</html>
