@@ -39,10 +39,7 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
 }
 
-.wrap{
-  max-width:1150px;
-  margin:0 auto;
-}
+.wrap{max-width:1150px;margin:0 auto}
 
 .top{
   display:flex;
@@ -74,6 +71,7 @@ h1{
 .sub{
   color:var(--muted);
   margin-top:6px;
+  line-height:1.5;
 }
 
 .card{
@@ -121,10 +119,7 @@ h1{
   font-size:20px;
 }
 
-.ring-title{
-  text-align:center;
-  font-weight:800;
-}
+.ring-title{text-align:center;font-weight:800}
 
 .ring-sub{
   text-align:center;
@@ -184,9 +179,19 @@ button{
   font-weight:900;
 }
 
+.secondary{
+  background:rgba(255,255,255,.10);
+}
+
 .row{
   display:grid;
   grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.row-3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
   gap:10px;
 }
 
@@ -233,6 +238,58 @@ button{
   background:var(--green);
 }
 
+.food-results{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+
+.food-card{
+  background:#24262b;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:13px;
+  cursor:pointer;
+}
+
+.food-card.active{
+  border-color:rgba(52,199,89,.65);
+  background:rgba(52,199,89,.13);
+}
+
+.food-title{
+  font-weight:900;
+}
+
+.food-meta{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+  line-height:1.4;
+}
+
+.meal-row,.log-row{
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.meal-row:last-child,.log-row:last-child{
+  border-bottom:none;
+}
+
+.small-btn{
+  width:auto;
+  padding:8px 10px;
+  margin:0;
+  border-radius:12px;
+  background:rgba(255,59,48,.22);
+  font-size:12px;
+}
+
 .workout{
   background:#24262b;
   border:1px solid var(--line);
@@ -255,26 +312,11 @@ button{
   line-height:1.55;
 }
 
-.log-row{
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.log-row:last-child{
-  border-bottom:none;
-}
-
 .notice{
   color:var(--muted);
   min-height:18px;
   font-size:13px;
   margin-top:10px;
-}
-
-.private-note{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
 }
 
 @media(max-width:900px){
@@ -285,7 +327,7 @@ button{
 @media(max-width:520px){
   body{padding:16px;padding-bottom:80px}
   h1{font-size:38px}
-  .summary,.metrics,.row,.row-2,.check-grid{grid-template-columns:1fr}
+  .summary,.metrics,.row,.row-2,.row-3,.check-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -299,39 +341,31 @@ button{
   </div>
 
   <h1>Health Reset</h1>
-  <div class="sub">Private consistency tracker. Low shame. High visibility.</div>
+  <div class="sub">Private consistency tracker. Food estimates, steps, workouts, weight and Mounjaro routine.</div>
 
   <div class="summary">
     <div class="ring-card">
-      <div class="ring" id="weightRing">
-        <div class="ring-inner" id="weightPercent">0%</div>
-      </div>
+      <div class="ring" id="weightRing"><div class="ring-inner" id="weightPercent">0%</div></div>
       <div class="ring-title">Weight</div>
       <div class="ring-sub" id="weightSub">130kg → under 100kg</div>
     </div>
 
     <div class="ring-card">
-      <div class="ring" id="stepsRing">
-        <div class="ring-inner" id="stepsPercent">0%</div>
-      </div>
+      <div class="ring" id="stepsRing"><div class="ring-inner" id="stepsPercent">0%</div></div>
       <div class="ring-title">Steps</div>
       <div class="ring-sub" id="stepsSub">0 / 7,000</div>
     </div>
 
     <div class="ring-card">
-      <div class="ring" id="proteinRing">
-        <div class="ring-inner" id="proteinPercent">0%</div>
-      </div>
+      <div class="ring" id="proteinRing"><div class="ring-inner" id="proteinPercent">0%</div></div>
       <div class="ring-title">Protein</div>
       <div class="ring-sub" id="proteinSub">0g / 130g</div>
     </div>
 
     <div class="ring-card">
-      <div class="ring" id="waterRing">
-        <div class="ring-inner" id="waterPercent">0%</div>
-      </div>
-      <div class="ring-title">Water</div>
-      <div class="ring-sub" id="waterSub">0L / 2L</div>
+      <div class="ring" id="calorieRing"><div class="ring-inner" id="caloriePercent">0%</div></div>
+      <div class="ring-title">Calories</div>
+      <div class="ring-sub" id="calorieSub">0 / 1,800</div>
     </div>
   </div>
 
@@ -345,17 +379,17 @@ button{
       </div>
 
       <div class="metric">
-        <div class="metric-label">Mini target</div>
-        <div class="metric-value">128–129kg</div>
+        <div class="metric-label">Meal calories</div>
+        <div class="metric-value" id="mealCalories">0</div>
       </div>
 
       <div class="metric">
-        <div class="metric-label">Main target</div>
-        <div class="metric-value">&lt;100kg</div>
+        <div class="metric-label">Meal protein</div>
+        <div class="metric-value" id="mealProtein">0g</div>
       </div>
 
       <div class="metric">
-        <div class="metric-label">Today step goal</div>
+        <div class="metric-label">Step goal</div>
         <div class="metric-value" id="stepGoal">7,000</div>
       </div>
     </div>
@@ -363,10 +397,52 @@ button{
     <div class="progress-track">
       <div class="progress-fill" id="weightProgress"></div>
     </div>
+  </div>
 
-    <p class="private-note">
-      Note: Mounjaro/dose tracking here is for routine and side-effect logging only. Follow your prescriber’s instructions.
-    </p>
+  <div class="card">
+    <h2 class="section-title">Smart meal estimator</h2>
+    <p class="sub">Search common foods or estimate by portion. Good enough beats not tracking.</p>
+
+    <input id="foodSearch" placeholder="Search e.g. Greggs, bolognese, chicken rice, yoghurt" oninput="searchFoods()">
+
+    <div id="foodResults" class="food-results"></div>
+
+    <div class="row-3">
+      <select id="mealType">
+        <option>Breakfast</option>
+        <option>Lunch</option>
+        <option>Dinner</option>
+        <option>Snack</option>
+      </select>
+
+      <select id="portionSelect" onchange="recalculateMeal()">
+        <option value="1">Normal portion</option>
+        <option value="0.5">Small / half portion</option>
+        <option value="0.25">Tiny / few bites</option>
+        <option value="1.5">Large portion</option>
+        <option value="2">Double portion</option>
+      </select>
+
+      <input id="mealDate" type="date">
+    </div>
+
+    <div class="row-3">
+      <input id="mealName" placeholder="Meal name">
+      <input id="mealCaloriesInput" type="number" placeholder="Estimated calories">
+      <input id="mealProteinInput" type="number" placeholder="Estimated protein g">
+    </div>
+
+    <input id="mealNotes" placeholder="Notes e.g. no spaghetti / small portion / extra sauce">
+
+    <button onclick="saveMeal()">Save meal</button>
+    <button class="secondary" onclick="clearMealForm()">Clear meal form</button>
+
+    <div id="mealMsg" class="notice"></div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Today’s meals</h2>
+    <div id="todayMeals"></div>
   </div>
 
   <div class="card">
@@ -375,8 +451,8 @@ button{
     <div class="row">
       <input id="logDate" type="date">
       <input id="weight" type="number" step="0.1" placeholder="Weight kg">
-      <input id="calories" type="number" placeholder="Calories">
-      <input id="protein" type="number" placeholder="Protein g">
+      <input id="calories" type="number" placeholder="Manual calories">
+      <input id="protein" type="number" placeholder="Manual protein g">
     </div>
 
     <div class="row">
@@ -411,6 +487,7 @@ button{
 
   <div class="card">
     <h2 class="section-title">Mounjaro routine</h2>
+    <p class="sub">Track routine and side effects only. Follow your prescriber’s dosing advice.</p>
 
     <div class="metrics">
       <div class="metric">
@@ -459,28 +536,6 @@ button{
     <textarea id="doseNotes" placeholder="Dose notes, digestion, appetite, water, side effects..."></textarea>
 
     <button onclick="saveDose()">Save dose log</button>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Step build</h2>
-    <div class="metrics">
-      <div class="metric">
-        <div class="metric-label">13–19 May</div>
-        <div class="metric-value">7k</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">20–26 May</div>
-        <div class="metric-value">8k</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">27 May–2 Jun</div>
-        <div class="metric-value">9k</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">From 3 Jun</div>
-        <div class="metric-value">10k</div>
-      </div>
-    </div>
   </div>
 
   <div class="card">
@@ -576,6 +631,8 @@ const supabase = createClient(
 let user = null;
 let logs = [];
 let doseLogs = [];
+let meals = [];
+let selectedFood = null;
 
 let checkState = {
   weighed_in:false,
@@ -589,6 +646,25 @@ let checkState = {
 };
 
 const msg = document.getElementById("msg");
+const mealMsg = document.getElementById("mealMsg");
+
+const foodDb = [
+  { name:"Greggs bacon and sausage breakfast roll", kcal:405, protein:22, tags:"greggs bacon sausage bap roll breakfast" },
+  { name:"Greggs bacon and sausage breakfast baguette", kcal:550, protein:29, tags:"greggs bacon sausage baguette breakfast" },
+  { name:"Greggs sausage roll", kcal:329, protein:9, tags:"greggs sausage roll" },
+  { name:"Protein shake", kcal:120, protein:24, tags:"protein shake powder whey" },
+  { name:"Greek yoghurt + berries", kcal:250, protein:25, tags:"greek yoghurt berries breakfast" },
+  { name:"Chicken rice bowl", kcal:550, protein:40, tags:"chicken rice bowl lunch dinner" },
+  { name:"Chicken + veg + rice", kcal:500, protein:42, tags:"chicken veg rice" },
+  { name:"Mince/chicken + veg + potatoes", kcal:550, protein:35, tags:"mince chicken veg potato potatoes" },
+  { name:"Small bolognese only, no spaghetti", kcal:100, protein:8, tags:"bolognese no spaghetti mince small 50g" },
+  { name:"Bolognese normal portion, no spaghetti", kcal:250, protein:20, tags:"bolognese no spaghetti mince" },
+  { name:"Bolognese with spaghetti", kcal:650, protein:35, tags:"bolognese spaghetti pasta" },
+  { name:"Eggs x2", kcal:150, protein:12, tags:"eggs egg breakfast" },
+  { name:"Chicken breast palm portion", kcal:170, protein:32, tags:"chicken breast palm portion" },
+  { name:"Rice fist portion", kcal:200, protein:4, tags:"rice carb fist portion" },
+  { name:"Takeaway unknown meal", kcal:900, protein:30, tags:"takeaway unknown meal" }
+];
 
 function today(){
   return new Date().toISOString().split("T")[0];
@@ -596,6 +672,10 @@ function today(){
 
 function setMsg(text){
   msg.textContent = text;
+}
+
+function setMealMsg(text){
+  mealMsg.textContent = text;
 }
 
 function percent(value,target){
@@ -619,43 +699,190 @@ function getStepGoal(dateStr){
   return 10000;
 }
 
+function todayMeals(){
+  return meals.filter(m => m.meal_date === today());
+}
+
+function mealTotals(){
+  return todayMeals().reduce((acc,m) => {
+    acc.calories += Number(m.estimated_calories || 0);
+    acc.protein += Number(m.estimated_protein || 0);
+    return acc;
+  }, { calories:0, protein:0 });
+}
+
 function renderRings(todayLog){
   const stepGoal = getStepGoal(today());
+  const totals = mealTotals();
 
   const currentWeight = todayLog?.weight_kg || logs.find(l => l.weight_kg)?.weight_kg || null;
+
   const weightProgress = currentWeight
     ? Math.min(Math.max(((130 - Number(currentWeight)) / 30) * 100, 0), 100)
     : 0;
 
   const stepsP = percent(todayLog?.steps || 0, stepGoal);
-  const proteinP = percent(todayLog?.protein_g || 0, 130);
-  const waterP = percent(todayLog?.water_l || 0, 2);
+  const proteinP = percent(totals.protein || todayLog?.protein_g || 0, 130);
+  const calorieP = percent(totals.calories || todayLog?.calories || 0, 1800);
 
   setRing("weightRing", weightProgress, "var(--green)");
   setRing("stepsRing", stepsP, "var(--blue)");
   setRing("proteinRing", proteinP, "var(--pink)");
-  setRing("waterRing", waterP, "var(--orange)");
+  setRing("calorieRing", calorieP, "var(--orange)");
 
   document.getElementById("weightPercent").textContent = `${Math.round(weightProgress)}%`;
   document.getElementById("stepsPercent").textContent = `${stepsP}%`;
   document.getElementById("proteinPercent").textContent = `${proteinP}%`;
-  document.getElementById("waterPercent").textContent = `${waterP}%`;
+  document.getElementById("caloriePercent").textContent = `${calorieP}%`;
 
   document.getElementById("stepsSub").textContent = `${todayLog?.steps || 0} / ${stepGoal.toLocaleString()}`;
-  document.getElementById("proteinSub").textContent = `${todayLog?.protein_g || 0}g / 130g`;
-  document.getElementById("waterSub").textContent = `${todayLog?.water_l || 0}L / 2L`;
+  document.getElementById("proteinSub").textContent = `${totals.protein || todayLog?.protein_g || 0}g / 130g`;
+  document.getElementById("calorieSub").textContent = `${totals.calories || todayLog?.calories || 0} / 1,800`;
 
   document.getElementById("currentWeight").textContent = currentWeight ? `${Number(currentWeight).toFixed(1)}kg` : "—";
   document.getElementById("stepGoal").textContent = stepGoal.toLocaleString();
   document.getElementById("weightProgress").style.width = `${weightProgress}%`;
+
+  document.getElementById("mealCalories").textContent = totals.calories;
+  document.getElementById("mealProtein").textContent = `${totals.protein}g`;
+}
+
+window.searchFoods = function(){
+  const q = document.getElementById("foodSearch").value.toLowerCase().trim();
+  const resultsEl = document.getElementById("foodResults");
+
+  if(!q){
+    resultsEl.innerHTML = "";
+    return;
+  }
+
+  const results = foodDb.filter(food =>
+    food.name.toLowerCase().includes(q) ||
+    food.tags.toLowerCase().includes(q)
+  ).slice(0,8);
+
+  if(!results.length){
+    resultsEl.innerHTML = `<div class="sub">No match. Use the custom boxes below.</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = results.map((food, index) => `
+    <div class="food-card" onclick="selectFood(${foodDb.indexOf(food)})">
+      <div class="food-title">${food.name}</div>
+      <div class="food-meta">~${food.kcal} kcal • ~${food.protein}g protein</div>
+    </div>
+  `).join("");
+}
+
+window.selectFood = function(index){
+  selectedFood = foodDb[index];
+
+  document.getElementById("mealName").value = selectedFood.name;
+  recalculateMeal();
+
+  document.querySelectorAll(".food-card").forEach(card => card.classList.remove("active"));
+  const cards = document.querySelectorAll(".food-card");
+  const activeIndex = Array.from(cards).findIndex(card => card.textContent.includes(selectedFood.name));
+  if(cards[activeIndex]) cards[activeIndex].classList.add("active");
+}
+
+window.recalculateMeal = function(){
+  if(!selectedFood) return;
+
+  const multiplier = Number(document.getElementById("portionSelect").value || 1);
+
+  document.getElementById("mealCaloriesInput").value = Math.round(selectedFood.kcal * multiplier);
+  document.getElementById("mealProteinInput").value = Math.round(selectedFood.protein * multiplier);
+}
+
+window.clearMealForm = function(){
+  selectedFood = null;
+  document.getElementById("foodSearch").value = "";
+  document.getElementById("foodResults").innerHTML = "";
+  document.getElementById("mealName").value = "";
+  document.getElementById("mealCaloriesInput").value = "";
+  document.getElementById("mealProteinInput").value = "";
+  document.getElementById("mealNotes").value = "";
+  document.getElementById("portionSelect").value = "1";
+}
+
+window.saveMeal = async function(){
+  const mealDate = document.getElementById("mealDate").value || today();
+  const mealName = document.getElementById("mealName").value.trim();
+  const calories = Number(document.getElementById("mealCaloriesInput").value || 0);
+  const protein = Number(document.getElementById("mealProteinInput").value || 0);
+  const mealType = document.getElementById("mealType").value;
+  const notes = document.getElementById("mealNotes").value.trim() || null;
+
+  if(!mealName || !calories){
+    setMealMsg("Add a meal name and estimated calories.");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("health_meals")
+    .insert([{
+      user_id:user.id,
+      meal_date:mealDate,
+      meal_name:mealName,
+      meal_type:mealType,
+      estimated_calories:calories,
+      estimated_protein:protein,
+      notes
+    }]);
+
+  if(error){
+    setMealMsg(error.message);
+    return;
+  }
+
+  setMealMsg("Meal saved.");
+  clearMealForm();
+  await load();
+}
+
+function renderMeals(){
+  const el = document.getElementById("todayMeals");
+  const rows = todayMeals();
+
+  if(!rows.length){
+    el.innerHTML = `<p class="sub">No meals logged today.</p>`;
+    return;
+  }
+
+  el.innerHTML = rows.map(meal => `
+    <div class="meal-row">
+      <div>
+        <strong>${meal.meal_name}</strong>
+        <div class="sub">
+          ${meal.meal_type || "Meal"} • ~${meal.estimated_calories || 0} kcal • ~${meal.estimated_protein || 0}g protein
+          ${meal.notes ? " • " + meal.notes : ""}
+        </div>
+      </div>
+      <button class="small-btn" onclick="deleteMeal('${meal.id}')">Delete</button>
+    </div>
+  `).join("");
+}
+
+window.deleteMeal = async function(id){
+  const { error } = await supabase
+    .from("health_meals")
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    setMealMsg(error.message);
+    return;
+  }
+
+  setMealMsg("Meal deleted.");
+  await load();
 }
 
 function renderDoseSummary(){
   const latest = doseLogs[0];
 
-  if(!latest){
-    return;
-  }
+  if(!latest) return;
 
   document.getElementById("lastDose").textContent = latest.dose_date || "—";
   document.getElementById("lastDoseAmount").textContent = latest.dose || "—";
@@ -676,12 +903,14 @@ function renderRecent(){
 
   el.innerHTML = logs.slice(0,7).map(l => `
     <div class="log-row">
-      <strong>${l.log_date}</strong>
-      <div class="sub">
-        ${l.weight_kg ? `${l.weight_kg}kg • ` : ""}
-        ${l.steps ? `${l.steps} steps • ` : ""}
-        ${l.calories ? `${l.calories} cals • ` : ""}
-        ${l.protein_g ? `${l.protein_g}g protein` : ""}
+      <div>
+        <strong>${l.log_date}</strong>
+        <div class="sub">
+          ${l.weight_kg ? `${l.weight_kg}kg • ` : ""}
+          ${l.steps ? `${l.steps} steps • ` : ""}
+          ${l.calories ? `${l.calories} cals • ` : ""}
+          ${l.protein_g ? `${l.protein_g}g protein` : ""}
+        </div>
       </div>
     </div>
   `).join("");
@@ -691,7 +920,6 @@ function setChecksFromLog(log){
   Object.keys(checkState).forEach(key => {
     checkState[key] = Boolean(log?.[key]);
   });
-
   renderChecks();
 }
 
@@ -721,8 +949,9 @@ async function load(){
 
   document.getElementById("logDate").value = today();
   document.getElementById("doseDate").value = today();
+  document.getElementById("mealDate").value = today();
 
-  const [logsRes,doseRes] = await Promise.all([
+  const [logsRes,doseRes,mealsRes] = await Promise.all([
     supabase
       .from("health_reset_logs")
       .select("*")
@@ -733,7 +962,14 @@ async function load(){
       .from("mounjaro_logs")
       .select("*")
       .eq("user_id", user.id)
-      .order("dose_date", { ascending:false })
+      .order("dose_date", { ascending:false }),
+
+    supabase
+      .from("health_meals")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("meal_date", { ascending:false })
+      .order("created_at", { ascending:false })
   ]);
 
   if(logsRes.error){
@@ -746,8 +982,14 @@ async function load(){
     return;
   }
 
+  if(mealsRes.error){
+    setMealMsg(mealsRes.error.message);
+    return;
+  }
+
   logs = logsRes.data || [];
   doseLogs = doseRes.data || [];
+  meals = mealsRes.data || [];
 
   const todayLog = logs.find(l => l.log_date === today());
 
@@ -765,19 +1007,21 @@ async function load(){
   }
 
   renderRings(todayLog);
+  renderMeals();
   renderDoseSummary();
   renderRecent();
 }
 
 window.saveHealthLog = async function(){
   const logDate = document.getElementById("logDate").value || today();
+  const totals = mealTotals();
 
   const payload = {
     user_id:user.id,
     log_date:logDate,
     weight_kg:document.getElementById("weight").value || null,
-    calories:document.getElementById("calories").value || null,
-    protein_g:document.getElementById("protein").value || null,
+    calories:document.getElementById("calories").value || totals.calories || null,
+    protein_g:document.getElementById("protein").value || totals.protein || null,
     water_l:document.getElementById("water").value || null,
     steps:document.getElementById("steps").value || null,
     workout:document.getElementById("workout").value || null,
