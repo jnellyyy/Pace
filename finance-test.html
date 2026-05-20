@@ -6,6 +6,11 @@
 
 <title>Pace Finance</title>
 
+<link rel="manifest" href="/Pace/site.webmanifest">
+<link rel="apple-touch-icon" href="/Pace/icon-180.png">
+<link rel="icon" href="/Pace/icon-32.png">
+<meta name="theme-color" content="#0f1115">
+
 <style>
 :root{
   --bg:#0f1115;
@@ -16,25 +21,19 @@
   --green:#22c55e;
   --red:#ef4444;
   --blue:#60a5fa;
-  --orange:#f59e0b;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   padding:18px;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif;
 }
 
-.wrap{
-  max-width:1200px;
-  margin:auto;
-}
+.wrap{max-width:1200px;margin:auto}
 
 .card{
   background:var(--panel);
@@ -44,9 +43,26 @@ body{
   margin-bottom:18px;
 }
 
-h1,h2,h3,h4,p{
-  margin-top:0;
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
 }
+
+.back-btn{
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+}
+
+h1,h2,h3,p{margin-top:0}
+
+.muted{color:var(--muted);line-height:1.5}
 
 .grid{
   display:grid;
@@ -68,31 +84,29 @@ h1,h2,h3,h4,p{
 
 .kpi-value{
   font-size:24px;
-  font-weight:700;
+  font-weight:800;
 }
 
-.good{
-  color:var(--green);
-}
-
-.bad{
-  color:var(--red);
-}
+.good{color:var(--green)}
+.bad{color:var(--red)}
+.blue{color:var(--blue)}
 
 input,select,button{
   width:100%;
   padding:12px;
   border-radius:14px;
-  border:none;
+  border:1px solid rgba(255,255,255,0.10);
   margin-top:10px;
   background:rgba(255,255,255,0.06);
   color:white;
+  font:inherit;
 }
 
 button{
   background:#ff3b30;
-  font-weight:700;
+  font-weight:800;
   cursor:pointer;
+  border:none;
 }
 
 .row{
@@ -104,54 +118,49 @@ button{
 .item{
   display:flex;
   justify-content:space-between;
+  align-items:flex-start;
   gap:12px;
   padding:14px 0;
   border-bottom:1px solid var(--line);
 }
 
-.item:last-child{
-  border-bottom:none;
-}
+.item:last-child{border-bottom:none}
 
-.item-title{
-  font-weight:700;
-}
+.item-title{font-weight:800}
 
 .item-meta{
   color:var(--muted);
   font-size:13px;
   margin-top:4px;
+  line-height:1.4;
 }
 
 .small-btn{
   width:auto;
   padding:8px 12px;
   margin:0;
+  border-radius:12px;
+  white-space:nowrap;
 }
 
-.green-btn{
-  background:rgba(34,197,94,0.25);
-}
+.green-btn{background:rgba(34,197,94,0.25)}
+.grey-btn{background:rgba(255,255,255,0.10)}
 
 .empty{
   color:var(--muted);
   padding:10px 0;
 }
 
-.section{
-  margin-top:30px;
+.section{margin-top:26px}
+
+.notice{
+  color:var(--muted);
+  min-height:18px;
+  margin-top:10px;
 }
 
 @media(max-width:900px){
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .row{
-    grid-template-columns:1fr;
-  }
-
+  .grid,.row{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -161,16 +170,31 @@ button{
 <div class="wrap">
 
   <div class="card">
-    <h1>Pace Finance</h1>
-    <p style="color:var(--muted)">
-      Track life, business and monthly payments clearly.
-    </p>
-
-    <div class="grid" id="kpis"></div>
+    <div class="topbar">
+      <div>
+        <h1>Pace Finance</h1>
+        <p class="muted">Track life, business and monthly payments clearly.</p>
+      </div>
+      <a class="back-btn" href="dashboard.html">← Dashboard</a>
+    </div>
   </div>
 
   <div class="card">
+    <h2>Overall Summary</h2>
+    <div class="grid" id="overallKpis"></div>
+  </div>
 
+  <div class="card">
+    <h2>Business Finance</h2>
+    <div class="grid" id="businessKpis"></div>
+
+    <div class="section">
+      <h3>Business transactions</h3>
+      <div id="businessTransactions"></div>
+    </div>
+  </div>
+
+  <div class="card">
     <h2>Add Transaction</h2>
 
     <div class="row">
@@ -190,17 +214,14 @@ button{
       <input id="date" type="date">
     </div>
 
-    <input id="subtype" placeholder="Category">
+    <input id="subtype" placeholder="Category e.g. Electroverse, Clearpay, Gear">
     <input id="note" placeholder="Note">
 
-    <button id="saveTransaction">
-      Save Transaction
-    </button>
-
+    <button id="saveTransaction">Save Transaction</button>
+    <div id="txMsg" class="notice"></div>
   </div>
 
   <div class="card">
-
     <h2>Add Fixed Bill</h2>
 
     <div class="row">
@@ -208,15 +229,29 @@ button{
       <input id="billAmount" type="number" placeholder="Amount">
     </div>
 
-    <button id="saveBill">
-      Add Fixed Bill
-    </button>
-
+    <button id="saveBill">Add Fixed Bill</button>
+    <div id="billMsg" class="notice"></div>
   </div>
 
   <div class="card">
-
     <h2>Monthly Paid Checklist</h2>
+
+    <div class="grid" style="margin-bottom:22px;">
+      <div class="kpi">
+        <div class="kpi-title">Total left to pay</div>
+        <div class="kpi-value bad" id="totalLeftToPay">£0.00</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-title">Total paid</div>
+        <div class="kpi-value good" id="totalPaidThisMonth">£0.00</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-title">Total monthly expenses</div>
+        <div class="kpi-value" id="totalMonthlyExpenses">£0.00</div>
+      </div>
+    </div>
 
     <div class="section">
       <h3>Left To Pay</h3>
@@ -227,42 +262,54 @@ button{
       <h3>Paid This Month</h3>
       <div id="paidThisMonth"></div>
     </div>
-
   </div>
 
   <div class="card">
+    <h2>Life Transactions</h2>
+    <div id="lifeTransactions"></div>
+  </div>
 
-    <h2>Transactions</h2>
-    <div id="transactions"></div>
-
+  <div class="card">
+    <h2>Fixed Bills</h2>
+    <div id="fixedBills"></div>
   </div>
 
 </div>
 
 <script type="module">
-
-import { createClient }
-from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const supabase = createClient(
   "https://grgagroautlpphjsjpjh.supabase.co",
-  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn"
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true,
+      storage:localStorage
+    }
+  }
 );
 
 let transactions = [];
 let fixedBills = [];
 let paidStatuses = [];
 
+const txMsg = document.getElementById("txMsg");
+const billMsg = document.getElementById("billMsg");
+
 function money(v){
   return `£${Number(v || 0).toFixed(2)}`;
 }
 
+function today(){
+  return new Date().toISOString().split("T")[0];
+}
+
 function currentMonth(){
   const d = new Date();
-
-  return `${d.getFullYear()}-${String(
-    d.getMonth()+1
-  ).padStart(2,"0")}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
 }
 
 async function getUser(){
@@ -271,22 +318,19 @@ async function getUser(){
 }
 
 function isPaid(sourceTable, sourceId){
-
   return paidStatuses.some(x =>
     x.source_table === sourceTable &&
     x.source_id === sourceId &&
     x.paid_month === currentMonth() &&
     x.paid === true
   );
-
 }
 
 async function togglePaid(sourceTable, sourceId, current){
-
   const user = await getUser();
+  if(!user) return;
 
   if(current){
-
     await supabase
       .from("monthly_expense_status")
       .delete()
@@ -294,20 +338,19 @@ async function togglePaid(sourceTable, sourceId, current){
       .eq("source_table", sourceTable)
       .eq("source_id", sourceId)
       .eq("paid_month", currentMonth());
-
   } else {
-
     await supabase
       .from("monthly_expense_status")
-      .insert([{
+      .upsert([{
         user_id:user.id,
         source_table:sourceTable,
         source_id:sourceId,
         paid:true,
         paid_month:currentMonth(),
-        paid_date:new Date().toISOString()
-      }]);
-
+        paid_date:today()
+      }], {
+        onConflict:"user_id,source_table,source_id,paid_month"
+      });
   }
 
   await load();
@@ -315,105 +358,137 @@ async function togglePaid(sourceTable, sourceId, current){
 
 window.togglePaid = togglePaid;
 
-function renderKPIs(){
-
-  const income = transactions
-    .filter(t => t.type === "income")
+function totals(){
+  const lifeIncome = transactions
+    .filter(t => t.bucket === "life" && t.type === "income")
     .reduce((s,t)=>s+Number(t.amount||0),0);
 
-  const expense = transactions
-    .filter(t => t.type === "expense")
+  const lifeExpenses = transactions
+    .filter(t => t.bucket === "life" && t.type === "expense")
+    .reduce((s,t)=>s+Number(t.amount||0),0);
+
+  const businessIncome = transactions
+    .filter(t => t.bucket === "business" && t.type === "income")
+    .reduce((s,t)=>s+Number(t.amount||0),0);
+
+  const businessExpenses = transactions
+    .filter(t => t.bucket === "business" && t.type === "expense")
     .reduce((s,t)=>s+Number(t.amount||0),0);
 
   const fixed = fixedBills
+    .filter(b => b.is_active !== false)
     .reduce((s,t)=>s+Number(t.amount||0),0);
 
-  document.getElementById("kpis").innerHTML = `
+  return {
+    lifeIncome,
+    lifeExpenses,
+    businessIncome,
+    businessExpenses,
+    fixed,
+    overallIncome: lifeIncome + businessIncome,
+    overallExpenses: lifeExpenses + businessExpenses + fixed,
+    businessBalance: businessIncome - businessExpenses
+  };
+}
+
+function renderKPIs(){
+  const t = totals();
+  const balance = t.overallIncome - t.overallExpenses;
+
+  document.getElementById("overallKpis").innerHTML = `
     <div class="kpi">
-      <div class="kpi-title">Income</div>
-      <div class="kpi-value good">${money(income)}</div>
+      <div class="kpi-title">Overall income</div>
+      <div class="kpi-value good">${money(t.overallIncome)}</div>
     </div>
 
     <div class="kpi">
-      <div class="kpi-title">Expenses</div>
-      <div class="kpi-value bad">${money(expense + fixed)}</div>
+      <div class="kpi-title">Overall expenses</div>
+      <div class="kpi-value bad">${money(t.overallExpenses)}</div>
     </div>
 
     <div class="kpi">
-      <div class="kpi-title">Balance</div>
-      <div class="kpi-value">
-        ${money(income - expense - fixed)}
-      </div>
+      <div class="kpi-title">Overall balance</div>
+      <div class="kpi-value ${balance >= 0 ? "good" : "bad"}">${money(balance)}</div>
+    </div>
+  `;
+
+  document.getElementById("businessKpis").innerHTML = `
+    <div class="kpi">
+      <div class="kpi-title">Business income</div>
+      <div class="kpi-value good">${money(t.businessIncome)}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Business expenses</div>
+      <div class="kpi-value bad">${money(t.businessExpenses)}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Business balance</div>
+      <div class="kpi-value ${t.businessBalance >= 0 ? "good" : "bad"}">${money(t.businessBalance)}</div>
     </div>
   `;
 }
 
-function renderTransactions(){
+function expenseRows(){
+  const fixedRows = fixedBills
+    .filter(b => b.is_active !== false)
+    .map(b => ({
+      sourceTable:"fixed_expenses",
+      sourceId:b.id,
+      title:b.name || "Fixed bill",
+      amount:Number(b.amount || 0),
+      meta:"Fixed bill"
+    }));
 
-  const el = document.getElementById("transactions");
+  const transactionRows = transactions
+    .filter(t => t.type === "expense")
+    .map(t => ({
+      sourceTable:"transactions",
+      sourceId:t.id,
+      title:t.subtype || t.category || "Expense",
+      amount:Number(t.amount || 0),
+      meta:`${t.bucket || "life"}${t.note ? " • " + t.note : ""}`
+    }));
 
-  if(!transactions.length){
-    el.innerHTML = `<div class="empty">No transactions yet.</div>`;
-    return;
-  }
-
-  el.innerHTML = transactions.map(t => `
-    <div class="item">
-
-      <div>
-        <div class="item-title">
-          ${t.subtype || "Transaction"}
-        </div>
-
-        <div class="item-meta">
-          ${money(t.amount)}
-          ${t.note ? ` • ${t.note}` : ""}
-        </div>
-      </div>
-
-    </div>
-  `).join("");
+  return [...fixedRows, ...transactionRows];
 }
 
 function renderPaidChecklist(){
-
   const leftEl = document.getElementById("leftToPay");
   const paidEl = document.getElementById("paidThisMonth");
 
   const left = [];
   const paid = [];
 
-  fixedBills.forEach(item => {
+  let leftTotal = 0;
+  let paidTotal = 0;
+  let monthlyTotal = 0;
 
-    const done = isPaid(
-      "fixed_expenses",
-      item.id
-    );
+  expenseRows().forEach(item => {
+    const done = isPaid(item.sourceTable, item.sourceId);
+
+    monthlyTotal += item.amount;
+
+    if(done){
+      paidTotal += item.amount;
+    } else {
+      leftTotal += item.amount;
+    }
 
     const html = `
       <div class="item">
-
         <div>
-          <div class="item-title">
-            ${item.name}
-          </div>
-
-          <div class="item-meta">
-            ${money(item.amount)}
-          </div>
+          <div class="item-title">${item.title}</div>
+          <div class="item-meta">${money(item.amount)} • ${item.meta}</div>
         </div>
 
         <button
-          class="small-btn ${done ? 'green-btn' : ''}"
-          onclick="togglePaid(
-            'fixed_expenses',
-            '${item.id}',
-            ${done}
-          )"
+          class="small-btn ${done ? 'green-btn' : 'grey-btn'}"
+          onclick="togglePaid('${item.sourceTable}','${item.sourceId}',${done})"
         >
-          ${done ? 'Paid' : 'Mark Paid'}
+          ${done ? 'Paid ✓' : 'Mark paid'}
         </button>
-
       </div>
     `;
 
@@ -422,149 +497,185 @@ function renderPaidChecklist(){
     } else {
       left.push(html);
     }
-
   });
 
-  transactions
-    .filter(t => t.type === "expense")
-    .forEach(item => {
+  document.getElementById("totalLeftToPay").textContent = money(leftTotal);
+  document.getElementById("totalPaidThisMonth").textContent = money(paidTotal);
+  document.getElementById("totalMonthlyExpenses").textContent = money(monthlyTotal);
 
-      const done = isPaid(
-        "transactions",
-        item.id
-      );
+  leftEl.innerHTML = left.length
+    ? left.join("")
+    : `<div class="empty">Everything paid 🎉</div>`;
 
-      const html = `
-        <div class="item">
-
-          <div>
-            <div class="item-title">
-              ${item.subtype || "Expense"}
-            </div>
-
-            <div class="item-meta">
-              ${money(item.amount)}
-              ${item.note ? ` • ${item.note}` : ""}
-            </div>
-          </div>
-
-          <button
-            class="small-btn ${done ? 'green-btn' : ''}"
-            onclick="togglePaid(
-              'transactions',
-              '${item.id}',
-              ${done}
-            )"
-          >
-            ${done ? 'Paid' : 'Mark Paid'}
-          </button>
-
-        </div>
-      `;
-
-      if(done){
-        paid.push(html);
-      } else {
-        left.push(html);
-      }
-
-    });
-
-  leftEl.innerHTML =
-    left.length
-      ? left.join("")
-      : `<div class="empty">Everything paid 🎉</div>`;
-
-  paidEl.innerHTML =
-    paid.length
-      ? paid.join("")
-      : `<div class="empty">Nothing paid yet.</div>`;
+  paidEl.innerHTML = paid.length
+    ? paid.join("")
+    : `<div class="empty">Nothing paid yet.</div>`;
 }
 
-async function load(){
+function transactionTemplate(t){
+  return `
+    <div class="item">
+      <div>
+        <div class="item-title">${t.subtype || t.category || "Transaction"}</div>
+        <div class="item-meta">
+          ${t.type} • ${money(t.amount)}
+          ${t.note ? ` • ${t.note}` : ""}
+        </div>
+      </div>
+    </div>
+  `;
+}
 
-  const user = await getUser();
+function renderTransactions(){
+  const lifeEl = document.getElementById("lifeTransactions");
+  const businessEl = document.getElementById("businessTransactions");
 
-  if(!user){
+  const lifeRows = transactions.filter(t => t.bucket !== "business");
+  const businessRows = transactions.filter(t => t.bucket === "business");
+
+  lifeEl.innerHTML = lifeRows.length
+    ? lifeRows.map(transactionTemplate).join("")
+    : `<div class="empty">No life transactions yet.</div>`;
+
+  businessEl.innerHTML = businessRows.length
+    ? businessRows.map(transactionTemplate).join("")
+    : `<div class="empty">No business transactions yet.</div>`;
+}
+
+function renderFixedBills(){
+  const el = document.getElementById("fixedBills");
+
+  if(!fixedBills.length){
+    el.innerHTML = `<div class="empty">No fixed bills yet.</div>`;
     return;
   }
 
-  const [
-    txRes,
-    fixedRes,
-    paidRes
-  ] = await Promise.all([
+  el.innerHTML = fixedBills.map(b => `
+    <div class="item">
+      <div>
+        <div class="item-title">${b.name}</div>
+        <div class="item-meta">${money(b.amount)} • ${b.is_active === false ? "Inactive" : "Active"}</div>
+      </div>
+    </div>
+  `).join("");
+}
 
+function renderAll(){
+  renderKPIs();
+  renderPaidChecklist();
+  renderTransactions();
+  renderFixedBills();
+}
+
+async function load(){
+  const user = await getUser();
+
+  if(!user){
+    window.location.href = "index.html";
+    return;
+  }
+
+  document.getElementById("date").value ||= today();
+
+  const [txRes, fixedRes, paidRes] = await Promise.all([
     supabase
       .from("transactions")
       .select("*")
       .eq("user_id", user.id)
-      .order("date",{ascending:false}),
+      .order("date", { ascending:false }),
 
     supabase
       .from("fixed_expenses")
       .select("*")
-      .eq("user_id", user.id),
+      .eq("user_id", user.id)
+      .order("created_at", { ascending:false }),
 
     supabase
       .from("monthly_expense_status")
       .select("*")
       .eq("user_id", user.id)
-
+      .eq("paid_month", currentMonth())
   ]);
 
   transactions = txRes.data || [];
   fixedBills = fixedRes.data || [];
   paidStatuses = paidRes.data || [];
 
-  renderKPIs();
-  renderTransactions();
-  renderPaidChecklist();
+  renderAll();
 }
 
-document
-.getElementById("saveTransaction")
-.addEventListener("click", async ()=>{
-
+document.getElementById("saveTransaction").addEventListener("click", async () => {
   const user = await getUser();
+  if(!user) return;
 
-  await supabase
+  const amount = Number(document.getElementById("amount").value || 0);
+
+  if(!amount){
+    txMsg.textContent = "Enter an amount.";
+    return;
+  }
+
+  const { error } = await supabase
     .from("transactions")
     .insert([{
       user_id:user.id,
       bucket:document.getElementById("bucket").value,
       type:document.getElementById("type").value,
-      amount:Number(document.getElementById("amount").value || 0),
-      subtype:document.getElementById("subtype").value,
-      note:document.getElementById("note").value,
-      date:document.getElementById("date").value
+      amount,
+      subtype:document.getElementById("subtype").value.trim(),
+      category:document.getElementById("subtype").value.trim(),
+      note:document.getElementById("note").value.trim(),
+      date:document.getElementById("date").value || today()
     }]);
 
-  load();
+  if(error){
+    txMsg.textContent = error.message;
+    return;
+  }
 
+  document.getElementById("amount").value = "";
+  document.getElementById("subtype").value = "";
+  document.getElementById("note").value = "";
+  txMsg.textContent = "Transaction saved.";
+
+  await load();
 });
 
-document
-.getElementById("saveBill")
-.addEventListener("click", async ()=>{
-
+document.getElementById("saveBill").addEventListener("click", async () => {
   const user = await getUser();
+  if(!user) return;
 
-  await supabase
+  const name = document.getElementById("billName").value.trim();
+  const amount = Number(document.getElementById("billAmount").value || 0);
+
+  if(!name || !amount){
+    billMsg.textContent = "Add bill name and amount.";
+    return;
+  }
+
+  const { error } = await supabase
     .from("fixed_expenses")
     .insert([{
       user_id:user.id,
-      name:document.getElementById("billName").value,
-      amount:Number(document.getElementById("billAmount").value || 0),
+      name,
+      amount,
+      bucket:"bills",
       is_active:true
     }]);
 
-  load();
+  if(error){
+    billMsg.textContent = error.message;
+    return;
+  }
 
+  document.getElementById("billName").value = "";
+  document.getElementById("billAmount").value = "";
+  billMsg.textContent = "Fixed bill added.";
+
+  await load();
 });
 
 load();
-
 </script>
 
 </body>
