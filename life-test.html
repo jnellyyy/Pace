@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Pace To Do</title>
 
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
 
 <style>
@@ -15,138 +15,406 @@
   --bg1:#0f1115;
   --bg2:#171a20;
   --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
+  --panel3:rgba(255,255,255,0.12);
   --line:rgba(255,255,255,0.12);
+  --line2:rgba(255,255,255,0.08);
   --text:#f5f7fb;
   --muted:#a7afbe;
+  --soft:#d9dee8;
   --accent:#ff3b30;
   --green:#22c55e;
-  --shadow:0 20px 50px rgba(0,0,0,0.35);
-  --radius:24px;
+  --amber:#f59e0b;
+  --blue:#60a5fa;
+  --red:#ef4444;
+  --shadow:0 24px 70px rgba(0,0,0,0.42);
+  --radius:28px;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  min-height:100%;
+}
 
 body{
   margin:0;
+  min-height:100dvh;
   padding:18px;
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
+    radial-gradient(circle at 12% 0%, rgba(255,59,48,0.16), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(96,165,250,0.10), transparent 30%),
     linear-gradient(180deg, var(--bg1), var(--bg2));
 }
 
-.wrap{max-width:980px;margin:0 auto;}
+button,
+input,
+select{
+  font:inherit;
+}
 
-.card{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:18px;
-  margin-top:16px;
-  backdrop-filter:blur(18px);
+button{
+  cursor:pointer;
+}
+
+.wrap{
+  max-width:1220px;
+  margin:0 auto;
 }
 
 .topbar{
   display:flex;
+  align-items:center;
   justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px;
+}
+
+.brand-block{
+  display:flex;
+  align-items:center;
   gap:12px;
-  align-items:flex-start;
-  flex-wrap:wrap;
+}
+
+.app-dot{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 14px 35px rgba(0,0,0,0.25);
+  font-weight:900;
+}
+
+.eyebrow{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:800;
+}
+
+h1{
+  margin:2px 0 0;
+  font-size:28px;
+  letter-spacing:-0.04em;
+  line-height:1.05;
 }
 
 .back-btn{
-  padding:10px 14px;
-  border-radius:14px;
+  width:auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 14px;
+  border-radius:16px;
   background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
   color:#fff;
   text-decoration:none;
-  font-weight:800;
+  font-weight:850;
+  font-size:14px;
 }
 
-.muted{color:var(--muted)}
+.back-btn:hover{
+  background:rgba(255,255,255,0.12);
+}
 
-input,select,button{
-  width:100%;
-  padding:12px;
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+}
+
+.overview{
+  padding:14px;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns:2fr repeat(4, 1fr);
+  gap:12px;
+}
+
+.summary-card,
+.kpi{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line2);
+  border-radius:24px;
+  padding:16px;
+  min-height:112px;
+  position:relative;
+  overflow:hidden;
+}
+
+.summary-card:before{
+  content:"";
+  position:absolute;
+  inset:auto -60px -80px auto;
+  width:190px;
+  height:190px;
+  border-radius:999px;
+  background:rgba(255,59,48,0.16);
+  filter:blur(2px);
+}
+
+.kpi-title{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.kpi-value{
+  font-size:24px;
+  font-weight:900;
+  margin-top:5px;
+  letter-spacing:-0.03em;
+}
+
+.kpi-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.35;
+}
+
+.hero-number{
+  font-size:34px;
+  font-weight:950;
+  letter-spacing:-0.05em;
+  margin-top:4px;
+}
+
+.progress{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+  margin-top:14px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--accent), #ff7b72);
+}
+
+.mini-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
   margin-top:10px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.06);
+  color:var(--muted);
+  font-size:12px;
+  position:relative;
+  z-index:1;
+}
+
+.workspace{
+  display:grid;
+  grid-template-columns:minmax(0, 1.35fr) minmax(330px, 0.65fr);
+  gap:14px;
+  margin-top:14px;
+  align-items:start;
+}
+
+.panel{
+  padding:16px;
+}
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.panel-title{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.02em;
+}
+
+.panel-copy{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+input,
+select,
+button{
+  width:100%;
+  min-height:46px;
+  padding:12px 13px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.065);
   border:1px solid rgba(255,255,255,0.12);
   color:#fff;
-  font:inherit;
+  outline:none;
 }
 
-input::placeholder{color:#9da6b5}
-
-button{
-  background:var(--accent);
-  border:none;
-  font-weight:800;
-  cursor:pointer;
+input:focus,
+select:focus{
+  border-color:rgba(255,59,48,0.55);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.10);
 }
 
-.row{
-  display:grid;
-  grid-template-columns:1fr 180px;
-  gap:10px;
+input::placeholder{
+  color:#919aaa;
 }
 
-.row-2{
+.primary-btn{
+  border:0;
+  border-radius:18px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
+  color:#fff;
+  font-weight:900;
+  margin-top:12px;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
+}
+
+.form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
 
+.form-grid.task-main-grid{
+  grid-template-columns:1fr 180px;
+}
+
+.field{
+  display:block;
+}
+
+.field span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+  margin:0 0 7px;
+}
+
+.notice{
+  color:var(--soft);
+  min-height:18px;
+  margin:10px 0 0;
+  font-size:13px;
+}
+
+.search-row{
+  margin-bottom:12px;
+}
+
 .filters{
   display:flex;
   gap:8px;
-  flex-wrap:wrap;
-  margin-top:14px;
+  overflow-x:auto;
+  padding-bottom:2px;
+  margin:8px 0 13px;
 }
 
 .filter-btn{
   width:auto;
-  margin:0;
-  padding:8px 11px;
-  background:rgba(255,255,255,0.08);
+  flex:0 0 auto;
+  min-height:36px;
+  padding:9px 12px;
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:999px;
+  background:rgba(255,255,255,0.07);
+  color:#fff;
   font-size:13px;
+  font-weight:850;
 }
 
-.filter-btn.active{background:var(--accent)}
+.filter-btn span{
+  opacity:0.68;
+  margin-left:5px;
+}
+
+.filter-btn.active{
+  background:var(--accent);
+  border-color:rgba(255,255,255,0.08);
+}
+
+.tasks-list{
+  max-height:calc(100dvh - 318px);
+  overflow:auto;
+  padding-right:3px;
+}
+
+.tasks-list::-webkit-scrollbar{
+  width:8px;
+}
+
+.tasks-list::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.12);
+  border-radius:999px;
+}
 
 .task{
+  background:rgba(255,255,255,0.075);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:24px;
+  padding:14px;
+  margin-top:11px;
   display:flex;
   gap:12px;
   align-items:flex-start;
-  padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
-.task:last-child{border-bottom:none}
+.task:first-child{
+  margin-top:0;
+}
 
 .check{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.06);
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.14);
+  background:rgba(255,255,255,0.065);
   color:#fff;
   flex:0 0 auto;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  font-weight:900;
 }
 
-.check.done{background:var(--green)}
+.check.done{
+  background:var(--green);
+  border-color:rgba(34,197,94,0.45);
+}
 
-.task-main{flex:1;min-width:0}
+.task-main{
+  flex:1;
+  min-width:0;
+}
 
 .task-title{
   font-size:15px;
-  line-height:1.4;
+  line-height:1.45;
+  font-weight:850;
+  letter-spacing:-0.01em;
 }
 
 .task-title.done{
@@ -155,48 +423,149 @@ button{
 }
 
 .task-meta{
-  margin-top:4px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:9px;
+}
+
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--soft);
   font-size:12px;
-  color:var(--muted);
+  font-weight:750;
+}
+
+.chip.due{
+  background:rgba(96,165,250,0.12);
+  border-color:rgba(96,165,250,0.22);
+  color:#d7eaff;
+}
+
+.chip.done{
+  background:rgba(34,197,94,0.14);
+  border-color:rgba(34,197,94,0.22);
+  color:#d7ffdf;
 }
 
 .actions{
   display:flex;
-  gap:6px;
+  gap:8px;
   flex-wrap:wrap;
-  margin-top:8px;
+  margin-top:12px;
 }
 
 .small-btn{
   width:auto;
+  min-height:38px;
   margin:0;
-  padding:7px 9px;
-  border-radius:11px;
-  background:rgba(255,255,255,0.10);
-  font-size:12px;
+  padding:8px 11px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.09);
+  color:#fff;
+  font-size:13px;
+  font-weight:850;
 }
 
-.danger{background:rgba(239,68,68,0.18)}
+.save{
+  background:rgba(34,197,94,0.22);
+}
 
-.edit-box{
-  margin-top:10px;
-  padding-top:10px;
-  border-top:1px dashed rgba(255,255,255,0.12);
+.danger{
+  background:rgba(239,68,68,0.18);
+}
+
+.drawer{
+  margin-top:11px;
+  border-top:1px dashed rgba(255,255,255,0.13);
+  padding-top:11px;
+}
+
+.drawer summary{
+  cursor:pointer;
+  color:#fff;
+  font-weight:900;
+  font-size:13px;
+  list-style:none;
+}
+
+.drawer summary::-webkit-details-marker{
+  display:none;
+}
+
+.drawer summary:after{
+  content:"Open";
+  float:right;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.drawer[open] summary:after{
+  content:"Close";
+}
+
+.drawer-body{
+  margin-top:11px;
 }
 
 .empty{
   color:var(--muted);
-  padding:12px 0;
+  padding:14px 0;
+  font-size:13px;
 }
 
-.notice{
-  color:#bbb;
-  min-height:18px;
-  margin-top:10px;
+@media(max-width:980px){
+  .kpis{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .summary-card{
+    grid-column:1 / -1;
+  }
+
+  .workspace{
+    grid-template-columns:1fr;
+  }
+
+  .tasks-list{
+    max-height:none;
+    overflow:visible;
+  }
 }
 
-@media(max-width:700px){
-  .row,.row-2{grid-template-columns:1fr;}
+@media(max-width:680px){
+  body{
+    padding:12px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .kpis,
+  .form-grid,
+  .form-grid.task-main-grid{
+    grid-template-columns:1fr;
+  }
+
+  .task{
+    padding:13px;
+  }
+
+  .small-btn{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -204,45 +573,89 @@ button{
 <body>
 <div class="wrap">
 
-  <div class="card">
-    <div class="topbar">
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="app-dot">P</div>
       <div>
-        <h2 style="margin:0;">To Do</h2>
-        <p class="muted" style="margin:6px 0 0;">Your ultimate task list. Done items move to the bottom.</p>
+        <p class="eyebrow">Pace</p>
+        <h1>To Do</h1>
       </div>
-      <a href="dashboard.html" class="back-btn">← Dashboard</a>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="row">
-      <input id="taskInput" placeholder="Add a task">
-      <select id="categoryInput">
-        <option>Life</option>
-        <option>Business</option>
-        <option>Church</option>
-        <option>Household</option>
-        <option>Work</option>
-        <option>Health</option>
-        <option>Errands</option>
-        <option>Admin</option>
-      </select>
     </div>
 
-    <div class="row-2">
-      <input id="reminderDateInput" type="date">
-      <input id="reminderTimeInput" type="time">
-    </div>
+    <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
+  </header>
 
-    <button id="addBtn">Add task</button>
-    <p id="msg" class="notice"></p>
+  <section class="card overview">
+    <div class="kpis" id="kpis"></div>
+  </section>
 
-    <div class="filters" id="filters"></div>
-  </div>
+  <main class="workspace">
 
-  <div class="card">
-    <div id="tasks"></div>
-  </div>
+    <section class="card panel">
+      <div class="panel-head">
+        <div>
+          <h2 class="panel-title">Task list</h2>
+          <p class="panel-copy">Your main life list. Open tasks stay at the top. Done tasks drop down.</p>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <input id="searchBox" placeholder="Search task, category or reminder">
+      </div>
+
+      <div class="filters" id="filters"></div>
+
+      <div id="tasks" class="tasks-list">
+        <div class="empty">Loading tasks...</div>
+      </div>
+    </section>
+
+    <aside class="card panel">
+      <div class="panel-head">
+        <div>
+          <h2 class="panel-title">Add task</h2>
+          <p class="panel-copy">Add the task now. Add a reminder only if you need a nudge.</p>
+        </div>
+      </div>
+
+      <div class="form-grid task-main-grid">
+        <label class="field">
+          <span>Task</span>
+          <input id="taskInput" placeholder="Add a task">
+        </label>
+
+        <label class="field">
+          <span>Category</span>
+          <select id="categoryInput">
+            <option>Life</option>
+            <option>Business</option>
+            <option>Church</option>
+            <option>Household</option>
+            <option>Work</option>
+            <option>Health</option>
+            <option>Errands</option>
+            <option>Admin</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Reminder date</span>
+          <input id="reminderDateInput" type="date">
+        </label>
+
+        <label class="field">
+          <span>Reminder time</span>
+          <input id="reminderTimeInput" type="time">
+        </label>
+      </div>
+
+      <button id="addBtn" class="primary-btn">Add task</button>
+      <p id="msg" class="notice"></p>
+    </aside>
+
+  </main>
 
 </div>
 
@@ -270,11 +683,38 @@ const addBtn = document.getElementById("addBtn");
 const tasksEl = document.getElementById("tasks");
 const msgEl = document.getElementById("msg");
 const filtersEl = document.getElementById("filters");
+const kpisEl = document.getElementById("kpis");
+const searchBox = document.getElementById("searchBox");
 
 const categories = ["All","Life","Business","Church","Household","Work","Health","Errands","Admin"];
+
 let user = null;
 let tasks = [];
+let reminders = [];
 let activeFilter = "All";
+let searchTerm = "";
+
+function today(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function escapeHTML(value){
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatDate(value){
+  if(!value) return "";
+  return new Date(value + "T00:00:00").toLocaleDateString("en-GB");
+}
 
 function setMsg(text){
   msgEl.textContent = text;
@@ -285,15 +725,82 @@ async function getUser(){
   return data.user;
 }
 
-function formatReminder(task){
-  if(!task.reminder_date && !task.reminder_time) return "";
-  return `${task.reminder_date || ""}${task.reminder_time ? " • " + String(task.reminder_time).slice(0,5) : ""}`;
+function reminderFor(taskId){
+  return reminders.find(r => r.source === "to do" && r.source_id === taskId) || null;
+}
+
+function formatReminder(reminder){
+  if(!reminder) return "";
+  if(!reminder.reminder_date && !reminder.reminder_time) return "";
+
+  const date = reminder.reminder_date ? formatDate(reminder.reminder_date) : "";
+  const time = reminder.reminder_time ? String(reminder.reminder_time).slice(0,5) : "";
+
+  return `${date}${date && time ? " · " : ""}${time}`;
+}
+
+function categoryCount(category){
+  if(category === "All") return tasks.length;
+  return tasks.filter(t => (t.category || "Life") === category).length;
+}
+
+function renderKpis(){
+  const total = tasks.length;
+  const done = tasks.filter(t => t.done).length;
+  const open = tasks.filter(t => !t.done).length;
+  const completion = total ? Math.round((done / total) * 100) : 0;
+
+  const todayReminderCount = reminders.filter(r =>
+    r.source === "to do" &&
+    r.reminder_date === today() &&
+    !r.done
+  ).length;
+
+  const nextReminder = [...reminders]
+    .filter(r => r.source === "to do" && !r.done && r.reminder_date)
+    .sort((a,b) => new Date(a.reminder_date || "2999-01-01") - new Date(b.reminder_date || "2999-01-01"))[0];
+
+  kpisEl.innerHTML = `
+    <div class="summary-card">
+      <div class="kpi-title">Open tasks</div>
+      <div class="hero-number">${open}</div>
+      <div class="progress"><span style="width:${completion}%"></span></div>
+      <div class="mini-line">
+        <span>${done} done</span>
+        <span>${completion}% complete</span>
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Total tasks</div>
+      <div class="kpi-value">${total}</div>
+      <div class="kpi-sub">Everything saved</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Done</div>
+      <div class="kpi-value">${done}</div>
+      <div class="kpi-sub">Completed tasks</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Today</div>
+      <div class="kpi-value">${todayReminderCount}</div>
+      <div class="kpi-sub">Reminders due today</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Next nudge</div>
+      <div class="kpi-value">${nextReminder ? formatDate(nextReminder.reminder_date) : "None"}</div>
+      <div class="kpi-sub">${nextReminder ? escapeHTML(nextReminder.title || "Reminder") : "No reminder set"}</div>
+    </div>
+  `;
 }
 
 function renderFilters(){
   filtersEl.innerHTML = categories.map(cat => `
     <button class="filter-btn ${activeFilter === cat ? "active" : ""}" onclick="setFilter('${cat}')">
-      ${cat}
+      ${cat}<span>${categoryCount(cat)}</span>
     </button>
   `).join("");
 }
@@ -301,7 +808,7 @@ function renderFilters(){
 window.setFilter = function(cat){
   activeFilter = cat;
   render();
-}
+};
 
 function sortedTasks(){
   let rows = [...tasks];
@@ -310,8 +817,35 @@ function sortedTasks(){
     rows = rows.filter(t => (t.category || "Life") === activeFilter);
   }
 
+  if(searchTerm){
+    rows = rows.filter(t => {
+      const reminder = reminderFor(t.id);
+
+      const haystack = [
+        t.title,
+        t.category,
+        reminder?.title,
+        reminder?.reminder_date,
+        reminder?.reminder_time
+      ].join(" ").toLowerCase();
+
+      return haystack.includes(searchTerm);
+    });
+  }
+
   rows.sort((a,b) => {
     if(Boolean(a.done) !== Boolean(b.done)) return a.done ? 1 : -1;
+
+    const reminderA = reminderFor(a.id);
+    const reminderB = reminderFor(b.id);
+
+    const dateA = reminderA?.reminder_date || "2999-01-01";
+    const dateB = reminderB?.reminder_date || "2999-01-01";
+
+    if(dateA !== dateB){
+      return new Date(dateA) - new Date(dateB);
+    }
+
     return new Date(b.created_at) - new Date(a.created_at);
   });
 
@@ -319,47 +853,82 @@ function sortedTasks(){
 }
 
 function render(){
+  renderKpis();
   renderFilters();
 
   const rows = sortedTasks();
 
   if(!rows.length){
-    tasksEl.innerHTML = `<div class="empty">No tasks here yet.</div>`;
+    tasksEl.innerHTML = `<div class="empty">No tasks match this view yet.</div>`;
     return;
   }
 
-  tasksEl.innerHTML = rows.map(task => `
-    <div class="task">
-      <div class="check ${task.done ? "done" : ""}" onclick="toggleTask('${task.id}', ${task.done ? "false" : "true"})">
-        ${task.done ? "✓" : ""}
-      </div>
+  tasksEl.innerHTML = rows.map(task => {
+    const reminder = reminderFor(task.id);
+    const reminderText = formatReminder(reminder);
+    const title = escapeHTML(task.title || "");
+    const category = escapeHTML(task.category || "Life");
 
-      <div class="task-main">
-        <div class="task-title ${task.done ? "done" : ""}">
-          ${task.title || ""}
+    return `
+      <article class="task">
+        <div class="check ${task.done ? "done" : ""}" onclick="toggleTask('${task.id}', ${task.done ? "false" : "true"})">
+          ${task.done ? "✓" : ""}
         </div>
 
-        <div class="task-meta">
-          ${task.category || "Life"}
-        </div>
+        <div class="task-main">
+          <div class="task-title ${task.done ? "done" : ""}">
+            ${title}
+          </div>
 
-        <div class="actions">
-          <button class="small-btn" onclick="toggleEdit('${task.id}')">Edit</button>
-          <button class="small-btn danger" onclick="deleteTask('${task.id}')">Delete</button>
-        </div>
+          <div class="task-meta">
+            <span class="chip">${category}</span>
+            ${reminderText ? `<span class="chip due">${reminderText}</span>` : ""}
+            ${task.done ? `<span class="chip done">Done</span>` : ""}
+          </div>
 
-        <div id="edit-${task.id}" class="edit-box" style="display:none;">
-          <input id="edit-title-${task.id}" value="${(task.title || "").replace(/"/g, '&quot;')}">
-          <select id="edit-category-${task.id}">
-            ${categories.filter(c => c !== "All").map(cat => `
-              <option ${task.category === cat ? "selected" : ""}>${cat}</option>
-            `).join("")}
-          </select>
-          <button class="small-btn" style="margin-top:10px;" onclick="saveEdit('${task.id}')">Save changes</button>
+          <div class="actions">
+            <button class="small-btn danger" onclick="deleteTask('${task.id}')">Delete</button>
+          </div>
+
+          <details class="drawer">
+            <summary>Edit task</summary>
+
+            <div class="drawer-body">
+              <div class="form-grid">
+                <label class="field">
+                  <span>Task</span>
+                  <input id="edit-title-${task.id}" value="${escapeHTML(task.title || "")}">
+                </label>
+
+                <label class="field">
+                  <span>Category</span>
+                  <select id="edit-category-${task.id}">
+                    ${categories.filter(c => c !== "All").map(cat => `
+                      <option ${task.category === cat ? "selected" : ""}>${cat}</option>
+                    `).join("")}
+                  </select>
+                </label>
+              </div>
+
+              <div class="form-grid">
+                <label class="field">
+                  <span>Reminder date</span>
+                  <input id="edit-reminder-date-${task.id}" type="date" value="${reminder?.reminder_date || ""}">
+                </label>
+
+                <label class="field">
+                  <span>Reminder time</span>
+                  <input id="edit-reminder-time-${task.id}" type="time" value="${reminder?.reminder_time ? String(reminder.reminder_time).slice(0,5) : ""}">
+                </label>
+              </div>
+
+              <button class="small-btn save" style="margin-top:10px;" onclick="saveEdit('${task.id}')">Save changes</button>
+            </div>
+          </details>
         </div>
-      </div>
-    </div>
-  `).join("");
+      </article>
+    `;
+  }).join("");
 }
 
 async function load(){
@@ -370,20 +939,41 @@ async function load(){
     return;
   }
 
-  const { data, error } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending:false });
+  const [tasksRes, remindersRes] = await Promise.all([
+    supabase
+      .from("tasks")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending:false }),
 
-  if(error){
-    setMsg(error.message);
+    supabase
+      .from("reminders")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("source", "to do")
+      .order("reminder_date", { ascending:true })
+  ]);
+
+  if(tasksRes.error){
+    setMsg(tasksRes.error.message);
     return;
   }
 
-  tasks = data || [];
+  if(remindersRes.error){
+    setMsg(remindersRes.error.message);
+    return;
+  }
+
+  tasks = tasksRes.data || [];
+  reminders = remindersRes.data || [];
+
   render();
 }
+
+searchBox.addEventListener("input", () => {
+  searchTerm = searchBox.value.trim().toLowerCase();
+  render();
+});
 
 addBtn.addEventListener("click", async () => {
   const title = taskInput.value.trim();
@@ -447,7 +1037,8 @@ window.toggleTask = async function(id, done){
   const { error } = await supabase
     .from("tasks")
     .update({ done })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if(error){
     setMsg(error.message);
@@ -458,20 +1049,18 @@ window.toggleTask = async function(id, done){
     .from("reminders")
     .update({ done })
     .eq("source", "to do")
-    .eq("source_id", id);
+    .eq("source_id", id)
+    .eq("user_id", user.id);
 
   await load();
-}
-
-window.toggleEdit = function(id){
-  const box = document.getElementById(`edit-${id}`);
-  if(!box) return;
-  box.style.display = box.style.display === "none" ? "block" : "none";
-}
+};
 
 window.saveEdit = async function(id){
   const title = document.getElementById(`edit-title-${id}`).value.trim();
   const category = document.getElementById(`edit-category-${id}`).value;
+  const reminderDate = document.getElementById(`edit-reminder-date-${id}`).value;
+  const reminderTime = document.getElementById(`edit-reminder-time-${id}`).value || null;
+  const existingReminder = reminderFor(id);
 
   if(!title){
     setMsg("Task cannot be empty.");
@@ -481,43 +1070,94 @@ window.saveEdit = async function(id){
   const { error } = await supabase
     .from("tasks")
     .update({ title, category })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if(error){
     setMsg(error.message);
     return;
   }
 
-  await supabase
-    .from("reminders")
-    .update({ title })
-    .eq("source", "to do")
-    .eq("source_id", id);
+  if(reminderDate && existingReminder){
+    const reminderUpdate = await supabase
+      .from("reminders")
+      .update({
+        title,
+        reminder_date:reminderDate,
+        reminder_time:reminderTime
+      })
+      .eq("id", existingReminder.id)
+      .eq("user_id", user.id);
+
+    if(reminderUpdate.error){
+      setMsg(reminderUpdate.error.message);
+      return;
+    }
+  }
+
+  if(reminderDate && !existingReminder){
+    const reminderInsert = await supabase
+      .from("reminders")
+      .insert([{
+        user_id:user.id,
+        source:"to do",
+        source_id:id,
+        title,
+        reminder_date:reminderDate,
+        reminder_time:reminderTime,
+        done:false
+      }]);
+
+    if(reminderInsert.error){
+      setMsg(reminderInsert.error.message);
+      return;
+    }
+  }
+
+  if(!reminderDate && existingReminder){
+    const reminderDelete = await supabase
+      .from("reminders")
+      .delete()
+      .eq("id", existingReminder.id)
+      .eq("user_id", user.id);
+
+    if(reminderDelete.error){
+      setMsg(reminderDelete.error.message);
+      return;
+    }
+  }
 
   setMsg("Task updated.");
   await load();
-}
+};
 
 window.deleteTask = async function(id){
-  const { error } = await supabase
+  const taskDelete = await supabase
     .from("tasks")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
-  if(error){
-    setMsg(error.message);
+  if(taskDelete.error){
+    setMsg(taskDelete.error.message);
     return;
   }
 
-  await supabase
+  const reminderDelete = await supabase
     .from("reminders")
     .delete()
     .eq("source", "to do")
-    .eq("source_id", id);
+    .eq("source_id", id)
+    .eq("user_id", user.id);
+
+  if(reminderDelete.error){
+    setMsg(reminderDelete.error.message);
+    return;
+  }
 
   setMsg("Task deleted.");
   await load();
-}
+};
 
 load();
 </script>
