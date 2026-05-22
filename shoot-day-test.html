@@ -1,9 +1,8 @@
-Yes. Create this new file:
+Yes. Replace the whole shoot-day-test.html with the upgraded version below.
 
-shoot-day-test.html
+It now uses:
 
-Paste this full code into it. Then add it to your dashboard later.
-
+location | shot | lens + fps | movement | priority | framing | creative example
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +22,8 @@ Paste this full code into it. Then add it to your dashboard later.
   --muted:#a7afbe;
   --accent:#ff3b30;
   --green:#22c55e;
+  --amber:#f59e0b;
+  --blue:#60a5fa;
 }
 *{box-sizing:border-box}
 body{
@@ -32,7 +33,7 @@ body{
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
 }
-.wrap{max-width:1100px;margin:0 auto}
+.wrap{max-width:1150px;margin:0 auto}
 .card{
   background:rgba(255,255,255,0.06);
   border:1px solid var(--line);
@@ -86,7 +87,7 @@ button{
 }
 .rule-grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:10px;
 }
 .rule{
@@ -115,8 +116,8 @@ button{
   align-items:flex-start;
 }
 .check{
-  width:32px;
-  height:32px;
+  width:34px;
+  height:34px;
   border-radius:50%;
   background:rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.14);
@@ -133,14 +134,25 @@ button{
   margin-bottom:5px;
 }
 .shot-title{
-  font-size:18px;
+  font-size:19px;
   font-weight:900;
   line-height:1.2;
 }
+.priority{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+}
+.priority-a{background:rgba(34,197,94,0.22);color:#b7f5c7}
+.priority-b{background:rgba(245,158,11,0.22);color:#ffd89a}
+.priority-c{background:rgba(96,165,250,0.22);color:#bfdbfe}
 .meta{
-  margin-top:10px;
+  margin-top:12px;
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:8px;
 }
 .meta-box{
@@ -156,12 +168,16 @@ button{
 .meta-value{
   font-weight:800;
   font-size:13px;
+  line-height:1.35;
 }
-.note{
+.creative{
   margin-top:10px;
-  color:var(--muted);
+  color:#d7dbe3;
   font-size:13px;
   line-height:1.45;
+  background:rgba(255,255,255,0.045);
+  border-radius:14px;
+  padding:10px;
 }
 .progress{
   height:12px;
@@ -184,7 +200,7 @@ button{
   color:white;
   font-weight:900;
 }
-@media(max-width:700px){
+@media(max-width:800px){
   .rule-grid,.meta{
     grid-template-columns:1fr;
   }
@@ -200,9 +216,9 @@ button{
     <div class="topbar">
       <div>
         <h1>Marvin + Blessing</h1>
-        <p class="muted">Shoot day run sheet — tap each section quickly on the day.</p>
+        <p class="muted">Shoot day shot list with lens, FPS, movement, framing and creative direction.</p>
       </div>
-      <a href="dashboard.html" class="back">← Dashboard</a>
+      <a href="creators-test.html" class="back">← Creators</a>
     </div>
   </div>
   <div class="card">
@@ -212,8 +228,7 @@ button{
         <p class="muted">
           Wide = 24mm<br>
           Mid = 35–50mm<br>
-          Close = 70mm<br>
-          Creative = best lens for style/movement
+          Close = 70mm
         </p>
       </div>
       <div class="rule">
@@ -221,6 +236,14 @@ button{
         <p class="muted">
           25fps = live audio, ceremony, speeches<br>
           50fps = prep, portraits, reactions, entrances, dancing
+        </p>
+      </div>
+      <div class="rule">
+        <h3>Priority</h3>
+        <p class="muted">
+          A = must get<br>
+          B = strong support<br>
+          C = nice if time allows
         </p>
       </div>
     </div>
@@ -241,80 +264,95 @@ button{
 <script>
 const sections = {
   "Prep": [
-    ["The Mount Hotel — groom room","wide 24mm 50fps","Room setup / suit area","Slow pan / handheld settle","Get clean establishing clips."],
-    ["The Mount Hotel — groom room","mid 35–50mm 50fps","Marvin adjusting tie / jacket","Gentle handheld","Look for calm groom energy."],
-    ["The Mount Hotel — groom room","close 70mm 50fps","Watch, cufflinks, shoes, fragrance","Static close-ups","Clean detail shots."],
-    ["The Mount Hotel — groom room","creative 35mm 50fps","Marvin with groomsmen laughing","Move around group","Capture personality."],
-    ["The Mount Hotel — groom room","mid 35–50mm 25fps","Prayer / meaningful talking","Hold steady","Use if real audio matters."],
-    ["The Mount Hotel — bride room","wide 24mm 50fps","Room setup / dress area","Slow pan / reveal","Dress and room context."],
-    ["The Mount Hotel — bride room","mid 35–50mm 50fps","Dress going on / final touches","Gentle handheld","Avoid anything too intrusive."],
-    ["The Mount Hotel — bride room","close 70mm 50fps","Jewellery, perfume, shoes, bouquet","Static / slow push","Details for emotional cutaways."],
-    ["The Mount Hotel — bride room","creative 35–50mm 50fps","Bride reveal / bridesmaid reactions","Follow reactions","Prioritise emotion."],
-    ["The Mount Hotel — bride room","mid 35–50mm 25fps","Emotional words / prayer","Locked / steady","Only if words are meaningful."],
-    ["The Mount Hotel corridor","wide 24mm 50fps","Walking out / hallway move","Follow / gimbal","Transition out of prep."],
-    ["The Mount Hotel corridor","close 70mm 50fps","Dress / bouquet in motion","Slow close tracking","Soft elegant movement."]
+    ["The Mount Hotel groom room","room setup","24mm | 50fps","slow push in","B","wide establishing","start at doorway and drift in toward the suit area"],
+    ["The Mount Hotel groom room","suit on hanger","50 to 70mm | 50fps","tiny push","A","close detail","let the jacket fill most of frame with soft background falloff"],
+    ["The Mount Hotel groom room","shoes, watch, cufflinks, fragrance","70mm | 50fps","tiny drift","A","tight close up","drift across objects in one direction for a luxury insert"],
+    ["The Mount Hotel groom room","tie or jacket going on","35 to 50mm | 50fps","handheld steady","A","mid shot on torso and hands","stand slightly off to one side and let hands enter frame naturally"],
+    ["The Mount Hotel groom room","Marvin with groomsmen","35mm | 50fps","float around them","A","mid to wide","catch a laugh as one of the boys adjusts his jacket"],
+    ["The Mount Hotel groom room","Marvin solo portrait","70mm | 50fps","hold then tiny push","A","close portrait","Marvin looking down then lifting his eyes into frame"],
+    ["The Mount Hotel groom room","prayer or meaningful words","35 to 50mm | 25fps","almost still","A","mid close","one clean side angle with natural room sound"],
+    ["The Mount Hotel bride room","room setup","24mm | 50fps","slow push in","B","wide establishing","enter frame slowly with dress and window light in view"],
+    ["The Mount Hotel bride room","dress hanging","50 to 70mm | 50fps","slow push","A","mid close","frame dress off-centre with clean negative space"],
+    ["The Mount Hotel bride room","jewellery, shoes, perfume, bouquet","70mm | 50fps","tiny drift","A","tight close up","move from one object to the next in a matching direction"],
+    ["The Mount Hotel bride room","final makeup or hair touch","50mm | 50fps","soft handheld","A","mid close","capture hand entering frame to fix lash, lip, or hair"],
+    ["The Mount Hotel bride room","dress going on","35 to 50mm | 50fps","gentle handheld","A","mid shot","frame Blessing from shoulder to waist with helpers just entering edge of frame"],
+    ["The Mount Hotel bride room","veil or jewellery placement","70mm | 50fps","minimal move","A","close up on hands and face","start on hands then rise slightly to catch expression"],
+    ["The Mount Hotel bride room","bridesmaids reacting","50 to 70mm | 50fps","hold on faces","A","close reaction","let reaction happen before moving away"],
+    ["The Mount Hotel bride room","Blessing portrait once ready","50 to 70mm | 50fps","tiny push or tiny orbit","A","close portrait","Blessing turns gently toward window light and smiles naturally"],
+    ["The Mount Hotel bride room","bride reveal with spoken reaction","35 to 50mm | 25fps","mostly still","A","mid on reveal then close on faces","shoot reveal in real time if words matter"],
+    ["The Mount Hotel corridor","leaving room","24 to 35mm | 50fps","backward follow","B","wide to mid","bride walking toward you with dress movement behind"],
+    ["The Mount Hotel corridor","bouquet or dress movement","70mm | 50fps","slight drift","B","close insert","isolate the bouquet as it swings while walking"]
   ],
   "Ceremony": [
-    ["The Grand Palace exterior","wide 24mm 50fps","Building exterior","Static / slow pan","Establish venue."],
-    ["The Grand Palace entrance","mid 35–50mm 50fps","Doors / guests arriving","Handheld","Arrival atmosphere."],
-    ["The Grand Palace interior","wide 24mm 50fps","Aisle / altar / room","Slow pan","Room context."],
-    ["The Grand Palace interior","close 70mm 50fps","Florals / details / seats","Static close-ups","Cutaways."],
-    ["The Grand Palace interior","creative 50–70mm 50fps","Groom waiting","Slow push / hold","Anticipation."],
-    ["The Grand Palace","wide 24mm 25fps","Bridal procession","Hold steady","Live coverage priority."],
-    ["The Grand Palace","close 70mm 25fps","Groom reaction to bride entrance","Hold close","Key emotional moment."],
-    ["The Grand Palace","mid 35–50mm 25fps","Bride entrance","Follow gently","Do not overmove."],
-    ["The Grand Palace","mid 50mm 25fps","Handover / front settle","Hold steady","Important transition."],
-    ["The Grand Palace","close 70mm 25fps","Vows","Locked / steady","Prioritise audio sync."],
-    ["The Grand Palace","close 70mm 25fps","Ring exchange","Hold close","Hands + faces if possible."],
-    ["The Grand Palace","mid 50mm 25fps","Prayer / kneeling / transitions","Steady","Respectful framing."],
-    ["The Grand Palace","mid 50mm 25fps","Kiss","Hold steady","Don’t miss it."],
-    ["The Grand Palace","wide 24–35mm 25fps","Recessional / exit","Track backwards if safe","Joyful exit."],
-    ["Front-side tripod","mid-wide 25fps","Full ceremony safety","Locked","Do not touch unless needed."],
-    ["Front-side tripod","mid 25fps","Vows / rings / kiss protection","Locked","Safety angle."]
+    ["The Grand Palace exterior","venue exterior","24mm | 50fps","slow push","B","wide","centre the building and move in a little for grandeur"],
+    ["The Grand Palace entrance","arrivals","35 to 50mm | 50fps","soft handheld","B","mid","guests greeting each other at entrance"],
+    ["The Grand Palace interior","aisle and altar","24mm | 50fps","slow symmetrical move","A","wide master","start low and move gently toward altar"],
+    ["The Grand Palace interior","florals or ceremony details","70mm | 50fps","tiny drift","C","close detail","one or two inserts only"],
+    ["The Grand Palace interior","groom waiting","70mm | 50fps","slow push","A","close portrait","catch anticipation before procession starts"],
+    ["The Grand Palace","bridal procession","24mm | 25fps","steady centre aisle","A","wide live coverage","clean aisle line with bridal party entering frame"],
+    ["The Grand Palace","groom reaction","70mm | 25fps","minimal reframe","A","close reaction","hold longer than feels natural so the emotion lands"],
+    ["The Grand Palace","bride entrance","35 to 50mm | 25fps","steady","A","mid live coverage","bride entering with enough room for dress and escort"],
+    ["The Grand Palace","handover","50mm | 25fps","subtle","A","mid","include all three if possible before bride settles"],
+    ["The Grand Palace","opening words / prayer","50 to 70mm | 25fps","very minimal","B","mid close","stay respectful and clean"],
+    ["The Grand Palace","readings / ministration","50 to 70mm | 25fps","tiny reframe only","B","mid","only key moments, not everything equally"],
+    ["The Grand Palace","vows","70mm | 25fps","almost locked","A","close face and reaction","shoot speaker then hold listener reaction"],
+    ["The Grand Palace","ring exchange","70mm | 25fps","tiny dip to hands","A","close hands then faces","start on hands, finish on face reaction"],
+    ["The Grand Palace","kneeling / standing transitions","50mm | 25fps","hold","B","mid","let whole posture change happen in frame"],
+    ["The Grand Palace","kiss","50mm | 25fps","steady","A","mid","enough room to catch immediate smile after"],
+    ["The Grand Palace","exit / recessional","24 to 35mm | 25fps","follow or slight backward move","A","wide to mid","joy and applause as they come back down aisle"],
+    ["The Grand Palace front side tripod","full ceremony safety","medium wide | 25fps","locked","A","medium wide master","couple and officiant held safely in one clean angle"],
+    ["The Grand Palace front side tripod","vows, rings, kiss protection","medium | 25fps","locked","A","medium safety","clean consistent angle for the edit"]
   ],
   "Park": [
-    ["Willenhall Memorial Park","wide 24mm 50fps","Couple in environment","Slow wide movement","Hero scene."],
-    ["Willenhall Memorial Park","mid 35–50mm 50fps","Walking hand in hand","Track / follow","Natural movement."],
-    ["Willenhall Memorial Park","close 70mm 50fps","Marvin looking at Blessing / Blessing laughing","Hold close","Emotional cutaway."],
-    ["Willenhall Memorial Park","creative 35–50mm 50fps","Marvin pulling Blessing in / forehead touch","Slow arc","Romantic moment."],
-    ["Willenhall Memorial Park","close 70mm 50fps","Hands / rings / bouquet / dress movement","Detail pass","Use as transitions."],
-    ["Willenhall Memorial Park","mid 35–50mm 50fps","Bridal party energy around couple","Handheld / playful","Group joy."]
+    ["Outside ceremony venue","hugs and congratulations","35 to 50mm | 50fps","handheld in crowd","A","mid","move with the people, not from far away"],
+    ["Outside ceremony venue","parent reactions","70mm | 50fps","hold","A","close","keep reaction a beat longer"],
+    ["Outside ceremony venue","couple through crowd","24 to 35mm | 50fps","side follow","B","wide to mid","let guests enter and leave frame around them"],
+    ["Willenhall Memorial Park","couple in environment","24mm | 50fps","slow drift","B","wide","one clean environment shot only"],
+    ["Willenhall Memorial Park","hand in hand walk","35mm | 50fps","backward follow","A","mid","relaxed walking with soft laughter"],
+    ["Willenhall Memorial Park","Marvin looking at Blessing","70mm | 50fps","hold then tiny push","A","close","gaze first, smile second"],
+    ["Willenhall Memorial Park","Blessing laughing","70mm | 50fps","hold","A","close portrait","hero emotional clip"],
+    ["Willenhall Memorial Park","gentle pull in / embrace","35 to 50mm | 50fps","small orbit","A","mid","not too much movement, just one elegant arc"],
+    ["Willenhall Memorial Park","hands and rings","70mm | 50fps","tiny drift","B","close insert","transition shot for the edit"],
+    ["Willenhall Memorial Park","forehead touch","50mm | 50fps","sway or hold","B","mid close","keep it short and natural"],
+    ["Willenhall Memorial Park","bridal party walk","24 to 35mm | 50fps","backward move","A","wide to mid","let energy lead the shot"],
+    ["Willenhall Memorial Park","bridal party laughter around couple","35 to 50mm | 50fps","float with them","A","mid","youthful energy without chaos"],
+    ["Willenhall Memorial Park","one real time natural interaction","50mm | 25fps","mostly static","C","mid","useful pacing contrast for the edit"]
   ],
   "Reception": [
-    ["The County Hotel exterior","wide 24mm 50fps","Venue exterior","Static / slow pan","Establish reception."],
-    ["The County Hotel interior","wide 24mm 50fps","Room wide","Slow pan","Before guests disturb room."],
-    ["The County Hotel interior","close 70mm 50fps","Cake / table details / styling","Static close-ups","Details for montage."],
-    ["The County Hotel Venue","wide 24mm 50fps","Groomsmen entrance","Follow / hold wide","Energy."],
-    ["The County Hotel Venue","wide 24mm 50fps","Bridesmaids entrance","Follow / hold wide","Energy."],
-    ["The County Hotel Venue","mid 35–50mm 50fps","Couple entrance","Follow couple","Priority moment."],
-    ["The County Hotel Venue","close 70mm 50fps","Crowd cheering / clapping","Reaction shots","Use for emotional lift."],
-    ["The County Hotel Venue","mid 35–50mm 50fps","Couple greeting tables","Handheld","Warm family moments."],
-    ["The County Hotel Venue","close 70mm 50fps","Hugs / older relatives / smiles","Close reactions","Gold cutaways."],
-    ["The County Hotel Venue","wide 24–35mm 50fps","Room atmosphere","Slow movement","Context."]
+    ["The County Hotel exterior","venue exterior","24mm | 50fps","slow push","C","wide","quick context only"],
+    ["The County Hotel interior","room wide","24mm | 50fps","gentle pan or glide","B","wide","only if you get access before it fills"],
+    ["The County Hotel interior","cake / tables / styling","70mm | 50fps","short inserts","C","close detail","just enough to tell the story"],
+    ["The County Hotel Venue","groomsmen entrance","24mm | 50fps","side or backward move","B","wide","give them space to enter frame"],
+    ["The County Hotel Venue","bridesmaids entrance","24mm | 50fps","side or backward move","B","wide","energetic and polished"],
+    ["The County Hotel Venue","couple entrance","35 to 50mm | 50fps","backward move then quick cut to reactions","A","mid","treat this as a hero moment"],
+    ["The County Hotel Venue","guest cheering","70mm | 50fps","hold and reframe","A","close reaction","claps, smiles, joy"],
+    ["The County Hotel Venue","couple greeting tables","35 to 50mm | 50fps","follow","B","mid","warm social coverage"],
+    ["The County Hotel Venue","hugs / older relatives","70mm | 50fps","hold","A","close","emotional texture"],
+    ["The County Hotel Venue","room atmosphere","24 to 35mm | 50fps","drift","C","wide to mid","avoid too many eating shots"]
   ],
   "Speeches": [
-    ["The County Hotel Venue","mid 50mm 25fps","Main speaker","Locked / steady","Audio and clarity."],
-    ["The County Hotel Venue","close 70mm 25fps","Blessing reaction","Hold close","Emotional response."],
-    ["The County Hotel Venue","close 70mm 25fps","Marvin reaction","Hold close","Emotional response."],
-    ["The County Hotel Venue","mid 50–70mm 25fps","Parents / guest reactions","Cutaway hunting","Important reaction bank."],
-    ["The County Hotel Venue","wide 24–35mm 25fps","Singer reveal after ‘I’m impressed’","Hold wide","Capture room context."],
-    ["The County Hotel Venue","close 70mm 25fps","Blessing reaction to singer","Hold close","Priority reaction."],
-    ["The County Hotel Venue","wide 24–35mm 25fps","Room reaction","Hold wide","Energy and surprise."],
-    ["Tripod position","mid-wide 25fps","Full speeches safety","Locked","Do not touch."]
+    ["The County Hotel Venue","main speaker","50mm | 25fps","very minimal","A","mid","clean documentary coverage"],
+    ["The County Hotel Venue","Blessing reaction","70mm | 25fps","hold","A","close","priority face"],
+    ["The County Hotel Venue","Marvin reaction","70mm | 25fps","hold","A","close","priority face"],
+    ["The County Hotel Venue","parents / guest reactions","50 to 70mm | 25fps","quick reframes only","B","mid close","only after speaker is safe"],
+    ["The County Hotel Venue","singer reveal after “I’m impressed”","24 to 35mm | 25fps","steady first","A","wide to mid","catch the reveal cleanly before being creative"],
+    ["The County Hotel Venue","Blessing reaction to singer","70mm | 25fps","hold","A","close","this is your hero reaction"],
+    ["The County Hotel Venue","room response","24 to 35mm | 25fps","pan only if safe","B","wide","big story turn"],
+    ["The County Hotel tripod position","full speeches safety","medium wide | 25fps","locked","A","medium wide master","safe full speech coverage throughout"]
   ],
   "Dancing": [
-    ["The County Hotel Venue","close 70mm 50fps","Cake cutting hands / reactions","Close detail","Capture hands + smiles."],
-    ["The County Hotel Venue","mid 35–50mm 25fps","Cake cutting live beat","Hold steady","Real-time clip if needed."],
-    ["The County Hotel Venue","wide 24–35mm 25fps","Opening wide of first dance","Hold wide","Real-time opening."],
-    ["The County Hotel Venue","mid 35–50mm 50fps","Faces / hands / romantic cutaways","Slow movement","Soft emotional coverage."],
-    ["The County Hotel Venue","close 70mm 25fps","Guests / parents watching","Hold close","Reaction shots."],
-    ["The County Hotel Venue","mid 35–50mm 50fps","Guest anticipation before second entrance","Handheld","Build energy."],
-    ["The County Hotel Venue","wide 24mm 50fps","Couple second entrance","Follow / wide","Don’t miss full entrance."],
-    ["The County Hotel Venue","mid 35–50mm 50fps","Bride dancing freely","Follow","Joyful movement."],
-    ["The County Hotel Venue","mid 35–50mm 50fps","Groom dancing / singing","Follow","Personality."],
-    ["The County Hotel Venue","mid 35–50mm 50fps","Couple together in crowd","Handheld","Celebration."],
-    ["The County Hotel Venue","wide 24–35mm 50fps","Hands up / clapping / crowd movement","Wide movement","Party energy."],
-    ["The County Hotel Venue","wide 24–35mm 25fps","Live real-time party clips","Hold steady","One or two real-time moments."]
+    ["The County Hotel Venue","hands on knife and reactions","70mm | 50fps","tiny move","B","close","elegant insert"],
+    ["The County Hotel Venue","one live real time beat","35 to 50mm | 25fps","still","C","mid","optional for pacing"],
+    ["The County Hotel Venue","first dance opening","24 to 35mm | 25fps","steady / slow move","A","wide","usable real time opening"],
+    ["The County Hotel Venue","faces and hands","35 to 50mm | 50fps","slow orbit or push","A","mid","romantic cutaways"],
+    ["The County Hotel Venue","family watching","70mm | 25fps","hold","B","close","emotional support shot"],
+    ["The County Hotel Venue","anticipation before second entrance","35 to 50mm | 50fps","drift","B","mid","build expectation"],
+    ["The County Hotel Venue","couple second entrance","24mm | 50fps","backward move","A","wide","fresh chapter feel"],
+    ["The County Hotel Venue","bride dancing","35 to 50mm | 50fps","in crowd handheld","A","mid close","signature energy shot"],
+    ["The County Hotel Venue","groom dancing / singing","35 to 50mm | 50fps","in crowd handheld","A","mid close","signature energy shot"],
+    ["The County Hotel Venue","couple in crowd","35 to 50mm | 50fps","close handheld","A","mid","alive and immersive"],
+    ["The County Hotel Venue","hands up / claps / room energy","24 to 35mm | 50fps","in the action","B","wide to mid","texture shots"],
+    ["The County Hotel Venue","one or two real time dance floor moments","24 to 35mm | 25fps","small move or hold","C","wide","pacing contrast"]
   ]
 };
 let active = "Prep";
@@ -335,6 +373,11 @@ function clearSection(){
   });
   render();
 }
+function priorityClass(priority){
+  if(priority === "A") return "priority-a";
+  if(priority === "B") return "priority-b";
+  return "priority-c";
+}
 function renderTabs(){
   const tabs = document.getElementById("tabs");
   tabs.innerHTML = Object.keys(sections).map(name => `
@@ -354,7 +397,8 @@ function renderShots(){
         <div class="shot-top">
           <div>
             <div class="location">${shot[0]}</div>
-            <div class="shot-title">${shot[2]}</div>
+            <div class="shot-title">${shot[1]}</div>
+            <div class="priority ${priorityClass(shot[4])}">Priority ${shot[4]}</div>
           </div>
           <button class="check ${done ? "done" : ""}" onclick="toggleDone('${active}',${index})">
             ${done ? "✓" : ""}
@@ -363,18 +407,24 @@ function renderShots(){
         <div class="meta">
           <div class="meta-box">
             <div class="meta-label">Lens + FPS</div>
-            <div class="meta-value">${shot[1]}</div>
+            <div class="meta-value">${shot[2]}</div>
           </div>
           <div class="meta-box">
             <div class="meta-label">Movement</div>
             <div class="meta-value">${shot[3]}</div>
           </div>
           <div class="meta-box">
-            <div class="meta-label">Priority</div>
+            <div class="meta-label">Framing</div>
+            <div class="meta-value">${shot[5]}</div>
+          </div>
+          <div class="meta-box">
+            <div class="meta-label">Status</div>
             <div class="meta-value">${done ? "Done" : "Shoot"}</div>
           </div>
         </div>
-        <div class="note">${shot[4]}</div>
+        <div class="creative">
+          <strong>Creative:</strong> ${shot[6]}
+        </div>
       </div>
     `;
   }).join("");
