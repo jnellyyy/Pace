@@ -6,217 +6,300 @@
 
 <title>Pace Lists</title>
 
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
-<meta name="theme-color" content="#050507">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
 
 <style>
 :root{
-  --bg:#050507;
-  --card:#1c1d21;
-  --sheet:#111216;
-  --line:rgba(255,255,255,.12);
-  --text:#f5f5f7;
-  --muted:#8e8e93;
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
+  --panel3:rgba(255,255,255,0.12);
+  --line:rgba(255,255,255,0.12);
+  --line2:rgba(255,255,255,0.08);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --soft:#d9dee8;
   --accent:#ff3b30;
   --green:#22c55e;
+  --blue:#60a5fa;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --shadow:0 24px 70px rgba(0,0,0,0.42);
+  --radius:28px;
 }
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{max-width:100%;overflow-x:hidden}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+  max-width:100%;
+  overflow-x:hidden;
+}
 
 body{
   margin:0;
-  min-height:100vh;
-  padding:22px;
-  padding-bottom:100px;
-  background:var(--bg);
+  min-height:100dvh;
+  padding:18px;
+  padding-bottom:96px;
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,59,48,0.16), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(96,165,250,0.10), transparent 30%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
 }
 
-.page{width:100%;max-width:1180px;margin:0 auto}
-
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:38px;
+button,
+input,
+textarea{
+  font:inherit;
 }
 
-.circle-btn{
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  font-size:26px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-  flex:0 0 auto;
+button{
+  cursor:pointer;
 }
 
-h1{
-  font-size:44px;
-  margin:0;
-  letter-spacing:-.06em;
-  line-height:1;
-}
-
-.count{
-  color:var(--muted);
-  margin-top:8px;
-  font-size:18px;
-}
-
-.grid{
+.page{
   width:100%;
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(170px, 1fr));
-  gap:28px 20px;
-  margin-top:34px;
-}
-
-.note-card{min-width:0;cursor:pointer}
-
-.preview{
-  width:100%;
-  aspect-ratio:1.45 / 1;
-  min-height:116px;
-  max-height:150px;
-  border-radius:14px;
-  background:var(--card);
-  border:1px solid rgba(255,255,255,.16);
-  padding:12px;
-  overflow:hidden;
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
-}
-
-.preview-title{
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:7px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.preview-section{
-  font-size:10px;
-  font-weight:800;
-  color:#fff;
-  margin-top:5px;
-}
-
-.preview-line{
-  font-size:10px;
-  color:#c7c7cc;
-  line-height:1.45;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.note-title{
-  margin-top:12px;
-  font-size:19px;
-  line-height:1.12;
-  text-align:center;
-  overflow:hidden;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  word-break:break-word;
-}
-
-.note-date{
-  color:var(--muted);
-  font-size:15px;
-  text-align:center;
-  margin-top:4px;
-}
-
-.bottom-bar{
-  position:fixed;
-  left:50%;
-  bottom:20px;
-  transform:translateX(-50%);
-  width:calc(100% - 36px);
-  max-width:760px;
-  display:flex;
-  gap:14px;
-  align-items:center;
-  z-index:5;
-}
-
-.search{
-  flex:1;
-  min-width:0;
-  height:58px;
-  border-radius:999px;
-  background:#1c1c1e;
-  border:1px solid var(--line);
-  color:#fff;
-  padding:0 18px;
-  font-size:20px;
-}
-
-.add-btn{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:#1c1c1e;
-  border:1px solid var(--line);
-  color:#fff;
-  font-size:28px;
-  flex:0 0 auto;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.72);
-  display:none;
-  align-items:flex-end;
-  z-index:10;
-}
-
-.sheet{
-  width:100%;
-  max-height:92vh;
-  overflow:auto;
-  background:var(--sheet);
-  border-radius:28px 28px 0 0;
-  padding:22px;
-  border-top:1px solid var(--line);
-}
-
-.sheet-inner{
-  width:100%;
-  max-width:720px;
+  max-width:1220px;
   margin:0 auto;
 }
 
-.sheet-top{
+.topbar{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
+  gap:14px;
   margin-bottom:14px;
 }
 
-input, textarea{
-  width:100%;
-  background:#1c1d21;
-  border:1px solid var(--line);
-  color:#fff;
+.brand-block{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.app-dot{
+  width:44px;
+  height:44px;
   border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 14px 35px rgba(0,0,0,0.25);
+  font-weight:900;
+}
+
+.eyebrow{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:800;
+}
+
+h1{
+  margin:2px 0 0;
+  font-size:28px;
+  letter-spacing:-0.04em;
+  line-height:1.05;
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.back-btn,
+.icon-btn{
+  width:auto;
+  min-width:46px;
+  min-height:46px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#fff;
+  text-decoration:none;
+  font-weight:850;
+  font-size:14px;
+}
+
+.icon-btn{
+  font-size:22px;
+  padding:0 14px;
+}
+
+.back-btn:hover,
+.icon-btn:hover{
+  background:rgba(255,255,255,0.12);
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+}
+
+.overview{
   padding:14px;
-  font:inherit;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns:2fr repeat(4, 1fr);
+  gap:12px;
+}
+
+.summary-card,
+.kpi{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line2);
+  border-radius:24px;
+  padding:16px;
+  min-height:112px;
+  position:relative;
+  overflow:hidden;
+}
+
+.summary-card:before{
+  content:"";
+  position:absolute;
+  inset:auto -60px -80px auto;
+  width:190px;
+  height:190px;
+  border-radius:999px;
+  background:rgba(255,59,48,0.16);
+  filter:blur(2px);
+}
+
+.kpi-title{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.kpi-value{
+  font-size:24px;
+  font-weight:900;
+  margin-top:5px;
+  letter-spacing:-0.03em;
+}
+
+.kpi-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.35;
+}
+
+.hero-number{
+  font-size:34px;
+  font-weight:950;
+  letter-spacing:-0.05em;
+  margin-top:4px;
+}
+
+.progress{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+  margin-top:14px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--accent), #ff7b72);
+}
+
+.mini-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
   margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+  position:relative;
+  z-index:1;
+}
+
+.panel{
+  margin-top:14px;
+  padding:16px;
+}
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.panel-title{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.02em;
+}
+
+.panel-copy{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+.search-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+input,
+textarea,
+button{
+  width:100%;
+  min-height:46px;
+  padding:12px 13px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;
+  outline:none;
+}
+
+input:focus,
+textarea:focus{
+  border-color:rgba(255,59,48,0.55);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.10);
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:#919aaa;
 }
 
 textarea{
@@ -225,65 +308,280 @@ textarea{
   line-height:1.45;
 }
 
-button{
-  margin-top:12px;
-  width:100%;
-  padding:14px;
-  border-radius:16px;
-  border:none;
-  background:var(--accent);
+.primary-btn{
+  border:0;
+  border-radius:18px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
   color:#fff;
-  font-weight:800;
-  font:inherit;
+  font-weight:900;
+  margin-top:12px;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
 }
 
-.secondary{background:rgba(255,255,255,.10)}
-.danger{background:rgba(239,68,68,.22)}
+.secondary-btn{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.09);
+  color:#fff;
+  font-weight:850;
+  margin-top:10px;
+}
 
-.row-2{
+.danger-btn{
+  background:rgba(239,68,68,0.20);
+  border:1px solid rgba(239,68,68,0.22);
+  color:#fff;
+  font-weight:850;
+  margin-top:12px;
+}
+
+.add-inline{
+  width:auto;
+  min-width:46px;
+  margin:0;
+  font-size:22px;
+  padding:0 16px;
+  border-radius:16px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
+  border:0;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
+}
+
+.grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
+  gap:14px;
+}
+
+.note-card{
+  min-width:0;
+  cursor:pointer;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:24px;
+  padding:12px;
+  transition:transform 0.18s ease, background 0.18s ease;
+}
+
+.note-card:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.085);
+}
+
+.preview{
+  width:100%;
+  aspect-ratio:1.35 / 1;
+  min-height:126px;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,59,48,0.10), transparent 45%),
+    rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.11);
+  padding:12px;
+  overflow:hidden;
+}
+
+.preview-title{
+  font-size:13px;
+  font-weight:920;
+  margin-bottom:8px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  letter-spacing:-0.02em;
+}
+
+.preview-section{
+  font-size:10px;
+  font-weight:900;
+  color:#fff;
+  margin-top:7px;
+  text-transform:lowercase;
+}
+
+.preview-line{
+  font-size:11px;
+  color:var(--soft);
+  line-height:1.45;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.note-title{
+  margin-top:12px;
+  font-size:16px;
+  font-weight:900;
+  line-height:1.16;
+  text-align:left;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  word-break:break-word;
+  letter-spacing:-0.02em;
+}
+
+.note-date{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+}
+
+.note-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:10px;
+}
+
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--soft);
+  font-size:12px;
+  font-weight:750;
+}
+
+.chip.done{
+  background:rgba(34,197,94,0.14);
+  border-color:rgba(34,197,94,0.22);
+  color:#d7ffdf;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.72);
+  display:none;
+  align-items:flex-end;
+  z-index:10;
+}
+
+.sheet{
+  width:100%;
+  max-height:92dvh;
+  overflow:auto;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,59,48,0.10), transparent 34%),
+    linear-gradient(180deg, #171a20, #101217);
+  border-radius:30px 30px 0 0;
+  padding:18px;
+  border-top:1px solid var(--line);
+  box-shadow:0 -24px 80px rgba(0,0,0,0.45);
+}
+
+.sheet-inner{
+  width:100%;
+  max-width:780px;
+  margin:0 auto;
+}
+
+.sheet-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.sheet-handle{
+  width:46px;
+  height:5px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.20);
+  margin:0 auto 12px;
+}
+
+.close-btn{
+  width:46px;
+  height:46px;
+  min-height:46px;
+  border-radius:16px;
+  padding:0;
+  margin:0;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  font-size:22px;
+}
+
+.form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
 
+.field{
+  display:block;
+}
+
+.field span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+  margin:0 0 7px;
+}
+
+.divider{
+  height:1px;
+  background:rgba(255,255,255,0.08);
+  margin:18px 0;
+}
+
 .section-title{
   margin-top:18px;
-  margin-bottom:6px;
+  margin-bottom:8px;
   font-size:14px;
-  font-weight:900;
+  font-weight:950;
   color:#fff;
   text-transform:lowercase;
+  letter-spacing:-0.01em;
 }
 
 .item-row{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:13px;
+  margin-top:9px;
   display:flex;
   align-items:flex-start;
   gap:10px;
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
   cursor:pointer;
 }
 
 .check{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.06);
+  width:30px;
+  height:30px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.14);
+  background:rgba(255,255,255,0.065);
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
   flex:0 0 auto;
+  font-weight:900;
 }
 
-.check.done{background:var(--green)}
+.check.done{
+  background:var(--green);
+  border-color:rgba(34,197,94,0.45);
+}
 
 .item-text{
   flex:1;
   min-width:0;
   line-height:1.4;
   word-break:break-word;
+  font-size:14px;
+  font-weight:760;
 }
 
 .item-text.done{
@@ -292,41 +590,98 @@ button{
 }
 
 .item-date{
-  color:var(--muted);
+  color:#d7eaff;
+  background:rgba(96,165,250,0.12);
+  border:1px solid rgba(96,165,250,0.20);
+  width:max-content;
+  max-width:100%;
+  border-radius:999px;
   font-size:12px;
-  margin-top:4px;
+  margin-top:7px;
+  padding:5px 8px;
 }
 
 .delete-small{
   width:auto;
+  min-height:34px;
   padding:7px 10px;
-  border-radius:10px;
-  background:rgba(239,68,68,.18);
+  border-radius:12px;
+  background:rgba(239,68,68,0.18);
+  border:1px solid rgba(239,68,68,0.22);
   margin-top:0;
   font-size:12px;
+  font-weight:850;
   flex:0 0 auto;
 }
 
 .status{
-  color:var(--muted);
+  color:var(--soft);
   min-height:18px;
   font-size:13px;
   margin-top:10px;
 }
 
-.divider{
-  height:1px;
-  background:rgba(255,255,255,.08);
-  margin:18px 0 8px;
+.empty{
+  color:var(--muted);
+  padding:14px 0;
+  font-size:13px;
 }
 
-@media(max-width:520px){
-  body{padding:18px;padding-bottom:100px}
-  h1{font-size:40px}
-  .grid{grid-template-columns:repeat(2, minmax(0, 1fr));gap:24px 14px}
-  .preview{min-height:110px}
-  .note-title{font-size:18px}
-  .row-2{grid-template-columns:1fr}
+@media(max-width:980px){
+  .kpis{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .summary-card{
+    grid-column:1 / -1;
+  }
+}
+
+@media(max-width:680px){
+  body{
+    padding:12px;
+    padding-bottom:96px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .kpis,
+  .form-grid,
+  .search-row{
+    grid-template-columns:1fr;
+  }
+
+  .add-inline{
+    width:100%;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:12px;
+  }
+
+  .preview{
+    min-height:116px;
+  }
+
+  .note-card{
+    border-radius:22px;
+    padding:10px;
+  }
+
+  .item-row{
+    flex-direction:column;
+  }
+
+  .delete-small{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -334,64 +689,126 @@ button{
 <body>
 
 <div class="page">
-  <div class="top">
-    <a href="dashboard.html" class="circle-btn">‹</a>
-    <button class="circle-btn" onclick="openNew()">＋</button>
-  </div>
 
-  <h1>Lists</h1>
-  <div class="count" id="count">0 lists</div>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="app-dot">P</div>
+      <div>
+        <p class="eyebrow">Pace</p>
+        <h1>Lists</h1>
+      </div>
+    </div>
 
-  <div class="grid" id="notesGrid"></div>
-</div>
+    <div class="top-actions">
+      <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
+      <button class="icon-btn" onclick="openNew()">＋</button>
+    </div>
+  </header>
 
-<div class="bottom-bar">
-  <input id="search" class="search" placeholder="Search" oninput="render()">
-  <button class="add-btn" onclick="openNew()">✎</button>
+  <section class="card overview">
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section class="card panel">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">Saved lists</h2>
+        <p class="panel-copy">Checklists, wedding prep, errands, projects and anything you need to break down.</p>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <input id="search" placeholder="Search list, section or item" oninput="render()">
+      <button class="add-inline" onclick="openNew()">＋</button>
+    </div>
+
+    <div class="grid" id="notesGrid"></div>
+  </section>
+
 </div>
 
 <div class="modal" id="modal">
   <div class="sheet">
     <div class="sheet-inner">
+
+      <div class="sheet-handle"></div>
+
       <div class="sheet-top">
-        <button class="circle-btn" style="width:44px;height:44px;font-size:22px;margin:0;" onclick="closeModal()">×</button>
+        <div>
+          <p class="eyebrow">List editor</p>
+          <h1 style="font-size:24px;">Edit list</h1>
+        </div>
+
+        <button class="close-btn" onclick="closeModal()">×</button>
       </div>
 
-      <input id="listTitle" placeholder="Main list title e.g. Marvin + Blessing Wedding">
-      <button onclick="saveListTitle()">Save main list title</button>
+      <label class="field">
+        <span>Main list title</span>
+        <input id="listTitle" placeholder="Marvin and Blessing Wedding">
+      </label>
+
+      <button class="primary-btn" onclick="saveListTitle()">Save main list title</button>
 
       <div class="divider"></div>
 
-      <textarea id="quickPasteList" placeholder="Paste a section here, for example:
+      <label class="field">
+        <span>Quick import</span>
+        <textarea id="quickPasteList" placeholder="Paste a section here, for example:
 
 admin
 
 • pre consultation form completed
 • both client emails received
 • docusign contract sent"></textarea>
+      </label>
 
-      <div class="row-2">
-        <input id="sectionReminderDate" type="date">
-        <input id="sectionReminderTime" type="time">
+      <div class="form-grid">
+        <label class="field">
+          <span>Section reminder date</span>
+          <input id="sectionReminderDate" type="date">
+        </label>
+
+        <label class="field">
+          <span>Section reminder time</span>
+          <input id="sectionReminderTime" type="time">
+        </label>
       </div>
 
-      <button class="secondary" onclick="importSection()">Import section</button>
+      <button class="secondary-btn" onclick="importSection()">Import section</button>
 
       <div id="itemsWrap" style="margin-top:16px;"></div>
 
-      <input id="newSectionName" placeholder="Section e.g. admin / payments / gear">
-      <input id="newItemText" placeholder="Add checklist item">
+      <div class="divider"></div>
 
-      <div class="row-2">
-        <input id="itemReminderDate" type="date">
-        <input id="itemReminderTime" type="time">
+      <div class="form-grid">
+        <label class="field">
+          <span>Section</span>
+          <input id="newSectionName" placeholder="admin, payments, gear">
+        </label>
+
+        <label class="field">
+          <span>Checklist item</span>
+          <input id="newItemText" placeholder="Add checklist item">
+        </label>
       </div>
 
-      <button onclick="addItem()">Add item</button>
+      <div class="form-grid">
+        <label class="field">
+          <span>Item reminder date</span>
+          <input id="itemReminderDate" type="date">
+        </label>
 
-      <button class="danger" onclick="deleteList()">Delete whole list</button>
+        <label class="field">
+          <span>Item reminder time</span>
+          <input id="itemReminderTime" type="time">
+        </label>
+      </div>
+
+      <button class="primary-btn" onclick="addItem()">Add item</button>
+      <button class="danger-btn" onclick="deleteList()">Delete whole list</button>
 
       <div id="status" class="status"></div>
+
     </div>
   </div>
 </div>
@@ -413,7 +830,6 @@ const supabase = createClient(
 );
 
 const notesGrid = document.getElementById("notesGrid");
-const countEl = document.getElementById("count");
 const modal = document.getElementById("modal");
 const listTitle = document.getElementById("listTitle");
 const quickPasteList = document.getElementById("quickPasteList");
@@ -426,6 +842,7 @@ const itemReminderTime = document.getElementById("itemReminderTime");
 const itemsWrap = document.getElementById("itemsWrap");
 const searchEl = document.getElementById("search");
 const statusEl = document.getElementById("status");
+const kpisEl = document.getElementById("kpis");
 
 let user = null;
 let lists = [];
@@ -442,14 +859,36 @@ async function getUser(){
   return data.user;
 }
 
+function escapeHTML(value){
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function today(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function formatDate(value){
   if(!value) return "";
-  return new Date(value).toLocaleDateString("en-GB");
+  const raw = String(value).includes("T") ? String(value).split("T")[0] : value;
+  return new Date(raw + "T00:00:00").toLocaleDateString("en-GB");
 }
 
 function formatReminder(reminder){
   if(!reminder) return "";
-  return `${reminder.reminder_date || ""}${reminder.reminder_time ? " • " + String(reminder.reminder_time).slice(0,5) : ""}`;
+
+  const date = reminder.reminder_date ? formatDate(reminder.reminder_date) : "";
+  const time = reminder.reminder_time ? String(reminder.reminder_time).slice(0,5) : "";
+
+  return `${date}${date && time ? " · " : ""}${time}`;
 }
 
 function cleanBullet(line){
@@ -469,12 +908,90 @@ function reminderForItem(itemId){
 
 function groupItems(listId){
   const grouped = {};
+
   itemsFor(listId).forEach(item => {
     const section = item.section || "general";
-    if(!grouped[section]) grouped[section] = [];
+
+    if(!grouped[section]){
+      grouped[section] = [];
+    }
+
     grouped[section].push(item);
   });
+
   return grouped;
+}
+
+function filteredLists(){
+  const q = searchEl.value.toLowerCase().trim();
+
+  if(!q) return lists;
+
+  return lists.filter(list => {
+    const listItems = itemsFor(list.id);
+
+    return (
+      (list.title || "").toLowerCase().includes(q) ||
+      listItems.some(item =>
+        (item.text || "").toLowerCase().includes(q) ||
+        (item.section || "").toLowerCase().includes(q)
+      )
+    );
+  });
+}
+
+function renderKpis(){
+  const totalLists = lists.length;
+  const totalItems = items.length;
+  const doneItems = items.filter(i => i.done).length;
+  const openItems = totalItems - doneItems;
+  const completion = totalItems ? Math.round((doneItems / totalItems) * 100) : 0;
+
+  const todayReminders = reminders.filter(r =>
+    r.source === "list" &&
+    r.reminder_date === today() &&
+    !r.done
+  ).length;
+
+  const nextReminder = [...reminders]
+    .filter(r => r.source === "list" && !r.done && r.reminder_date)
+    .sort((a,b) => new Date(a.reminder_date || "2999-01-01") - new Date(b.reminder_date || "2999-01-01"))[0];
+
+  kpisEl.innerHTML = `
+    <div class="summary-card">
+      <div class="kpi-title">Open list items</div>
+      <div class="hero-number">${openItems}</div>
+      <div class="progress"><span style="width:${completion}%"></span></div>
+      <div class="mini-line">
+        <span>${doneItems} done</span>
+        <span>${completion}% complete</span>
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Lists</div>
+      <div class="kpi-value">${totalLists}</div>
+      <div class="kpi-sub">Saved checklists</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Items</div>
+      <div class="kpi-value">${totalItems}</div>
+      <div class="kpi-sub">Across all lists</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Today</div>
+      <div class="kpi-value">${todayReminders}</div>
+      <div class="kpi-sub">List reminders due</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Next nudge</div>
+      <div class="kpi-value">${nextReminder ? formatDate(nextReminder.reminder_date) : "None"}</div>
+      <div class="kpi-sub">${nextReminder ? escapeHTML(nextReminder.title || "Reminder") : "No reminder set"}</div>
+    </div>
+  `;
 }
 
 async function load(){
@@ -528,53 +1045,51 @@ async function load(){
 }
 
 window.render = function(){
-  const q = searchEl.value.toLowerCase();
+  renderKpis();
 
-  const filtered = lists.filter(list => {
-    const listItems = itemsFor(list.id);
-    return (
-      (list.title || "").toLowerCase().includes(q) ||
-      listItems.some(item =>
-        (item.text || "").toLowerCase().includes(q) ||
-        (item.section || "").toLowerCase().includes(q)
-      )
-    );
-  });
-
-  countEl.textContent = `${filtered.length} ${filtered.length === 1 ? "list" : "lists"}`;
+  const filtered = filteredLists();
 
   if(!filtered.length){
-    notesGrid.innerHTML = `<div style="color:#8e8e93;">No lists yet.</div>`;
+    notesGrid.innerHTML = `<div class="empty">No lists match this view yet.</div>`;
     return;
   }
 
   notesGrid.innerHTML = filtered.map(list => {
     const grouped = groupItems(list.id);
     const sections = Object.keys(grouped).slice(0,2);
+    const listItems = itemsFor(list.id);
+    const doneCount = listItems.filter(item => item.done).length;
+    const totalCount = listItems.length;
 
     return `
-      <div class="note-card" onclick="openList('${list.id}')">
+      <article class="note-card" onclick="openList('${list.id}')">
         <div class="preview">
-          <div class="preview-title">${list.title || "Untitled"}</div>
+          <div class="preview-title">${escapeHTML(list.title || "Untitled")}</div>
           ${
             sections.length
               ? sections.map(section => `
-                  <div class="preview-section">${section}</div>
+                  <div class="preview-section">${escapeHTML(section)}</div>
                   ${
                     grouped[section].slice(0,2).map(item => `
-                      <div class="preview-line">${item.done ? "☑" : "☐"} ${item.text || ""}</div>
+                      <div class="preview-line">${item.done ? "☑" : "☐"} ${escapeHTML(item.text || "")}</div>
                     `).join("")
                   }
                 `).join("")
               : `<div class="preview-line">No items yet</div>`
           }
         </div>
-        <div class="note-title">${list.title || "Untitled"}</div>
+
+        <div class="note-title">${escapeHTML(list.title || "Untitled")}</div>
         <div class="note-date">${formatDate(list.created_at)}</div>
-      </div>
+
+        <div class="note-meta">
+          <span class="chip">${totalCount} items</span>
+          <span class="chip done">${doneCount} done</span>
+        </div>
+      </article>
     `;
   }).join("");
-}
+};
 
 function renderActiveItems(){
   if(!activeId){
@@ -591,7 +1106,7 @@ function renderActiveItems(){
   }
 
   itemsWrap.innerHTML = sections.map(section => `
-    <div class="section-title">${section}</div>
+    <div class="section-title">${escapeHTML(section)}</div>
     ${
       grouped[section].map(item => {
         const rem = reminderForItem(item.id);
@@ -603,7 +1118,7 @@ function renderActiveItems(){
             </div>
 
             <div class="item-text ${item.done ? "done" : ""}">
-              ${item.text || ""}
+              ${escapeHTML(item.text || "")}
               ${rem ? `<div class="item-date">⏰ ${formatReminder(rem)}</div>` : ""}
             </div>
 
@@ -629,7 +1144,7 @@ window.openNew = function(){
   renderActiveItems();
   modal.style.display = "flex";
   setTimeout(() => listTitle.focus(), 150);
-}
+};
 
 window.openList = function(id){
   const list = lists.find(l => l.id === id);
@@ -648,12 +1163,12 @@ window.openList = function(id){
   renderActiveItems();
   modal.style.display = "flex";
   setTimeout(() => quickPasteList.focus(), 150);
-}
+};
 
 window.closeModal = function(){
   modal.style.display = "none";
   activeId = null;
-}
+};
 
 window.saveListTitle = async function(){
   const title = listTitle.value.trim() || "Untitled";
@@ -662,7 +1177,8 @@ window.saveListTitle = async function(){
     const { error } = await supabase
       .from("lists")
       .update({ title })
-      .eq("id", activeId);
+      .eq("id", activeId)
+      .eq("user_id", user.id);
 
     if(error){
       setStatus(error.message);
@@ -688,7 +1204,7 @@ window.saveListTitle = async function(){
 
   await load();
   renderActiveItems();
-}
+};
 
 window.importSection = async function(){
   const raw = quickPasteList.value.trim();
@@ -748,7 +1264,7 @@ window.importSection = async function(){
       user_id:user.id,
       source:"list",
       source_id:item.id,
-      title:`${listTitle.value || "List"} — ${section}: ${item.text}`,
+      title:`${listTitle.value || "List"} · ${section}: ${item.text}`,
       reminder_date:sectionReminderDate.value,
       reminder_time:sectionReminderTime.value || null,
       done:false
@@ -772,7 +1288,7 @@ window.importSection = async function(){
   await load();
   renderActiveItems();
   quickPasteList.focus();
-}
+};
 
 window.addItem = async function(){
   const text = newItemText.value.trim();
@@ -812,7 +1328,7 @@ window.addItem = async function(){
         user_id:user.id,
         source:"list",
         source_id:data.id,
-        title:`${listTitle.value || "List"} — ${section}: ${text}`,
+        title:`${listTitle.value || "List"} · ${section}: ${text}`,
         reminder_date:itemReminderDate.value,
         reminder_time:itemReminderTime.value || null,
         done:false
@@ -832,13 +1348,14 @@ window.addItem = async function(){
   await load();
   renderActiveItems();
   newItemText.focus();
-}
+};
 
 window.toggleItem = async function(id, done){
   const { error } = await supabase
     .from("list_items")
     .update({ done })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if(error){
     setStatus(error.message);
@@ -849,32 +1366,40 @@ window.toggleItem = async function(id, done){
     .from("reminders")
     .update({ done })
     .eq("source", "list")
-    .eq("source_id", id);
+    .eq("source_id", id)
+    .eq("user_id", user.id);
 
   await load();
   renderActiveItems();
-}
+};
 
 window.deleteItem = async function(id){
-  const { error } = await supabase
+  const itemDelete = await supabase
     .from("list_items")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
-  if(error){
-    setStatus(error.message);
+  if(itemDelete.error){
+    setStatus(itemDelete.error.message);
     return;
   }
 
-  await supabase
+  const reminderDelete = await supabase
     .from("reminders")
     .delete()
     .eq("source", "list")
-    .eq("source_id", id);
+    .eq("source_id", id)
+    .eq("user_id", user.id);
+
+  if(reminderDelete.error){
+    setStatus(reminderDelete.error.message);
+    return;
+  }
 
   await load();
   renderActiveItems();
-}
+};
 
 window.deleteList = async function(){
   if(!activeId){
@@ -888,26 +1413,44 @@ window.deleteList = async function(){
   const itemIds = itemsFor(activeId).map(item => item.id);
 
   if(itemIds.length){
-    await supabase
+    const remindersDelete = await supabase
       .from("reminders")
       .delete()
       .eq("source", "list")
-      .in("source_id", itemIds);
+      .in("source_id", itemIds)
+      .eq("user_id", user.id);
+
+    if(remindersDelete.error){
+      setStatus(remindersDelete.error.message);
+      return;
+    }
   }
 
-  const { error } = await supabase
+  const itemsDelete = await supabase
+    .from("list_items")
+    .delete()
+    .eq("list_id", activeId)
+    .eq("user_id", user.id);
+
+  if(itemsDelete.error){
+    setStatus(itemsDelete.error.message);
+    return;
+  }
+
+  const listDelete = await supabase
     .from("lists")
     .delete()
-    .eq("id", activeId);
+    .eq("id", activeId)
+    .eq("user_id", user.id);
 
-  if(error){
-    setStatus(error.message);
+  if(listDelete.error){
+    setStatus(listDelete.error.message);
     return;
   }
 
   closeModal();
   await load();
-}
+};
 
 newItemText.addEventListener("keydown", (e) => {
   if(e.key === "Enter"){
