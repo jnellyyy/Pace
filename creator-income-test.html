@@ -6,207 +6,513 @@
 
 <title>Pace Creator Income</title>
 
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
-<meta name="theme-color" content="#050507">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
 
 <style>
 :root{
-  --bg:#050507;
-  --card:#1c1d21;
-  --card2:#24262b;
-  --line:rgba(255,255,255,.12);
-  --text:#f5f5f7;
-  --muted:#8e8e93;
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
+  --panel3:rgba(255,255,255,0.12);
+  --line:rgba(255,255,255,0.12);
+  --line2:rgba(255,255,255,0.08);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --soft:#d9dee8;
   --accent:#ff3b30;
-  --green:#34c759;
-  --orange:#ff9f0a;
-  --blue:#409cff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --blue:#60a5fa;
+  --red:#ef4444;
+  --shadow:0 24px 70px rgba(0,0,0,0.42);
+  --radius:28px;
 }
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  min-height:100%;
+}
 
 body{
   margin:0;
-  min-height:100vh;
+  min-height:100dvh;
   padding:18px;
-  background:linear-gradient(180deg,#0f1115,#171a20);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,59,48,0.16), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(34,197,94,0.10), transparent 30%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
 }
 
-.wrap{max-width:1050px;margin:0 auto}
-
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.circle-btn{
-  width:52px;
-  height:52px;
-  border-radius:50%;
-  background:rgba(255,255,255,.08);
-  border:1px solid var(--line);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-  font-size:24px;
-}
-
-h1{
-  font-size:40px;
-  letter-spacing:-.06em;
-  margin:0;
-}
-
-.sub{
-  color:var(--muted);
-  margin-top:6px;
-  line-height:1.5;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:26px;
-  padding:18px;
-  margin-top:16px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-
-.metric{
-  background:var(--card2);
-  border-radius:20px;
-  padding:14px;
-}
-
-.metric-label{
-  color:var(--muted);
-  font-size:12px;
-}
-
-.metric-value{
-  font-size:24px;
-  font-weight:900;
-  margin-top:5px;
-}
-
-input,select,button{
-  width:100%;
-  padding:13px;
-  margin-top:10px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:#24262b;
-  color:white;
+button,
+input,
+select{
   font:inherit;
 }
 
 button{
-  background:var(--accent);
-  border:none;
+  cursor:pointer;
+}
+
+.wrap{
+  max-width:1220px;
+  margin:0 auto;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px;
+}
+
+.brand-block{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.app-dot{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 14px 35px rgba(0,0,0,0.25);
   font-weight:900;
 }
 
-.secondary{
-  background:rgba(255,255,255,.10);
+.eyebrow{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:800;
 }
 
-.row{
+h1{
+  margin:2px 0 0;
+  font-size:28px;
+  letter-spacing:-0.04em;
+  line-height:1.05;
+}
+
+.back-btn{
+  width:auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#fff;
+  text-decoration:none;
+  font-weight:850;
+  font-size:14px;
+}
+
+.back-btn:hover{
+  background:rgba(255,255,255,0.12);
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+}
+
+.overview{
+  padding:14px;
+}
+
+.kpis{
   display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
+  grid-template-columns:2fr repeat(4, 1fr);
+  gap:12px;
 }
 
-.row-2{
+.summary-card,
+.kpi{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line2);
+  border-radius:24px;
+  padding:16px;
+  min-height:112px;
+  position:relative;
+  overflow:hidden;
+}
+
+.summary-card:before{
+  content:"";
+  position:absolute;
+  inset:auto -60px -80px auto;
+  width:190px;
+  height:190px;
+  border-radius:999px;
+  background:rgba(34,197,94,0.16);
+  filter:blur(2px);
+}
+
+.kpi-title{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.kpi-value{
+  font-size:24px;
+  font-weight:900;
+  margin-top:5px;
+  letter-spacing:-0.03em;
+}
+
+.kpi-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.35;
+}
+
+.hero-money{
+  font-size:32px;
+  font-weight:950;
+  letter-spacing:-0.05em;
+  margin-top:4px;
+}
+
+.progress{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+  margin-top:14px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--green), #84f6a4);
+}
+
+.money-mini{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+  position:relative;
+  z-index:1;
+}
+
+.workspace{
+  display:grid;
+  grid-template-columns:minmax(0, 1.35fr) minmax(330px, 0.65fr);
+  gap:14px;
+  margin-top:14px;
+  align-items:start;
+}
+
+.stack{
+  display:grid;
+  gap:14px;
+}
+
+.panel{
+  padding:16px;
+}
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.panel-title{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.02em;
+}
+
+.panel-copy{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+input,
+select,
+button{
+  width:100%;
+  min-height:46px;
+  padding:12px 13px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;
+  outline:none;
+}
+
+input:focus,
+select:focus{
+  border-color:rgba(255,59,48,0.55);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.10);
+}
+
+input::placeholder{
+  color:#919aaa;
+}
+
+.primary-btn{
+  border:0;
+  border-radius:18px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
+  color:#fff;
+  font-weight:900;
+  margin-top:12px;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
+}
+
+.primary-btn:hover{
+  transform:translateY(-1px);
+}
+
+.secondary-btn{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.09);
+  color:#fff;
+  font-weight:850;
+}
+
+.form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
 
-.progress-track{
-  height:14px;
-  background:rgba(255,255,255,.10);
-  border-radius:999px;
-  overflow:hidden;
-  margin-top:12px;
+.form-grid.three{
+  grid-template-columns:1fr 1fr 1fr;
 }
 
-.progress-fill{
-  height:100%;
-  background:var(--green);
-  width:0%;
+.field{
+  display:block;
 }
 
-.entry{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.entry:last-child{border-bottom:none}
-
-.entry-title{font-weight:800}
-.entry-meta{color:var(--muted);font-size:13px;margin-top:4px}
-
-.small-btn{
-  width:auto;
-  padding:8px 10px;
-  margin:0;
-  border-radius:12px;
-  background:rgba(255,59,48,.22);
+.field span{
+  display:block;
   font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+  margin:0 0 7px;
 }
 
 .notice{
-  color:var(--muted);
-  font-size:13px;
   min-height:18px;
-  margin-top:10px;
+  margin:10px 0 0;
+  color:var(--soft);
+  font-size:13px;
+}
+
+.alert{
+  border-radius:20px;
+  padding:14px;
+  margin-top:12px;
+  line-height:1.45;
+  font-size:13px;
 }
 
 .warning{
-  background:rgba(255,159,10,.14);
-  border:1px solid rgba(255,159,10,.25);
-  border-radius:18px;
-  padding:14px;
-  margin-top:12px;
+  background:rgba(245,158,11,0.14);
+  border:1px solid rgba(245,158,11,0.25);
   color:#ffd89a;
-  line-height:1.45;
 }
 
 .good{
-  background:rgba(52,199,89,.14);
-  border:1px solid rgba(52,199,89,.25);
-  border-radius:18px;
-  padding:14px;
-  margin-top:12px;
+  background:rgba(34,197,94,0.14);
+  border:1px solid rgba(34,197,94,0.25);
   color:#b7f5c7;
-  line-height:1.45;
 }
 
-@media(max-width:850px){
-  .grid{grid-template-columns:repeat(2,1fr)}
-  .row{grid-template-columns:1fr}
+.entry-list{
+  max-height:360px;
+  overflow:auto;
+  padding-right:3px;
 }
 
-@media(max-width:520px){
-  body{padding:16px}
-  h1{font-size:36px}
-  .grid,.row,.row-2{grid-template-columns:1fr}
+.entry-list::-webkit-scrollbar{
+  width:8px;
+}
+
+.entry-list::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.12);
+  border-radius:999px;
+}
+
+.entry{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:13px;
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.entry:first-child{
+  margin-top:0;
+}
+
+.entry-title{
+  font-weight:920;
+  letter-spacing:-0.02em;
+}
+
+.entry-meta{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+  line-height:1.4;
+}
+
+.entry-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--soft);
+  font-size:12px;
+  font-weight:800;
+  margin-top:8px;
+}
+
+.small-btn{
+  width:auto;
+  min-height:36px;
+  padding:8px 10px;
+  border-radius:13px;
+  background:rgba(239,68,68,0.18);
+  border:1px solid rgba(239,68,68,0.22);
+  color:#fff;
+  font-size:12px;
+  font-weight:850;
+  flex:0 0 auto;
+}
+
+.search-row{
+  margin-bottom:12px;
+}
+
+.empty{
+  color:var(--muted);
+  padding:14px 0;
+  font-size:13px;
+}
+
+.tax-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:12px;
+}
+
+.mini-card{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:13px;
+}
+
+.mini-label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.mini-value{
+  font-size:20px;
+  font-weight:920;
+  margin-top:5px;
+  letter-spacing:-0.03em;
+}
+
+@media(max-width:980px){
+  .kpis{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .summary-card{
+    grid-column:1 / -1;
+  }
+
+  .workspace{
+    grid-template-columns:1fr;
+  }
+
+  .entry-list{
+    max-height:none;
+    overflow:visible;
+  }
+
+  .tax-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:680px){
+  body{
+    padding:12px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .kpis,
+  .form-grid,
+  .form-grid.three,
+  .tax-grid{
+    grid-template-columns:1fr;
+  }
+
+  .entry{
+    flex-direction:column;
+  }
+
+  .small-btn{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -214,116 +520,167 @@ button{
 <body>
 <div class="wrap">
 
-  <div class="top">
-    <a href="creators-test.html" class="circle-btn">‹</a>
-    <div class="circle-btn">💷</div>
-  </div>
-
-  <h1>Creator Income</h1>
-  <div class="sub">Deliveroo orders, daily target, yearly income and tax threshold tracking.</div>
-
-  <div class="card">
-    <div class="grid">
-      <div class="metric">
-        <div class="metric-label">Today made</div>
-        <div class="metric-value" id="todayMade">£0.00</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Daily target</div>
-        <div class="metric-value" id="dailyTarget">£0.00</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Left today</div>
-        <div class="metric-value" id="leftToday">£0.00</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Tax year total</div>
-        <div class="metric-value" id="taxYearTotal">£0.00</div>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="app-dot">P</div>
+      <div>
+        <p class="eyebrow">Pace</p>
+        <h1>Creator Income</h1>
       </div>
     </div>
 
-    <div class="progress-track">
-      <div class="progress-fill" id="todayProgress"></div>
-    </div>
+    <a href="creators-test.html" class="back-btn">‹ Creators</a>
+  </header>
 
+  <section class="card overview">
+    <div class="kpis" id="kpis"></div>
     <div id="taxWarning"></div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h3 style="margin:0;">Daily target</h3>
+  <main class="workspace">
 
-    <div class="row-2">
-      <input id="targetDate" type="date">
-      <input id="dailyTargetInput" type="number" step="0.01" placeholder="Target e.g. 30">
-    </div>
+    <section class="stack">
 
-    <button onclick="saveSettings()">Save target</button>
-  </div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Today’s entries</h2>
+            <p class="panel-copy">Quick view of what you have made today.</p>
+          </div>
+        </div>
 
-  <div class="card">
-    <h3 style="margin:0;">Add earning</h3>
-
-    <div class="row">
-      <input id="entryDate" type="date">
-      <input id="amount" type="number" step="0.01" placeholder="Amount">
-      <select id="mode">
-        <option>Order</option>
-        <option>Weekly total</option>
-        <option>Adjustment</option>
-      </select>
-    </div>
-
-    <div class="row-2">
-      <input id="source" placeholder="Source e.g. Deliveroo" value="Deliveroo">
-      <input id="note" placeholder="Note">
-    </div>
-
-    <button onclick="addEntry()">Add entry</button>
-    <div id="msg" class="notice"></div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin:0;">Tax snapshot</h3>
-
-    <div class="grid">
-      <div class="metric">
-        <div class="metric-label">Main salary</div>
-        <div class="metric-value" id="salaryDisplay">£35,088</div>
+        <div id="todayEntries" class="entry-list">
+          <div class="empty">Loading entries...</div>
+        </div>
       </div>
 
-      <div class="metric">
-        <div class="metric-label">Threshold</div>
-        <div class="metric-value" id="thresholdDisplay">£1,000</div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Recent entries</h2>
+            <p class="panel-copy">Your latest Deliveroo, weekly total and adjustment entries.</p>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <input id="searchBox" placeholder="Search source, note, mode or date">
+        </div>
+
+        <div id="recentEntries" class="entry-list">
+          <div class="empty">Loading entries...</div>
+        </div>
       </div>
 
-      <div class="metric">
-        <div class="metric-label">Suggested set aside</div>
-        <div class="metric-value" id="setAside">£0.00</div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Tax snapshot</h2>
+            <p class="panel-copy">A simple tracker for income, threshold and set aside money.</p>
+          </div>
+        </div>
+
+        <div class="tax-grid">
+          <div class="mini-card">
+            <div class="mini-label">Main salary</div>
+            <div class="mini-value" id="salaryDisplay">£35,088.00</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-label">Threshold</div>
+            <div class="mini-value" id="thresholdDisplay">£1,000.00</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-label">Suggested set aside</div>
+            <div class="mini-value" id="setAside">£0.00</div>
+          </div>
+
+          <div class="mini-card">
+            <div class="mini-label">Register status</div>
+            <div class="mini-value" id="registerStatus">—</div>
+          </div>
+        </div>
+
+        <div class="alert warning">
+          This is only a tracker. If gross self employed income goes over £1,000 in a tax year, check Self Assessment rules.
+        </div>
       </div>
 
-      <div class="metric">
-        <div class="metric-label">Register status</div>
-        <div class="metric-value" id="registerStatus">—</div>
+    </section>
+
+    <aside class="stack">
+
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Add earning</h2>
+            <p class="panel-copy">Log each order, weekly total or adjustment.</p>
+          </div>
+        </div>
+
+        <div class="form-grid three">
+          <label class="field">
+            <span>Date</span>
+            <input id="entryDate" type="date">
+          </label>
+
+          <label class="field">
+            <span>Amount</span>
+            <input id="amount" type="number" step="0.01" placeholder="0.00">
+          </label>
+
+          <label class="field">
+            <span>Type</span>
+            <select id="mode">
+              <option>Order</option>
+              <option>Weekly total</option>
+              <option>Adjustment</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Source</span>
+            <input id="source" placeholder="Source e.g. Deliveroo" value="Deliveroo">
+          </label>
+
+          <label class="field">
+            <span>Note</span>
+            <input id="note" placeholder="Optional note">
+          </label>
+        </div>
+
+        <button class="primary-btn" onclick="addEntry()">Add entry</button>
+        <div id="msg" class="notice"></div>
       </div>
-    </div>
 
-    <div class="warning">
-      This is only a tracker. If gross self-employed income goes over £1,000 in a tax year, check Self Assessment rules.
-    </div>
-  </div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Daily target</h2>
+            <p class="panel-copy">Set the amount you want to hit today.</p>
+          </div>
+        </div>
 
-  <div class="card">
-    <h3 style="margin:0;">Today’s entries</h3>
-    <div id="todayEntries"></div>
-  </div>
+        <div class="form-grid">
+          <label class="field">
+            <span>Target date</span>
+            <input id="targetDate" type="date">
+          </label>
 
-  <div class="card">
-    <h3 style="margin:0;">Recent entries</h3>
-    <div id="recentEntries"></div>
-  </div>
+          <label class="field">
+            <span>Target amount</span>
+            <input id="dailyTargetInput" type="number" step="0.01" placeholder="30.00">
+          </label>
+        </div>
+
+        <button class="primary-btn" onclick="saveSettings()">Save target</button>
+      </div>
+
+    </aside>
+
+  </main>
 
 </div>
 
@@ -346,11 +703,17 @@ const supabase = createClient(
 let user = null;
 let entries = [];
 let settings = null;
+let searchTerm = "";
 
 const msg = document.getElementById("msg");
+const searchBox = document.getElementById("searchBox");
 
 function today(){
-  return new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function money(value){
@@ -361,11 +724,25 @@ function setMsg(text){
   msg.textContent = text;
 }
 
+function escapeHTML(value){
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatDate(value){
+  if(!value) return "No date";
+  return new Date(value + "T00:00:00").toLocaleDateString("en-GB");
+}
+
 function taxYearStart(){
   const now = new Date();
-  const y = now.getFullYear();
-  const april6 = new Date(`${y}-04-06T00:00:00`);
-  return now >= april6 ? `${y}-04-06` : `${y - 1}-04-06`;
+  const year = now.getFullYear();
+  const april6 = new Date(`${year}-04-06T00:00:00`);
+  return now >= april6 ? `${year}-04-06` : `${year - 1}-04-06`;
 }
 
 function taxYearEnd(){
@@ -373,12 +750,12 @@ function taxYearEnd(){
   return `${startYear + 1}-04-05`;
 }
 
-function todayEntries(){
+function todayRows(){
   return entries.filter(e => e.entry_date === today());
 }
 
 function todayTotal(){
-  return todayEntries().reduce((sum,e) => sum + Number(e.amount || 0), 0);
+  return todayRows().reduce((sum,e) => sum + Number(e.amount || 0), 0);
 }
 
 function taxYearEntries(){
@@ -416,6 +793,22 @@ function getSetAsideRate(){
   return Number(settings?.set_aside_rate || 20);
 }
 
+function filteredRecentEntries(){
+  if(!searchTerm) return entries;
+
+  return entries.filter(e => {
+    const haystack = [
+      e.entry_date,
+      e.amount,
+      e.source,
+      e.mode,
+      e.note
+    ].join(" ").toLowerCase();
+
+    return haystack.includes(searchTerm);
+  });
+}
+
 function renderDashboard(){
   const made = todayTotal();
   const target = getDailyTarget();
@@ -424,33 +817,65 @@ function renderDashboard(){
   const yearly = taxYearTotal();
   const threshold = getThreshold();
   const setAsideRate = getSetAsideRate();
-
-  document.getElementById("todayMade").textContent = money(made);
-  document.getElementById("dailyTarget").textContent = money(target);
-  document.getElementById("leftToday").textContent = money(left);
-  document.getElementById("taxYearTotal").textContent = money(yearly);
-  document.getElementById("todayProgress").style.width = `${progress}%`;
+  const setAsideAmount = yearly * (setAsideRate / 100);
+  const status = yearly > threshold ? "Check now" : "Not yet";
 
   document.getElementById("thresholdDisplay").textContent = money(threshold);
-  document.getElementById("setAside").textContent = money(yearly * (setAsideRate / 100));
-  document.getElementById("registerStatus").textContent = yearly > threshold ? "Register" : "Not yet";
+  document.getElementById("setAside").textContent = money(setAsideAmount);
+  document.getElementById("registerStatus").textContent = status;
 
   if(settings?.main_salary){
     document.getElementById("salaryDisplay").textContent = money(settings.main_salary);
   }
 
-  const box = document.getElementById("taxWarning");
+  document.getElementById("kpis").innerHTML = `
+    <div class="summary-card">
+      <div class="kpi-title">Today made</div>
+      <div class="hero-money">${money(made)}</div>
+      <div class="progress"><span style="width:${progress}%"></span></div>
+      <div class="money-mini">
+        <span>Target ${money(target)}</span>
+        <span>Left ${money(left)}</span>
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Daily target</div>
+      <div class="kpi-value">${money(target)}</div>
+      <div class="kpi-sub">${target ? "Target is active" : "No target set"}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Left today</div>
+      <div class="kpi-value">${money(left)}</div>
+      <div class="kpi-sub">${left === 0 && target ? "Target hit" : "Still to make"}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Tax year total</div>
+      <div class="kpi-value">${money(yearly)}</div>
+      <div class="kpi-sub">${formatDate(taxYearStart())} to ${formatDate(taxYearEnd())}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Set aside</div>
+      <div class="kpi-value">${money(setAsideAmount)}</div>
+      <div class="kpi-sub">${setAsideRate}% suggestion</div>
+    </div>
+  `;
+
+  const warningBox = document.getElementById("taxWarning");
 
   if(yearly > threshold){
-    box.innerHTML = `
-      <div class="warning">
-        You are over ${money(threshold)} gross creator/self-employed income this tax year.
-        Suggested set aside: ${money(yearly * (setAsideRate / 100))}.
+    warningBox.innerHTML = `
+      <div class="alert warning">
+        You are over ${money(threshold)} gross creator income this tax year.
+        Suggested set aside is ${money(setAsideAmount)}.
       </div>
     `;
   } else {
-    box.innerHTML = `
-      <div class="good">
+    warningBox.innerHTML = `
+      <div class="alert good">
         You are still under the ${money(threshold)} tracker threshold.
       </div>
     `;
@@ -462,15 +887,19 @@ function renderDashboard(){
 }
 
 function entryTemplate(e){
+  const source = escapeHTML(e.source || "Deliveroo");
+  const mode = escapeHTML(e.mode || "Order");
+  const note = escapeHTML(e.note || "");
+
   return `
     <div class="entry">
       <div>
-        <div class="entry-title">${money(e.amount)} • ${e.source || "Deliveroo"}</div>
+        <div class="entry-title">${money(e.amount)} · ${source}</div>
         <div class="entry-meta">
-          ${e.entry_date}
-          ${e.mode ? " • " + e.mode : ""}
-          ${e.note ? " • " + e.note : ""}
+          ${formatDate(e.entry_date)}
+          ${note ? `<br>${note}` : ""}
         </div>
+        <div class="entry-pill">${mode}</div>
       </div>
 
       <button class="small-btn" onclick="deleteEntry('${e.id}')">Delete</button>
@@ -482,15 +911,16 @@ function renderEntries(){
   const todayEl = document.getElementById("todayEntries");
   const recentEl = document.getElementById("recentEntries");
 
-  const todayRows = todayEntries();
+  const rowsToday = todayRows();
+  const rowsRecent = filteredRecentEntries();
 
-  todayEl.innerHTML = todayRows.length
-    ? todayRows.map(entryTemplate).join("")
-    : `<p class="sub">No entries today.</p>`;
+  todayEl.innerHTML = rowsToday.length
+    ? rowsToday.map(entryTemplate).join("")
+    : `<div class="empty">No entries today.</div>`;
 
-  recentEl.innerHTML = entries.length
-    ? entries.slice(0,30).map(entryTemplate).join("")
-    : `<p class="sub">No entries yet.</p>`;
+  recentEl.innerHTML = rowsRecent.length
+    ? rowsRecent.slice(0,30).map(entryTemplate).join("")
+    : `<div class="empty">No entries found.</div>`;
 }
 
 function render(){
@@ -541,10 +971,18 @@ async function load(){
   if(settings){
     document.getElementById("dailyTargetInput").value =
       settings.daily_target || settings.target_amount || "";
+
+    document.getElementById("targetDate").value =
+      settings.target_date || today();
   }
 
   render();
 }
+
+searchBox.addEventListener("input", () => {
+  searchTerm = searchBox.value.trim().toLowerCase();
+  renderEntries();
+});
 
 window.saveSettings = async function(){
   const targetDate = document.getElementById("targetDate").value || today();
@@ -588,7 +1026,7 @@ window.saveSettings = async function(){
 
   setMsg("Target saved.");
   await load();
-}
+};
 
 window.addEntry = async function(){
   const entryDate = document.getElementById("entryDate").value || today();
@@ -623,13 +1061,14 @@ window.addEntry = async function(){
 
   setMsg("Entry added.");
   await load();
-}
+};
 
 window.deleteEntry = async function(id){
   const { error } = await supabase
     .from("creators_entries")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if(error){
     setMsg(error.message);
@@ -638,7 +1077,7 @@ window.deleteEntry = async function(id){
 
   setMsg("Entry deleted.");
   await load();
-}
+};
 
 load();
 </script>
