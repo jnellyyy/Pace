@@ -6,9 +6,9 @@
 
 <title>Pace Weekly Whiteboard</title>
 
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
 
 <style>
@@ -16,101 +16,348 @@
   --bg1:#0f1115;
   --bg2:#171a20;
   --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
+  --panel3:rgba(255,255,255,0.12);
   --line:rgba(255,255,255,0.12);
+  --line2:rgba(255,255,255,0.08);
   --text:#f5f7fb;
   --muted:#a7afbe;
+  --soft:#d9dee8;
   --accent:#ff3b30;
   --green:#22c55e;
-  --shadow:0 20px 50px rgba(0,0,0,0.35);
-  --radius:24px;
+  --blue:#60a5fa;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --shadow:0 24px 70px rgba(0,0,0,0.42);
+  --radius:28px;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  min-height:100%;
+}
 
 body{
   margin:0;
+  min-height:100dvh;
   padding:18px;
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
-  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,59,48,0.16), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(96,165,250,0.10), transparent 30%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
 }
 
-.wrap{max-width:1400px;margin:0 auto}
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
 
-.card{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:18px;
-  margin-top:16px;
-  backdrop-filter:blur(18px);
+button{
+  cursor:pointer;
+}
+
+.wrap{
+  max-width:1400px;
+  margin:0 auto;
 }
 
 .topbar{
   display:flex;
+  align-items:center;
   justify-content:space-between;
-  gap:12px;
-  align-items:flex-start;
-  flex-wrap:wrap;
+  gap:14px;
+  margin-bottom:14px;
 }
 
-.back-btn{
-  padding:10px 14px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.08);
-  color:#fff;
-  text-decoration:none;
+.brand-block{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.app-dot{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 14px 35px rgba(0,0,0,0.25);
+  font-weight:900;
+}
+
+.eyebrow{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
   font-weight:800;
 }
 
-.muted{color:var(--muted)}
-
-.controls{
-  display:grid;
-  grid-template-columns:1fr auto auto;
-  gap:10px;
-  align-items:end;
+h1{
+  margin:2px 0 0;
+  font-size:28px;
+  letter-spacing:-0.04em;
+  line-height:1.05;
 }
 
-input,button,textarea,select{
-  width:100%;
-  padding:12px;
+.back-btn{
+  width:auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#fff;
+  text-decoration:none;
+  font-weight:850;
+  font-size:14px;
+}
+
+.back-btn:hover{
+  background:rgba(255,255,255,0.12);
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+}
+
+.overview{
+  padding:14px;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns:2fr repeat(4, 1fr);
+  gap:12px;
+}
+
+.summary-card,
+.kpi{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line2);
+  border-radius:24px;
+  padding:16px;
+  min-height:112px;
+  position:relative;
+  overflow:hidden;
+}
+
+.summary-card:before{
+  content:"";
+  position:absolute;
+  inset:auto -60px -80px auto;
+  width:190px;
+  height:190px;
+  border-radius:999px;
+  background:rgba(255,59,48,0.16);
+  filter:blur(2px);
+}
+
+.kpi-title{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.kpi-value{
+  font-size:24px;
+  font-weight:900;
+  margin-top:5px;
+  letter-spacing:-0.03em;
+}
+
+.kpi-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.35;
+}
+
+.hero-number{
+  font-size:34px;
+  font-weight:950;
+  letter-spacing:-0.05em;
+  margin-top:4px;
+}
+
+.progress{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+  margin-top:14px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--accent), #ff7b72);
+}
+
+.mini-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
   margin-top:10px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.06);
+  color:var(--muted);
+  font-size:12px;
+  position:relative;
+  z-index:1;
+}
+
+.workspace{
+  display:grid;
+  grid-template-columns:minmax(0, 1.3fr) minmax(340px, 0.7fr);
+  gap:14px;
+  margin-top:14px;
+  align-items:start;
+}
+
+.stack{
+  display:grid;
+  gap:14px;
+}
+
+.panel{
+  padding:16px;
+}
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.panel-title{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.02em;
+}
+
+.panel-copy{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+input,
+button,
+textarea,
+select{
+  width:100%;
+  min-height:46px;
+  padding:12px 13px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.065);
   border:1px solid rgba(255,255,255,0.12);
   color:#fff;
-  font:inherit;
+  outline:none;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:rgba(255,59,48,0.55);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.10);
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:#919aaa;
 }
 
 textarea{
   min-height:170px;
   resize:vertical;
+  line-height:1.45;
 }
 
-button{
-  background:var(--accent);
-  border:none;
-  font-weight:800;
-  cursor:pointer;
+.primary-btn{
+  border:0;
+  border-radius:18px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
+  color:#fff;
+  font-weight:900;
+  margin-top:12px;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
 }
 
-button.secondary{
-  background:rgba(255,255,255,0.10);
+.secondary-btn{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.09);
+  color:#fff;
+  font-weight:850;
+  margin-top:10px;
+}
+
+.danger-btn{
+  background:rgba(239,68,68,0.20);
+  border:1px solid rgba(239,68,68,0.22);
+  color:#fff;
+  font-weight:850;
+  margin-top:10px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.field{
+  display:block;
+}
+
+.field span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+  margin:0 0 7px;
+}
+
+.board-card{
+  margin-top:14px;
+  overflow:hidden;
 }
 
 .board-wrap{
   overflow:auto;
-  margin-top:16px;
-  border-radius:22px;
+  border-radius:var(--radius);
   border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  background:rgba(255,255,255,0.035);
 }
 
 .board{
-  min-width:980px;
+  min-width:1080px;
   display:grid;
-  grid-template-columns:82px repeat(7,1fr);
+  grid-template-columns:82px repeat(7, 1fr);
 }
 
 .cell{
@@ -125,10 +372,14 @@ button.secondary{
   position:sticky;
   top:0;
   z-index:2;
-  background:#1b1d23;
+  background:rgba(27,29,35,0.96);
+  backdrop-filter:blur(18px);
   font-weight:900;
   text-align:center;
-  min-height:52px;
+  min-height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .day-header{
@@ -143,10 +394,10 @@ button.secondary{
   position:sticky;
   left:0;
   z-index:1;
-  background:#1b1d23;
+  background:rgba(27,29,35,0.96);
   color:var(--muted);
   font-size:13px;
-  font-weight:800;
+  font-weight:850;
   display:flex;
   align-items:flex-start;
   justify-content:center;
@@ -162,9 +413,10 @@ button.secondary{
 
 .slot-content{
   min-height:48px;
-  border-radius:12px;
+  border-radius:14px;
   padding:8px;
-  background:rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.075);
+  border:1px solid rgba(255,255,255,0.08);
   font-size:13px;
   line-height:1.35;
   white-space:pre-wrap;
@@ -195,12 +447,28 @@ button.secondary{
 
 .sheet{
   width:100%;
-  background:#13151b;
-  border-radius:28px 28px 0 0;
-  padding:20px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,59,48,0.10), transparent 34%),
+    linear-gradient(180deg, #171a20, #101217);
+  border-radius:30px 30px 0 0;
+  padding:18px;
   border-top:1px solid var(--line);
-  max-height:92vh;
+  max-height:92dvh;
   overflow:auto;
+  box-shadow:0 -24px 80px rgba(0,0,0,0.45);
+}
+
+.sheet-inner{
+  max-width:720px;
+  margin:0 auto;
+}
+
+.sheet-handle{
+  width:46px;
+  height:5px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.20);
+  margin:0 auto 12px;
 }
 
 .sheet-actions{
@@ -211,13 +479,45 @@ button.secondary{
 
 .notice{
   min-height:18px;
-  color:#bbb;
-  margin-top:10px;
+  color:var(--soft);
+  margin:10px 0 0;
+  font-size:13px;
 }
 
-@media(max-width:800px){
-  body{padding:14px}
-  .controls{grid-template-columns:1fr}
+@media(max-width:1080px){
+  .workspace{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:980px){
+  .kpis{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .summary-card{
+    grid-column:1 / -1;
+  }
+}
+
+@media(max-width:680px){
+  body{
+    padding:12px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .kpis,
+  .form-grid,
+  .sheet-actions{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
@@ -225,61 +525,126 @@ button.secondary{
 <body>
 <div class="wrap">
 
-  <div class="card">
-    <div class="topbar">
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="app-dot">P</div>
       <div>
-        <h2 style="margin:0;">Weekly Whiteboard</h2>
-        <p class="muted" style="margin:6px 0 0;">
-          Tap a slot to edit. Tap a day name to clear that day.
-        </p>
+        <p class="eyebrow">Pace</p>
+        <h1>Weekly Whiteboard</h1>
       </div>
-      <a href="dashboard.html" class="back-btn">← Dashboard</a>
     </div>
 
-    <div class="controls">
-      <input id="weekStart" type="date">
-      <button id="loadWeekBtn">Load week</button>
-      <button id="clearWeekBtn" class="secondary">Clear week</button>
-    </div>
+    <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
+  </header>
 
-    <p id="msg" class="notice"></p>
-  </div>
+  <section class="card overview">
+    <div class="kpis" id="kpis"></div>
+  </section>
 
-  <div class="card">
-    <h3 style="margin:0;">Quick paste plan</h3>
-    <p class="muted" style="margin:6px 0 0;">
-      Paste your plan here. Existing slots will be replaced, not duplicated.
-    </p>
-    <textarea id="bulkText" placeholder="Paste your plan here..."></textarea>
-    <button id="importBtn">Import into whiteboard</button>
-  </div>
+  <main class="workspace">
 
-  <div class="board-wrap">
-    <div class="board" id="board"></div>
-  </div>
+    <section class="stack">
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Week setup</h2>
+            <p class="panel-copy">Tap a slot to edit. Tap a day name to clear that day.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Week start</span>
+            <input id="weekStart" type="date">
+          </label>
+
+          <label class="field">
+            <span>Actions</span>
+            <button id="loadWeekBtn" class="secondary-btn" style="margin-top:0;">Load week</button>
+          </label>
+        </div>
+
+        <button id="clearWeekBtn" class="danger-btn">Clear whole week</button>
+        <p id="msg" class="notice"></p>
+      </div>
+
+      <div class="board-wrap">
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+
+    <aside class="stack">
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Quick paste plan</h2>
+            <p class="panel-copy">Paste a timed plan. Existing matching slots will be replaced.</p>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>Plan text</span>
+          <textarea id="bulkText" placeholder="Monday
+
+17:00 to 17:30 cook dinner
+17:30 to 18:00 tidy kitchen"></textarea>
+        </label>
+
+        <button id="importBtn" class="primary-btn">Import into whiteboard</button>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">How to paste</h2>
+            <p class="panel-copy">Use a day name, then timed lines underneath.</p>
+          </div>
+        </div>
+
+        <div class="notice" style="line-height:1.6;">
+          Monday<br>
+          17:00 to 17:30 eat<br>
+          17:30 to 18:00 admin<br><br>
+          You can also use arrows or simple time ranges.
+        </div>
+      </div>
+    </aside>
+
+  </main>
 
 </div>
 
 <div class="modal" id="modal">
   <div class="sheet">
-    <h3 id="modalTitle">Edit slot</h3>
-    <p class="muted" id="modalSub"></p>
+    <div class="sheet-inner">
+      <div class="sheet-handle"></div>
 
-    <textarea id="slotText" placeholder="What are you doing?"></textarea>
+      <p class="eyebrow">Whiteboard slot</p>
+      <h1 id="modalTitle" style="font-size:24px;">Edit slot</h1>
+      <p class="notice" id="modalSub"></p>
 
-    <select id="taskSelect">
-      <option value="">Pull from To Do...</option>
-    </select>
+      <label class="field">
+        <span>Slot text</span>
+        <textarea id="slotText" placeholder="What are you doing?"></textarea>
+      </label>
 
-    <button id="pullTaskBtn" class="secondary">Use selected task</button>
+      <label class="field">
+        <span>Pull from To Do</span>
+        <select id="taskSelect">
+          <option value="">Pull from To Do...</option>
+        </select>
+      </label>
 
-    <div class="sheet-actions">
-      <button id="saveSlotBtn">Save</button>
-      <button id="doneSlotBtn" class="secondary">Done / Undo</button>
+      <button id="pullTaskBtn" class="secondary-btn">Use selected task</button>
+
+      <div class="sheet-actions">
+        <button id="saveSlotBtn" class="primary-btn">Save</button>
+        <button id="doneSlotBtn" class="secondary-btn">Done or undo</button>
+      </div>
+
+      <button id="deleteSlotBtn" class="danger-btn">Delete slot</button>
+      <button onclick="closeModal()" class="secondary-btn">Close</button>
     </div>
-
-    <button id="deleteSlotBtn" class="secondary">Delete slot</button>
-    <button onclick="closeModal()" class="secondary">Close</button>
   </div>
 </div>
 
@@ -307,6 +672,7 @@ const boardEl = document.getElementById("board");
 const weekStartEl = document.getElementById("weekStart");
 const msgEl = document.getElementById("msg");
 const bulkTextEl = document.getElementById("bulkText");
+const kpisEl = document.getElementById("kpis");
 
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
@@ -323,19 +689,41 @@ function setMsg(text){
   msgEl.textContent = text;
 }
 
+function escapeHTML(value){
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function todayMonday(){
   const d = new Date();
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(d.setDate(diff)).toISOString().split("T")[0];
+  d.setDate(diff);
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const date = String(d.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${date}`;
+}
+
+function formatDate(value){
+  if(!value) return "No date";
+  return new Date(value + "T00:00:00").toLocaleDateString("en-GB");
 }
 
 function makeTimes(){
   const times = [];
+
   for(let h = START_HOUR; h <= END_HOUR; h++){
     times.push(`${String(h).padStart(2,"0")}:00`);
     times.push(`${String(h).padStart(2,"0")}:30`);
   }
+
   return times;
 }
 
@@ -348,18 +736,65 @@ async function getUser(){
   return data.user;
 }
 
+function renderKpis(){
+  const totalSlots = slots.filter(s => s.text).length;
+  const doneSlots = slots.filter(s => s.text && s.done).length;
+  const openSlots = Math.max(totalSlots - doneSlots, 0);
+  const completion = totalSlots ? Math.round((doneSlots / totalSlots) * 100) : 0;
+  const daysPlanned = DAYS.filter(day => slots.some(s => s.day_name === day && s.text)).length;
+  const openTasks = tasks.filter(t => !t.done).length;
+
+  kpisEl.innerHTML = `
+    <div class="summary-card">
+      <div class="kpi-title">Open slots</div>
+      <div class="hero-number">${openSlots}</div>
+      <div class="progress"><span style="width:${completion}%"></span></div>
+      <div class="mini-line">
+        <span>${doneSlots} done</span>
+        <span>${completion}% complete</span>
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Planned</div>
+      <div class="kpi-value">${totalSlots}</div>
+      <div class="kpi-sub">Filled whiteboard slots</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Days</div>
+      <div class="kpi-value">${daysPlanned}</div>
+      <div class="kpi-sub">Days with plans</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">To Do</div>
+      <div class="kpi-value">${openTasks}</div>
+      <div class="kpi-sub">Open tasks available</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-title">Week</div>
+      <div class="kpi-value">${formatDate(weekStartEl.value)}</div>
+      <div class="kpi-sub">Selected Monday</div>
+    </div>
+  `;
+}
+
 function renderTaskOptions(){
   const openTasks = tasks.filter(t => !t.done);
 
   taskSelect.innerHTML = `
     <option value="">Pull from To Do...</option>
     ${openTasks.map(t => `
-      <option value="${t.id}">${t.category || "Life"} — ${t.title}</option>
+      <option value="${t.id}">${escapeHTML(t.category || "Life")} · ${escapeHTML(t.title || "")}</option>
     `).join("")}
   `;
 }
 
 function render(){
+  renderKpis();
+
   const times = makeTimes();
 
   let html = `
@@ -379,7 +814,7 @@ function render(){
         <div class="cell slot" onclick="openSlot('${day}','${time}')">
           ${
             slot?.text
-              ? `<div class="slot-content ${slot.done ? "done" : ""}">${slot.text}</div>`
+              ? `<div class="slot-content ${slot.done ? "done" : ""}">${escapeHTML(slot.text)}</div>`
               : `<div class="empty-slot">＋</div>`
           }
         </div>
@@ -437,7 +872,7 @@ window.openSlot = function(day,time){
   };
 
   modalTitle.textContent = `${day} ${time}`;
-  modalSub.textContent = weekStartEl.value;
+  modalSub.textContent = formatDate(weekStartEl.value);
   slotText.value = existing?.text || "";
   document.getElementById("doneSlotBtn").textContent = existing?.done ? "Undo" : "Mark done";
 
@@ -473,7 +908,8 @@ document.getElementById("saveSlotBtn").onclick = async function(){
     const { error } = await supabase
       .from("weekly_slots")
       .update({ text, task_id:taskId })
-      .eq("id",active.id);
+      .eq("id",active.id)
+      .eq("user_id",user.id);
 
     if(error) return setMsg(error.message);
   } else {
@@ -506,7 +942,8 @@ document.getElementById("doneSlotBtn").onclick = async function(){
   const slotUpdate = await supabase
     .from("weekly_slots")
     .update({ done:newDone })
-    .eq("id",active.id);
+    .eq("id",active.id)
+    .eq("user_id",user.id);
 
   if(slotUpdate.error) return setMsg(slotUpdate.error.message);
 
@@ -514,7 +951,8 @@ document.getElementById("doneSlotBtn").onclick = async function(){
     const taskUpdate = await supabase
       .from("tasks")
       .update({ done:newDone })
-      .eq("id",active.task_id);
+      .eq("id",active.task_id)
+      .eq("user_id",user.id);
 
     if(taskUpdate.error) return setMsg(taskUpdate.error.message);
   }
@@ -532,7 +970,8 @@ document.getElementById("deleteSlotBtn").onclick = async function(){
   const { error } = await supabase
     .from("weekly_slots")
     .delete()
-    .eq("id",active.id);
+    .eq("id",active.id)
+    .eq("user_id",user.id);
 
   if(error) return setMsg(error.message);
 
@@ -590,7 +1029,7 @@ function cleanBullet(line){
 function parseTimedLine(line){
   const cleaned = cleanBullet(line);
 
-  const match = cleaned.match(/^(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})\s*(?:→|-|:)?\s*(.*)$/i);
+  const match = cleaned.match(/^(\d{1,2}):(\d{2})\s*(?:to|–|-|—)\s*(\d{1,2}):(\d{2})\s*(?:→|-|—|:)?\s*(.*)$/i);
 
   if(!match) return null;
 
@@ -650,7 +1089,8 @@ async function saveImportedSlot(item){
         done:false,
         task_id:null
       })
-      .eq("id",existing.id);
+      .eq("id",existing.id)
+      .eq("user_id",user.id);
 
     if(error) throw error;
 
@@ -685,7 +1125,7 @@ document.getElementById("importBtn").onclick = async function(){
   const parsed = parseBulkPlan(text);
 
   if(!parsed.length){
-    setMsg("No timed items found. Use format like: * 17:00–17:30 → eat");
+    setMsg("No timed items found. Use format like: 17:00 to 17:30 eat");
     return;
   }
 
