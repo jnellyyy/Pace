@@ -3,618 +3,859 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Pace Health Reset</title>
-
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
-<meta name="theme-color" content="#050507">
-
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
 <style>
 :root{
-  --bg:#050507;
-  --card:#1c1d21;
-  --card2:#24262b;
-  --line:rgba(255,255,255,.12);
-  --text:#f5f5f7;
-  --muted:#8e8e93;
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
+  --panel3:rgba(255,255,255,0.12);
+  --line:rgba(255,255,255,0.12);
+  --line2:rgba(255,255,255,0.08);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --soft:#d9dee8;
   --accent:#ff3b30;
-  --green:#34c759;
-  --blue:#409cff;
-  --orange:#ff9f0a;
+  --green:#22c55e;
+  --blue:#60a5fa;
+  --amber:#f59e0b;
   --purple:#af52de;
   --pink:#ff2d55;
+  --red:#ef4444;
+  --shadow:0 24px 70px rgba(0,0,0,0.42);
+  --radius:28px;
 }
-
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+html{
+  min-height:100%;
+}
 body{
   margin:0;
-  min-height:100vh;
+  min-height:100dvh;
   padding:18px;
   padding-bottom:80px;
-  background:var(--bg);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,59,48,0.16), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(34,197,94,0.10), transparent 30%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
 }
-
-.wrap{max-width:1150px;margin:0 auto}
-
-.top{
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+button{
+  cursor:pointer;
+}
+.wrap{
+  max-width:1220px;
+  margin:0 auto;
+}
+.topbar{
   display:flex;
+  align-items:center;
   justify-content:space-between;
-  align-items:center;
-  margin-bottom:24px;
-}
-
-.circle-btn{
-  width:52px;
-  height:52px;
-  border-radius:50%;
-  background:rgba(255,255,255,.08);
-  border:1px solid var(--line);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-  font-size:24px;
-}
-
-h1{
-  font-size:42px;
-  letter-spacing:-.06em;
-  margin:0;
-}
-
-.sub{
-  color:var(--muted);
-  margin-top:6px;
-  line-height:1.5;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:26px;
-  padding:18px;
-  margin-top:16px;
-}
-
-.summary{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
   gap:14px;
+  margin-bottom:14px;
 }
-
-.ring-card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:26px;
-  padding:18px;
-  min-height:180px;
-}
-
-.ring{
-  width:118px;
-  height:118px;
-  border-radius:50%;
-  margin:8px auto 14px;
+.brand-block{
   display:flex;
   align-items:center;
-  justify-content:center;
-  background:conic-gradient(var(--green) 0deg, rgba(255,255,255,.10) 0deg);
+  gap:12px;
 }
-
-.ring-inner{
-  width:86px;
-  height:86px;
-  border-radius:50%;
-  background:var(--card);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.app-dot{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 14px 35px rgba(0,0,0,0.25);
   font-weight:900;
-  font-size:20px;
 }
-
-.ring-title{text-align:center;font-weight:800}
-
+.eyebrow{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:800;
+}
+h1{
+  margin:2px 0 0;
+  font-size:28px;
+  letter-spacing:-0.04em;
+  line-height:1.05;
+}
+.back-btn{
+  width:auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#fff;
+  text-decoration:none;
+  font-weight:850;
+  font-size:14px;
+}
+.back-btn:hover{
+  background:rgba(255,255,255,0.12);
+}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+}
+.overview{
+  padding:14px;
+}
+.ring-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:12px;
+}
+.ring-card{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line2);
+  border-radius:24px;
+  padding:16px;
+  min-height:180px;
+  position:relative;
+  overflow:hidden;
+}
+.ring-card:before{
+  content:"";
+  position:absolute;
+  inset:auto -55px -80px auto;
+  width:170px;
+  height:170px;
+  border-radius:999px;
+  background:rgba(255,59,48,0.10);
+}
+.ring{
+  width:112px;
+  height:112px;
+  border-radius:50%;
+  margin:4px auto 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:conic-gradient(var(--green) 0deg, rgba(255,255,255,0.10) 0deg);
+  position:relative;
+  z-index:1;
+}
+.ring-inner{
+  width:82px;
+  height:82px;
+  border-radius:50%;
+  background:rgba(15,17,21,0.92);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  font-size:20px;
+  letter-spacing:-0.04em;
+}
+.ring-title{
+  text-align:center;
+  font-weight:900;
+  letter-spacing:-0.02em;
+  position:relative;
+  z-index:1;
+}
 .ring-sub{
   text-align:center;
   color:var(--muted);
   font-size:13px;
   margin-top:4px;
+  line-height:1.35;
+  position:relative;
+  z-index:1;
 }
-
+.workspace{
+  display:grid;
+  grid-template-columns:minmax(0, 1.35fr) minmax(330px, 0.65fr);
+  gap:14px;
+  margin-top:14px;
+  align-items:start;
+}
+.stack{
+  display:grid;
+  gap:14px;
+}
+.panel{
+  padding:16px;
+}
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.panel-title{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.02em;
+}
+.panel-copy{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
 .metrics{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(4, 1fr);
   gap:12px;
 }
-
 .metric{
-  background:var(--card2);
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
   border-radius:20px;
-  padding:14px;
+  padding:13px;
 }
-
 .metric-label{
   color:var(--muted);
   font-size:12px;
+  font-weight:750;
 }
-
 .metric-value{
   margin-top:5px;
-  font-size:23px;
-  font-weight:900;
+  font-size:22px;
+  font-weight:930;
+  letter-spacing:-0.04em;
 }
-
-.section-title{
-  font-size:24px;
-  margin:0 0 12px;
-  letter-spacing:-.04em;
+.progress-track{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+  margin-top:12px;
 }
-
-input,select,textarea,button{
+.progress-fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--green), #84f6a4);
+}
+input,
+select,
+textarea,
+button{
   width:100%;
-  padding:13px;
-  margin-top:10px;
+  min-height:46px;
+  padding:12px 13px;
   border-radius:16px;
-  border:1px solid var(--line);
-  background:#24262b;
-  color:white;
-  font:inherit;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;
+  outline:none;
 }
-
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:rgba(255,59,48,0.55);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.10);
+}
+input::placeholder,
+textarea::placeholder{
+  color:#919aaa;
+}
 textarea{
-  min-height:90px;
+  min-height:88px;
   resize:vertical;
 }
-
-button{
-  background:var(--accent);
-  border:none;
+.primary-btn{
+  border:0;
+  border-radius:18px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
+  color:#fff;
   font-weight:900;
+  margin-top:12px;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
 }
-
-.secondary{
-  background:rgba(255,255,255,.10);
+.secondary-btn{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.09);
+  color:#fff;
+  font-weight:850;
+  margin-top:10px;
 }
-
-.row{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-
-.row-3{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-}
-
-.row-2{
+.form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
-
+.form-grid.three{
+  grid-template-columns:1fr 1fr 1fr;
+}
+.form-grid.four{
+  grid-template-columns:repeat(4, 1fr);
+}
+.field{
+  display:block;
+}
+.field span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+  margin:0 0 7px;
+}
 .check-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(4, 1fr);
   gap:10px;
   margin-top:12px;
 }
-
 .check{
   padding:13px;
-  border-radius:16px;
-  background:#24262b;
-  border:1px solid var(--line);
+  border-radius:17px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.10);
   cursor:pointer;
-  font-weight:700;
-  color:#ddd;
+  font-weight:850;
+  color:var(--soft);
+  font-size:13px;
 }
-
 .check.done{
-  background:rgba(52,199,89,.20);
-  border-color:rgba(52,199,89,.45);
+  background:rgba(34,197,94,0.18);
+  border-color:rgba(34,197,94,0.45);
   color:#d7ffdf;
 }
-
-.progress-track{
-  height:13px;
-  border-radius:999px;
-  background:rgba(255,255,255,.10);
-  overflow:hidden;
-  margin-top:10px;
-}
-
-.progress-fill{
-  height:100%;
-  width:0%;
-  background:var(--green);
-}
-
 .food-results{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  grid-template-columns:repeat(auto-fit, minmax(190px, 1fr));
   gap:10px;
   margin-top:12px;
 }
-
 .food-card{
-  background:#24262b;
-  border:1px solid var(--line);
-  border-radius:18px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
   padding:13px;
   cursor:pointer;
 }
-
 .food-card.active{
-  border-color:rgba(52,199,89,.65);
-  background:rgba(52,199,89,.13);
+  border-color:rgba(34,197,94,0.65);
+  background:rgba(34,197,94,0.13);
 }
-
 .food-title{
-  font-weight:900;
+  font-weight:930;
+  letter-spacing:-0.02em;
 }
-
 .food-meta{
   color:var(--muted);
   font-size:13px;
   margin-top:5px;
   line-height:1.4;
 }
-
-.meal-row,.log-row{
-  padding:12px 0;
-  border-bottom:1px solid rgba(255,255,255,.08);
+.meal-row,
+.log-row{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:13px;
+  margin-top:10px;
   display:flex;
   justify-content:space-between;
+  align-items:flex-start;
   gap:12px;
 }
-
-.meal-row:last-child,.log-row:last-child{
-  border-bottom:none;
+.meal-row:first-child,
+.log-row:first-child{
+  margin-top:0;
 }
-
+.row-title{
+  font-weight:930;
+  letter-spacing:-0.02em;
+}
+.row-meta{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+  line-height:1.45;
+}
 .small-btn{
   width:auto;
+  min-height:36px;
   padding:8px 10px;
-  margin:0;
-  border-radius:12px;
-  background:rgba(255,59,48,.22);
+  border-radius:13px;
+  background:rgba(239,68,68,0.18);
+  border:1px solid rgba(239,68,68,0.22);
+  color:#fff;
   font-size:12px;
+  font-weight:850;
+  flex:0 0 auto;
 }
-
 .workout{
-  background:#24262b;
-  border:1px solid var(--line);
-  border-radius:18px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
   overflow:hidden;
   margin-top:10px;
 }
-
+.workout:first-child{
+  margin-top:0;
+}
 .workout-head{
   padding:15px;
-  font-weight:900;
+  font-weight:930;
   cursor:pointer;
+  letter-spacing:-0.02em;
 }
-
 .workout-body{
   display:none;
   padding:0 15px 15px;
-  color:#d7dbe3;
+  color:var(--soft);
   font-size:14px;
   line-height:1.55;
 }
-
 .notice{
-  color:var(--muted);
+  color:var(--soft);
   min-height:18px;
   font-size:13px;
   margin-top:10px;
 }
-
-@media(max-width:900px){
-  .summary,.metrics{grid-template-columns:repeat(2,1fr)}
-  .row,.check-grid{grid-template-columns:repeat(2,1fr)}
+.empty{
+  color:var(--muted);
+  padding:14px 0;
+  font-size:13px;
 }
-
-@media(max-width:520px){
-  body{padding:16px;padding-bottom:80px}
-  h1{font-size:38px}
-  .summary,.metrics,.row,.row-2,.row-3,.check-grid{grid-template-columns:1fr}
+.private-note{
+  background:rgba(96,165,250,0.12);
+  border:1px solid rgba(96,165,250,0.22);
+  color:#cfe5ff;
+  border-radius:20px;
+  padding:13px;
+  font-size:13px;
+  line-height:1.45;
+  margin-top:12px;
+}
+@media(max-width:980px){
+  .ring-grid,
+  .metrics{
+    grid-template-columns:repeat(2, 1fr);
+  }
+  .workspace{
+    grid-template-columns:1fr;
+  }
+  .form-grid.four,
+  .check-grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}
+@media(max-width:680px){
+  body{
+    padding:12px;
+    padding-bottom:80px;
+  }
+  .topbar{
+    align-items:flex-start;
+  }
+  h1{
+    font-size:24px;
+  }
+  .ring-grid,
+  .metrics,
+  .form-grid,
+  .form-grid.three,
+  .form-grid.four,
+  .check-grid{
+    grid-template-columns:1fr;
+  }
+  .meal-row,
+  .log-row{
+    flex-direction:column;
+  }
+  .small-btn{
+    width:100%;
+  }
 }
 </style>
 </head>
-
 <body>
 <div class="wrap">
-
-  <div class="top">
-    <a href="creators-test.html" class="circle-btn">‹</a>
-    <div class="circle-btn">🔒</div>
-  </div>
-
-  <h1>Health Reset</h1>
-  <div class="sub">Private consistency tracker. Food estimates, steps, workouts, weight and Mounjaro routine.</div>
-
-  <div class="summary">
-    <div class="ring-card">
-      <div class="ring" id="weightRing"><div class="ring-inner" id="weightPercent">0%</div></div>
-      <div class="ring-title">Weight</div>
-      <div class="ring-sub" id="weightSub">130kg → under 100kg</div>
-    </div>
-
-    <div class="ring-card">
-      <div class="ring" id="stepsRing"><div class="ring-inner" id="stepsPercent">0%</div></div>
-      <div class="ring-title">Steps</div>
-      <div class="ring-sub" id="stepsSub">0 / 7,000</div>
-    </div>
-
-    <div class="ring-card">
-      <div class="ring" id="proteinRing"><div class="ring-inner" id="proteinPercent">0%</div></div>
-      <div class="ring-title">Protein</div>
-      <div class="ring-sub" id="proteinSub">0g / 130g</div>
-    </div>
-
-    <div class="ring-card">
-      <div class="ring" id="calorieRing"><div class="ring-inner" id="caloriePercent">0%</div></div>
-      <div class="ring-title">Calories</div>
-      <div class="ring-sub" id="calorieSub">0 / 1,800</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Today</h2>
-
-    <div class="metrics">
-      <div class="metric">
-        <div class="metric-label">Current weight</div>
-        <div class="metric-value" id="currentWeight">—</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Meal calories</div>
-        <div class="metric-value" id="mealCalories">0</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Meal protein</div>
-        <div class="metric-value" id="mealProtein">0g</div>
-      </div>
-
-      <div class="metric">
-        <div class="metric-label">Step goal</div>
-        <div class="metric-value" id="stepGoal">7,000</div>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="app-dot">P</div>
+      <div>
+        <p class="eyebrow">Pace</p>
+        <h1>Health Reset</h1>
       </div>
     </div>
-
-    <div class="progress-track">
-      <div class="progress-fill" id="weightProgress"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Smart meal estimator</h2>
-    <p class="sub">Search common foods or estimate by portion. Good enough beats not tracking.</p>
-
-    <input id="foodSearch" placeholder="Search e.g. Greggs, bolognese, chicken rice, yoghurt" oninput="searchFoods()">
-
-    <div id="foodResults" class="food-results"></div>
-
-    <div class="row-3">
-      <select id="mealType">
-        <option>Breakfast</option>
-        <option>Lunch</option>
-        <option>Dinner</option>
-        <option>Snack</option>
-      </select>
-
-      <select id="portionSelect" onchange="recalculateMeal()">
-        <option value="1">Normal portion</option>
-        <option value="0.5">Small / half portion</option>
-        <option value="0.25">Tiny / few bites</option>
-        <option value="1.5">Large portion</option>
-        <option value="2">Double portion</option>
-      </select>
-
-      <input id="mealDate" type="date">
-    </div>
-
-    <div class="row-3">
-      <input id="mealName" placeholder="Meal name">
-      <input id="mealCaloriesInput" type="number" placeholder="Estimated calories">
-      <input id="mealProteinInput" type="number" placeholder="Estimated protein g">
-    </div>
-
-    <input id="mealNotes" placeholder="Notes e.g. no spaghetti / small portion / extra sauce">
-
-    <button onclick="saveMeal()">Save meal</button>
-    <button class="secondary" onclick="clearMealForm()">Clear meal form</button>
-
-    <div id="mealMsg" class="notice"></div>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Today’s meals</h2>
-    <div id="todayMeals"></div>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Daily log</h2>
-
-    <div class="row">
-      <input id="logDate" type="date">
-      <input id="weight" type="number" step="0.1" placeholder="Weight kg">
-      <input id="calories" type="number" placeholder="Manual calories">
-      <input id="protein" type="number" placeholder="Manual protein g">
-    </div>
-
-    <div class="row">
-      <input id="water" type="number" step="0.1" placeholder="Water L">
-      <input id="steps" type="number" placeholder="Steps">
-      <select id="workout">
-        <option value="">Workout</option>
-        <option>Workout A</option>
-        <option>Workout B</option>
-        <option>Workout C</option>
-        <option>Easy version</option>
-        <option>Walk only</option>
-        <option>Rest</option>
-      </select>
-      <input id="notes" placeholder="Notes">
-    </div>
-
-    <div class="check-grid">
-      <div class="check" data-key="weighed_in">Weighed in</div>
-      <div class="check" data-key="calories_tracked">Calories tracked</div>
-      <div class="check" data-key="protein_hit">Protein hit</div>
-      <div class="check" data-key="water_hit">2L water</div>
-      <div class="check" data-key="steps_hit">Steps hit</div>
-      <div class="check" data-key="workout_done">Workout done</div>
-      <div class="check" data-key="no_takeaway">No takeaway</div>
-      <div class="check" data-key="slept_properly">Slept properly</div>
-    </div>
-
-    <button onclick="saveHealthLog()">Save today</button>
-    <div id="msg" class="notice"></div>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Mounjaro routine</h2>
-    <p class="sub">Track routine and side effects only. Follow your prescriber’s dosing advice.</p>
-
-    <div class="metrics">
-      <div class="metric">
-        <div class="metric-label">Last dose</div>
-        <div class="metric-value" id="lastDose">—</div>
+    <a href="creators-test.html" class="back-btn">‹ Creators</a>
+  </header>
+  <section class="card overview">
+    <div class="ring-grid">
+      <div class="ring-card">
+        <div class="ring" id="weightRing">
+          <div class="ring-inner" id="weightPercent">0%</div>
+        </div>
+        <div class="ring-title">Weight</div>
+        <div class="ring-sub" id="weightSub">130kg to under 100kg</div>
       </div>
-
-      <div class="metric">
-        <div class="metric-label">Next dose estimate</div>
-        <div class="metric-value" id="nextDose">—</div>
+      <div class="ring-card">
+        <div class="ring" id="stepsRing">
+          <div class="ring-inner" id="stepsPercent">0%</div>
+        </div>
+        <div class="ring-title">Steps</div>
+        <div class="ring-sub" id="stepsSub">0 / 7,000</div>
       </div>
-
-      <div class="metric">
-        <div class="metric-label">Last dose amount</div>
-        <div class="metric-value" id="lastDoseAmount">—</div>
+      <div class="ring-card">
+        <div class="ring" id="proteinRing">
+          <div class="ring-inner" id="proteinPercent">0%</div>
+        </div>
+        <div class="ring-title">Protein</div>
+        <div class="ring-sub" id="proteinSub">0g / 130g</div>
       </div>
-
-      <div class="metric">
-        <div class="metric-label">Appetite</div>
-        <div class="metric-value" id="lastAppetite">—</div>
+      <div class="ring-card">
+        <div class="ring" id="calorieRing">
+          <div class="ring-inner" id="caloriePercent">0%</div>
+        </div>
+        <div class="ring-title">Calories</div>
+        <div class="ring-sub" id="calorieSub">0 / 1,800</div>
       </div>
     </div>
-
-    <div class="row">
-      <input id="doseDate" type="date">
-      <input id="dose" placeholder="Dose e.g. 2.5mg">
-      <select id="appetite">
-        <option value="">Appetite</option>
-        <option>Low</option>
-        <option>Medium</option>
-        <option>High</option>
-      </select>
-      <select id="energy">
-        <option value="">Energy</option>
-        <option>Low</option>
-        <option>Okay</option>
-        <option>Good</option>
-      </select>
-    </div>
-
-    <div class="row-2">
-      <input id="nausea" placeholder="Nausea e.g. none / mild / bad">
-      <input id="sideEffects" placeholder="Side effects">
-    </div>
-
-    <textarea id="doseNotes" placeholder="Dose notes, digestion, appetite, water, side effects..."></textarea>
-
-    <button onclick="saveDose()">Save dose log</button>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Workouts</h2>
-
-    <div class="workout">
-      <div class="workout-head" onclick="toggleWorkout(this)">Warm-up</div>
-      <div class="workout-body">
-        March on spot — 60s<br>
-        Arm circles — 30s<br>
-        Shoulder rolls — 30s<br>
-        Hip circles — 30s<br>
-        Side steps — 60s<br>
-        Gentle squats — 10 reps
+  </section>
+  <main class="workspace">
+    <section class="stack">
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Today</h2>
+            <p class="panel-copy">Your private daily snapshot across weight, meals, protein and movement.</p>
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Current weight</div>
+            <div class="metric-value" id="currentWeight">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Meal calories</div>
+            <div class="metric-value" id="mealCalories">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Meal protein</div>
+            <div class="metric-value" id="mealProtein">0g</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Step goal</div>
+            <div class="metric-value" id="stepGoal">7,000</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="weightProgress"></div>
+        </div>
       </div>
-    </div>
-
-    <div class="workout">
-      <div class="workout-head" onclick="toggleWorkout(this)">Workout A — beginner full body</div>
-      <div class="workout-body">
-        3 rounds. Rest 60–90s.<br><br>
-        Chair sit-to-stands — 12<br>
-        Wall push-ups — 12<br>
-        Glute bridges — 15<br>
-        Standing knee raises — 20 total<br>
-        Bird dogs — 8 each side<br>
-        Dead bugs — 8 each side
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Smart meal estimator</h2>
+            <p class="panel-copy">Search common foods or estimate by portion. Good enough beats not tracking.</p>
+          </div>
+        </div>
+        <label class="field">
+          <span>Search food</span>
+          <input id="foodSearch" placeholder="Greggs, bolognese, chicken rice, yoghurt" oninput="searchFoods()">
+        </label>
+        <div id="foodResults" class="food-results"></div>
+        <div class="form-grid three">
+          <label class="field">
+            <span>Meal type</span>
+            <select id="mealType">
+              <option>Breakfast</option>
+              <option>Lunch</option>
+              <option>Dinner</option>
+              <option>Snack</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Portion</span>
+            <select id="portionSelect" onchange="recalculateMeal()">
+              <option value="1">Normal portion</option>
+              <option value="0.5">Small portion</option>
+              <option value="0.25">Tiny portion</option>
+              <option value="1.5">Large portion</option>
+              <option value="2">Double portion</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Date</span>
+            <input id="mealDate" type="date">
+          </label>
+        </div>
+        <div class="form-grid three">
+          <label class="field">
+            <span>Meal name</span>
+            <input id="mealName" placeholder="Meal name">
+          </label>
+          <label class="field">
+            <span>Calories</span>
+            <input id="mealCaloriesInput" type="number" placeholder="Estimated calories">
+          </label>
+          <label class="field">
+            <span>Protein</span>
+            <input id="mealProteinInput" type="number" placeholder="Estimated protein g">
+          </label>
+        </div>
+        <label class="field">
+          <span>Notes</span>
+          <input id="mealNotes" placeholder="No spaghetti, small portion, extra sauce">
+        </label>
+        <button class="primary-btn" onclick="saveMeal()">Save meal</button>
+        <button class="secondary-btn" onclick="clearMealForm()">Clear meal form</button>
+        <div id="mealMsg" class="notice"></div>
       </div>
-    </div>
-
-    <div class="workout">
-      <div class="workout-head" onclick="toggleWorkout(this)">Workout B — legs + core</div>
-      <div class="workout-body">
-        3 rounds. Rest 60–90s.<br><br>
-        Box/chair squats — 12<br>
-        Wall sit — 20–30s<br>
-        Standing side leg raises — 12 each side<br>
-        Calf raises — 20<br>
-        Glute bridges — 15<br>
-        Plank on knees — 20s
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Today’s meals</h2>
+            <p class="panel-copy">Meals logged for today.</p>
+          </div>
+        </div>
+        <div id="todayMeals"></div>
       </div>
-    </div>
-
-    <div class="workout">
-      <div class="workout-head" onclick="toggleWorkout(this)">Workout C — cardio + tone</div>
-      <div class="workout-body">
-        4 rounds. Rest 60s.<br><br>
-        March on spot — 60s<br>
-        Side steps — 60s<br>
-        Chair sit-to-stands — 10<br>
-        Wall push-ups — 10<br>
-        Standing punches — 45s<br>
-        Standing knee raises — 20 total<br>
-        Calf raises — 15
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Recent logs</h2>
+            <p class="panel-copy">Your last seven health logs.</p>
+          </div>
+        </div>
+        <div id="recentLogs"></div>
       </div>
-    </div>
-
-    <div class="workout">
-      <div class="workout-head" onclick="toggleWorkout(this)">Easier version</div>
-      <div class="workout-body">
-        2 rounds only.<br>
-        Keep everything slow.<br>
-        No jumping.<br>
-        No pressure.<br>
-        Still counts.
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Workouts</h2>
+            <p class="panel-copy">Simple options for low pressure consistency.</p>
+          </div>
+        </div>
+        <div class="workout">
+          <div class="workout-head" onclick="toggleWorkout(this)">Warm up</div>
+          <div class="workout-body">
+            March on spot for 60s<br>
+            Arm circles for 30s<br>
+            Shoulder rolls for 30s<br>
+            Hip circles for 30s<br>
+            Side steps for 60s<br>
+            Gentle squats for 10 reps
+          </div>
+        </div>
+        <div class="workout">
+          <div class="workout-head" onclick="toggleWorkout(this)">Workout A beginner full body</div>
+          <div class="workout-body">
+            3 rounds. Rest 60 to 90s.<br><br>
+            Chair sit to stands for 12<br>
+            Wall push ups for 12<br>
+            Glute bridges for 15<br>
+            Standing knee raises for 20 total<br>
+            Bird dogs for 8 each side<br>
+            Dead bugs for 8 each side
+          </div>
+        </div>
+        <div class="workout">
+          <div class="workout-head" onclick="toggleWorkout(this)">Workout B legs and core</div>
+          <div class="workout-body">
+            3 rounds. Rest 60 to 90s.<br><br>
+            Box or chair squats for 12<br>
+            Wall sit for 20 to 30s<br>
+            Standing side leg raises for 12 each side<br>
+            Calf raises for 20<br>
+            Glute bridges for 15<br>
+            Plank on knees for 20s
+          </div>
+        </div>
+        <div class="workout">
+          <div class="workout-head" onclick="toggleWorkout(this)">Workout C cardio and tone</div>
+          <div class="workout-body">
+            4 rounds. Rest 60s.<br><br>
+            March on spot for 60s<br>
+            Side steps for 60s<br>
+            Chair sit to stands for 10<br>
+            Wall push ups for 10<br>
+            Standing punches for 45s<br>
+            Standing knee raises for 20 total<br>
+            Calf raises for 15
+          </div>
+        </div>
+        <div class="workout">
+          <div class="workout-head" onclick="toggleWorkout(this)">Easier version</div>
+          <div class="workout-body">
+            2 rounds only.<br>
+            Keep everything slow.<br>
+            No jumping.<br>
+            No pressure.<br>
+            Still counts.
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 class="section-title">Recent logs</h2>
-    <div id="recentLogs"></div>
-  </div>
-
+    </section>
+    <aside class="stack">
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Daily log</h2>
+            <p class="panel-copy">Save your health check in one place.</p>
+          </div>
+        </div>
+        <div class="form-grid four">
+          <label class="field">
+            <span>Date</span>
+            <input id="logDate" type="date">
+          </label>
+          <label class="field">
+            <span>Weight kg</span>
+            <input id="weight" type="number" step="0.1" placeholder="Weight">
+          </label>
+          <label class="field">
+            <span>Calories</span>
+            <input id="calories" type="number" placeholder="Manual calories">
+          </label>
+          <label class="field">
+            <span>Protein g</span>
+            <input id="protein" type="number" placeholder="Manual protein">
+          </label>
+        </div>
+        <div class="form-grid four">
+          <label class="field">
+            <span>Water L</span>
+            <input id="water" type="number" step="0.1" placeholder="Water">
+          </label>
+          <label class="field">
+            <span>Steps</span>
+            <input id="steps" type="number" placeholder="Steps">
+          </label>
+          <label class="field">
+            <span>Workout</span>
+            <select id="workout">
+              <option value="">Workout</option>
+              <option>Workout A</option>
+              <option>Workout B</option>
+              <option>Workout C</option>
+              <option>Easy version</option>
+              <option>Walk only</option>
+              <option>Rest</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Notes</span>
+            <input id="notes" placeholder="Notes">
+          </label>
+        </div>
+        <div class="check-grid">
+          <div class="check" data-key="weighed_in">Weighed in</div>
+          <div class="check" data-key="calories_tracked">Calories tracked</div>
+          <div class="check" data-key="protein_hit">Protein hit</div>
+          <div class="check" data-key="water_hit">2L water</div>
+          <div class="check" data-key="steps_hit">Steps hit</div>
+          <div class="check" data-key="workout_done">Workout done</div>
+          <div class="check" data-key="no_takeaway">No takeaway</div>
+          <div class="check" data-key="slept_properly">Slept properly</div>
+        </div>
+        <button class="primary-btn" onclick="saveHealthLog()">Save today</button>
+        <div id="msg" class="notice"></div>
+      </div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Mounjaro routine</h2>
+            <p class="panel-copy">Track routine and side effects only. Follow your prescriber’s dosing advice.</p>
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Last dose</div>
+            <div class="metric-value" id="lastDose">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Next dose estimate</div>
+            <div class="metric-value" id="nextDose">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Dose amount</div>
+            <div class="metric-value" id="lastDoseAmount">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Appetite</div>
+            <div class="metric-value" id="lastAppetite">—</div>
+          </div>
+        </div>
+        <div class="private-note">
+          This page is a private tracker. It does not replace medical advice.
+        </div>
+        <div class="form-grid four">
+          <label class="field">
+            <span>Dose date</span>
+            <input id="doseDate" type="date">
+          </label>
+          <label class="field">
+            <span>Dose</span>
+            <input id="dose" placeholder="2.5mg">
+          </label>
+          <label class="field">
+            <span>Appetite</span>
+            <select id="appetite">
+              <option value="">Appetite</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Energy</span>
+            <select id="energy">
+              <option value="">Energy</option>
+              <option>Low</option>
+              <option>Okay</option>
+              <option>Good</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-grid">
+          <label class="field">
+            <span>Nausea</span>
+            <input id="nausea" placeholder="None, mild, bad">
+          </label>
+          <label class="field">
+            <span>Side effects</span>
+            <input id="sideEffects" placeholder="Side effects">
+          </label>
+        </div>
+        <label class="field">
+          <span>Dose notes</span>
+          <textarea id="doseNotes" placeholder="Digestion, appetite, water, side effects"></textarea>
+        </label>
+        <button class="primary-btn" onclick="saveDose()">Save dose log</button>
+      </div>
+    </aside>
+  </main>
 </div>
-
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
 const supabase = createClient(
   "https://grgagroautlpphjsjpjh.supabase.co",
   "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
@@ -627,13 +868,11 @@ const supabase = createClient(
     }
   }
 );
-
 let user = null;
 let logs = [];
 let doseLogs = [];
 let meals = [];
 let selectedFood = null;
-
 let checkState = {
   weighed_in:false,
   calories_tracked:false,
@@ -644,19 +883,17 @@ let checkState = {
   no_takeaway:false,
   slept_properly:false
 };
-
 const msg = document.getElementById("msg");
 const mealMsg = document.getElementById("mealMsg");
-
 const foodDb = [
   { name:"Greggs bacon and sausage breakfast roll", kcal:405, protein:22, tags:"greggs bacon sausage bap roll breakfast" },
   { name:"Greggs bacon and sausage breakfast baguette", kcal:550, protein:29, tags:"greggs bacon sausage baguette breakfast" },
   { name:"Greggs sausage roll", kcal:329, protein:9, tags:"greggs sausage roll" },
   { name:"Protein shake", kcal:120, protein:24, tags:"protein shake powder whey" },
-  { name:"Greek yoghurt + berries", kcal:250, protein:25, tags:"greek yoghurt berries breakfast" },
+  { name:"Greek yoghurt and berries", kcal:250, protein:25, tags:"greek yoghurt berries breakfast" },
   { name:"Chicken rice bowl", kcal:550, protein:40, tags:"chicken rice bowl lunch dinner" },
-  { name:"Chicken + veg + rice", kcal:500, protein:42, tags:"chicken veg rice" },
-  { name:"Mince/chicken + veg + potatoes", kcal:550, protein:35, tags:"mince chicken veg potato potatoes" },
+  { name:"Chicken veg and rice", kcal:500, protein:42, tags:"chicken veg rice" },
+  { name:"Mince or chicken with veg and potatoes", kcal:550, protein:35, tags:"mince chicken veg potato potatoes" },
   { name:"Small bolognese only, no spaghetti", kcal:100, protein:8, tags:"bolognese no spaghetti mince small 50g" },
   { name:"Bolognese normal portion, no spaghetti", kcal:250, protein:20, tags:"bolognese no spaghetti mince" },
   { name:"Bolognese with spaghetti", kcal:650, protein:35, tags:"bolognese spaghetti pasta" },
@@ -665,44 +902,51 @@ const foodDb = [
   { name:"Rice fist portion", kcal:200, protein:4, tags:"rice carb fist portion" },
   { name:"Takeaway unknown meal", kcal:900, protein:30, tags:"takeaway unknown meal" }
 ];
-
 function today(){
-  return new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
-
+function escapeHTML(value){
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+function formatDate(value){
+  if(!value) return "No date";
+  return new Date(value + "T00:00:00").toLocaleDateString("en-GB");
+}
 function setMsg(text){
   msg.textContent = text;
 }
-
 function setMealMsg(text){
   mealMsg.textContent = text;
 }
-
 function percent(value,target){
   if(!target || !value) return 0;
   return Math.min(Math.round((Number(value) / Number(target)) * 100), 100);
 }
-
 function setRing(id, percentValue, colour){
   document.getElementById(id).style.background =
-    `conic-gradient(${colour} ${percentValue * 3.6}deg, rgba(255,255,255,.10) 0deg)`;
+    `conic-gradient(${colour} ${percentValue * 3.6}deg, rgba(255,255,255,0.10) 0deg)`;
 }
-
 function getStepGoal(dateStr){
   const start = new Date("2026-05-13T00:00:00");
   const d = new Date(dateStr + "T00:00:00");
   const diffDays = Math.floor((d - start) / 86400000);
-
   if(diffDays < 7) return 7000;
   if(diffDays < 14) return 8000;
   if(diffDays < 21) return 9000;
   return 10000;
 }
-
 function todayMeals(){
   return meals.filter(m => m.meal_date === today());
 }
-
 function mealTotals(){
   return todayMeals().reduce((acc,m) => {
     acc.calories += Number(m.estimated_calories || 0);
@@ -710,91 +954,70 @@ function mealTotals(){
     return acc;
   }, { calories:0, protein:0 });
 }
-
 function renderRings(todayLog){
   const stepGoal = getStepGoal(today());
   const totals = mealTotals();
-
   const currentWeight = todayLog?.weight_kg || logs.find(l => l.weight_kg)?.weight_kg || null;
-
   const weightProgress = currentWeight
     ? Math.min(Math.max(((130 - Number(currentWeight)) / 30) * 100, 0), 100)
     : 0;
-
   const stepsP = percent(todayLog?.steps || 0, stepGoal);
   const proteinP = percent(totals.protein || todayLog?.protein_g || 0, 130);
   const calorieP = percent(totals.calories || todayLog?.calories || 0, 1800);
-
   setRing("weightRing", weightProgress, "var(--green)");
   setRing("stepsRing", stepsP, "var(--blue)");
   setRing("proteinRing", proteinP, "var(--pink)");
-  setRing("calorieRing", calorieP, "var(--orange)");
-
+  setRing("calorieRing", calorieP, "var(--amber)");
   document.getElementById("weightPercent").textContent = `${Math.round(weightProgress)}%`;
   document.getElementById("stepsPercent").textContent = `${stepsP}%`;
   document.getElementById("proteinPercent").textContent = `${proteinP}%`;
   document.getElementById("caloriePercent").textContent = `${calorieP}%`;
-
   document.getElementById("stepsSub").textContent = `${todayLog?.steps || 0} / ${stepGoal.toLocaleString()}`;
   document.getElementById("proteinSub").textContent = `${totals.protein || todayLog?.protein_g || 0}g / 130g`;
   document.getElementById("calorieSub").textContent = `${totals.calories || todayLog?.calories || 0} / 1,800`;
-
   document.getElementById("currentWeight").textContent = currentWeight ? `${Number(currentWeight).toFixed(1)}kg` : "—";
   document.getElementById("stepGoal").textContent = stepGoal.toLocaleString();
   document.getElementById("weightProgress").style.width = `${weightProgress}%`;
-
   document.getElementById("mealCalories").textContent = totals.calories;
   document.getElementById("mealProtein").textContent = `${totals.protein}g`;
 }
-
 window.searchFoods = function(){
   const q = document.getElementById("foodSearch").value.toLowerCase().trim();
   const resultsEl = document.getElementById("foodResults");
-
   if(!q){
     resultsEl.innerHTML = "";
     return;
   }
-
   const results = foodDb.filter(food =>
     food.name.toLowerCase().includes(q) ||
     food.tags.toLowerCase().includes(q)
   ).slice(0,8);
-
   if(!results.length){
-    resultsEl.innerHTML = `<div class="sub">No match. Use the custom boxes below.</div>`;
+    resultsEl.innerHTML = `<div class="empty">No match. Use the custom boxes below.</div>`;
     return;
   }
-
-  resultsEl.innerHTML = results.map((food, index) => `
+  resultsEl.innerHTML = results.map(food => `
     <div class="food-card" onclick="selectFood(${foodDb.indexOf(food)})">
-      <div class="food-title">${food.name}</div>
-      <div class="food-meta">~${food.kcal} kcal • ~${food.protein}g protein</div>
+      <div class="food-title">${escapeHTML(food.name)}</div>
+      <div class="food-meta">~${food.kcal} kcal · ~${food.protein}g protein</div>
     </div>
   `).join("");
-}
-
+};
 window.selectFood = function(index){
   selectedFood = foodDb[index];
-
   document.getElementById("mealName").value = selectedFood.name;
   recalculateMeal();
-
   document.querySelectorAll(".food-card").forEach(card => card.classList.remove("active"));
   const cards = document.querySelectorAll(".food-card");
   const activeIndex = Array.from(cards).findIndex(card => card.textContent.includes(selectedFood.name));
   if(cards[activeIndex]) cards[activeIndex].classList.add("active");
-}
-
+};
 window.recalculateMeal = function(){
   if(!selectedFood) return;
-
   const multiplier = Number(document.getElementById("portionSelect").value || 1);
-
   document.getElementById("mealCaloriesInput").value = Math.round(selectedFood.kcal * multiplier);
   document.getElementById("mealProteinInput").value = Math.round(selectedFood.protein * multiplier);
-}
-
+};
 window.clearMealForm = function(){
   selectedFood = null;
   document.getElementById("foodSearch").value = "";
@@ -804,8 +1027,7 @@ window.clearMealForm = function(){
   document.getElementById("mealProteinInput").value = "";
   document.getElementById("mealNotes").value = "";
   document.getElementById("portionSelect").value = "1";
-}
-
+};
 window.saveMeal = async function(){
   const mealDate = document.getElementById("mealDate").value || today();
   const mealName = document.getElementById("mealName").value.trim();
@@ -813,12 +1035,10 @@ window.saveMeal = async function(){
   const protein = Number(document.getElementById("mealProteinInput").value || 0);
   const mealType = document.getElementById("mealType").value;
   const notes = document.getElementById("mealNotes").value.trim() || null;
-
   if(!mealName || !calories){
     setMealMsg("Add a meal name and estimated calories.");
     return;
   }
-
   const { error } = await supabase
     .from("health_meals")
     .insert([{
@@ -830,106 +1050,89 @@ window.saveMeal = async function(){
       estimated_protein:protein,
       notes
     }]);
-
   if(error){
     setMealMsg(error.message);
     return;
   }
-
   setMealMsg("Meal saved.");
   clearMealForm();
   await load();
-}
-
+};
 function renderMeals(){
   const el = document.getElementById("todayMeals");
   const rows = todayMeals();
-
   if(!rows.length){
-    el.innerHTML = `<p class="sub">No meals logged today.</p>`;
+    el.innerHTML = `<div class="empty">No meals logged today.</div>`;
     return;
   }
-
   el.innerHTML = rows.map(meal => `
     <div class="meal-row">
       <div>
-        <strong>${meal.meal_name}</strong>
-        <div class="sub">
-          ${meal.meal_type || "Meal"} • ~${meal.estimated_calories || 0} kcal • ~${meal.estimated_protein || 0}g protein
-          ${meal.notes ? " • " + meal.notes : ""}
+        <div class="row-title">${escapeHTML(meal.meal_name)}</div>
+        <div class="row-meta">
+          ${escapeHTML(meal.meal_type || "Meal")} · ~${meal.estimated_calories || 0} kcal · ~${meal.estimated_protein || 0}g protein
+          ${meal.notes ? `<br>${escapeHTML(meal.notes)}` : ""}
         </div>
       </div>
       <button class="small-btn" onclick="deleteMeal('${meal.id}')">Delete</button>
     </div>
   `).join("");
 }
-
 window.deleteMeal = async function(id){
   const { error } = await supabase
     .from("health_meals")
     .delete()
-    .eq("id", id);
-
+    .eq("id", id)
+    .eq("user_id", user.id);
   if(error){
     setMealMsg(error.message);
     return;
   }
-
   setMealMsg("Meal deleted.");
   await load();
-}
-
+};
 function renderDoseSummary(){
   const latest = doseLogs[0];
-
   if(!latest) return;
-
-  document.getElementById("lastDose").textContent = latest.dose_date || "—";
+  document.getElementById("lastDose").textContent = latest.dose_date ? formatDate(latest.dose_date) : "—";
   document.getElementById("lastDoseAmount").textContent = latest.dose || "—";
   document.getElementById("lastAppetite").textContent = latest.appetite || "—";
-
   const d = new Date(latest.dose_date + "T00:00:00");
   d.setDate(d.getDate() + 7);
-  document.getElementById("nextDose").textContent = d.toISOString().split("T")[0];
+  document.getElementById("nextDose").textContent = formatDate(d.toISOString().split("T")[0]);
 }
-
 function renderRecent(){
   const el = document.getElementById("recentLogs");
-
   if(!logs.length){
-    el.innerHTML = `<p class="sub">No logs yet.</p>`;
+    el.innerHTML = `<div class="empty">No logs yet.</div>`;
     return;
   }
-
   el.innerHTML = logs.slice(0,7).map(l => `
     <div class="log-row">
       <div>
-        <strong>${l.log_date}</strong>
-        <div class="sub">
-          ${l.weight_kg ? `${l.weight_kg}kg • ` : ""}
-          ${l.steps ? `${l.steps} steps • ` : ""}
-          ${l.calories ? `${l.calories} cals • ` : ""}
-          ${l.protein_g ? `${l.protein_g}g protein` : ""}
+        <div class="row-title">${formatDate(l.log_date)}</div>
+        <div class="row-meta">
+          ${l.weight_kg ? `${escapeHTML(l.weight_kg)}kg · ` : ""}
+          ${l.steps ? `${Number(l.steps).toLocaleString()} steps · ` : ""}
+          ${l.calories ? `${escapeHTML(l.calories)} cals · ` : ""}
+          ${l.protein_g ? `${escapeHTML(l.protein_g)}g protein` : ""}
         </div>
       </div>
     </div>
   `).join("");
 }
-
 function setChecksFromLog(log){
   Object.keys(checkState).forEach(key => {
     checkState[key] = Boolean(log?.[key]);
   });
   renderChecks();
 }
-
 function renderChecks(){
   document.querySelectorAll(".check").forEach(item => {
     const key = item.dataset.key;
     item.classList.toggle("done", Boolean(checkState[key]));
   });
 }
-
 document.querySelectorAll(".check").forEach(item => {
   item.onclick = () => {
     const key = item.dataset.key;
@@ -937,33 +1140,27 @@ document.querySelectorAll(".check").forEach(item => {
     renderChecks();
   };
 });
-
 async function load(){
   const { data } = await supabase.auth.getUser();
   user = data.user;
-
   if(!user){
     window.location.href = "index.html";
     return;
   }
-
   document.getElementById("logDate").value = today();
   document.getElementById("doseDate").value = today();
   document.getElementById("mealDate").value = today();
-
   const [logsRes,doseRes,mealsRes] = await Promise.all([
     supabase
       .from("health_reset_logs")
       .select("*")
       .eq("user_id", user.id)
       .order("log_date", { ascending:false }),
-
     supabase
       .from("mounjaro_logs")
       .select("*")
       .eq("user_id", user.id)
       .order("dose_date", { ascending:false }),
-
     supabase
       .from("health_meals")
       .select("*")
@@ -971,28 +1168,22 @@ async function load(){
       .order("meal_date", { ascending:false })
       .order("created_at", { ascending:false })
   ]);
-
   if(logsRes.error){
     setMsg(logsRes.error.message);
     return;
   }
-
   if(doseRes.error){
     setMsg(doseRes.error.message);
     return;
   }
-
   if(mealsRes.error){
     setMealMsg(mealsRes.error.message);
     return;
   }
-
   logs = logsRes.data || [];
   doseLogs = doseRes.data || [];
   meals = mealsRes.data || [];
-
   const todayLog = logs.find(l => l.log_date === today());
-
   if(todayLog){
     document.getElementById("weight").value = todayLog.weight_kg || "";
     document.getElementById("calories").value = todayLog.calories || "";
@@ -1003,19 +1194,26 @@ async function load(){
     document.getElementById("notes").value = todayLog.notes || "";
     setChecksFromLog(todayLog);
   } else {
+    checkState = {
+      weighed_in:false,
+      calories_tracked:false,
+      protein_hit:false,
+      water_hit:false,
+      steps_hit:false,
+      workout_done:false,
+      no_takeaway:false,
+      slept_properly:false
+    };
     renderChecks();
   }
-
   renderRings(todayLog);
   renderMeals();
   renderDoseSummary();
   renderRecent();
 }
-
 window.saveHealthLog = async function(){
   const logDate = document.getElementById("logDate").value || today();
   const totals = mealTotals();
-
   const payload = {
     user_id:user.id,
     log_date:logDate,
@@ -1028,15 +1226,13 @@ window.saveHealthLog = async function(){
     notes:document.getElementById("notes").value || null,
     ...checkState
   };
-
   const existing = logs.find(l => l.log_date === logDate);
-
   if(existing){
     const { error } = await supabase
       .from("health_reset_logs")
       .update(payload)
-      .eq("id", existing.id);
-
+      .eq("id", existing.id)
+      .eq("user_id", user.id);
     if(error){
       setMsg(error.message);
       return;
@@ -1045,20 +1241,16 @@ window.saveHealthLog = async function(){
     const { error } = await supabase
       .from("health_reset_logs")
       .insert([payload]);
-
     if(error){
       setMsg(error.message);
       return;
     }
   }
-
   setMsg("Saved.");
   await load();
-}
-
+};
 window.saveDose = async function(){
   const doseDate = document.getElementById("doseDate").value || today();
-
   const { error } = await supabase
     .from("mounjaro_logs")
     .insert([{
@@ -1071,28 +1263,23 @@ window.saveDose = async function(){
       side_effects:document.getElementById("sideEffects").value || null,
       notes:document.getElementById("doseNotes").value || null
     }]);
-
   if(error){
     setMsg(error.message);
     return;
   }
-
   document.getElementById("dose").value = "";
   document.getElementById("appetite").value = "";
   document.getElementById("nausea").value = "";
   document.getElementById("energy").value = "";
   document.getElementById("sideEffects").value = "";
   document.getElementById("doseNotes").value = "";
-
   setMsg("Dose log saved.");
   await load();
-}
-
+};
 window.toggleWorkout = function(header){
   const body = header.nextElementSibling;
   body.style.display = body.style.display === "block" ? "none" : "block";
-}
-
+};
 load();
 </script>
 </body>
