@@ -1,16 +1,15 @@
+Done. Paste this into dashboard.html.
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
 <title>Pace Dashboard</title>
-
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
-
 <style>
 :root{
   --bg1:#0f1115;
@@ -22,7 +21,6 @@
   --text:#f5f7fb;
   --muted:#a7afbe;
   --accent:#ff3b30;
-  --accentSoft:rgba(255,59,48,0.16);
   --green:#22c55e;
   --amber:#f59e0b;
   --blue:#60a5fa;
@@ -30,17 +28,14 @@
   --shadow:0 20px 55px rgba(0,0,0,0.34);
   --radius:24px;
 }
-
 *{
   box-sizing:border-box;
 }
-
 html,
 body{
   width:100%;
   height:100%;
 }
-
 body{
   margin:0;
   padding:12px;
@@ -52,22 +47,19 @@ body{
     linear-gradient(180deg,var(--bg1),var(--bg2));
   overflow:hidden;
 }
-
 a{
   color:inherit;
 }
-
 .wrap{
   width:100%;
   max-width:1360px;
   height:calc(100svh - 24px);
   margin:0 auto;
   display:grid;
-  grid-template-rows:auto auto 1fr;
+  grid-template-rows:auto auto 1fr auto;
   gap:10px;
   min-height:0;
 }
-
 .topbar{
   display:flex;
   align-items:center;
@@ -75,15 +67,7 @@ a{
   gap:12px;
   min-height:42px;
 }
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-
-.logo{
+.homeLogo{
   width:42px;
   height:42px;
   border-radius:15px;
@@ -98,29 +82,14 @@ a{
   font-size:23px;
   font-weight:950;
   letter-spacing:-0.08em;
+  text-decoration:none;
   flex:0 0 auto;
+  transition:.18s ease;
 }
-
-.brandText{
-  min-width:0;
+.homeLogo:hover{
+  transform:translateY(-2px);
+  border-color:var(--line2);
 }
-
-.brandTitle{
-  font-size:24px;
-  font-weight:950;
-  letter-spacing:-0.06em;
-  line-height:1;
-}
-
-.brandSub{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:3px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
 .datePill{
   border:1px solid var(--line);
   background:rgba(255,255,255,0.06);
@@ -131,7 +100,6 @@ a{
   backdrop-filter:blur(18px);
   white-space:nowrap;
 }
-
 .hero{
   position:relative;
   overflow:hidden;
@@ -145,21 +113,18 @@ a{
   box-shadow:var(--shadow);
   backdrop-filter:blur(22px);
 }
-
 .heroInner{
   display:grid;
   grid-template-columns:1.5fr 0.9fr;
   gap:12px;
   align-items:center;
 }
-
 .hero h1{
   margin:0;
   font-size:clamp(28px, 4vw, 48px);
   line-height:0.95;
   letter-spacing:-0.075em;
 }
-
 .hero p{
   margin:7px 0 0;
   color:var(--muted);
@@ -167,14 +132,12 @@ a{
   line-height:1.35;
   max-width:620px;
 }
-
 .heroActions{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
   margin-top:12px;
 }
-
 .actionBtn{
   display:inline-flex;
   align-items:center;
@@ -188,32 +151,27 @@ a{
   background:rgba(255,255,255,0.08);
   transition:.18s ease;
 }
-
 .actionBtn.primary{
   background:var(--accent);
   border-color:rgba(255,59,48,0.8);
   color:white;
 }
-
 .actionBtn:hover{
   transform:translateY(-2px);
   border-color:var(--line2);
 }
-
 .heroPanel{
   border:1px solid var(--line);
   background:rgba(255,255,255,0.07);
   border-radius:22px;
   padding:13px;
 }
-
 .heroPanelLabel{
   color:var(--muted);
   font-size:10px;
   text-transform:uppercase;
   letter-spacing:.14em;
 }
-
 .heroPanelValue{
   margin-top:6px;
   font-size:clamp(28px, 4vw, 42px);
@@ -221,14 +179,12 @@ a{
   line-height:1;
   letter-spacing:-0.08em;
 }
-
 .heroPanelText{
   margin-top:5px;
   color:var(--muted);
   line-height:1.3;
   font-size:12px;
 }
-
 .progressShell{
   margin-top:10px;
   width:100%;
@@ -237,21 +193,24 @@ a{
   background:rgba(255,255,255,0.10);
   overflow:hidden;
 }
-
 .progressFill{
   width:68%;
   height:100%;
   border-radius:999px;
   background:linear-gradient(90deg, var(--accent), #ff8a80);
 }
-
+.mainArea{
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0, 1.85fr) minmax(300px, 0.85fr);
+  gap:10px;
+}
 .board{
   min-height:0;
   display:grid;
   grid-template-rows:auto 1fr;
   gap:8px;
 }
-
 .sectionHead{
   display:flex;
   align-items:center;
@@ -260,28 +219,24 @@ a{
   padding:0 4px;
   min-height:20px;
 }
-
 .sectionTitle{
   font-size:12px;
   text-transform:uppercase;
   letter-spacing:.14em;
   color:var(--muted);
 }
-
 .sectionHint{
   color:var(--muted);
   font-size:12px;
 }
-
 .bento{
   min-height:0;
   height:100%;
   display:grid;
-  grid-template-columns:repeat(6, minmax(0,1fr));
-  grid-template-rows:repeat(4, minmax(0,1fr));
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  grid-template-rows:repeat(3, minmax(0,1fr));
   gap:10px;
 }
-
 .card{
   position:relative;
   display:flex;
@@ -301,7 +256,6 @@ a{
   backdrop-filter:blur(18px);
   transition:.18s ease;
 }
-
 .card:hover{
   transform:translateY(-2px);
   border-color:var(--line2);
@@ -309,13 +263,11 @@ a{
     radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 38%),
     var(--panel2);
 }
-
 .cardTop{
   position:relative;
   z-index:2;
   min-height:0;
 }
-
 .iconRow{
   display:flex;
   align-items:center;
@@ -323,7 +275,6 @@ a{
   gap:8px;
   margin-bottom:8px;
 }
-
 .icon{
   width:36px;
   height:36px;
@@ -336,7 +287,6 @@ a{
   font-size:20px;
   flex:0 0 auto;
 }
-
 .status{
   font-size:10px;
   color:var(--muted);
@@ -349,14 +299,12 @@ a{
   overflow:hidden;
   text-overflow:ellipsis;
 }
-
 .cardTitle{
   font-size:clamp(15px, 1.45vw, 22px);
   font-weight:950;
   letter-spacing:-0.055em;
   line-height:1;
 }
-
 .cardSub{
   margin-top:6px;
   color:var(--muted);
@@ -367,7 +315,6 @@ a{
   -webkit-box-orient:vertical;
   overflow:hidden;
 }
-
 .cardMetric{
   margin-top:10px;
   font-size:clamp(28px, 4vw, 48px);
@@ -375,26 +322,22 @@ a{
   font-weight:950;
   letter-spacing:-0.08em;
 }
-
 .metricSmall{
   font-size:12px;
   color:var(--muted);
   margin-top:5px;
   line-height:1.25;
 }
-
 .cardBottom{
   position:relative;
   z-index:2;
   margin-top:8px;
 }
-
 .miniGrid{
   display:grid;
   grid-template-columns:repeat(2, minmax(0,1fr));
   gap:7px;
 }
-
 .miniItem{
   border:1px solid var(--line);
   background:rgba(255,255,255,0.055);
@@ -402,12 +345,10 @@ a{
   padding:8px;
   min-width:0;
 }
-
 .miniLabel{
   color:var(--muted);
   font-size:10px;
 }
-
 .miniValue{
   margin-top:4px;
   font-weight:900;
@@ -417,7 +358,6 @@ a{
   overflow:hidden;
   text-overflow:ellipsis;
 }
-
 .openLine{
   display:flex;
   align-items:center;
@@ -427,13 +367,11 @@ a{
   color:var(--muted);
   font-size:11px;
 }
-
 .openText{
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
-
 .openPill{
   border:1px solid var(--line);
   background:rgba(255,255,255,0.06);
@@ -444,15 +382,12 @@ a{
   font-weight:850;
   flex:0 0 auto;
 }
-
 .largeTitle{
   font-size:clamp(24px, 3vw, 38px);
 }
-
 .accent{
   border-color:rgba(255,59,48,0.30);
 }
-
 .accent::after,
 .green::after,
 .blue::after,
@@ -467,27 +402,21 @@ a{
   bottom:-45px;
   filter:blur(1px);
 }
-
 .accent::after{
   background:rgba(255,59,48,0.16);
 }
-
 .green::after{
   background:rgba(34,197,94,0.13);
 }
-
 .blue::after{
   background:rgba(96,165,250,0.13);
 }
-
 .purple::after{
   background:rgba(167,139,250,0.14);
 }
-
 .amber::after{
   background:rgba(245,158,11,0.14);
 }
-
 .quoteText{
   font-size:clamp(15px, 1.55vw, 22px);
   line-height:1.25;
@@ -498,172 +427,336 @@ a{
   -webkit-box-orient:vertical;
   overflow:hidden;
 }
-
 .quoteRef{
   margin-top:7px;
   color:var(--muted);
   font-size:12px;
 }
-
 .todo{
   grid-column:1 / 3;
   grid-row:1 / 3;
 }
-
 .weekly{
   grid-column:3 / 5;
   grid-row:1 / 2;
 }
-
 .finance{
-  grid-column:5 / 7;
-  grid-row:1 / 2;
+  grid-column:3 / 4;
+  grid-row:2 / 3;
 }
-
 .quiet{
-  grid-column:3 / 5;
+  grid-column:4 / 5;
   grid-row:2 / 3;
 }
-
 .lists{
-  grid-column:5 / 6;
-  grid-row:2 / 3;
-}
-
-.health{
-  grid-column:6 / 7;
-  grid-row:2 / 3;
-}
-
-.reminders{
   grid-column:1 / 2;
   grid-row:3 / 4;
 }
-
+.health{
+  grid-column:2 / 3;
+  grid-row:3 / 4;
+}
+.reminders{
+  grid-column:3 / 4;
+  grid-row:3 / 4;
+}
 .attendance{
-  grid-column:2 / 4;
+  grid-column:4 / 5;
   grid-row:3 / 4;
 }
-
-.creators{
-  grid-column:4 / 6;
-  grid-row:3 / 4;
+.quickPanel{
+  min-height:0;
+  border:1px solid rgba(255,59,48,0.25);
+  background:
+    radial-gradient(circle at top right, rgba(255,59,48,0.16), transparent 34%),
+    rgba(255,255,255,0.07);
+  border-radius:var(--radius);
+  padding:14px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(20px);
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:10px;
+  overflow:hidden;
 }
-
-.shoot{
-  grid-column:6 / 7;
-  grid-row:3 / 4;
+.quickTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
 }
-
-.bookings{
-  grid-column:1 / 3;
-  grid-row:4 / 5;
+.quickLabel{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
 }
-
-.income{
-  grid-column:3 / 5;
-  grid-row:4 / 5;
+.quickTitle{
+  margin-top:5px;
+  font-size:26px;
+  font-weight:950;
+  letter-spacing:-0.06em;
+  line-height:1;
 }
-
-.home{
-  grid-column:5 / 7;
-  grid-row:4 / 5;
+.quickSub{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
 }
-
-@media(max-width:850px){
-
+.quickIcon{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  background:rgba(255,255,255,0.09);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  flex:0 0 auto;
+}
+.quickForm{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+}
+.quickInput{
+  min-width:0;
+  width:100%;
+  border:none;
+  outline:none;
+  border-radius:16px;
+  padding:12px 13px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  color:var(--text);
+  font-size:13px;
+}
+.quickInput::placeholder{
+  color:rgba(167,175,190,0.72);
+}
+.quickAdd{
+  border:none;
+  cursor:pointer;
+  border-radius:16px;
+  padding:0 14px;
+  background:var(--accent);
+  color:white;
+  font-weight:900;
+  font-size:18px;
+}
+.quickList{
+  min-height:0;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding-right:2px;
+}
+.quickList::-webkit-scrollbar{
+  width:4px;
+}
+.quickList::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.15);
+  border-radius:999px;
+}
+.quickTask{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:9px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.055);
+  border-radius:16px;
+  padding:9px;
+}
+.quickCheck{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  border:1px solid var(--line2);
+  background:rgba(255,255,255,0.05);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:transparent;
+  font-size:12px;
+}
+.quickTask.done .quickCheck{
+  background:var(--green);
+  color:white;
+  border-color:var(--green);
+}
+.quickTaskText{
+  min-width:0;
+  font-size:13px;
+  line-height:1.25;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.quickTask.done .quickTaskText{
+  color:var(--muted);
+  text-decoration:line-through;
+}
+.quickDelete{
+  border:none;
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--line);
+  color:var(--muted);
+  width:25px;
+  height:25px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+.emptyState{
+  height:100%;
+  min-height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+  border:1px dashed rgba(255,255,255,0.12);
+  border-radius:18px;
+  padding:16px;
+}
+.quickFooter{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+}
+.quickCount{
+  color:var(--muted);
+  font-size:12px;
+}
+.fullLink{
+  text-decoration:none;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  border-radius:999px;
+  padding:9px 11px;
+  font-size:12px;
+  font-weight:850;
+  white-space:nowrap;
+}
+.creatorsFixed{
+  display:grid;
+  grid-template-columns:1fr;
+}
+.creatorBar{
+  min-height:72px;
+  text-decoration:none;
+  color:var(--text);
+  border:1px solid rgba(255,59,48,0.30);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,255,255,0.10), transparent 28%),
+    radial-gradient(circle at 90% 10%, rgba(255,59,48,0.20), transparent 30%),
+    rgba(255,255,255,0.07);
+  border-radius:24px;
+  padding:14px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(20px);
+  transition:.18s ease;
+}
+.creatorBar:hover{
+  transform:translateY(-2px);
+  border-color:var(--line2);
+}
+.creatorIcon{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.09);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
+}
+.creatorTitle{
+  font-size:22px;
+  font-weight:950;
+  letter-spacing:-0.055em;
+  line-height:1;
+}
+.creatorSub{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
+}
+.creatorOpen{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  border-radius:999px;
+  padding:9px 12px;
+  font-size:12px;
+  font-weight:850;
+}
+@media(max-width:950px){
   body{
     padding:9px;
   }
-
   .wrap{
     height:calc(100svh - 18px);
     gap:8px;
+    grid-template-rows:auto auto 1fr auto;
   }
-
-  .logo{
-    width:38px;
-    height:38px;
-    border-radius:14px;
-  }
-
-  .brandTitle{
-    font-size:21px;
-  }
-
-  .brandSub{
-    display:none;
-  }
-
   .hero{
     padding:11px;
     border-radius:23px;
   }
-
   .heroInner{
     grid-template-columns:1fr;
     gap:8px;
   }
-
   .hero h1{
     font-size:26px;
   }
-
-  .hero p{
-    display:none;
-  }
-
-  .heroActions{
-    display:none;
-  }
-
+  .hero p,
+  .heroActions,
   .heroPanel{
     display:none;
   }
-
+  .mainArea{
+    grid-template-columns:1fr;
+    grid-template-rows:1fr auto;
+    gap:8px;
+  }
   .sectionHint{
     display:none;
   }
-
   .bento{
-    grid-template-columns:repeat(3, minmax(0,1fr));
-    grid-template-rows:repeat(5, minmax(0,1fr));
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    grid-template-rows:repeat(2, minmax(0,1fr));
     gap:8px;
   }
-
   .card{
     grid-column:auto !important;
     grid-row:auto !important;
     padding:9px;
     border-radius:18px;
   }
-
   .todo{
     grid-column:span 2 !important;
   }
-
-  .weekly,
-  .finance,
-  .quiet,
-  .attendance,
-  .creators,
-  .bookings,
-  .income,
-  .home{
-    grid-column:span 1 !important;
-  }
-
-  .iconRow{
-    margin-bottom:6px;
-  }
-
   .icon{
     width:30px;
     height:30px;
     border-radius:11px;
     font-size:17px;
   }
-
   .status,
   .cardSub,
   .miniGrid,
@@ -671,505 +764,435 @@ a{
   .openText{
     display:none;
   }
-
   .cardTitle,
   .largeTitle{
     font-size:14px;
     line-height:1.05;
   }
-
   .cardMetric{
     font-size:20px;
     margin-top:5px;
   }
-
-  .openLine{
-    justify-content:flex-start;
-    margin-top:6px;
+  .quickPanel{
+    min-height:128px;
+    grid-template-rows:auto auto;
+    padding:10px;
   }
-
-  .openPill{
-    padding:5px 7px;
-    font-size:9px;
+  .quickSub,
+  .quickList,
+  .quickCount{
+    display:none;
   }
-
-  .quoteText{
-    font-size:13px;
-    -webkit-line-clamp:2;
+  .quickTitle{
+    font-size:18px;
   }
-
-  .quoteRef{
-    font-size:10px;
+  .quickFooter{
+    display:none;
+  }
+  .creatorBar{
+    min-height:58px;
+    padding:10px;
+    border-radius:18px;
+  }
+  .creatorIcon{
+    width:36px;
+    height:36px;
+    border-radius:13px;
+    font-size:19px;
+  }
+  .creatorTitle{
+    font-size:17px;
+  }
+  .creatorSub{
+    display:none;
   }
 }
-
 @media(max-height:720px){
-
   body{
     padding:8px;
   }
-
   .wrap{
     height:calc(100svh - 16px);
     gap:7px;
   }
-
   .topbar{
     min-height:36px;
   }
-
-  .logo{
+  .homeLogo{
     width:36px;
     height:36px;
   }
-
-  .brandTitle{
-    font-size:21px;
-  }
-
   .datePill{
     padding:7px 10px;
   }
-
   .hero{
     padding:10px;
   }
-
   .hero h1{
     font-size:30px;
   }
-
   .hero p{
     font-size:12px;
     margin-top:5px;
   }
-
   .heroActions{
     margin-top:8px;
   }
-
   .actionBtn{
     padding:7px 10px;
   }
-
   .heroPanel{
     padding:10px;
   }
-
   .heroPanelValue{
     font-size:30px;
   }
-
   .heroPanelText{
     display:none;
   }
-
   .bento{
     gap:8px;
   }
-
   .card{
     padding:10px;
     border-radius:20px;
   }
-
   .icon{
     width:32px;
     height:32px;
     font-size:18px;
   }
-
   .cardSub{
     -webkit-line-clamp:1;
   }
-
   .miniGrid{
     display:none;
   }
-
   .cardMetric{
     font-size:32px;
+  }
+  .quickPanel{
+    padding:10px;
+  }
+  .quickTitle{
+    font-size:22px;
+  }
+  .quickSub{
+    display:none;
+  }
+  .creatorBar{
+    min-height:62px;
   }
 }
 </style>
 </head>
-
 <body>
-
 <div class="wrap">
-
   <div class="topbar">
-    <div class="brand">
-      <div class="logo">P</div>
-
-      <div class="brandText">
-        <div class="brandTitle">Pace</div>
-        <div class="brandSub">Your life operating system</div>
-      </div>
-    </div>
-
+    <a class="homeLogo" href="index.html" aria-label="Home">P</a>
     <div class="datePill" id="todayDate">Today</div>
   </div>
-
   <section class="hero">
     <div class="heroInner">
-
       <div>
         <h1>Everything at a glance.</h1>
-
         <p>
-          A banking style overview of your life, work, money, health, faith and creator systems.
+          A banking style overview of your life, work, money, health and faith systems.
         </p>
-
         <div class="heroActions">
           <a class="actionBtn primary" href="life-test.html">Open To Do</a>
           <a class="actionBtn" href="weekly-test.html">Plan Week</a>
           <a class="actionBtn" href="finance-test.html">Check Money</a>
         </div>
       </div>
-
       <div class="heroPanel">
         <div class="heroPanelLabel">Today’s pace</div>
         <div class="heroPanelValue">68%</div>
         <div class="heroPanelText">
           One calm screen. Tap any box for the full tracker.
         </div>
-
         <div class="progressShell">
           <div class="progressFill"></div>
         </div>
       </div>
-
     </div>
   </section>
-
-  <main class="board">
-    <div class="sectionHead">
-      <div class="sectionTitle">Dashboard</div>
-      <div class="sectionHint">Everything fits on one screen</div>
-    </div>
-
-    <div class="bento">
-
-      <a class="card todo accent" href="life-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">📝</div>
-            <div class="status">Most used</div>
-          </div>
-
-          <div class="cardTitle largeTitle">To Do</div>
-
-          <div class="cardSub">
-            Running task list, categories, priorities and completed tracking.
-          </div>
-
-          <div class="cardMetric">Today</div>
-          <div class="metricSmall">Start here when your brain feels busy.</div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="miniGrid">
-            <div class="miniItem">
-              <div class="miniLabel">Focus</div>
-              <div class="miniValue">Top tasks</div>
+  <main class="mainArea">
+    <section class="board">
+      <div class="sectionHead">
+        <div class="sectionTitle">Dashboard</div>
+        <div class="sectionHint">Main spaces only</div>
+      </div>
+      <div class="bento">
+        <a class="card todo accent" href="life-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📝</div>
+              <div class="status">Most used</div>
             </div>
-
-            <div class="miniItem">
-              <div class="miniLabel">Status</div>
-              <div class="miniValue">Keep moving</div>
+            <div class="cardTitle largeTitle">To Do</div>
+            <div class="cardSub">
+              Running task list, categories, priorities and completed tracking.
+            </div>
+            <div class="cardMetric">Today</div>
+            <div class="metricSmall">Start here when your brain feels busy.</div>
+          </div>
+          <div class="cardBottom">
+            <div class="miniGrid">
+              <div class="miniItem">
+                <div class="miniLabel">Focus</div>
+                <div class="miniValue">Top tasks</div>
+              </div>
+              <div class="miniItem">
+                <div class="miniLabel">Status</div>
+                <div class="miniValue">Keep moving</div>
+              </div>
+            </div>
+            <div class="openLine">
+              <span class="openText">Open the full list</span>
+              <span class="openPill">Open</span>
             </div>
           </div>
-
-          <div class="openLine">
-            <span class="openText">Open the full list</span>
-            <span class="openPill">Open</span>
+        </a>
+        <a class="card weekly blue" href="weekly-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📅</div>
+              <div class="status">Planning</div>
+            </div>
+            <div class="cardTitle">Weekly</div>
+            <div class="cardSub">
+              Weekly planning board and structured day scheduling.
+            </div>
+          </div>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Map your week</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+        <a class="card finance green" href="finance-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">💳</div>
+              <div class="status">Money</div>
+            </div>
+            <div class="cardTitle">Finance</div>
+            <div class="cardSub">
+              Bills, income, expected payments and monthly check offs.
+            </div>
+          </div>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">View money</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+        <a class="card quiet accent" href="quiet-time-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📖</div>
+              <div class="status">Quiet time</div>
+            </div>
+            <div class="quoteText">
+              “Seek first the kingdom of God.”
+            </div>
+            <div class="quoteRef">
+              Matthew 6:33
+            </div>
+          </div>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Open quiet time</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+        <a class="card lists purple" href="lists-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📋</div>
+              <div class="status">Lists</div>
+            </div>
+            <div class="cardTitle">Lists</div>
+            <div class="cardSub">
+              Lists, notes, saved items and quick reference spaces.
+            </div>
+          </div>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Open lists</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+        <a class="card health green" href="health-reset-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">🧘🏽‍♀️</div>
+              <div class="status">Health</div>
+            </div>
+            <div class="cardTitle">Health</div>
+            <div class="cardSub">
+              Food, movement, reset routines and health tracking.
+            </div>
+          </div>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Reset body</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+        <a class="card reminders amber" href="reminders-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">⏰</div>
+              <div class="status">Follow up</div>
+            </div>
+            <div class="cardTitle">Reminders</div>
+            <div class="cardSub">
+              Dates, actions and things you cannot afford to forget.
+            </div>
+          </div>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Check reminders</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+        <a class="card attendance blue" href="attendance-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">🏢</div>
+              <div class="status">Work pattern</div>
+            </div>
+            <div class="cardTitle">Attendance</div>
+            <div class="cardSub">
+              Office days, home days, work patterns and attendance tracking.
+            </div>
+          </div>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Track office days</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+    <aside class="quickPanel">
+      <div class="quickTop">
+        <div>
+          <div class="quickLabel">Quick edit</div>
+          <div class="quickTitle">To Do panel</div>
+          <div class="quickSub">
+            Add quick tasks here, then open the full To Do page when you need more detail.
           </div>
         </div>
-      </a>
-
-      <a class="card weekly blue" href="weekly-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">📅</div>
-            <div class="status">Planning</div>
-          </div>
-
-          <div class="cardTitle">Weekly</div>
-
-          <div class="cardSub">
-            Weekly planning board and structured day scheduling.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Map your week</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card finance green" href="finance-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">💳</div>
-            <div class="status">Money</div>
-          </div>
-
-          <div class="cardTitle">Finance</div>
-
-          <div class="cardSub">
-            Bills, income, expected payments and monthly check offs.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">View money</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card quiet accent" href="quiet-time-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">📖</div>
-            <div class="status">Quiet time</div>
-          </div>
-
-          <div class="quoteText">
-            “Seek first the kingdom of God.”
-          </div>
-
-          <div class="quoteRef">
-            Matthew 6:33
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Open quiet time</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card lists purple" href="lists-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">📋</div>
-            <div class="status">Lists</div>
-          </div>
-
-          <div class="cardTitle">Lists</div>
-
-          <div class="cardSub">
-            Lists, notes, saved items and quick reference spaces.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Open lists</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card health green" href="health-reset-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">🧘🏽‍♀️</div>
-            <div class="status">Health</div>
-          </div>
-
-          <div class="cardTitle">Health</div>
-
-          <div class="cardSub">
-            Food, movement, reset routines and health tracking.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Reset body</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card reminders amber" href="reminders-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">⏰</div>
-            <div class="status">Follow up</div>
-          </div>
-
-          <div class="cardTitle">Reminders</div>
-
-          <div class="cardSub">
-            Dates, actions and things you cannot afford to forget.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Check reminders</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card attendance blue" href="attendance-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">🏢</div>
-            <div class="status">Work pattern</div>
-          </div>
-
-          <div class="cardTitle">Attendance</div>
-
-          <div class="cardSub">
-            Office days, home days, work patterns and attendance tracking.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Track office days</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card creators purple" href="creators-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">🎬</div>
-            <div class="status">Creator hub</div>
-          </div>
-
-          <div class="cardTitle">Creators</div>
-
-          <div class="cardSub">
-            Creative workflows, filming systems and creator planning.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Open creator space</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card shoot accent" href="shoot-day-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">🎥</div>
-            <div class="status">Shoot</div>
-          </div>
-
-          <div class="cardTitle">Shoot Day</div>
-
-          <div class="cardSub">
-            Shot lists, run sheet flow and live filming guidance.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">View shots</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card bookings blue" href="bookings-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">📆</div>
-            <div class="status">Clients</div>
-          </div>
-
-          <div class="cardTitle">Bookings</div>
-
-          <div class="cardSub">
-            Enquiries, dates, payments, client status and booking follow ups.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">View bookings</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card income green" href="creator-income-test.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">💸</div>
-            <div class="status">Income</div>
-          </div>
-
-          <div class="cardTitle">Creator Income</div>
-
-          <div class="cardSub">
-            Paid work, expected income and creator earnings.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Track income</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card home" href="index.html">
-        <div class="cardTop">
-          <div class="iconRow">
-            <div class="icon">🏠</div>
-            <div class="status">Entry</div>
-          </div>
-
-          <div class="cardTitle">Home</div>
-
-          <div class="cardSub">
-            Landing page and main entry point for Pace.
-          </div>
-        </div>
-
-        <div class="cardBottom">
-          <div class="openLine">
-            <span class="openText">Go to landing page</span>
-            <span class="openPill">Open</span>
-          </div>
-        </div>
-      </a>
-
-    </div>
+        <div class="quickIcon">📝</div>
+      </div>
+      <form class="quickForm" id="quickTaskForm">
+        <input class="quickInput" id="quickTaskInput" type="text" placeholder="Add a quick task..." autocomplete="off">
+        <button class="quickAdd" type="submit">+</button>
+      </form>
+      <div class="quickList" id="quickTaskList"></div>
+      <div class="quickFooter">
+        <div class="quickCount" id="quickTaskCount">0 tasks</div>
+        <a class="fullLink" href="life-test.html">Open full To Do</a>
+      </div>
+    </aside>
   </main>
-
+  <section class="creatorsFixed">
+    <a class="creatorBar" href="creators-test.html">
+      <div class="creatorIcon">🎬</div>
+      <div>
+        <div class="creatorTitle">Creators</div>
+        <div class="creatorSub">
+          Shoot day, bookings and creator income live inside here.
+        </div>
+      </div>
+      <div class="creatorOpen">Open</div>
+    </a>
+  </section>
 </div>
-
 <script>
 const todayDate = document.getElementById("todayDate");
-
 const dateOptions = {
   weekday:"long",
   day:"numeric",
   month:"long"
 };
-
 todayDate.textContent = new Date().toLocaleDateString("en-GB", dateOptions);
+const taskForm = document.getElementById("quickTaskForm");
+const taskInput = document.getElementById("quickTaskInput");
+const taskList = document.getElementById("quickTaskList");
+const taskCount = document.getElementById("quickTaskCount");
+const storageKey = "pace_dashboard_quick_tasks_v1";
+let quickTasks = JSON.parse(localStorage.getItem(storageKey)) || [];
+function saveTasks(){
+  localStorage.setItem(storageKey, JSON.stringify(quickTasks));
+}
+function renderTasks(){
+  taskList.innerHTML = "";
+  const activeCount = quickTasks.filter(task => !task.done).length;
+  taskCount.textContent = activeCount === 1 ? "1 task left" : activeCount + " tasks left";
+  if(quickTasks.length === 0){
+    const empty = document.createElement("div");
+    empty.className = "emptyState";
+    empty.textContent = "No quick tasks yet. Add one thing you need to remember.";
+    taskList.appendChild(empty);
+    return;
+  }
+  quickTasks.forEach(task => {
+    const taskItem = document.createElement("div");
+    taskItem.className = task.done ? "quickTask done" : "quickTask";
+    const checkButton = document.createElement("button");
+    checkButton.className = "quickCheck";
+    checkButton.type = "button";
+    checkButton.textContent = "✓";
+    checkButton.addEventListener("click", () => {
+      task.done = !task.done;
+      saveTasks();
+      renderTasks();
+    });
+    const taskText = document.createElement("div");
+    taskText.className = "quickTaskText";
+    taskText.textContent = task.text;
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "quickDelete";
+    deleteButton.type = "button";
+    deleteButton.textContent = "×";
+    deleteButton.addEventListener("click", () => {
+      quickTasks = quickTasks.filter(item => item.id !== task.id);
+      saveTasks();
+      renderTasks();
+    });
+    taskItem.appendChild(checkButton);
+    taskItem.appendChild(taskText);
+    taskItem.appendChild(deleteButton);
+    taskList.appendChild(taskItem);
+  });
+}
+taskForm.addEventListener("submit", event => {
+  event.preventDefault();
+  const text = taskInput.value.trim();
+  if(!text){
+    return;
+  }
+  quickTasks.unshift({
+    id:Date.now(),
+    text:text,
+    done:false
+  });
+  taskInput.value = "";
+  saveTasks();
+  renderTasks();
+});
+renderTasks();
 </script>
-
 </body>
 </html>
