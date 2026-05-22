@@ -5,204 +5,450 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pace Reminders</title>
 
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
-<meta name="theme-color" content="#050507">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
 
 <style>
 :root{
-  --bg:#050507;
-  --card:#1c1c1e;
-  --card2:#24262b;
-  --line:rgba(255,255,255,.12);
-  --text:#f5f5f7;
-  --muted:#8e8e93;
-  --blue:#409cff;
-  --red:#ff3b30;
-  --orange:#ff9f0a;
-  --grey:#8e8e93;
-  --green:#34c759;
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
+  --panel3:rgba(255,255,255,0.12);
+  --line:rgba(255,255,255,0.12);
+  --line2:rgba(255,255,255,0.08);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --soft:#d9dee8;
+  --accent:#ff3b30;
+  --green:#22c55e;
+  --blue:#60a5fa;
+  --amber:#f59e0b;
   --pink:#ff2d55;
+  --red:#ef4444;
+  --shadow:0 24px 70px rgba(0,0,0,0.42);
+  --radius:28px;
 }
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  min-height:100%;
+}
 
 body{
   margin:0;
-  min-height:100vh;
-  padding:22px;
-  padding-bottom:110px;
-  background:var(--bg);
+  min-height:100dvh;
+  padding:18px;
+  padding-bottom:80px;
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,59,48,0.16), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(96,165,250,0.10), transparent 30%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
 }
 
 .page{
-  max-width:1050px;
+  max-width:1220px;
   margin:0 auto;
 }
 
-.top{
+.topbar{
   display:flex;
+  align-items:center;
   justify-content:space-between;
-  align-items:center;
-  margin-bottom:30px;
+  gap:14px;
+  margin-bottom:14px;
 }
 
-.circle-btn{
-  width:54px;
-  height:54px;
-  border-radius:50%;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.08);
-  color:white;
-  font-size:26px;
+.brand-block{
   display:flex;
   align-items:center;
-  justify-content:center;
-  text-decoration:none;
+  gap:12px;
 }
 
-h1{
-  font-size:46px;
-  margin:0 0 20px;
-  letter-spacing:-.06em;
-}
-
-.summary-grid{
+.app-dot{
+  width:44px;
+  height:44px;
+  border-radius:16px;
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
+  place-items:center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.32), transparent 28%),
+    linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 14px 35px rgba(0,0,0,0.25);
+  font-weight:900;
 }
 
-.summary-card{
-  border-radius:22px;
-  padding:20px;
-  min-height:105px;
-  color:white;
-  position:relative;
-  overflow:hidden;
-}
-
-.summary-card h2{
-  margin:32px 0 0;
-  font-size:22px;
-}
-
-.summary-card .num{
-  position:absolute;
-  right:20px;
-  top:18px;
-  font-size:34px;
+.eyebrow{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
   font-weight:800;
 }
 
-.today{background:linear-gradient(135deg,#5ba8ff,#7bbcff)}
-.scheduled{background:linear-gradient(135deg,#e57373,#df7f85)}
-.all{background:linear-gradient(135deg,#333,#555)}
-.overdue{background:linear-gradient(135deg,#ff3b30,#ff6b5f)}
-.completed{background:linear-gradient(135deg,#8e9aa3,#aeb7bf)}
-.manual{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
-
-.section-title{
+h1{
+  margin:2px 0 0;
   font-size:28px;
-  margin:34px 0 14px;
-  letter-spacing:-.04em;
+  letter-spacing:-0.04em;
+  line-height:1.05;
 }
 
-.list-card{
-  background:var(--card);
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.back-btn,
+.icon-btn{
+  width:auto;
+  min-width:46px;
+  min-height:46px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:11px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#fff;
+  text-decoration:none;
+  font-weight:850;
+  font-size:14px;
+}
+
+.icon-btn{
+  font-size:22px;
+  padding:0 14px;
+}
+
+.back-btn:hover,
+.icon-btn:hover{
+  background:rgba(255,255,255,0.12);
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
   border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+}
+
+.overview{
+  padding:14px;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns:2fr repeat(4, 1fr);
+  gap:12px;
+}
+
+.summary-card,
+.kpi{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line2);
   border-radius:24px;
+  padding:16px;
+  min-height:112px;
+  position:relative;
   overflow:hidden;
+  cursor:pointer;
+}
+
+.summary-card:before{
+  content:"";
+  position:absolute;
+  inset:auto -60px -80px auto;
+  width:190px;
+  height:190px;
+  border-radius:999px;
+  background:rgba(255,59,48,0.16);
+  filter:blur(2px);
+}
+
+.kpi-title{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.kpi-value{
+  font-size:24px;
+  font-weight:900;
+  margin-top:5px;
+  letter-spacing:-0.03em;
+}
+
+.kpi-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.35;
+}
+
+.hero-number{
+  font-size:34px;
+  font-weight:950;
+  letter-spacing:-0.05em;
+  margin-top:4px;
+}
+
+.progress{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+  margin-top:14px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--accent), #ff7b72);
+}
+
+.mini-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+  position:relative;
+  z-index:1;
+}
+
+.workspace{
+  display:grid;
+  grid-template-columns:minmax(0, 1.35fr) minmax(330px, 0.65fr);
+  gap:14px;
+  margin-top:14px;
+  align-items:start;
+}
+
+.stack{
+  display:grid;
+  gap:14px;
+}
+
+.panel{
+  padding:16px;
+}
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.panel-title{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.02em;
+}
+
+.panel-copy{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+input,
+button{
+  width:100%;
+  min-height:46px;
+  padding:12px 13px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;
+  outline:none;
+}
+
+input:focus{
+  border-color:rgba(255,59,48,0.55);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.10);
+}
+
+input::placeholder{
+  color:#919aaa;
+}
+
+.primary-btn{
+  border:0;
+  border-radius:18px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
+  color:#fff;
+  font-weight:900;
+  margin-top:12px;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
+}
+
+.secondary-btn{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.09);
+  color:#fff;
+  font-weight:850;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.field{
+  display:block;
+}
+
+.field span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:750;
+  margin:0 0 7px;
+}
+
+.source-list{
+  display:grid;
+  gap:10px;
 }
 
 .source-row{
   display:flex;
   align-items:center;
-  gap:14px;
-  padding:16px;
-  border-bottom:1px solid rgba(255,255,255,.08);
+  gap:12px;
+  padding:13px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
   cursor:pointer;
 }
 
-.source-row:last-child{border-bottom:none}
+.source-row.active{
+  background:rgba(255,59,48,0.12);
+  border-color:rgba(255,59,48,0.26);
+}
 
 .source-icon{
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
+  width:42px;
+  height:42px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  font-size:21px;
   flex:0 0 auto;
 }
 
-.source-main{flex:1}
+.source-main{
+  flex:1;
+  min-width:0;
+}
 
 .source-name{
-  font-size:19px;
-  font-weight:700;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:-0.02em;
 }
 
 .source-count{
   color:var(--muted);
-  font-size:17px;
+  font-size:13px;
+  margin-top:3px;
 }
 
-.panel{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:24px;
-  margin-top:18px;
-  overflow:hidden;
+.source-arrow{
+  color:var(--muted);
+  font-weight:900;
 }
 
-.panel-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px;
-  border-bottom:1px solid rgba(255,255,255,.08);
+.reminder-list{
+  max-height:calc(100dvh - 318px);
+  overflow:auto;
+  padding-right:3px;
 }
 
-.panel-title{
-  font-size:21px;
-  font-weight:800;
+.reminder-list::-webkit-scrollbar{
+  width:8px;
+}
+
+.reminder-list::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.12);
+  border-radius:999px;
 }
 
 .reminder-item{
+  background:rgba(255,255,255,0.075);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:24px;
+  padding:14px;
+  margin-top:11px;
   display:flex;
   gap:12px;
-  padding:15px 16px;
-  border-bottom:1px solid rgba(255,255,255,.08);
+  align-items:flex-start;
 }
 
-.reminder-item:last-child{border-bottom:none}
+.reminder-item:first-child{
+  margin-top:0;
+}
 
 .check{
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  border:1px solid var(--line);
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.14);
+  background:rgba(255,255,255,0.065);
+  color:#fff;
   flex:0 0 auto;
-  margin-top:1px;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  font-weight:900;
 }
 
 .check.done{
   background:var(--green);
+  border-color:rgba(34,197,94,0.45);
+}
+
+.rem-main{
+  flex:1;
+  min-width:0;
 }
 
 .rem-title{
-  font-size:16px;
-  line-height:1.35;
-  font-weight:650;
+  font-size:15px;
+  line-height:1.45;
+  font-weight:850;
+  letter-spacing:-0.01em;
 }
 
 .rem-title.done{
@@ -211,102 +457,140 @@ h1{
 }
 
 .rem-meta{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:4px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:9px;
 }
 
-.badge{
-  display:inline-block;
-  margin-top:7px;
-  padding:4px 8px;
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 9px;
   border-radius:999px;
-  font-size:11px;
-  font-weight:800;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--soft);
+  font-size:12px;
+  font-weight:750;
 }
 
-.badge.overdue{background:rgba(255,59,48,.22);color:#ffb4ad}
-.badge.today-badge{background:rgba(255,159,10,.22);color:#ffd89a}
-.badge.upcoming{background:rgba(64,156,255,.22);color:#b9dcff}
-.badge.done-badge{background:rgba(52,199,89,.22);color:#b7f5c7}
+.chip.overdue{
+  background:rgba(239,68,68,0.14);
+  border-color:rgba(239,68,68,0.24);
+  color:#ffcbc7;
+}
+
+.chip.today{
+  background:rgba(245,158,11,0.14);
+  border-color:rgba(245,158,11,0.24);
+  color:#ffd89a;
+}
+
+.chip.upcoming{
+  background:rgba(96,165,250,0.12);
+  border-color:rgba(96,165,250,0.22);
+  color:#d7eaff;
+}
+
+.chip.done{
+  background:rgba(34,197,94,0.14);
+  border-color:rgba(34,197,94,0.22);
+  color:#d7ffdf;
+}
 
 .actions{
-  margin-left:auto;
+  flex:0 0 auto;
   display:flex;
   gap:8px;
-  align-items:flex-start;
 }
 
 .small-btn{
   width:auto;
-  padding:8px 10px;
+  min-height:38px;
   margin:0;
-  border-radius:11px;
-  border:none;
-  background:rgba(255,255,255,.10);
-  color:white;
-  font-weight:700;
+  padding:8px 11px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.09);
+  color:#fff;
+  font-size:13px;
+  font-weight:850;
 }
 
 .danger{
-  background:rgba(255,59,48,.22);
+  background:rgba(239,68,68,0.18);
 }
 
 .add-form{
   display:none;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:16px;
-  margin-top:18px;
-}
-
-input,button{
-  width:100%;
-  padding:13px;
-  margin-top:10px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:#24262b;
-  color:white;
-  font:inherit;
-}
-
-button{
-  background:var(--red);
-  border:none;
-  font-weight:800;
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.empty{
-  color:var(--muted);
-  padding:16px;
 }
 
 .notice{
-  color:var(--muted);
+  color:var(--soft);
   min-height:18px;
   font-size:13px;
   margin-top:10px;
 }
 
-@media(max-width:650px){
-  body{padding:18px;padding-bottom:110px}
-  h1{font-size:42px}
-  .summary-grid{grid-template-columns:repeat(2,1fr)}
-  .summary-card{min-height:96px;padding:17px}
-  .summary-card h2{font-size:19px}
-  .row{grid-template-columns:1fr}
+.empty{
+  color:var(--muted);
+  padding:14px 0;
+  font-size:13px;
 }
 
-@media(max-width:360px){
-  .summary-grid{grid-template-columns:1fr}
+@media(max-width:980px){
+  .kpis{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .summary-card{
+    grid-column:1 / -1;
+  }
+
+  .workspace{
+    grid-template-columns:1fr;
+  }
+
+  .reminder-list{
+    max-height:none;
+    overflow:visible;
+  }
+}
+
+@media(max-width:680px){
+  body{
+    padding:12px;
+    padding-bottom:80px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  h1{
+    font-size:24px;
+  }
+
+  .kpis,
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .top-actions{
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+
+  .reminder-item{
+    flex-direction:column;
+  }
+
+  .actions,
+  .small-btn{
+    width:100%;
+  }
 }
 </style>
 </head>
@@ -314,99 +598,132 @@ button{
 <body>
 <div class="page">
 
-  <div class="top">
-    <a href="dashboard.html" class="circle-btn">‹</a>
-    <button class="circle-btn" onclick="toggleAddForm()">＋</button>
-  </div>
-
-  <h1>Reminders</h1>
-
-  <div class="summary-grid">
-    <div class="summary-card today" onclick="setView('Today')">
-      <div class="num" id="todayCount">0</div>
-      <h2>Today</h2>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="app-dot">P</div>
+      <div>
+        <p class="eyebrow">Pace</p>
+        <h1>Reminders</h1>
+      </div>
     </div>
 
-    <div class="summary-card scheduled" onclick="setView('Scheduled')">
-      <div class="num" id="scheduledCount">0</div>
-      <h2>Scheduled</h2>
+    <div class="top-actions">
+      <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
+      <button class="icon-btn" onclick="toggleAddForm()">＋</button>
     </div>
+  </header>
 
-    <div class="summary-card all" onclick="setView('All')">
-      <div class="num" id="allCount">0</div>
-      <h2>All</h2>
-    </div>
+  <section class="card overview">
+    <div class="kpis" id="kpis"></div>
+  </section>
 
-    <div class="summary-card overdue" onclick="setView('Overdue')">
-      <div class="num" id="overdueCount">0</div>
-      <h2>Overdue</h2>
-    </div>
+  <main class="workspace">
 
-    <div class="summary-card completed" onclick="setView('Completed')">
-      <div class="num" id="completedCount">0</div>
-      <h2>Completed</h2>
-    </div>
+    <section class="card panel">
+      <div class="panel-head">
+        <div>
+          <h2 class="panel-title" id="viewTitle">Today</h2>
+          <p class="panel-copy">Everything due from To Do, Lists, Bookings, Creators and manual reminders.</p>
+        </div>
 
-    <div class="summary-card manual" onclick="toggleAddForm()">
-      <div class="num">＋</div>
-      <h2>Add</h2>
-    </div>
-  </div>
+        <button class="small-btn" onclick="setView('Today')">Reset</button>
+      </div>
 
-  <div class="add-form" id="addForm">
-    <h3 style="margin:0;">Add manual reminder</h3>
+      <div id="reminderList" class="reminder-list">
+        <div class="empty">Loading reminders...</div>
+      </div>
+    </section>
 
-    <input id="titleInput" placeholder="Reminder title">
-    <div class="row">
-      <input id="dateInput" type="date">
-      <input id="timeInput" type="time">
-    </div>
+    <aside class="stack">
 
-    <button onclick="addManualReminder()">Save reminder</button>
-    <div id="msg" class="notice"></div>
-  </div>
+      <div class="card panel add-form" id="addForm">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Add reminder</h2>
+            <p class="panel-copy">Create a manual nudge that sits alongside your app reminders.</p>
+          </div>
+        </div>
 
-  <h2 class="section-title">My Lists</h2>
+        <label class="field">
+          <span>Title</span>
+          <input id="titleInput" placeholder="Reminder title">
+        </label>
 
-  <div class="list-card">
-    <div class="source-row" onclick="setSource('to do')">
-      <div class="source-icon" style="background:#409cff;">✅</div>
-      <div class="source-main"><div class="source-name">To Do</div></div>
-      <div class="source-count" id="todoCount">0 ›</div>
-    </div>
+        <div class="form-grid">
+          <label class="field">
+            <span>Date</span>
+            <input id="dateInput" type="date">
+          </label>
 
-    <div class="source-row" onclick="setSource('list')">
-      <div class="source-icon" style="background:#ff2d55;">🧾</div>
-      <div class="source-main"><div class="source-name">Lists</div></div>
-      <div class="source-count" id="listCount">0 ›</div>
-    </div>
+          <label class="field">
+            <span>Time</span>
+            <input id="timeInput" type="time">
+          </label>
+        </div>
 
-    <div class="source-row" onclick="setSource('booking')">
-      <div class="source-icon" style="background:#ff9f0a;">📆</div>
-      <div class="source-main"><div class="source-name">Bookings</div></div>
-      <div class="source-count" id="bookingCount">0 ›</div>
-    </div>
+        <button class="primary-btn" onclick="addManualReminder()">Save reminder</button>
+        <div id="msg" class="notice"></div>
+      </div>
 
-    <div class="source-row" onclick="setSource('manual')">
-      <div class="source-icon" style="background:#8e8e93;">⏰</div>
-      <div class="source-main"><div class="source-name">Manual</div></div>
-      <div class="source-count" id="manualCount">0 ›</div>
-    </div>
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Sources</h2>
+            <p class="panel-copy">Jump into the type of reminder you want to check.</p>
+          </div>
+        </div>
 
-    <div class="source-row" onclick="setSource('creator')">
-      <div class="source-icon" style="background:#34c759;">🎬</div>
-      <div class="source-main"><div class="source-name">Creators</div></div>
-      <div class="source-count" id="creatorCount">0 ›</div>
-    </div>
-  </div>
+        <div class="source-list">
+          <div class="source-row" id="source-to-do" onclick="setSource('to do')">
+            <div class="source-icon" style="background:rgba(96,165,250,0.22);">✅</div>
+            <div class="source-main">
+              <div class="source-name">To Do</div>
+              <div class="source-count" id="todoCount">0 open</div>
+            </div>
+            <div class="source-arrow">›</div>
+          </div>
 
-  <div class="panel">
-    <div class="panel-head">
-      <div class="panel-title" id="viewTitle">Today</div>
-      <button class="small-btn" onclick="setView('Today')">Reset</button>
-    </div>
-    <div id="reminderList"></div>
-  </div>
+          <div class="source-row" id="source-list" onclick="setSource('list')">
+            <div class="source-icon" style="background:rgba(255,45,85,0.22);">🧾</div>
+            <div class="source-main">
+              <div class="source-name">Lists</div>
+              <div class="source-count" id="listCount">0 open</div>
+            </div>
+            <div class="source-arrow">›</div>
+          </div>
+
+          <div class="source-row" id="source-booking" onclick="setSource('booking')">
+            <div class="source-icon" style="background:rgba(245,158,11,0.22);">📆</div>
+            <div class="source-main">
+              <div class="source-name">Bookings</div>
+              <div class="source-count" id="bookingCount">0 open</div>
+            </div>
+            <div class="source-arrow">›</div>
+          </div>
+
+          <div class="source-row" id="source-manual" onclick="setSource('manual')">
+            <div class="source-icon" style="background:rgba(255,255,255,0.14);">⏰</div>
+            <div class="source-main">
+              <div class="source-name">Manual</div>
+              <div class="source-count" id="manualCount">0 open</div>
+            </div>
+            <div class="source-arrow">›</div>
+          </div>
+
+          <div class="source-row" id="source-creator" onclick="setSource('creator')">
+            <div class="source-icon" style="background:rgba(34,197,94,0.22);">🎬</div>
+            <div class="source-main">
+              <div class="source-name">Creators</div>
+              <div class="source-count" id="creatorCount">0 open</div>
+            </div>
+            <div class="source-arrow">›</div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
 
 </div>
 
@@ -437,21 +754,36 @@ const addForm = document.getElementById("addForm");
 const reminderList = document.getElementById("reminderList");
 const viewTitle = document.getElementById("viewTitle");
 const msg = document.getElementById("msg");
+const kpisEl = document.getElementById("kpis");
 
 function today(){
-  return new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function escapeHTML(value){
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function formatDate(date,time){
-  if(!date) return "";
+  if(!date) return "No date";
   const formatted = new Date(date + "T00:00:00").toLocaleDateString("en-GB");
-  return time ? `${formatted} • ${String(time).slice(0,5)}` : formatted;
+  return time ? `${formatted} · ${String(time).slice(0,5)}` : formatted;
 }
 
 function statusOf(row){
   const t = today();
 
   if(row.done) return "done";
+  if(!row.reminder_date) return "upcoming";
   if(row.reminder_date < t) return "overdue";
   if(row.reminder_date === t) return "today";
   return "upcoming";
@@ -468,26 +800,78 @@ function sourceLabel(source){
 function badge(row){
   const s = statusOf(row);
 
-  if(s === "overdue") return `<span class="badge overdue">Overdue</span>`;
-  if(s === "today") return `<span class="badge today-badge">Today</span>`;
-  if(s === "done") return `<span class="badge done-badge">Completed</span>`;
-  return `<span class="badge upcoming">Upcoming</span>`;
+  if(s === "overdue") return `<span class="chip overdue">Overdue</span>`;
+  if(s === "today") return `<span class="chip today">Today</span>`;
+  if(s === "done") return `<span class="chip done">Completed</span>`;
+  return `<span class="chip upcoming">Upcoming</span>`;
+}
+
+function activeRows(){
+  return allRows.filter(r => !r.done);
+}
+
+function updateSourceActive(){
+  document.querySelectorAll(".source-row").forEach(row => row.classList.remove("active"));
+
+  if(!currentSource) return;
+
+  const el = document.getElementById(`source-${currentSource.replace(/\s+/g, "-")}`);
+  if(el) el.classList.add("active");
 }
 
 function updateCounts(){
-  const activeRows = allRows.filter(r => !r.done);
+  const active = activeRows();
 
-  document.getElementById("todayCount").textContent = allRows.filter(r => statusOf(r) === "today").length;
-  document.getElementById("scheduledCount").textContent = activeRows.filter(r => r.reminder_date >= today()).length;
-  document.getElementById("allCount").textContent = allRows.length;
-  document.getElementById("overdueCount").textContent = allRows.filter(r => statusOf(r) === "overdue").length;
-  document.getElementById("completedCount").textContent = allRows.filter(r => r.done).length;
+  document.getElementById("todoCount").textContent = `${active.filter(r => r.source === "to do").length} open`;
+  document.getElementById("listCount").textContent = `${active.filter(r => r.source === "list").length} open`;
+  document.getElementById("bookingCount").textContent = `${active.filter(r => r.source === "booking").length} open`;
+  document.getElementById("manualCount").textContent = `${active.filter(r => r.source === "manual").length} open`;
+  document.getElementById("creatorCount").textContent = `${active.filter(r => r.source === "creator").length} open`;
+}
 
-  document.getElementById("todoCount").textContent = `${activeRows.filter(r => r.source === "to do").length} ›`;
-  document.getElementById("listCount").textContent = `${activeRows.filter(r => r.source === "list").length} ›`;
-  document.getElementById("bookingCount").textContent = `${activeRows.filter(r => r.source === "booking").length} ›`;
-  document.getElementById("manualCount").textContent = `${activeRows.filter(r => r.source === "manual").length} ›`;
-  document.getElementById("creatorCount").textContent = `${activeRows.filter(r => r.source === "creator").length} ›`;
+function renderKpis(){
+  const todayCount = allRows.filter(r => statusOf(r) === "today").length;
+  const scheduledCount = activeRows().filter(r => r.reminder_date >= today()).length;
+  const overdueCount = allRows.filter(r => statusOf(r) === "overdue").length;
+  const completedCount = allRows.filter(r => r.done).length;
+  const allCount = allRows.length;
+  const completion = allCount ? Math.round((completedCount / allCount) * 100) : 0;
+
+  kpisEl.innerHTML = `
+    <div class="summary-card" onclick="setView('Today')">
+      <div class="kpi-title">Due today</div>
+      <div class="hero-number">${todayCount}</div>
+      <div class="progress"><span style="width:${completion}%"></span></div>
+      <div class="mini-line">
+        <span>${completedCount} completed</span>
+        <span>${completion}% complete</span>
+      </div>
+    </div>
+
+    <div class="kpi" onclick="setView('Scheduled')">
+      <div class="kpi-title">Scheduled</div>
+      <div class="kpi-value">${scheduledCount}</div>
+      <div class="kpi-sub">Upcoming active nudges</div>
+    </div>
+
+    <div class="kpi" onclick="setView('All')">
+      <div class="kpi-title">All</div>
+      <div class="kpi-value">${allCount}</div>
+      <div class="kpi-sub">Every reminder</div>
+    </div>
+
+    <div class="kpi" onclick="setView('Overdue')">
+      <div class="kpi-title">Overdue</div>
+      <div class="kpi-value">${overdueCount}</div>
+      <div class="kpi-sub">Needs attention</div>
+    </div>
+
+    <div class="kpi" onclick="setView('Completed')">
+      <div class="kpi-title">Completed</div>
+      <div class="kpi-value">${completedCount}</div>
+      <div class="kpi-sub">Already handled</div>
+    </div>
+  `;
 }
 
 function filteredRows(){
@@ -512,6 +896,8 @@ function filteredRows(){
 
 function render(){
   updateCounts();
+  renderKpis();
+  updateSourceActive();
 
   const rows = filteredRows();
   viewTitle.textContent = currentSource ? sourceLabel(currentSource) : currentView;
@@ -522,23 +908,25 @@ function render(){
   }
 
   reminderList.innerHTML = rows.map(row => `
-    <div class="reminder-item">
+    <article class="reminder-item">
       <div class="check ${row.done ? "done" : ""}" onclick="toggleDone('${row.id}', ${row.done ? "false" : "true"}, '${row.source}')">
         ${row.done ? "✓" : ""}
       </div>
 
-      <div style="flex:1;min-width:0;">
-        <div class="rem-title ${row.done ? "done" : ""}">${row.title}</div>
+      <div class="rem-main">
+        <div class="rem-title ${row.done ? "done" : ""}">${escapeHTML(row.title)}</div>
+
         <div class="rem-meta">
-          ${formatDate(row.reminder_date,row.reminder_time)} • ${sourceLabel(row.source)}
+          <span class="chip">${formatDate(row.reminder_date,row.reminder_time)}</span>
+          <span class="chip">${sourceLabel(row.source)}</span>
+          ${badge(row)}
         </div>
-        ${badge(row)}
       </div>
 
       <div class="actions">
         ${row.synthetic ? "" : `<button class="small-btn danger" onclick="deleteReminder('${row.id}')">Delete</button>`}
       </div>
-    </div>
+    </article>
   `).join("");
 }
 
@@ -546,16 +934,16 @@ window.setView = function(view){
   currentView = view;
   currentSource = null;
   render();
-}
+};
 
 window.setSource = function(source){
   currentSource = source;
   render();
-}
+};
 
 window.toggleAddForm = function(){
   addForm.style.display = addForm.style.display === "block" ? "none" : "block";
-}
+};
 
 async function getUser(){
   const { data } = await supabase.auth.getUser();
@@ -595,7 +983,7 @@ async function loadBookingRows(){
         id:`booking-due-${b.id}`,
         source:"booking",
         source_id:b.id,
-        title:`${b.client_name || "Booking"} — balance/payment due`,
+        title:`${b.client_name || "Booking"} · balance or payment due`,
         reminder_date:b.due_date,
         reminder_time:null,
         done:false,
@@ -609,7 +997,7 @@ async function loadBookingRows(){
           id:`booking-new-${b.id}`,
           source:"booking",
           source_id:b.id,
-          title:`${b.client_name || "Booking"} — new event date`,
+          title:`${b.client_name || "Booking"} · new event date`,
           reminder_date:b.new_event_date,
           reminder_time:null,
           done:false,
@@ -621,7 +1009,7 @@ async function loadBookingRows(){
         id:`booking-event-${b.id}`,
         source:"booking",
         source_id:b.id,
-        title:`${b.client_name || "Booking"} — event date`,
+        title:`${b.client_name || "Booking"} · event date`,
         reminder_date:b.event_date,
         reminder_time:null,
         done:false,
@@ -681,7 +1069,7 @@ window.addManualReminder = async function(){
   msg.textContent = "Reminder added.";
 
   await load();
-}
+};
 
 window.toggleDone = async function(id, done, source){
   if(id.startsWith("booking-")){
@@ -692,7 +1080,8 @@ window.toggleDone = async function(id, done, source){
   const { error } = await supabase
     .from("reminders")
     .update({ done })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if(error){
     msg.textContent = error.message;
@@ -701,26 +1090,37 @@ window.toggleDone = async function(id, done, source){
 
   if(source === "to do"){
     const row = reminders.find(r => r.id === id);
+
     if(row?.source_id){
-      await supabase.from("tasks").update({ done }).eq("id", row.source_id);
+      await supabase
+        .from("tasks")
+        .update({ done })
+        .eq("id", row.source_id)
+        .eq("user_id", user.id);
     }
   }
 
   if(source === "list"){
     const row = reminders.find(r => r.id === id);
+
     if(row?.source_id){
-      await supabase.from("list_items").update({ done }).eq("id", row.source_id);
+      await supabase
+        .from("list_items")
+        .update({ done })
+        .eq("id", row.source_id)
+        .eq("user_id", user.id);
     }
   }
 
   await load();
-}
+};
 
 window.deleteReminder = async function(id){
   const { error } = await supabase
     .from("reminders")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if(error){
     msg.textContent = error.message;
@@ -728,7 +1128,7 @@ window.deleteReminder = async function(id){
   }
 
   await load();
-}
+};
 
 load();
 </script>
