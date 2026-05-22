@@ -380,21 +380,98 @@ select option{
   background:rgba(255,59,48,0.16);
 }
 
-.recoveryNotice{
+.notice{
   margin-bottom:10px;
-  border:1px solid rgba(34,197,94,0.24);
-  background:rgba(34,197,94,0.10);
-  color:#a7f3d0;
+  border:1px solid rgba(245,158,11,0.28);
+  background:rgba(245,158,11,0.10);
+  color:#fde68a;
   border-radius:16px;
   padding:10px 12px;
   font-size:12px;
   line-height:1.35;
 }
 
-.recoveryNotice.warning{
-  border-color:rgba(245,158,11,0.28);
-  background:rgba(245,158,11,0.10);
+.notice.good{
+  border-color:rgba(34,197,94,0.24);
+  background:rgba(34,197,94,0.10);
+  color:#a7f3d0;
+}
+
+.recoveryPanel{
+  display:none;
+  margin-bottom:12px;
+  border:1px solid rgba(245,158,11,0.28);
+  background:rgba(245,158,11,0.08);
+  border-radius:20px;
+  padding:12px;
+}
+
+.recoveryPanel.show{
+  display:block;
+}
+
+.recoveryTitle{
+  font-size:14px;
+  font-weight:950;
+}
+
+.recoveryHelp{
+  margin-top:4px;
   color:#fde68a;
+  font-size:12px;
+  line-height:1.35;
+}
+
+.storageResults{
+  margin-top:10px;
+  display:grid;
+  gap:8px;
+}
+
+.storageCard{
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(0,0,0,0.18);
+  border-radius:16px;
+  padding:10px;
+}
+
+.storageTop{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:flex-start;
+}
+
+.storageName{
+  font-size:12px;
+  font-weight:950;
+  word-break:break-word;
+}
+
+.storageMeta{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+
+.storagePreview{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+  margin-top:8px;
+  word-break:break-word;
+}
+
+.importBtn{
+  border:none;
+  cursor:pointer;
+  border-radius:999px;
+  padding:8px 10px;
+  background:var(--accent);
+  color:white;
+  font-size:11px;
+  font-weight:950;
+  white-space:nowrap;
 }
 
 .filters{
@@ -463,13 +540,6 @@ select option{
 
 .taskMain{
   min-width:0;
-}
-
-.taskTopLine{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  align-items:center;
 }
 
 .taskTitle{
@@ -721,7 +791,7 @@ select option{
     <div class="heroText">
       <h2>Your brain, organised.</h2>
       <p>
-        Add tasks, give them a category, set a priority and mark them off when they are done.
+        Add tasks, recover your old Life page tasks, and check things off without losing your original setup.
       </p>
     </div>
 
@@ -779,6 +849,7 @@ select option{
             <label for="taskCategory">Category</label>
             <select id="taskCategory">
               <option value="Life">Life</option>
+              <option value="Business">Business</option>
               <option value="Work">Work</option>
               <option value="Finance">Finance</option>
               <option value="Health">Health</option>
@@ -809,6 +880,7 @@ select option{
             <select id="taskArea">
               <option value="Today">Today</option>
               <option value="This week">This week</option>
+              <option value="Scheduled">Scheduled</option>
               <option value="Later">Later</option>
               <option value="Waiting">Waiting</option>
             </select>
@@ -839,16 +911,26 @@ select option{
 
       <div class="toolsRow">
         <input class="searchInput" id="searchInput" type="search" placeholder="Search tasks...">
-        <button class="recoverBtn" id="recoverOldBtn" type="button">Recover old</button>
+        <button class="recoverBtn" id="recoverOldBtn" type="button">Find old life tasks</button>
         <button class="clearBtn" id="clearDoneBtn" type="button">Clear done</button>
       </div>
 
-      <div class="recoveryNotice" id="recoveryNotice" hidden></div>
+      <div class="notice" id="noticeBox" hidden></div>
+
+      <div class="recoveryPanel" id="recoveryPanel">
+        <div class="recoveryTitle">Possible old Life tasks found</div>
+        <div class="recoveryHelp">
+          Look for the card that shows your missing Life or Business tasks. Tap Import this set.
+        </div>
+        <div class="storageResults" id="storageResults"></div>
+      </div>
 
       <div class="filters">
         <button class="filterBtn active" type="button" data-filter="All">All</button>
         <button class="filterBtn" type="button" data-filter="Open">Open</button>
         <button class="filterBtn" type="button" data-filter="Today">Today</button>
+        <button class="filterBtn" type="button" data-filter="Scheduled">Scheduled</button>
+        <button class="filterBtn" type="button" data-filter="Business">Business</button>
         <button class="filterBtn" type="button" data-filter="High">High</button>
         <button class="filterBtn" type="button" data-filter="Waiting">Waiting</button>
         <button class="filterBtn" type="button" data-filter="Done">Done</button>
@@ -907,7 +989,9 @@ const taskList = document.getElementById("taskList");
 const searchInput = document.getElementById("searchInput");
 const clearDoneBtn = document.getElementById("clearDoneBtn");
 const recoverOldBtn = document.getElementById("recoverOldBtn");
-const recoveryNotice = document.getElementById("recoveryNotice");
+const noticeBox = document.getElementById("noticeBox");
+const recoveryPanel = document.getElementById("recoveryPanel");
+const storageResults = document.getElementById("storageResults");
 const filterButtons = document.querySelectorAll(".filterBtn");
 
 const openCount = document.getElementById("openCount");
@@ -915,48 +999,13 @@ const todayCount = document.getElementById("todayCount");
 const highCount = document.getElementById("highCount");
 const doneCount = document.getElementById("doneCount");
 
-const storageKey = "pace_life_tasks_v1";
-const backupKey = "pace_life_tasks_backup_v1";
-
-const legacyStorageKeys = [
-  "pace_life_tasks",
-  "pace_life_tasks_old",
-  "pace_life_items_v1",
-  "pace_life_items",
-  "pace_todo_tasks_v1",
-  "pace_todo_tasks",
-  "pace_to_do_tasks_v1",
-  "pace_to_do_tasks",
-  "pace_todos_v1",
-  "pace_todos",
-  "pace_tasks_v1",
-  "pace_tasks",
-  "todo_tasks",
-  "todoTasks",
-  "todos",
-  "tasks",
-  "life_tasks",
-  "lifeTasks",
-  "quick_tasks",
-  "quickTasks",
-  "pace_quick_tasks_v1",
-  "pace_dashboard_quick_tasks_v1"
-];
+const storageKey = "pace_life_tasks_v2";
+const oldNewCodeKey = "pace_life_tasks_v1";
+const backupKey = "pace_life_tasks_backup_before_recovery_v2";
 
 let activeFilter = "All";
-let tasks = getSavedCurrentTasks();
-
-function getSavedCurrentTasks(){
-  const saved = safeJsonParse(localStorage.getItem(storageKey));
-
-  if(!Array.isArray(saved)){
-    return [];
-  }
-
-  return saved
-    .map((item, index) => normaliseTask(item, storageKey, index))
-    .filter(Boolean);
-}
+let tasks = loadCurrentTasks();
+let recoveryMatches = [];
 
 function safeJsonParse(value){
   if(!value){
@@ -970,19 +1019,27 @@ function safeJsonParse(value){
   }
 }
 
-function todayString(){
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+function loadCurrentTasks(){
+  const fresh = safeJsonParse(localStorage.getItem(storageKey));
+
+  if(Array.isArray(fresh)){
+    return fresh.map((item, index) => normaliseTask(item, "current", index, {})).filter(Boolean);
+  }
+
+  const previousNew = safeJsonParse(localStorage.getItem(oldNewCodeKey));
+
+  if(Array.isArray(previousNew)){
+    return previousNew.map((item, index) => normaliseTask(item, oldNewCodeKey, index, {})).filter(Boolean);
+  }
+
+  return [];
 }
 
 function saveTasks(){
   localStorage.setItem(storageKey, JSON.stringify(tasks));
 }
 
-function backupTasks(){
+function saveBackup(){
   localStorage.setItem(backupKey, JSON.stringify(tasks));
 }
 
@@ -994,6 +1051,18 @@ function cleanText(value){
   return String(value).trim();
 }
 
+function lower(value){
+  return cleanText(value).toLowerCase();
+}
+
+function todayString(){
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function cleanDate(value){
   const raw = cleanText(value);
 
@@ -1003,6 +1072,11 @@ function cleanDate(value){
 
   if(/^\d{4}-\d{2}-\d{2}$/.test(raw)){
     return raw;
+  }
+
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(raw)){
+    const parts = raw.split("/");
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
   }
 
   const parsed = new Date(raw);
@@ -1018,11 +1092,32 @@ function cleanDate(value){
   return `${year}-${month}-${day}`;
 }
 
-function cleanCategory(value){
+function formatDate(dateValue){
+  if(!dateValue){
+    return "";
+  }
+
+  const date = new Date(dateValue + "T00:00:00");
+
+  return date.toLocaleDateString("en-GB", {
+    day:"numeric",
+    month:"short"
+  });
+}
+
+function inferCategory(value, context){
   const raw = cleanText(value);
+  const contextText = lower([
+    context.section,
+    context.group,
+    context.list,
+    context.key,
+    context.path
+  ].join(" "));
 
   const allowed = [
     "Life",
+    "Business",
     "Work",
     "Finance",
     "Health",
@@ -1035,38 +1130,76 @@ function cleanCategory(value){
     return raw;
   }
 
+  const rawLower = raw.toLowerCase();
+
+  if(rawLower.includes("business") || contextText.includes("business")){
+    return "Business";
+  }
+
+  if(rawLower.includes("work") || contextText.includes("work")){
+    return "Work";
+  }
+
+  if(rawLower.includes("money") || rawLower.includes("finance") || contextText.includes("finance")){
+    return "Finance";
+  }
+
+  if(rawLower.includes("health") || contextText.includes("health")){
+    return "Health";
+  }
+
+  if(rawLower.includes("faith") || rawLower.includes("prayer") || contextText.includes("faith")){
+    return "Faith";
+  }
+
+  if(rawLower.includes("creator") || rawLower.includes("content") || contextText.includes("creator")){
+    return "Creators";
+  }
+
+  if(rawLower.includes("admin") || contextText.includes("admin")){
+    return "Admin";
+  }
+
   return "Life";
 }
 
-function cleanPriority(value){
-  const raw = cleanText(value);
+function inferPriority(value){
+  const raw = lower(value);
 
-  if(raw === "High" || raw === "Low" || raw === "Normal"){
-    return raw;
+  if(raw === "high" || raw === "urgent" || raw === "important"){
+    return "High";
   }
 
-  if(raw.toLowerCase() === "urgent"){
-    return "High";
+  if(raw === "low"){
+    return "Low";
   }
 
   return "Normal";
 }
 
-function cleanArea(value, due){
-  const raw = cleanText(value);
+function inferArea(value, due, context){
+  const raw = lower(value);
+  const contextText = lower([
+    context.section,
+    context.group,
+    context.list,
+    context.key,
+    context.path
+  ].join(" "));
 
-  const allowed = [
-    "Today",
-    "This week",
-    "Later",
-    "Waiting"
-  ];
-
-  if(allowed.includes(raw)){
-    return raw;
+  if(raw.includes("waiting")){
+    return "Waiting";
   }
 
-  if(raw.toLowerCase() === "done"){
+  if(raw.includes("scheduled") || raw.includes("schedule") || contextText.includes("scheduled") || contextText.includes("routine")){
+    return "Scheduled";
+  }
+
+  if(raw.includes("week")){
+    return "This week";
+  }
+
+  if(raw.includes("later")){
     return "Later";
   }
 
@@ -1074,41 +1207,88 @@ function cleanArea(value, due){
     return "Today";
   }
 
+  if(due){
+    return "Scheduled";
+  }
+
   return "Today";
 }
 
-function cleanDone(item){
-  if(typeof item === "string"){
+function inferDone(item){
+  if(typeof item !== "object" || item === null){
     return false;
   }
 
   return item.done === true ||
     item.completed === true ||
-    item.isDone === true ||
+    item.complete === true ||
     item.checked === true ||
-    cleanText(item.status).toLowerCase() === "done" ||
-    cleanText(item.state).toLowerCase() === "done";
+    item.checkedOff === true ||
+    item.isDone === true ||
+    lower(item.status) === "done" ||
+    lower(item.status) === "complete" ||
+    lower(item.state) === "done";
 }
 
-function normaliseTask(item, sourceKey, index){
+function getTitleFromItem(item){
   if(typeof item === "string"){
-    const stringTitle = item.trim();
+    return cleanText(item);
+  }
 
-    if(!stringTitle){
+  if(!item || typeof item !== "object"){
+    return "";
+  }
+
+  return cleanText(
+    item.title ||
+    item.text ||
+    item.task ||
+    item.taskTitle ||
+    item.name ||
+    item.label ||
+    item.item ||
+    item.content ||
+    item.value ||
+    item.description
+  );
+}
+
+function getDueFromItem(item){
+  if(!item || typeof item !== "object"){
+    return "";
+  }
+
+  return cleanDate(
+    item.due ||
+    item.dueDate ||
+    item.date ||
+    item.scheduledDate ||
+    item.scheduleDate ||
+    item.nextDue ||
+    item.deadline ||
+    item.day
+  );
+}
+
+function normaliseTask(item, source, index, context){
+  if(typeof item === "string"){
+    const title = cleanText(item);
+
+    if(!title){
       return null;
     }
 
     return {
-      id:`${sourceKey}_${index}_${Date.now()}`,
-      title:stringTitle,
-      category:"Life",
+      id:`${source}_${index}_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+      title:title,
+      category:inferCategory("", context),
       priority:"Normal",
       due:"",
-      area:"Today",
+      area:inferArea("", "", context),
       notes:"",
       done:false,
       createdAt:new Date().toISOString(),
-      recoveredFrom:sourceKey
+      recoveredFrom:source
     };
   }
 
@@ -1116,217 +1296,363 @@ function normaliseTask(item, sourceKey, index){
     return null;
   }
 
-  const title =
-    cleanText(item.title) ||
-    cleanText(item.text) ||
-    cleanText(item.task) ||
-    cleanText(item.taskTitle) ||
-    cleanText(item.name) ||
-    cleanText(item.label) ||
-    cleanText(item.content) ||
-    cleanText(item.value);
+  const title = getTitleFromItem(item);
 
   if(!title){
     return null;
   }
 
-  const due = cleanDate(item.due || item.dueDate || item.date || item.deadline);
+  const due = getDueFromItem(item);
+  const category = inferCategory(item.category || item.type || item.list || item.group || item.section, context);
+  const priority = inferPriority(item.priority || item.level || item.importance);
+  const area = inferArea(item.area || item.bucket || item.status || item.section || item.repeat || item.frequency || item.schedule, due, context);
+
+  const notesPieces = [
+    cleanText(item.notes),
+    cleanText(item.note),
+    cleanText(item.details),
+    cleanText(item.extra),
+    cleanText(item.frequency || item.repeat || item.repeatEvery || item.recurring ? `Schedule: ${item.frequency || item.repeat || item.repeatEvery || item.recurring}` : ""),
+    cleanText(context.section ? `Old section: ${context.section}` : ""),
+    cleanText(context.path ? `Recovered from: ${context.path}` : "")
+  ].filter(Boolean);
 
   return {
-    id:item.id ? `${sourceKey}_${item.id}` : `${sourceKey}_${index}_${Date.now()}`,
+    id:item.id ? `${source}_${item.id}` : `${source}_${index}_${Date.now()}_${Math.random().toString(16).slice(2)}`,
     title:title,
-    category:cleanCategory(item.category || item.type),
-    priority:cleanPriority(item.priority || item.level),
+    category:category,
+    priority:priority,
     due:due,
-    area:cleanArea(item.area || item.section || item.bucket || item.status, due),
-    notes:cleanText(item.notes || item.note || item.description || item.details),
-    done:cleanDone(item),
-    createdAt:item.createdAt || item.created || new Date().toISOString(),
-    recoveredFrom:sourceKey
+    area:area,
+    notes:notesPieces.join(" • "),
+    done:inferDone(item),
+    createdAt:item.createdAt || item.created || item.addedAt || new Date().toISOString(),
+    recoveredFrom:source
   };
 }
 
-function extractTaskArray(parsed){
-  if(Array.isArray(parsed)){
-    return parsed;
+function objectHasChildArrays(object){
+  if(!object || typeof object !== "object" || Array.isArray(object)){
+    return false;
   }
 
-  if(!parsed || typeof parsed !== "object"){
-    return [];
+  return Object.values(object).some(value => Array.isArray(value));
+}
+
+function looksLikeTaskObject(object, context){
+  if(!object || typeof object !== "object" || Array.isArray(object)){
+    return false;
   }
 
-  const possibleArrayKeys = [
-    "tasks",
-    "todos",
-    "items",
-    "list",
-    "taskList",
-    "quickTasks",
-    "lifeTasks",
-    "entries",
-    "data"
-  ];
+  if(objectHasChildArrays(object)){
+    const hasOnlyContainerTitle =
+      getTitleFromItem(object) &&
+      !object.task &&
+      !object.text &&
+      !object.taskTitle &&
+      !object.item &&
+      !object.content;
 
-  for(const key of possibleArrayKeys){
-    if(Array.isArray(parsed[key])){
-      return parsed[key];
+    if(hasOnlyContainerTitle){
+      return false;
     }
   }
 
-  return [];
-}
+  const title = getTitleFromItem(object);
 
-function isExcludedStorageKey(key){
-  const lowerKey = key.toLowerCase();
-
-  const excludedWords = [
-    "attendance",
-    "booking",
-    "bookings",
-    "finance",
-    "income",
-    "creator_income",
-    "health",
-    "quiet",
-    "shoot",
-    "shot",
-    "reminder",
-    "weekly",
-    "manifest",
-    "theme"
-  ];
-
-  return excludedWords.some(word => lowerKey.includes(word));
-}
-
-function isLikelyOldTaskKey(key, wideScan){
-  if(!key || key === storageKey || key === backupKey){
+  if(!title){
     return false;
   }
 
-  if(isExcludedStorageKey(key)){
-    return false;
-  }
+  const keys = Object.keys(object).join(" ").toLowerCase();
+  const contextText = lower([
+    context.key,
+    context.path,
+    context.section,
+    context.group,
+    context.list
+  ].join(" "));
 
-  if(legacyStorageKeys.includes(key)){
-    return true;
-  }
-
-  const lowerKey = key.toLowerCase();
-
-  const likelyWords = [
+  const taskSignals = [
     "task",
     "todo",
-    "to_do",
-    "to-do",
     "life",
-    "quick"
+    "business",
+    "schedule",
+    "scheduled",
+    "check",
+    "routine",
+    "habit",
+    "done",
+    "complete",
+    "due",
+    "date",
+    "category",
+    "priority",
+    "area",
+    "section",
+    "repeat",
+    "frequency"
   ];
 
-  if(likelyWords.some(word => lowerKey.includes(word))){
-    return true;
+  return taskSignals.some(signal => keys.includes(signal) || contextText.includes(signal));
+}
+
+function collectTasksDeep(value, source, context, results, depth){
+  if(depth > 8){
+    return;
   }
 
-  return wideScan;
+  if(Array.isArray(value)){
+    value.forEach((item, index) => {
+      collectTasksDeep(item, source, {
+        ...context,
+        path:`${context.path}[${index}]`
+      }, results, depth + 1);
+    });
+
+    return;
+  }
+
+  if(typeof value === "string"){
+    if(context.path && lower(context.path).includes("task")){
+      const task = normaliseTask(value, source, results.length, context);
+
+      if(task){
+        results.push(task);
+      }
+    }
+
+    return;
+  }
+
+  if(!value || typeof value !== "object"){
+    return;
+  }
+
+  const containerName = cleanText(value.title || value.name || value.label || value.section || value.group || value.category || context.section);
+
+  const nextContext = {
+    ...context,
+    section:containerName || context.section,
+    group:cleanText(value.group || context.group),
+    list:cleanText(value.list || context.list)
+  };
+
+  if(looksLikeTaskObject(value, nextContext)){
+    const task = normaliseTask(value, source, results.length, nextContext);
+
+    if(task){
+      results.push(task);
+    }
+  }
+
+  Object.entries(value).forEach(([key, child]) => {
+    const keyLower = key.toLowerCase();
+
+    if(keyLower === "settings" || keyLower === "theme" || keyLower === "icon"){
+      return;
+    }
+
+    const childContext = {
+      ...nextContext,
+      key:key,
+      path:context.path ? `${context.path}.${key}` : key,
+      section:keyLower.includes("business") ? "Business" : nextContext.section,
+      group:keyLower.includes("business") ? "Business" : nextContext.group,
+      list:keyLower.includes("business") ? "Business" : nextContext.list
+    };
+
+    if(typeof child === "boolean" && cleanText(key).length > 2){
+      results.push({
+        id:`${source}_${key}_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        title:key,
+        category:inferCategory("", childContext),
+        priority:"Normal",
+        due:"",
+        area:inferArea("", "", childContext),
+        notes:cleanText(childContext.path ? `Recovered from: ${childContext.path}` : ""),
+        done:child,
+        createdAt:new Date().toISOString(),
+        recoveredFrom:source
+      });
+
+      return;
+    }
+
+    collectTasksDeep(child, source, childContext, results, depth + 1);
+  });
 }
 
 function taskSignature(task){
   return [
-    cleanText(task.title).toLowerCase(),
-    cleanText(task.notes).toLowerCase(),
-    cleanText(task.due),
-    cleanText(task.category),
-    cleanText(task.priority),
-    cleanText(task.area)
+    lower(task.title),
+    lower(task.category),
+    lower(task.due),
+    lower(task.area)
   ].join("|");
 }
 
-function importOldTasks(wideScan = false){
-  const allKeys = Object.keys(localStorage);
+function scanOneStorage(storage, storageName){
+  const matches = [];
 
-  const keysToCheck = [
-    ...legacyStorageKeys,
-    ...allKeys
-  ].filter((key, index, array) => {
-    return array.indexOf(key) === index && isLikelyOldTaskKey(key, wideScan);
+  for(let i = 0; i < storage.length; i++){
+    const key = storage.key(i);
+    const raw = storage.getItem(key);
+    const parsed = safeJsonParse(raw);
+
+    if(parsed === null){
+      continue;
+    }
+
+    const foundTasks = [];
+
+    collectTasksDeep(parsed, `${storageName}:${key}`, {
+      key:key,
+      path:key,
+      section:"",
+      group:"",
+      list:""
+    }, foundTasks, 0);
+
+    const unique = [];
+    const seen = new Set();
+
+    foundTasks.forEach(task => {
+      const signature = taskSignature(task);
+
+      if(seen.has(signature)){
+        return;
+      }
+
+      seen.add(signature);
+      unique.push(task);
+    });
+
+    if(unique.length > 0){
+      matches.push({
+        source:`${storageName}:${key}`,
+        key:key,
+        tasks:unique
+      });
+    }
+  }
+
+  return matches;
+}
+
+function scanForOldLifeTasks(){
+  const localMatches = scanOneStorage(localStorage, "localStorage");
+  const sessionMatches = scanOneStorage(sessionStorage, "sessionStorage");
+
+  recoveryMatches = [
+    ...localMatches,
+    ...sessionMatches
+  ].filter(match => match.source !== `localStorage:${storageKey}`);
+
+  recoveryMatches.sort((a, b) => b.tasks.length - a.tasks.length);
+
+  renderRecoveryMatches();
+
+  if(recoveryMatches.length === 0){
+    showNotice("No old Life task data was found in this browser storage. Try opening this on the same device and browser where you originally added the tasks.", false);
+  }else{
+    showNotice(`Found ${recoveryMatches.length} possible old storage set${recoveryMatches.length === 1 ? "" : "s"}. Check the cards below and import the one that looks right.`, true);
+  }
+}
+
+function renderRecoveryMatches(){
+  storageResults.innerHTML = "";
+
+  if(recoveryMatches.length === 0){
+    recoveryPanel.classList.remove("show");
+    return;
+  }
+
+  recoveryPanel.classList.add("show");
+
+  recoveryMatches.forEach((match, index) => {
+    const card = document.createElement("div");
+    card.className = "storageCard";
+
+    const top = document.createElement("div");
+    top.className = "storageTop";
+
+    const left = document.createElement("div");
+
+    const name = document.createElement("div");
+    name.className = "storageName";
+    name.textContent = match.source;
+
+    const meta = document.createElement("div");
+    meta.className = "storageMeta";
+    meta.textContent = `${match.tasks.length} possible task${match.tasks.length === 1 ? "" : "s"}`;
+
+    left.appendChild(name);
+    left.appendChild(meta);
+
+    const button = document.createElement("button");
+    button.className = "importBtn";
+    button.type = "button";
+    button.textContent = "Import this set";
+
+    button.addEventListener("click", () => {
+      importRecoveryMatch(index);
+    });
+
+    top.appendChild(left);
+    top.appendChild(button);
+
+    const preview = document.createElement("div");
+    preview.className = "storagePreview";
+    preview.textContent = match.tasks.slice(0, 6).map(task => task.title).join(" • ");
+
+    card.appendChild(top);
+    card.appendChild(preview);
+
+    storageResults.appendChild(card);
   });
+}
 
-  const existingSignatures = new Set(tasks.map(taskSignature));
-  const recoveredTasks = [];
-  const recoverySources = [];
+function importRecoveryMatch(index){
+  const match = recoveryMatches[index];
 
-  keysToCheck.forEach(key => {
-    const parsed = safeJsonParse(localStorage.getItem(key));
-    const possibleTasks = extractTaskArray(parsed);
+  if(!match){
+    return;
+  }
 
-    if(!possibleTasks.length){
+  saveBackup();
+
+  const existing = new Set(tasks.map(taskSignature));
+  let imported = 0;
+
+  match.tasks.forEach(task => {
+    const signature = taskSignature(task);
+
+    if(existing.has(signature)){
       return;
     }
 
-    possibleTasks.forEach((item, index) => {
-      const normalised = normaliseTask(item, key, index);
-
-      if(!normalised){
-        return;
-      }
-
-      const signature = taskSignature(normalised);
-
-      if(existingSignatures.has(signature)){
-        return;
-      }
-
-      existingSignatures.add(signature);
-      recoveredTasks.push(normalised);
-
-      if(!recoverySources.includes(key)){
-        recoverySources.push(key);
-      }
-    });
+    existing.add(signature);
+    tasks.unshift(task);
+    imported++;
   });
 
-  if(recoveredTasks.length > 0){
-    tasks = [
-      ...recoveredTasks,
-      ...tasks
-    ];
+  saveTasks();
+  renderTasks();
 
-    backupTasks();
-    saveTasks();
-
-    showRecoveryNotice(
-      `Recovered ${recoveredTasks.length} old task${recoveredTasks.length === 1 ? "" : "s"}. They are now saved into this new To Do page.`,
-      false
-    );
-
-    console.log("Pace recovered old tasks from:", recoverySources);
-  }
-
-  return recoveredTasks.length;
+  showNotice(`Imported ${imported} old task${imported === 1 ? "" : "s"} from ${match.key}. A backup was saved before import.`, true);
 }
 
-function showRecoveryNotice(message, warning = false){
-  recoveryNotice.textContent = message;
-  recoveryNotice.hidden = false;
+function showNotice(message, good){
+  noticeBox.textContent = message;
+  noticeBox.hidden = false;
 
-  if(warning){
-    recoveryNotice.classList.add("warning");
+  if(good){
+    noticeBox.classList.add("good");
   }else{
-    recoveryNotice.classList.remove("warning");
+    noticeBox.classList.remove("good");
   }
-}
-
-function formatDate(dateValue){
-  if(!dateValue){
-    return "";
-  }
-
-  const date = new Date(dateValue + "T00:00:00");
-
-  return date.toLocaleDateString("en-GB", {
-    day:"numeric",
-    month:"short"
-  });
 }
 
 function updateStats(){
@@ -1354,7 +1680,15 @@ function getBadgeClass(value){
     return "badge blue";
   }
 
+  if(value === "Scheduled"){
+    return "badge blue";
+  }
+
   if(value === "Waiting"){
+    return "badge amber";
+  }
+
+  if(value === "Business"){
     return "badge amber";
   }
 
@@ -1366,11 +1700,11 @@ function getFilteredTasks(){
 
   return tasks.filter(task => {
     const matchesSearch =
-      cleanText(task.title).toLowerCase().includes(searchTerm) ||
-      cleanText(task.category).toLowerCase().includes(searchTerm) ||
-      cleanText(task.area).toLowerCase().includes(searchTerm) ||
-      cleanText(task.priority).toLowerCase().includes(searchTerm) ||
-      cleanText(task.notes).toLowerCase().includes(searchTerm);
+      lower(task.title).includes(searchTerm) ||
+      lower(task.category).includes(searchTerm) ||
+      lower(task.area).includes(searchTerm) ||
+      lower(task.priority).includes(searchTerm) ||
+      lower(task.notes).includes(searchTerm);
 
     if(!matchesSearch){
       return false;
@@ -1390,6 +1724,14 @@ function getFilteredTasks(){
 
     if(activeFilter === "Today"){
       return !task.done && (task.area === "Today" || task.due === todayString());
+    }
+
+    if(activeFilter === "Scheduled"){
+      return !task.done && (task.area === "Scheduled" || task.due);
+    }
+
+    if(activeFilter === "Business"){
+      return task.category === "Business";
     }
 
     if(activeFilter === "High"){
@@ -1414,7 +1756,7 @@ function renderTasks(){
   if(filteredTasks.length === 0){
     const empty = document.createElement("div");
     empty.className = "emptyState";
-    empty.textContent = "No tasks here yet. Add one task, tap Recover old, or change the filter.";
+    empty.textContent = "No tasks showing. Tap Find old life tasks to search for your old scheduled Life and Business tasks.";
     taskList.appendChild(empty);
     return;
   }
@@ -1438,20 +1780,24 @@ function renderTasks(){
     const taskMain = document.createElement("div");
     taskMain.className = "taskMain";
 
-    const taskTopLine = document.createElement("div");
-    taskTopLine.className = "taskTopLine";
-
     const title = document.createElement("div");
     title.className = "taskTitle";
     title.textContent = task.title;
 
-    taskTopLine.appendChild(title);
+    taskMain.appendChild(title);
+
+    if(task.notes){
+      const notes = document.createElement("div");
+      notes.className = "taskNotes";
+      notes.textContent = task.notes;
+      taskMain.appendChild(notes);
+    }
 
     const badges = document.createElement("div");
     badges.className = "badges";
 
     const categoryBadge = document.createElement("span");
-    categoryBadge.className = "badge";
+    categoryBadge.className = getBadgeClass(task.category);
     categoryBadge.textContent = task.category;
     badges.appendChild(categoryBadge);
 
@@ -1470,15 +1816,6 @@ function renderTasks(){
       dueBadge.className = task.due === todayString() ? "badge red" : "badge blue";
       dueBadge.textContent = "Due " + formatDate(task.due);
       badges.appendChild(dueBadge);
-    }
-
-    taskMain.appendChild(taskTopLine);
-
-    if(task.notes){
-      const notes = document.createElement("div");
-      notes.className = "taskNotes";
-      notes.textContent = task.notes;
-      taskMain.appendChild(notes);
     }
 
     taskMain.appendChild(badges);
@@ -1543,7 +1880,7 @@ taskForm.addEventListener("submit", event => {
   }
 
   tasks.unshift({
-    id:`new_${Date.now()}`,
+    id:`new_${Date.now()}_${Math.random().toString(16).slice(2)}`,
     title:title,
     category:taskCategory.value,
     priority:taskPriority.value,
@@ -1575,31 +1912,19 @@ filterButtons.forEach(button => {
 searchInput.addEventListener("input", renderTasks);
 
 clearDoneBtn.addEventListener("click", () => {
+  saveBackup();
   tasks = tasks.filter(task => !task.done);
   saveTasks();
   renderTasks();
+  showNotice("Done tasks cleared. A backup was saved first.", true);
 });
 
 recoverOldBtn.addEventListener("click", () => {
-  const recovered = importOldTasks(true);
-
-  if(recovered === 0){
-    showRecoveryNotice(
-      "I could not find any extra old tasks in this browser. If they were saved on another device or another browser, open the app there first.",
-      true
-    );
-  }
-
-  renderTasks();
+  scanForOldLifeTasks();
 });
 
-const recoveredOnLoad = importOldTasks(false);
-
-if(recoveredOnLoad === 0 && tasks.length === 0){
-  showRecoveryNotice(
-    "No tasks are showing yet. Tap Recover old to do a wider search through this browser storage.",
-    true
-  );
+if(tasks.length === 0){
+  showNotice("Your new To Do storage is empty. Tap Find old life tasks to look for your old Life and Business check off tasks.", false);
 }
 
 renderTasks();
