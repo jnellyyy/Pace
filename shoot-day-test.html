@@ -1,0 +1,397 @@
+Yes. Create this new file:
+
+shoot-day-test.html
+
+Paste this full code into it. Then add it to your dashboard later.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pace Shoot Day</title>
+<link rel="manifest" href="/Pace/site.webmanifest">
+<link rel="apple-touch-icon" href="/Pace/icon-180.png">
+<link rel="icon" href="/Pace/icon-32.png">
+<meta name="theme-color" content="#0f1115">
+<style>
+:root{
+  --bg:#0f1115;
+  --panel:#171b22;
+  --line:rgba(255,255,255,0.10);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --accent:#ff3b30;
+  --green:#22c55e;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:16px;
+  background:linear-gradient(180deg,#0f1115,#171a20);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+}
+.wrap{max-width:1100px;margin:0 auto}
+.card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+  margin-top:14px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.back{
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  text-decoration:none;
+  font-weight:800;
+}
+h1,h2,h3,p{margin-top:0}
+.muted{
+  color:var(--muted);
+  line-height:1.5;
+}
+.tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:6px;
+}
+.tab{
+  width:auto;
+  flex:0 0 auto;
+  padding:10px 13px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  border:1px solid rgba(255,255,255,0.08);
+  font-weight:800;
+}
+.tab.active{
+  background:var(--accent);
+}
+button{
+  border:none;
+  cursor:pointer;
+  font:inherit;
+}
+.rule-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.rule{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:14px;
+}
+.timeline{
+  display:grid;
+  gap:12px;
+}
+.shot{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:14px;
+}
+.shot.done{
+  opacity:.55;
+}
+.shot-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+.check{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);
+  color:white;
+  flex:0 0 auto;
+  font-weight:900;
+}
+.check.done{
+  background:var(--green);
+}
+.location{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:5px;
+}
+.shot-title{
+  font-size:18px;
+  font-weight:900;
+  line-height:1.2;
+}
+.meta{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.meta-box{
+  background:rgba(255,255,255,0.06);
+  border-radius:14px;
+  padding:10px;
+}
+.meta-label{
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:4px;
+}
+.meta-value{
+  font-weight:800;
+  font-size:13px;
+}
+.note{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+.progress{
+  height:12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+  margin-top:10px;
+}
+.progress-fill{
+  height:100%;
+  background:var(--green);
+  width:0%;
+}
+.clear{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(239,68,68,0.18);
+  color:white;
+  font-weight:900;
+}
+@media(max-width:700px){
+  .rule-grid,.meta{
+    grid-template-columns:1fr;
+  }
+  .shot-title{
+    font-size:17px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="topbar">
+      <div>
+        <h1>Marvin + Blessing</h1>
+        <p class="muted">Shoot day run sheet — tap each section quickly on the day.</p>
+      </div>
+      <a href="dashboard.html" class="back">← Dashboard</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="rule-grid">
+      <div class="rule">
+        <h3>Lens rule</h3>
+        <p class="muted">
+          Wide = 24mm<br>
+          Mid = 35–50mm<br>
+          Close = 70mm<br>
+          Creative = best lens for style/movement
+        </p>
+      </div>
+      <div class="rule">
+        <h3>FPS rule</h3>
+        <p class="muted">
+          25fps = live audio, ceremony, speeches<br>
+          50fps = prep, portraits, reactions, entrances, dancing
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="tabs" id="tabs"></div>
+    <div class="progress">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <p class="muted" id="progressText" style="margin:10px 0 0;"></p>
+  </div>
+  <div class="card">
+    <h2 id="sectionTitle"></h2>
+    <div class="timeline" id="shotList"></div>
+  </div>
+  <button class="clear" onclick="clearSection()">Clear current section ticks</button>
+</div>
+<script>
+const sections = {
+  "Prep": [
+    ["The Mount Hotel — groom room","wide 24mm 50fps","Room setup / suit area","Slow pan / handheld settle","Get clean establishing clips."],
+    ["The Mount Hotel — groom room","mid 35–50mm 50fps","Marvin adjusting tie / jacket","Gentle handheld","Look for calm groom energy."],
+    ["The Mount Hotel — groom room","close 70mm 50fps","Watch, cufflinks, shoes, fragrance","Static close-ups","Clean detail shots."],
+    ["The Mount Hotel — groom room","creative 35mm 50fps","Marvin with groomsmen laughing","Move around group","Capture personality."],
+    ["The Mount Hotel — groom room","mid 35–50mm 25fps","Prayer / meaningful talking","Hold steady","Use if real audio matters."],
+    ["The Mount Hotel — bride room","wide 24mm 50fps","Room setup / dress area","Slow pan / reveal","Dress and room context."],
+    ["The Mount Hotel — bride room","mid 35–50mm 50fps","Dress going on / final touches","Gentle handheld","Avoid anything too intrusive."],
+    ["The Mount Hotel — bride room","close 70mm 50fps","Jewellery, perfume, shoes, bouquet","Static / slow push","Details for emotional cutaways."],
+    ["The Mount Hotel — bride room","creative 35–50mm 50fps","Bride reveal / bridesmaid reactions","Follow reactions","Prioritise emotion."],
+    ["The Mount Hotel — bride room","mid 35–50mm 25fps","Emotional words / prayer","Locked / steady","Only if words are meaningful."],
+    ["The Mount Hotel corridor","wide 24mm 50fps","Walking out / hallway move","Follow / gimbal","Transition out of prep."],
+    ["The Mount Hotel corridor","close 70mm 50fps","Dress / bouquet in motion","Slow close tracking","Soft elegant movement."]
+  ],
+  "Ceremony": [
+    ["The Grand Palace exterior","wide 24mm 50fps","Building exterior","Static / slow pan","Establish venue."],
+    ["The Grand Palace entrance","mid 35–50mm 50fps","Doors / guests arriving","Handheld","Arrival atmosphere."],
+    ["The Grand Palace interior","wide 24mm 50fps","Aisle / altar / room","Slow pan","Room context."],
+    ["The Grand Palace interior","close 70mm 50fps","Florals / details / seats","Static close-ups","Cutaways."],
+    ["The Grand Palace interior","creative 50–70mm 50fps","Groom waiting","Slow push / hold","Anticipation."],
+    ["The Grand Palace","wide 24mm 25fps","Bridal procession","Hold steady","Live coverage priority."],
+    ["The Grand Palace","close 70mm 25fps","Groom reaction to bride entrance","Hold close","Key emotional moment."],
+    ["The Grand Palace","mid 35–50mm 25fps","Bride entrance","Follow gently","Do not overmove."],
+    ["The Grand Palace","mid 50mm 25fps","Handover / front settle","Hold steady","Important transition."],
+    ["The Grand Palace","close 70mm 25fps","Vows","Locked / steady","Prioritise audio sync."],
+    ["The Grand Palace","close 70mm 25fps","Ring exchange","Hold close","Hands + faces if possible."],
+    ["The Grand Palace","mid 50mm 25fps","Prayer / kneeling / transitions","Steady","Respectful framing."],
+    ["The Grand Palace","mid 50mm 25fps","Kiss","Hold steady","Don’t miss it."],
+    ["The Grand Palace","wide 24–35mm 25fps","Recessional / exit","Track backwards if safe","Joyful exit."],
+    ["Front-side tripod","mid-wide 25fps","Full ceremony safety","Locked","Do not touch unless needed."],
+    ["Front-side tripod","mid 25fps","Vows / rings / kiss protection","Locked","Safety angle."]
+  ],
+  "Park": [
+    ["Willenhall Memorial Park","wide 24mm 50fps","Couple in environment","Slow wide movement","Hero scene."],
+    ["Willenhall Memorial Park","mid 35–50mm 50fps","Walking hand in hand","Track / follow","Natural movement."],
+    ["Willenhall Memorial Park","close 70mm 50fps","Marvin looking at Blessing / Blessing laughing","Hold close","Emotional cutaway."],
+    ["Willenhall Memorial Park","creative 35–50mm 50fps","Marvin pulling Blessing in / forehead touch","Slow arc","Romantic moment."],
+    ["Willenhall Memorial Park","close 70mm 50fps","Hands / rings / bouquet / dress movement","Detail pass","Use as transitions."],
+    ["Willenhall Memorial Park","mid 35–50mm 50fps","Bridal party energy around couple","Handheld / playful","Group joy."]
+  ],
+  "Reception": [
+    ["The County Hotel exterior","wide 24mm 50fps","Venue exterior","Static / slow pan","Establish reception."],
+    ["The County Hotel interior","wide 24mm 50fps","Room wide","Slow pan","Before guests disturb room."],
+    ["The County Hotel interior","close 70mm 50fps","Cake / table details / styling","Static close-ups","Details for montage."],
+    ["The County Hotel Venue","wide 24mm 50fps","Groomsmen entrance","Follow / hold wide","Energy."],
+    ["The County Hotel Venue","wide 24mm 50fps","Bridesmaids entrance","Follow / hold wide","Energy."],
+    ["The County Hotel Venue","mid 35–50mm 50fps","Couple entrance","Follow couple","Priority moment."],
+    ["The County Hotel Venue","close 70mm 50fps","Crowd cheering / clapping","Reaction shots","Use for emotional lift."],
+    ["The County Hotel Venue","mid 35–50mm 50fps","Couple greeting tables","Handheld","Warm family moments."],
+    ["The County Hotel Venue","close 70mm 50fps","Hugs / older relatives / smiles","Close reactions","Gold cutaways."],
+    ["The County Hotel Venue","wide 24–35mm 50fps","Room atmosphere","Slow movement","Context."]
+  ],
+  "Speeches": [
+    ["The County Hotel Venue","mid 50mm 25fps","Main speaker","Locked / steady","Audio and clarity."],
+    ["The County Hotel Venue","close 70mm 25fps","Blessing reaction","Hold close","Emotional response."],
+    ["The County Hotel Venue","close 70mm 25fps","Marvin reaction","Hold close","Emotional response."],
+    ["The County Hotel Venue","mid 50–70mm 25fps","Parents / guest reactions","Cutaway hunting","Important reaction bank."],
+    ["The County Hotel Venue","wide 24–35mm 25fps","Singer reveal after ‘I’m impressed’","Hold wide","Capture room context."],
+    ["The County Hotel Venue","close 70mm 25fps","Blessing reaction to singer","Hold close","Priority reaction."],
+    ["The County Hotel Venue","wide 24–35mm 25fps","Room reaction","Hold wide","Energy and surprise."],
+    ["Tripod position","mid-wide 25fps","Full speeches safety","Locked","Do not touch."]
+  ],
+  "Dancing": [
+    ["The County Hotel Venue","close 70mm 50fps","Cake cutting hands / reactions","Close detail","Capture hands + smiles."],
+    ["The County Hotel Venue","mid 35–50mm 25fps","Cake cutting live beat","Hold steady","Real-time clip if needed."],
+    ["The County Hotel Venue","wide 24–35mm 25fps","Opening wide of first dance","Hold wide","Real-time opening."],
+    ["The County Hotel Venue","mid 35–50mm 50fps","Faces / hands / romantic cutaways","Slow movement","Soft emotional coverage."],
+    ["The County Hotel Venue","close 70mm 25fps","Guests / parents watching","Hold close","Reaction shots."],
+    ["The County Hotel Venue","mid 35–50mm 50fps","Guest anticipation before second entrance","Handheld","Build energy."],
+    ["The County Hotel Venue","wide 24mm 50fps","Couple second entrance","Follow / wide","Don’t miss full entrance."],
+    ["The County Hotel Venue","mid 35–50mm 50fps","Bride dancing freely","Follow","Joyful movement."],
+    ["The County Hotel Venue","mid 35–50mm 50fps","Groom dancing / singing","Follow","Personality."],
+    ["The County Hotel Venue","mid 35–50mm 50fps","Couple together in crowd","Handheld","Celebration."],
+    ["The County Hotel Venue","wide 24–35mm 50fps","Hands up / clapping / crowd movement","Wide movement","Party energy."],
+    ["The County Hotel Venue","wide 24–35mm 25fps","Live real-time party clips","Hold steady","One or two real-time moments."]
+  ]
+};
+let active = "Prep";
+function key(section, index){
+  return `shoot_${section}_${index}`;
+}
+function isDone(section, index){
+  return localStorage.getItem(key(section,index)) === "true";
+}
+function toggleDone(section, index){
+  const current = isDone(section,index);
+  localStorage.setItem(key(section,index), String(!current));
+  render();
+}
+function clearSection(){
+  sections[active].forEach((_, index) => {
+    localStorage.removeItem(key(active,index));
+  });
+  render();
+}
+function renderTabs(){
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = Object.keys(sections).map(name => `
+    <button class="tab ${name === active ? "active" : ""}" onclick="active='${name}'; render();">
+      ${name}
+    </button>
+  `).join("");
+}
+function renderShots(){
+  const list = document.getElementById("shotList");
+  const title = document.getElementById("sectionTitle");
+  title.textContent = active;
+  list.innerHTML = sections[active].map((shot, index) => {
+    const done = isDone(active,index);
+    return `
+      <div class="shot ${done ? "done" : ""}">
+        <div class="shot-top">
+          <div>
+            <div class="location">${shot[0]}</div>
+            <div class="shot-title">${shot[2]}</div>
+          </div>
+          <button class="check ${done ? "done" : ""}" onclick="toggleDone('${active}',${index})">
+            ${done ? "✓" : ""}
+          </button>
+        </div>
+        <div class="meta">
+          <div class="meta-box">
+            <div class="meta-label">Lens + FPS</div>
+            <div class="meta-value">${shot[1]}</div>
+          </div>
+          <div class="meta-box">
+            <div class="meta-label">Movement</div>
+            <div class="meta-value">${shot[3]}</div>
+          </div>
+          <div class="meta-box">
+            <div class="meta-label">Priority</div>
+            <div class="meta-value">${done ? "Done" : "Shoot"}</div>
+          </div>
+        </div>
+        <div class="note">${shot[4]}</div>
+      </div>
+    `;
+  }).join("");
+}
+function renderProgress(){
+  const total = sections[active].length;
+  const done = sections[active].filter((_, index) => isDone(active,index)).length;
+  const percent = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById("progressFill").style.width = `${percent}%`;
+  document.getElementById("progressText").textContent = `${done}/${total} shots completed in ${active}`;
+}
+function render(){
+  renderTabs();
+  renderShots();
+  renderProgress();
+}
+render();
+</script>
+</body>
+</html>
