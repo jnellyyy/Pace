@@ -6,172 +6,1315 @@
 
 <title>Pace Quiet Time</title>
 
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
+
 <style>
 :root{
   --bg1:#0f1115;
   --bg2:#171a20;
   --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
   --line:rgba(255,255,255,0.10);
   --text:#f5f7fb;
   --muted:#a7afbe;
+  --soft:#d6dbea;
   --accent:#ff3b30;
+  --accent2:#ff6b61;
+  --gold:#f7c948;
+  --green:#22c55e;
+  --purple:#a78bfa;
+  --blue:#60a5fa;
   --shadow:0 20px 50px rgba(0,0,0,0.35);
-  --radius:24px;
+  --radius:26px;
+}
+
+*{
+  box-sizing:border-box;
 }
 
 body{
   margin:0;
+  min-height:100vh;
   padding:18px;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",Arial,sans-serif;
   color:var(--text);
-  background:linear-gradient(180deg,var(--bg1),var(--bg2));
+  background:
+    radial-gradient(circle at top right,rgba(255,59,48,0.20),transparent 32%),
+    radial-gradient(circle at top left,rgba(96,165,250,0.12),transparent 30%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
 }
 
-.wrap{max-width:900px;margin:0 auto;}
-
-.card{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:20px;
-  margin-top:16px;
-  box-shadow:var(--shadow);
+.wrap{
+  max-width:1120px;
+  margin:0 auto;
 }
 
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:14px;
+  margin-bottom:18px;
 }
 
-.back{
-  padding:10px 14px;
-  border-radius:12px;
-  background:rgba(255,255,255,0.08);
-  color:#fff;
-  text-decoration:none;
-  font-weight:700;
+.brand{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.kicker{
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:800;
 }
 
 h1{
-  margin:0 0 10px;
-  font-size:28px;
+  margin:0;
+  font-size:34px;
+  line-height:1;
+  letter-spacing:-0.04em;
+}
+
+.back{
+  padding:11px 15px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1.25fr 0.75fr;
+  gap:16px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+}
+
+.hero{
+  min-height:360px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  width:260px;
+  height:260px;
+  border-radius:999px;
+  right:-90px;
+  top:-100px;
+  background:rgba(255,59,48,0.18);
+  filter:blur(6px);
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  color:var(--soft);
+  font-size:13px;
+  font-weight:800;
+}
+
+.today-date{
+  color:var(--muted);
+  font-size:14px;
+  font-weight:700;
+}
+
+.theme{
+  margin:22px 0 8px;
+  font-size:15px;
+  color:var(--accent2);
+  font-weight:900;
+  letter-spacing:0.10em;
+  text-transform:uppercase;
 }
 
 .verse{
-  font-size:20px;
-  line-height:1.6;
-  margin-bottom:10px;
+  margin:0;
+  font-size:28px;
+  line-height:1.35;
+  letter-spacing:-0.03em;
+  max-width:760px;
 }
 
 .ref{
+  margin-top:14px;
   color:var(--muted);
-  font-size:14px;
+  font-size:15px;
+  font-weight:800;
+}
+
+.source{
+  margin-top:8px;
+  color:rgba(255,255,255,0.45);
+  font-size:12px;
+}
+
+.hero-bottom{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:22px;
+}
+
+.mini-box{
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:14px;
+}
+
+.mini-label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:0.10em;
+}
+
+.mini-value{
+  margin-top:7px;
+  font-size:15px;
+  color:var(--text);
+  line-height:1.35;
+  font-weight:700;
+}
+
+.side-stack{
+  display:grid;
+  gap:16px;
+}
+
+.stat{
+  min-height:120px;
+}
+
+.stat-number{
+  font-size:32px;
+  font-weight:950;
+  letter-spacing:-0.05em;
+  margin-top:10px;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+  margin-top:4px;
 }
 
 .section-title{
-  margin-top:18px;
-  font-weight:700;
+  margin:0 0 12px;
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:-0.02em;
+}
+
+.section-sub{
+  margin:0 0 15px;
+  color:var(--muted);
+  line-height:1.45;
+  font-size:14px;
+}
+
+.devotional-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+  margin-top:16px;
+}
+
+.deep-card{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+}
+
+.deep-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:14px;
+  color:var(--soft);
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:0.09em;
+  margin-bottom:10px;
+}
+
+.deep-text{
+  color:var(--text);
+  line-height:1.55;
+  font-size:16px;
+}
+
+.prompt-list{
+  display:grid;
+  gap:10px;
+}
+
+.prompt{
+  padding:13px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--soft);
+  line-height:1.45;
+}
+
+.notes-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+label{
+  display:block;
+  margin:0 0 8px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:950;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
 }
 
 textarea{
   width:100%;
-  margin-top:10px;
+  min-height:150px;
+  resize:vertical;
   padding:14px;
-  border-radius:14px;
+  border-radius:18px;
+  outline:none;
   background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.11);
   color:#fff;
   font:inherit;
-  min-height:120px;
+  line-height:1.45;
+}
+
+textarea:focus{
+  border-color:rgba(255,59,48,0.65);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.12);
+}
+
+.actions{
+  display:flex;
+  gap:12px;
+  margin-top:14px;
+  flex-wrap:wrap;
 }
 
 button{
-  margin-top:10px;
-  width:100%;
-  padding:12px;
-  border-radius:14px;
   border:none;
+  border-radius:16px;
+  padding:13px 16px;
+  font:inherit;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.primary{
   background:var(--accent);
   color:#fff;
-  font-weight:700;
-  cursor:pointer;
+  flex:1;
+}
+
+.secondary{
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  color:#fff;
+}
+
+.history-list{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+  max-height:320px;
+  overflow:auto;
+}
+
+.history-item{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.06);
+  border-radius:17px;
+  padding:12px;
+}
+
+.history-date{
+  color:#fff;
+  font-weight:900;
+  font-size:14px;
+}
+
+.history-theme{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.35;
+}
+
+.empty{
+  color:var(--muted);
+  line-height:1.45;
+  font-size:14px;
+}
+
+.saved{
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.28);
+  color:#bbf7d0;
+  font-weight:900;
+}
+
+@media(max-width:900px){
+  body{
+    padding:14px;
+  }
+
+  .grid,
+  .devotional-grid,
+  .notes-grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero-bottom{
+    grid-template-columns:1fr;
+  }
+
+  h1{
+    font-size:30px;
+  }
+
+  .verse{
+    font-size:24px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+}
+
+@media(max-width:520px){
+  .topbar{
+    flex-direction:column;
+  }
+
+  .back{
+    width:100%;
+    text-align:center;
+  }
+
+  .card{
+    padding:17px;
+  }
+
+  .verse{
+    font-size:22px;
+  }
+
+  .actions{
+    flex-direction:column;
+  }
+
+  button{
+    width:100%;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <div class="wrap">
 
-<div class="card topbar">
-  <h1>Quiet Time</h1>
-  <a href="dashboard.html" class="back">← Dashboard</a>
-</div>
+  <div class="topbar">
+    <div class="brand">
+      <div class="kicker">Pace daily rhythm</div>
+      <h1>Quiet Time</h1>
+    </div>
 
-<div class="card">
-  <div id="verse" class="verse"></div>
-  <div id="ref" class="ref"></div>
-</div>
+    <a href="dashboard.html" class="back">Back to dashboard</a>
+  </div>
 
-<div class="card">
-  <div class="section-title">Reflection</div>
-  <textarea id="reflection" placeholder="What is God showing you today?"></textarea>
+  <div class="grid">
 
-  <div class="section-title">Prayer</div>
-  <textarea id="prayer" placeholder="Write a short prayer..."></textarea>
+    <section class="card hero">
+      <div class="hero-content">
+        <div class="row">
+          <div class="pill" id="dayPill">Today</div>
+          <div class="today-date" id="todayDate"></div>
+        </div>
 
-  <button onclick="save()">Save</button>
-</div>
+        <div class="theme" id="theme"></div>
+
+        <p class="verse" id="verse"></p>
+
+        <div class="ref" id="ref"></div>
+        <div class="source">Scripture wording uses public domain World English Bible style wording</div>
+      </div>
+
+      <div class="hero-bottom">
+        <div class="mini-box">
+          <div class="mini-label">Ponder</div>
+          <div class="mini-value" id="ponderLine"></div>
+        </div>
+
+        <div class="mini-box">
+          <div class="mini-label">Ask God</div>
+          <div class="mini-value" id="askLine"></div>
+        </div>
+
+        <div class="mini-box">
+          <div class="mini-label">Obey</div>
+          <div class="mini-value" id="obeyLine"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-stack">
+
+      <div class="card stat">
+        <div class="pill">Saved quiet times</div>
+        <div class="stat-number" id="savedCount">0</div>
+        <div class="stat-label">entries saved on this device</div>
+      </div>
+
+      <div class="card stat">
+        <div class="pill">This month</div>
+        <div class="stat-number" id="monthCount">0</div>
+        <div class="stat-label">days you wrote something</div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Saved history</h2>
+        <p class="section-sub">Your notes stay private in this browser only.</p>
+        <div id="historyList" class="history-list"></div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <section class="devotional-grid">
+
+    <div class="deep-card">
+      <div class="deep-title">Word to sit with</div>
+      <div class="deep-text" id="wordToSitWith"></div>
+    </div>
+
+    <div class="deep-card">
+      <div class="deep-title">Heart check</div>
+      <div class="deep-text" id="heartCheck"></div>
+    </div>
+
+    <div class="deep-card">
+      <div class="deep-title">Prayer direction</div>
+      <div class="deep-text" id="prayerDirection"></div>
+    </div>
+
+    <div class="deep-card">
+      <div class="deep-title">Fruit today</div>
+      <div class="deep-text" id="fruitToday"></div>
+    </div>
+
+  </section>
+
+  <section class="card" style="margin-top:16px;">
+    <h2 class="section-title">Speak to God about this</h2>
+    <p class="section-sub">Use the prompts below slowly. Do not rush to fill every box. Let one sentence become a prayer.</p>
+
+    <div class="prompt-list" id="promptList"></div>
+  </section>
+
+  <section class="card" style="margin-top:16px;">
+    <h2 class="section-title">Today’s quiet time notes</h2>
+    <p class="section-sub">Save what God highlights, what you need to surrender, and what you are asking for grace to obey.</p>
+
+    <div class="notes-grid">
+      <div>
+        <label for="reflection">What stood out?</label>
+        <textarea id="reflection" placeholder="What is God showing me in this scripture?"></textarea>
+      </div>
+
+      <div>
+        <label for="surrender">What must I surrender?</label>
+        <textarea id="surrender" placeholder="Where do I need to repent, trust, forgive, obey, or slow down?"></textarea>
+      </div>
+
+      <div>
+        <label for="prayer">Prayer</label>
+        <textarea id="prayer" placeholder="Father, today I ask You..."></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" onclick="saveToday()">Save today</button>
+      <button class="secondary" onclick="clearToday()">Clear today</button>
+    </div>
+
+    <div id="savedMsg" class="saved">Saved</div>
+  </section>
 
 </div>
 
 <script>
-// simple daily verse rotation
-const verses = [
+const devotionals = [
   {
-    text: "Trust in the Lord with all your heart and lean not on your own understanding.",
-    ref: "Proverbs 3:5"
+    theme:"Hidden obedience",
+    verse:"Your Father who sees in secret will reward you.",
+    ref:"Matthew 6:6",
+    ponder:"God sees what no one applauds.",
+    ask:"Where have I started performing instead of praying?",
+    obey:"Do one unseen act of obedience today.",
+    wordToSitWith:"The secret place is not wasted time. It is where God removes the need to be seen by people and teaches the soul to live before Him.",
+    heartCheck:"Am I more moved by God seeing me, or by people noticing me?",
+    prayerDirection:"Ask God to purify your motives. Ask Him to make prayer more real than public approval.",
+    fruitToday:"Quiet faithfulness. Less performance. More honest communion with God.",
+    prompts:[
+      "Lord, what part of my obedience has become about being noticed?",
+      "Father, teach me to love the secret place again.",
+      "Show me one hidden thing I can do today purely for You."
+    ]
   },
   {
-    text: "Seek first the kingdom of God and His righteousness, and all these things shall be added to you.",
-    ref: "Matthew 6:33"
+    theme:"Costly discipleship",
+    verse:"If anyone desires to come after me, let him deny himself, take up his cross daily, and follow me.",
+    ref:"Luke 9:23",
+    ponder:"Following Jesus touches daily choices.",
+    ask:"What comfort has become louder than Christ?",
+    obey:"Choose obedience over convenience once today.",
+    wordToSitWith:"The cross is not only suffering. It is the place where self rule ends and Christ becomes Lord in practice.",
+    heartCheck:"Where am I calling Jesus Lord, but still protecting my own way?",
+    prayerDirection:"Ask for grace to deny yourself without bitterness. Ask for joy in following Christ closely.",
+    fruitToday:"A softer will. A quicker yes. A deeper loyalty to Jesus.",
+    prompts:[
+      "Jesus, where are You asking me to follow more closely?",
+      "What am I afraid I will lose if I fully obey You?",
+      "Lord, make my yes stronger than my excuses."
+    ]
   },
   {
-    text: "The Lord is my shepherd; I shall not want.",
-    ref: "Psalm 23:1"
+    theme:"The fear of the Lord",
+    verse:"The fear of Yahweh is the beginning of wisdom.",
+    ref:"Proverbs 9:10",
+    ponder:"Reverence protects the heart.",
+    ask:"Have I become casual with holy things?",
+    obey:"Pause before one decision and ask what honours God.",
+    wordToSitWith:"The fear of the Lord is not terror that makes you run from God. It is reverence that makes you take Him seriously.",
+    heartCheck:"Do my private choices show that I believe God is present?",
+    prayerDirection:"Ask God to restore holy reverence without fear of rejection.",
+    fruitToday:"Cleaner decisions. Stronger discernment. A heart that trembles at God’s Word.",
+    prompts:[
+      "Father, where have I treated Your Word lightly?",
+      "Teach me the difference between fear of man and fear of God.",
+      "Give me wisdom that begins with reverence."
+    ]
   },
   {
-    text: "Be still, and know that I am God.",
-    ref: "Psalm 46:10"
+    theme:"A clean heart",
+    verse:"Create in me a clean heart, O God. Renew a right spirit within me.",
+    ref:"Psalm 51:10",
+    ponder:"God can renew what sin has stained.",
+    ask:"What needs confession, not covering?",
+    obey:"Be honest with God about one hidden thing.",
+    wordToSitWith:"Repentance is not pretending you are strong. It is returning to the God who is merciful enough to cleanse deeply.",
+    heartCheck:"Am I explaining away what God is asking me to bring into the light?",
+    prayerDirection:"Ask God for cleansing, not just relief from consequences.",
+    fruitToday:"Softness. Honesty. A restored appetite for God.",
+    prompts:[
+      "Lord, what have I normalised that grieves You?",
+      "Wash me deeper than my behaviour. Touch my desires.",
+      "Renew a right spirit in me today."
+    ]
   },
   {
-    text: "I can do all things through Christ who strengthens me.",
-    ref: "Philippians 4:13"
+    theme:"Spiritual hunger",
+    verse:"Blessed are those who hunger and thirst after righteousness, for they shall be filled.",
+    ref:"Matthew 5:6",
+    ponder:"God fills hungry people.",
+    ask:"What has been feeding my appetite more than God?",
+    obey:"Replace one distraction with prayer or scripture.",
+    wordToSitWith:"Hunger grows where attention goes. The soul becomes hungry for what it repeatedly tastes.",
+    heartCheck:"Do I want God Himself, or only what He can fix?",
+    prayerDirection:"Ask for holy hunger. Ask God to make righteousness desirable again.",
+    fruitToday:"A renewed appetite for scripture, prayer, purity, and obedience.",
+    prompts:[
+      "Father, awaken hunger where I have gone numb.",
+      "What appetite is competing with my desire for You?",
+      "Fill me with what makes me more like Jesus."
+    ]
+  },
+  {
+    theme:"Faithfulness in small things",
+    verse:"He who is faithful in a very little is faithful also in much.",
+    ref:"Luke 16:10",
+    ponder:"Small obedience reveals true stewardship.",
+    ask:"What small thing have I been neglecting?",
+    obey:"Complete one small responsibility with excellence.",
+    wordToSitWith:"God often trains people for weightier assignments through ordinary faithfulness.",
+    heartCheck:"Am I waiting for a big calling while ignoring small obedience?",
+    prayerDirection:"Ask God for diligence in hidden, repetitive, ordinary things.",
+    fruitToday:"Consistency. Stewardship. Integrity in details.",
+    prompts:[
+      "Lord, show me the little thing You want me to take seriously.",
+      "Where have I despised small beginnings?",
+      "Make me faithful before I am visible."
+    ]
+  },
+  {
+    theme:"Abiding",
+    verse:"Remain in me, and I in you. As the branch cannot bear fruit by itself unless it remains in the vine, so neither can you, unless you remain in me.",
+    ref:"John 15:4",
+    ponder:"Fruit comes from connection, not striving.",
+    ask:"Am I trying to produce without remaining?",
+    obey:"Return to Jesus before rushing into output.",
+    wordToSitWith:"The branch does not force fruit. It stays connected. Much of spiritual exhaustion comes from trying to bear fruit while disconnected from Christ.",
+    heartCheck:"Have I confused busyness for fruitfulness?",
+    prayerDirection:"Ask Jesus to teach you how to remain in Him throughout the day.",
+    fruitToday:"Peaceful productivity. Less striving. More dependence.",
+    prompts:[
+      "Jesus, what does abiding look like for me today?",
+      "Where am I working without depending on You?",
+      "Keep me connected before You make me productive."
+    ]
+  },
+  {
+    theme:"Mercy over judgement",
+    verse:"Blessed are the merciful, for they shall obtain mercy.",
+    ref:"Matthew 5:7",
+    ponder:"Mercy received must become mercy shown.",
+    ask:"Who have I judged harshly in my heart?",
+    obey:"Pray sincerely for someone you feel frustrated with.",
+    wordToSitWith:"Mercy does not call wrong right. It remembers how much mercy it has received from God.",
+    heartCheck:"Am I quicker to analyse someone’s weakness than to intercede for them?",
+    prayerDirection:"Ask God to make your heart tender without making you unwise.",
+    fruitToday:"Compassion. Cleaner speech. More prayer for people.",
+    prompts:[
+      "Lord, where has judgement taken the place of mercy in me?",
+      "Help me see people through the mercy You showed me.",
+      "Teach me to correct without cruelty and discern without pride."
+    ]
+  },
+  {
+    theme:"Guarding the heart",
+    verse:"Keep your heart with all diligence, for out of it is the wellspring of life.",
+    ref:"Proverbs 4:23",
+    ponder:"The heart must be watched, not ignored.",
+    ask:"What has been shaping my inner life recently?",
+    obey:"Remove one input that weakens your spirit.",
+    wordToSitWith:"The heart is not neutral ground. What you repeatedly watch, hear, rehearse, and desire begins to direct you.",
+    heartCheck:"What have I allowed into my heart that makes obedience harder?",
+    prayerDirection:"Ask God for discernment over your inputs and desires.",
+    fruitToday:"Cleaner focus. Better peace. Stronger spiritual sensitivity.",
+    prompts:[
+      "Father, show me what has been entering my heart unnoticed.",
+      "What do I need to stop rehearsing in my mind?",
+      "Help me guard my heart without becoming fearful."
+    ]
+  },
+  {
+    theme:"Waiting well",
+    verse:"Those who wait for Yahweh will renew their strength.",
+    ref:"Isaiah 40:31",
+    ponder:"Waiting with God is not wasted.",
+    ask:"Where has delay made me restless or resentful?",
+    obey:"Choose trust over forcing an outcome today.",
+    wordToSitWith:"Waiting exposes what we lean on. God uses waiting to renew strength, purify desire, and teach dependence.",
+    heartCheck:"Am I waiting with faith, or waiting while secretly accusing God?",
+    prayerDirection:"Ask God to renew your strength and settle your heart in His timing.",
+    fruitToday:"Patience. Trust. Stability without immediate answers.",
+    prompts:[
+      "Lord, what are You forming in me while I wait?",
+      "Where have I confused delay with denial?",
+      "Help me trust Your timing without losing tenderness."
+    ]
+  },
+  {
+    theme:"Soul winning",
+    verse:"The fruit of the righteous is a tree of life. He who is wise wins souls.",
+    ref:"Proverbs 11:30",
+    ponder:"Wisdom cares about souls.",
+    ask:"Who around me needs prayer, love, or witness?",
+    obey:"Pray for one person by name today.",
+    wordToSitWith:"God’s love is not meant to stop with us. A heart touched by grace becomes concerned for the salvation and strengthening of others.",
+    heartCheck:"Have I become too busy to care about souls?",
+    prayerDirection:"Ask God for wisdom, boldness, and genuine love for people.",
+    fruitToday:"Intercession. Courage. A heart that notices people spiritually.",
+    prompts:[
+      "Lord, who are You asking me to carry in prayer?",
+      "Give me wisdom to speak with love and timing.",
+      "Make me less self focused and more useful to Your kingdom."
+    ]
+  },
+  {
+    theme:"Loyalty to God",
+    verse:"Choose today whom you will serve.",
+    ref:"Joshua 24:15",
+    ponder:"Loyalty is chosen before it is tested.",
+    ask:"Where is my heart divided?",
+    obey:"Make one clear choice that shows God comes first.",
+    wordToSitWith:"A divided heart becomes unstable under pressure. God calls His people into clear allegiance.",
+    heartCheck:"What competes with God for my final yes?",
+    prayerDirection:"Ask God to unite your heart and expose divided loyalties.",
+    fruitToday:"Clarity. Conviction. Stronger spiritual backbone.",
+    prompts:[
+      "Father, where am I trying to serve two masters?",
+      "What decision would show that You are first?",
+      "Unite my heart to fear Your name."
+    ]
+  },
+  {
+    theme:"Humility",
+    verse:"God resists the proud, but gives grace to the humble.",
+    ref:"James 4:6",
+    ponder:"Grace flows downward to the humble.",
+    ask:"Where am I resisting correction?",
+    obey:"Receive feedback without defending yourself today.",
+    wordToSitWith:"Pride blocks grace because it refuses need. Humility opens the life to God’s help.",
+    heartCheck:"Do I want to be changed, or only to be seen as right?",
+    prayerDirection:"Ask God for teachability and freedom from self protection.",
+    fruitToday:"Teachability. Gentleness. Grace to grow.",
+    prompts:[
+      "Lord, show me where pride is hiding in me.",
+      "Make me easy to correct and quick to repent.",
+      "Help me love truth more than my image."
+    ]
+  },
+  {
+    theme:"The Word as mirror",
+    verse:"Be doers of the word, and not only hearers, deluding your own selves.",
+    ref:"James 1:22",
+    ponder:"Hearing must become obedience.",
+    ask:"What truth have I heard but not acted on?",
+    obey:"Apply one instruction from God’s Word today.",
+    wordToSitWith:"Scripture is not only for inspiration. It is a mirror that shows what must change and a lamp that shows where to walk.",
+    heartCheck:"Am I collecting truth without submitting to it?",
+    prayerDirection:"Ask for grace to become a doer, not just a listener.",
+    fruitToday:"Practical obedience. Less delay. More spiritual honesty.",
+    prompts:[
+      "Father, what have You already told me?",
+      "Where have I delayed obedience because I wanted more confirmation?",
+      "Help me act on Your Word today."
+    ]
+  },
+  {
+    theme:"Strength in weakness",
+    verse:"My grace is sufficient for you, for my power is made perfect in weakness.",
+    ref:"2 Corinthians 12:9",
+    ponder:"Weakness can become a meeting place with grace.",
+    ask:"Where am I ashamed of needing God?",
+    obey:"Bring your weakness to God without pretending.",
+    wordToSitWith:"God does not only meet polished strength. He meets surrendered weakness and shows His power there.",
+    heartCheck:"Am I hiding weakness from God, from myself, or from safe people?",
+    prayerDirection:"Ask God to make His grace real in the exact place you feel insufficient.",
+    fruitToday:"Dependence. Relief from pretending. Grace for today.",
+    prompts:[
+      "Jesus, meet me in the place I feel weak.",
+      "What weakness have I been trying to cover?",
+      "Let Your power rest on me without pride."
+    ]
+  },
+  {
+    theme:"Forgiveness",
+    verse:"Forgive, and you will be forgiven.",
+    ref:"Luke 6:37",
+    ponder:"Forgiveness releases the heart from becoming a prison.",
+    ask:"Who still has a room in my heart through offence?",
+    obey:"Name the offence before God and ask for grace to release it.",
+    wordToSitWith:"Forgiveness does not deny pain. It hands the debt to God and refuses to let bitterness become lord.",
+    heartCheck:"Am I protecting my pain more than I am pursuing freedom?",
+    prayerDirection:"Ask God to heal the wound and give grace to forgive from the heart.",
+    fruitToday:"Freedom. Softer prayer. Less inner replaying.",
+    prompts:[
+      "Lord, I bring this offence into Your presence.",
+      "What am I still replaying because I have not released it?",
+      "Teach me forgiveness without pretending the pain was small."
+    ]
+  },
+  {
+    theme:"Purity",
+    verse:"Blessed are the pure in heart, for they shall see God.",
+    ref:"Matthew 5:8",
+    ponder:"Purity clears spiritual sight.",
+    ask:"What has been clouding my ability to see God clearly?",
+    obey:"Choose one clean boundary today.",
+    wordToSitWith:"Purity is not only about avoiding sin. It is about wanting a heart that can see God without divided desire.",
+    heartCheck:"What do I keep entertaining that weakens my spiritual sight?",
+    prayerDirection:"Ask God to purify your desires, not just your behaviour.",
+    fruitToday:"Clearer conviction. Cleaner desire. Stronger peace.",
+    prompts:[
+      "Father, purify what I desire when no one is watching.",
+      "What boundary would protect my love for You?",
+      "Help me value Your presence more than temporary pleasure."
+    ]
+  },
+  {
+    theme:"Intercession",
+    verse:"Far be it from me that I should sin against Yahweh in ceasing to pray for you.",
+    ref:"1 Samuel 12:23",
+    ponder:"Prayer for others is love in secret.",
+    ask:"Who has God placed on my heart?",
+    obey:"Pray for three people by name.",
+    wordToSitWith:"Intercession is a quiet ministry. It carries people before God when they may not know how to carry themselves.",
+    heartCheck:"Have I complained about people more than I have prayed for them?",
+    prayerDirection:"Ask God to make you faithful in prayer for others.",
+    fruitToday:"Burden. Compassion. Spiritual responsibility.",
+    prompts:[
+      "Lord, who do You want me to stand in prayer for?",
+      "Forgive me for replacing prayer with criticism.",
+      "Teach me to carry people with love, not control."
+    ]
+  },
+  {
+    theme:"Godly speech",
+    verse:"Let the words of my mouth and the meditation of my heart be acceptable in your sight, Yahweh.",
+    ref:"Psalm 19:14",
+    ponder:"Words reveal the meditation of the heart.",
+    ask:"What have my words been exposing about me?",
+    obey:"Speak life where you would normally complain.",
+    wordToSitWith:"Speech is not separate from spirituality. What fills the heart eventually leaks through the mouth.",
+    heartCheck:"Are my words building, poisoning, exaggerating, or healing?",
+    prayerDirection:"Ask God to govern both your mouth and your inner commentary.",
+    fruitToday:"Cleaner speech. Less complaining. More blessing.",
+    prompts:[
+      "Father, put a watch over my mouth today.",
+      "What inner meditation is feeding my speech?",
+      "Make my words acceptable to You."
+    ]
+  },
+  {
+    theme:"Courage",
+    verse:"Haven’t I commanded you? Be strong and courageous. Don’t be afraid, neither be dismayed, for Yahweh your God is with you wherever you go.",
+    ref:"Joshua 1:9",
+    ponder:"Courage rests on God’s presence.",
+    ask:"Where has fear been leading me?",
+    obey:"Take one obedient step you have been avoiding.",
+    wordToSitWith:"Biblical courage is not personality. It is obedience strengthened by the promise that God is with you.",
+    heartCheck:"What has fear made smaller than God in my mind?",
+    prayerDirection:"Ask God for courage that comes from His presence, not self confidence.",
+    fruitToday:"Brave obedience. Clearer action. Less fear led delay.",
+    prompts:[
+      "Lord, where do I need courage today?",
+      "What step have I delayed because fear sounded wise?",
+      "Remind me that You are with me."
+    ]
+  },
+  {
+    theme:"Contentment",
+    verse:"Godliness with contentment is great gain.",
+    ref:"1 Timothy 6:6",
+    ponder:"Contentment protects joy from comparison.",
+    ask:"What comparison has been stealing my gratitude?",
+    obey:"Thank God specifically for three present gifts.",
+    wordToSitWith:"Contentment is not lack of desire. It is the quiet strength of trusting God while refusing to be ruled by comparison.",
+    heartCheck:"Am I measuring God’s goodness by someone else’s timeline?",
+    prayerDirection:"Ask God to restore gratitude and free you from comparison.",
+    fruitToday:"Peace. Gratitude. A steady heart.",
+    prompts:[
+      "Father, forgive me for despising my portion.",
+      "What have I overlooked because I was comparing?",
+      "Teach me contentment without killing holy ambition."
+    ]
+  },
+  {
+    theme:"Wisdom",
+    verse:"If any of you lacks wisdom, let him ask of God, who gives to all liberally and without reproach.",
+    ref:"James 1:5",
+    ponder:"God is not irritated by sincere asking.",
+    ask:"Where do I need wisdom, not panic?",
+    obey:"Ask before deciding.",
+    wordToSitWith:"Wisdom often begins when we admit we do not know enough to lead ourselves well.",
+    heartCheck:"Have I been making decisions from pressure, pride, fear, or prayer?",
+    prayerDirection:"Ask God for wisdom that is pure, peaceable, and obedient.",
+    fruitToday:"Better decisions. Less panic. More dependence.",
+    prompts:[
+      "Lord, I need wisdom in this specific area.",
+      "What motive is influencing my decision?",
+      "Lead me in a way that honours You."
+    ]
+  },
+  {
+    theme:"Love that proves discipleship",
+    verse:"By this everyone will know that you are my disciples, if you have love for one another.",
+    ref:"John 13:35",
+    ponder:"Love is evidence of discipleship.",
+    ask:"Who is difficult for me to love well?",
+    obey:"Show practical love without needing recognition.",
+    wordToSitWith:"Jesus did not say the world would know us by noise, knowledge, or gifting first. He pointed to love.",
+    heartCheck:"Is my knowledge of God making me more loving?",
+    prayerDirection:"Ask God for love that is patient, truthful, and practical.",
+    fruitToday:"Gentleness. Patience. A visible gospel.",
+    prompts:[
+      "Jesus, make my love look more like Yours.",
+      "Where have I become correct but cold?",
+      "Show me one practical way to love today."
+    ]
+  },
+  {
+    theme:"Repentance",
+    verse:"Repent therefore, and turn again, that your sins may be blotted out.",
+    ref:"Acts 3:19",
+    ponder:"Repentance is a turn, not just a tear.",
+    ask:"What direction needs to change?",
+    obey:"Make one practical turn away from sin.",
+    wordToSitWith:"Godly sorrow is not the end. Repentance turns the feet, habits, choices, and heart back toward God.",
+    heartCheck:"Have I mistaken feeling bad for changing direction?",
+    prayerDirection:"Ask God for true repentance and practical grace to walk differently.",
+    fruitToday:"Freedom. Clarity. A changed direction.",
+    prompts:[
+      "Lord, where do I need to turn, not just feel sorry?",
+      "What practical change would support repentance?",
+      "Thank You that mercy invites me back."
+    ]
+  },
+  {
+    theme:"Endurance",
+    verse:"Let perseverance finish its work, that you may be mature and complete, lacking in nothing.",
+    ref:"James 1:4",
+    ponder:"Some maturity only forms through endurance.",
+    ask:"Where am I trying to escape what God wants to develop?",
+    obey:"Stay faithful in one hard thing today.",
+    wordToSitWith:"Endurance is not passive suffering. It is faithful remaining under God’s hand while He forms maturity.",
+    heartCheck:"Am I asking only for escape, or also for formation?",
+    prayerDirection:"Ask God for strength to remain faithful without becoming hard.",
+    fruitToday:"Stamina. Maturity. Faith that does not collapse quickly.",
+    prompts:[
+      "Father, what are You forming in me through this?",
+      "Where do I need endurance rather than instant relief?",
+      "Keep my heart soft while I persevere."
+    ]
+  },
+  {
+    theme:"Surrendered plans",
+    verse:"Commit your works to Yahweh, and your plans shall be established.",
+    ref:"Proverbs 16:3",
+    ponder:"Commitment to God comes before confidence in plans.",
+    ask:"Have I planned with God or only asked Him to bless it after?",
+    obey:"Pray over your plan before acting on it.",
+    wordToSitWith:"Surrendered planning is not laziness. It is responsible action submitted to God’s wisdom and timing.",
+    heartCheck:"Where am I asking God to endorse what I have not surrendered?",
+    prayerDirection:"Ask God to reorder your plans according to His will.",
+    fruitToday:"Peaceful planning. Better priorities. Less anxiety.",
+    prompts:[
+      "Lord, I commit this plan to You.",
+      "What part of my plan needs surrender?",
+      "Establish only what pleases You."
+    ]
+  },
+  {
+    theme:"Spiritual alertness",
+    verse:"Watch and pray, that you don’t enter into temptation. The spirit indeed is willing, but the flesh is weak.",
+    ref:"Matthew 26:41",
+    ponder:"Willingness needs watchfulness.",
+    ask:"Where am I spiritually sleepy?",
+    obey:"Identify one temptation pattern and guard against it.",
+    wordToSitWith:"Good intentions are not enough. Jesus calls His disciples to watch and pray because weakness must be guarded before the moment of testing.",
+    heartCheck:"What pattern do I keep underestimating?",
+    prayerDirection:"Ask God for alertness before temptation becomes strong.",
+    fruitToday:"Awareness. Protection. Stronger boundaries.",
+    prompts:[
+      "Jesus, wake up the sleepy places in me.",
+      "What temptation pattern do I need to watch for?",
+      "Help me pray before I am under pressure."
+    ]
+  },
+  {
+    theme:"Generosity",
+    verse:"It is more blessed to give than to receive.",
+    ref:"Acts 20:35",
+    ponder:"Giving trains the heart away from self protection.",
+    ask:"Where has fear made me closed handed?",
+    obey:"Give time, encouragement, help, or money with joy.",
+    wordToSitWith:"Generosity is not only about amount. It is about trust. It declares that God is provider, not fear.",
+    heartCheck:"Am I holding tightly because I do not trust God to care for me?",
+    prayerDirection:"Ask God for a generous spirit with wisdom and joy.",
+    fruitToday:"Open hands. Less fear. Practical love.",
+    prompts:[
+      "Father, where do You want me to be generous?",
+      "What fear makes me hold back?",
+      "Teach me to give without pride or resentment."
+    ]
+  },
+  {
+    theme:"Peace",
+    verse:"You will keep whoever’s mind is steadfast in perfect peace, because he trusts in you.",
+    ref:"Isaiah 26:3",
+    ponder:"Peace is connected to where the mind rests.",
+    ask:"What has my mind been fixed on?",
+    obey:"Redirect one anxious thought into prayer.",
+    wordToSitWith:"Peace is not the absence of responsibility. It is the fruit of a mind repeatedly returned to trust in God.",
+    heartCheck:"Have I been meditating on fear more than truth?",
+    prayerDirection:"Ask God to steady your mind and teach you trust.",
+    fruitToday:"Settled thoughts. Less spiralling. More prayer.",
+    prompts:[
+      "Lord, steady my mind in You.",
+      "What thought pattern is stealing my peace?",
+      "Help me trust You with what I cannot control."
+    ]
+  },
+  {
+    theme:"The presence of God",
+    verse:"In your presence is fullness of joy. In your right hand there are pleasures forevermore.",
+    ref:"Psalm 16:11",
+    ponder:"Joy is found near God.",
+    ask:"Have I been seeking joy away from God?",
+    obey:"Spend a few undistracted minutes enjoying God’s presence.",
+    wordToSitWith:"God is not only useful. He is satisfying. The soul was made for His presence.",
+    heartCheck:"Do I come to God only with tasks, or also with love?",
+    prayerDirection:"Ask God to restore joy in His presence.",
+    fruitToday:"Joy. Worship. A less hurried heart.",
+    prompts:[
+      "Father, teach me to enjoy You again.",
+      "Where have I looked for joy apart from You?",
+      "Draw me into Your presence with a sincere heart."
+    ]
+  },
+  {
+    theme:"Servanthood",
+    verse:"Whoever desires to become great among you shall be your servant.",
+    ref:"Matthew 20:26",
+    ponder:"Kingdom greatness bends low.",
+    ask:"Where do I resist serving because I feel above it?",
+    obey:"Serve someone without announcing it.",
+    wordToSitWith:"Jesus redefines greatness. The kingdom does not measure greatness by status first, but by love expressed through service.",
+    heartCheck:"Am I willing to be useful when it is not glamorous?",
+    prayerDirection:"Ask God for the heart of a servant without resentment.",
+    fruitToday:"Humility. Usefulness. Joy in serving.",
+    prompts:[
+      "Jesus, make me willing to serve like You.",
+      "Where have I wanted honour more than usefulness?",
+      "Show me one lowly act of love today."
+    ]
+  },
+  {
+    theme:"Identity in Christ",
+    verse:"See how great a love the Father has given to us, that we should be called children of God.",
+    ref:"1 John 3:1",
+    ponder:"Beloved is not something you achieve.",
+    ask:"What false name have I been living under?",
+    obey:"Speak God’s truth over your identity today.",
+    wordToSitWith:"Before you perform, prove, fix, or achieve, the Father calls His people children. Identity received from God steadies the soul.",
+    heartCheck:"Am I trying to earn what the Father has already given in Christ?",
+    prayerDirection:"Ask God to heal false identity and root you in His love.",
+    fruitToday:"Security. Rest. Confidence without pride.",
+    prompts:[
+      "Father, help me receive Your love deeply.",
+      "What false label have I believed about myself?",
+      "Teach me to live today as Your child."
+    ]
   }
 ];
 
-// pick verse based on date
-const index = new Date().getDate() % verses.length;
-document.getElementById("verse").textContent = verses[index].text;
-document.getElementById("ref").textContent = verses[index].ref;
+const today = new Date();
 
-// save locally
-function save(){
-  const data = {
-    reflection: document.getElementById("reflection").value,
-    prayer: document.getElementById("prayer").value
+function getDateKey(date){
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2,"0");
+  const day = String(date.getDate()).padStart(2,"0");
+  return `${year}-${month}-${day}`;
+}
+
+function getDayOfYear(date){
+  const start = new Date(date.getFullYear(),0,0);
+  const diff = date - start;
+  const oneDay = 1000 * 60 * 60 * 24;
+  return Math.floor(diff / oneDay);
+}
+
+function formatDate(date){
+  return date.toLocaleDateString("en-GB",{
+    weekday:"long",
+    day:"numeric",
+    month:"long",
+    year:"numeric"
+  });
+}
+
+const dateKey = getDateKey(today);
+const devotional = devotionals[getDayOfYear(today) % devotionals.length];
+
+document.getElementById("todayDate").textContent = formatDate(today);
+document.getElementById("dayPill").textContent = `Day ${getDayOfYear(today)}`;
+document.getElementById("theme").textContent = devotional.theme;
+document.getElementById("verse").textContent = devotional.verse;
+document.getElementById("ref").textContent = devotional.ref;
+
+document.getElementById("ponderLine").textContent = devotional.ponder;
+document.getElementById("askLine").textContent = devotional.ask;
+document.getElementById("obeyLine").textContent = devotional.obey;
+
+document.getElementById("wordToSitWith").textContent = devotional.wordToSitWith;
+document.getElementById("heartCheck").textContent = devotional.heartCheck;
+document.getElementById("prayerDirection").textContent = devotional.prayerDirection;
+document.getElementById("fruitToday").textContent = devotional.fruitToday;
+
+const promptList = document.getElementById("promptList");
+
+devotional.prompts.forEach(function(prompt){
+  const item = document.createElement("div");
+  item.className = "prompt";
+  item.textContent = prompt;
+  promptList.appendChild(item);
+});
+
+function getEntries(){
+  return JSON.parse(localStorage.getItem("paceQuietTimeEntriesV1")) || {};
+}
+
+function setEntries(entries){
+  localStorage.setItem("paceQuietTimeEntriesV1",JSON.stringify(entries));
+}
+
+function loadToday(){
+  const entries = getEntries();
+  const entry = entries[dateKey];
+
+  if(entry){
+    document.getElementById("reflection").value = entry.reflection || "";
+    document.getElementById("surrender").value = entry.surrender || "";
+    document.getElementById("prayer").value = entry.prayer || "";
+  }
+}
+
+function saveToday(){
+  const entries = getEntries();
+
+  entries[dateKey] = {
+    date:dateKey,
+    formattedDate:formatDate(today),
+    theme:devotional.theme,
+    ref:devotional.ref,
+    reflection:document.getElementById("reflection").value.trim(),
+    surrender:document.getElementById("surrender").value.trim(),
+    prayer:document.getElementById("prayer").value.trim(),
+    savedAt:new Date().toISOString()
   };
 
-  localStorage.setItem("quietTime", JSON.stringify(data));
-  alert("Saved");
+  setEntries(entries);
+  updateStats();
+  renderHistory();
+
+  const savedMsg = document.getElementById("savedMsg");
+  savedMsg.style.display = "block";
+
+  setTimeout(function(){
+    savedMsg.style.display = "none";
+  },1800);
 }
 
-// load saved
-const saved = JSON.parse(localStorage.getItem("quietTime"));
-if(saved){
-  document.getElementById("reflection").value = saved.reflection || "";
-  document.getElementById("prayer").value = saved.prayer || "";
+function clearToday(){
+  document.getElementById("reflection").value = "";
+  document.getElementById("surrender").value = "";
+  document.getElementById("prayer").value = "";
 }
+
+function updateStats(){
+  const entries = getEntries();
+  const keys = Object.keys(entries);
+
+  document.getElementById("savedCount").textContent = keys.length;
+
+  const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,"0")}`;
+  const monthEntries = keys.filter(function(key){
+    return key.startsWith(currentMonth);
+  });
+
+  document.getElementById("monthCount").textContent = monthEntries.length;
+}
+
+function renderHistory(){
+  const entries = getEntries();
+  const list = document.getElementById("historyList");
+  list.innerHTML = "";
+
+  const sorted = Object.values(entries).sort(function(a,b){
+    return new Date(b.savedAt) - new Date(a.savedAt);
+  });
+
+  if(sorted.length === 0){
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No quiet time notes saved yet.";
+    list.appendChild(empty);
+    return;
+  }
+
+  sorted.slice(0,12).forEach(function(entry){
+    const item = document.createElement("div");
+    item.className = "history-item";
+
+    const date = document.createElement("div");
+    date.className = "history-date";
+    date.textContent = entry.formattedDate || entry.date;
+
+    const theme = document.createElement("div");
+    theme.className = "history-theme";
+    theme.textContent = `${entry.theme} • ${entry.ref}`;
+
+    item.appendChild(date);
+    item.appendChild(theme);
+
+    item.onclick = function(){
+      document.getElementById("reflection").value = entry.reflection || "";
+      document.getElementById("surrender").value = entry.surrender || "";
+      document.getElementById("prayer").value = entry.prayer || "";
+      window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+    };
+
+    list.appendChild(item);
+  });
+}
+
+loadToday();
+updateStats();
+renderHistory();
 </script>
 
 </body>
