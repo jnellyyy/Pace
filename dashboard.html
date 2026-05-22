@@ -6,9 +6,9 @@
 
 <title>Pace Dashboard</title>
 
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
 
 <style>
@@ -24,7 +24,9 @@
   --radius:26px;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -35,6 +37,7 @@ body{
     radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
     radial-gradient(circle at top right, rgba(255,59,48,0.08), transparent 28%),
     linear-gradient(180deg,var(--bg1),var(--bg2));
+  min-height:100vh;
 }
 
 .wrap{
@@ -95,6 +98,7 @@ body{
   backdrop-filter:blur(18px);
   box-shadow:var(--shadow);
   transition:.18s ease;
+  display:block;
 }
 
 .tile:hover{
@@ -184,6 +188,7 @@ body{
 
   <div class="hero">
     <h1>Pace</h1>
+
     <p>
       Your life operating system.<br>
       Built for clarity, structure, momentum and peace.
@@ -203,15 +208,23 @@ body{
   </div>
 
   <div class="section">
-    <div class="section-title">Life</div>
+    <div class="section-title">Main</div>
 
     <div class="grid">
 
-      <a class="tile" href="todo-test.html">
-        <div class="tile-icon">📝</div>
-        <div class="tile-title">To Do</div>
+      <a class="tile" href="index.html">
+        <div class="tile-icon">🏠</div>
+        <div class="tile-title">Home</div>
         <div class="tile-sub">
-          Ultimate running task system with categories and completed tracking.
+          Landing page and main entry point for Pace.
+        </div>
+      </a>
+
+      <a class="tile" href="life-test.html">
+        <div class="tile-icon">🌿</div>
+        <div class="tile-title">Life</div>
+        <div class="tile-sub">
+          Personal life planning, structure, routines and reset space.
         </div>
       </a>
 
@@ -223,11 +236,27 @@ body{
         </div>
       </a>
 
+      <a class="tile" href="lists-test.html">
+        <div class="tile-icon">📝</div>
+        <div class="tile-title">To Do</div>
+        <div class="tile-sub">
+          Running task list, categories, priorities and completed tracking.
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Life admin</div>
+
+    <div class="grid">
+
       <a class="tile" href="reminders-test.html">
         <div class="tile-icon">⏰</div>
         <div class="tile-title">Reminders</div>
         <div class="tile-sub">
-          Important things needing action, dates, attention and follow-up.
+          Important things needing action, dates, attention and follow up.
         </div>
       </a>
 
@@ -235,7 +264,15 @@ body{
         <div class="tile-icon">💳</div>
         <div class="tile-title">Finance</div>
         <div class="tile-sub">
-          Bills, money tracking, expected income and monthly check-offs.
+          Bills, money tracking, expected income and monthly check offs.
+        </div>
+      </a>
+
+      <a class="tile" href="health-reset-test.html">
+        <div class="tile-icon">🧘🏽‍♀️</div>
+        <div class="tile-title">Health Reset</div>
+        <div class="tile-sub">
+          Food, movement, reset routines and personal health tracking.
         </div>
       </a>
 
@@ -247,6 +284,14 @@ body{
         </div>
       </a>
 
+      <a class="tile" href="attendance-test.html">
+        <div class="tile-icon">🏢</div>
+        <div class="tile-title">Attendance</div>
+        <div class="tile-sub">
+          Office days, home days, work patterns and attendance tracking.
+        </div>
+      </a>
+
     </div>
   </div>
 
@@ -255,9 +300,9 @@ body{
 
     <div class="grid">
 
-      <a class="tile highlight" href="creator-hub-test.html">
+      <a class="tile highlight" href="creators-test.html">
         <div class="tile-icon">🎬</div>
-        <div class="tile-title">Creator Hub</div>
+        <div class="tile-title">Creators</div>
         <div class="tile-sub">
           Creative workflows, filming systems, editing structure and creator planning.
         </div>
@@ -271,11 +316,19 @@ body{
         </div>
       </a>
 
-      <a class="tile highlight" href="deliveroo-test.html">
-        <div class="tile-icon">🚗</div>
-        <div class="tile-title">Deliveroo + Cut</div>
+      <a class="tile highlight" href="bookings-test.html">
+        <div class="tile-icon">📆</div>
+        <div class="tile-title">Bookings</div>
         <div class="tile-sub">
-          Weight loss system, movement tracking, food logging and routine structure.
+          Client bookings, enquiries, dates, payments and booking status.
+        </div>
+      </a>
+
+      <a class="tile highlight" href="creator-income-test.html">
+        <div class="tile-icon">💸</div>
+        <div class="tile-title">Creator Income</div>
+        <div class="tile-sub">
+          Track creator money, paid work, expected income and content earnings.
         </div>
       </a>
 
