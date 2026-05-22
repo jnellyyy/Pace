@@ -6,10 +6,11 @@
 
 <title>Pace Creators</title>
 
-<link rel="manifest" href="/Pace/site.webmanifest">
-<link rel="apple-touch-icon" href="/Pace/icon-180.png">
-<link rel="icon" href="/Pace/icon-32.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
+<meta name="robots" content="noindex,nofollow">
 
 <style>
 :root{
@@ -19,6 +20,7 @@
   --line:rgba(255,255,255,0.10);
   --text:#f5f7fb;
   --muted:#a7afbe;
+  --accent:#ff3b30;
   --shadow:0 20px 50px rgba(0,0,0,0.35);
   --radius:24px;
 }
@@ -35,7 +37,9 @@ body{
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
   background:
     radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 24%),
+    radial-gradient(circle at top right, rgba(255,59,48,0.09), transparent 28%),
     linear-gradient(180deg,var(--bg1),var(--bg2));
+  min-height:100vh;
 }
 
 .wrap{
@@ -61,6 +65,12 @@ body{
   flex-wrap:wrap;
 }
 
+.page-label{
+  color:var(--muted);
+  margin-top:5px;
+  font-size:14px;
+}
+
 .back-btn{
   padding:10px 14px;
   border-radius:14px;
@@ -68,24 +78,73 @@ body{
   color:#fff;
   text-decoration:none;
   font-weight:800;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.back-btn:hover{
+  background:rgba(255,255,255,.12);
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at top right, rgba(255,59,48,.13), transparent 36%);
+  pointer-events:none;
+}
+
+.hero-content{
+  position:relative;
+  z-index:1;
+}
+
+.lock-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,59,48,0.12);
+  color:#ffd1cf;
+  border:1px solid rgba(255,59,48,0.25);
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  margin-bottom:14px;
 }
 
 .hero h1{
   margin:0;
-  font-size:36px;
+  font-size:40px;
   letter-spacing:-.06em;
 }
 
 .hero p{
-  margin-top:10px;
+  margin:12px 0 0;
   color:var(--muted);
   line-height:1.6;
+  max-width:680px;
+}
+
+.section-title{
+  margin:24px 0 12px;
+  padding-left:4px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--muted);
 }
 
 .grid{
-  margin-top:16px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:16px;
 }
 
@@ -96,15 +155,31 @@ body{
   border:1px solid rgba(255,255,255,.08);
   border-radius:24px;
   padding:18px;
-  min-height:180px;
+  min-height:190px;
   transition:.18s ease;
   position:relative;
   overflow:hidden;
+  display:block;
 }
 
 .tile:hover{
   transform:translateY(-2px);
   background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.16);
+}
+
+.tile::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,.08), transparent 36%);
+  pointer-events:none;
+}
+
+.tile-inner{
+  position:relative;
+  z-index:1;
 }
 
 .tile-icon{
@@ -139,6 +214,13 @@ body{
   font-size:18px;
 }
 
+.note{
+  margin-top:18px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
 @media(max-width:700px){
 
   body{
@@ -146,19 +228,19 @@ body{
   }
 
   .hero h1{
-    font-size:30px;
+    font-size:32px;
   }
 
   .grid{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr;
   }
 
   .tile{
-    min-height:170px;
+    min-height:165px;
   }
 
   .tile h3{
-    font-size:20px;
+    font-size:22px;
   }
 }
 </style>
@@ -172,8 +254,8 @@ body{
     <div class="topbar">
       <div>
         <h2 style="margin:0;">Creators</h2>
-        <div style="color:var(--muted);margin-top:5px;">
-          Private dashboards and creator systems.
+        <div class="page-label">
+          Private creator systems.
         </div>
       </div>
 
@@ -184,49 +266,78 @@ body{
   </div>
 
   <div class="card hero">
-    <h1>Private Creator Space.</h1>
+    <div class="hero-content">
 
-    <p>
-      Income tracking, tax monitoring, health reset systems,
-      reminders and personal performance dashboards —
-      all separated from your main Pace workspace.
-    </p>
+      <div class="lock-pill">
+        🔒 Me only
+      </div>
+
+      <h1>Private Creator Space.</h1>
+
+      <p>
+        This is your focused creator hub for filming, bookings and income.
+        Keep the main dashboard clean, and manage all creator work from here.
+      </p>
+
+    </div>
   </div>
+
+  <div class="section-title">Creator tools</div>
 
   <div class="grid">
 
-    <!-- CREATOR INCOME -->
+    <a class="tile" href="shoot-day-test.html">
+      <div class="tile-inner">
+
+        <div class="tile-icon">🎥</div>
+
+        <h3>Shot Lists</h3>
+
+        <p>
+          Plan wedding shots, locations, lens choices, frame rates, movement, priority and creative examples.
+        </p>
+
+        <div class="arrow">↗</div>
+
+      </div>
+    </a>
+
+    <a class="tile" href="bookings-test.html">
+      <div class="tile-inner">
+
+        <div class="tile-icon">📆</div>
+
+        <h3>Bookings</h3>
+
+        <p>
+          Track enquiries, wedding dates, client details, deposits, balances, forms and booking status.
+        </p>
+
+        <div class="arrow">↗</div>
+
+      </div>
+    </a>
+
     <a class="tile" href="creator-income-test.html">
+      <div class="tile-inner">
 
-      <div class="tile-icon">💷</div>
+        <div class="tile-icon">💸</div>
 
-      <h3>Income</h3>
+        <h3>Creator Income</h3>
 
-      <p>
-        Deliveroo targets, order logging,
-        tax threshold tracking and creator income.
-      </p>
+        <p>
+          Track paid work, expected income, completed jobs, outstanding payments and monthly creator money.
+        </p>
 
-      <div class="arrow">↗</div>
+        <div class="arrow">↗</div>
 
+      </div>
     </a>
 
-    <!-- HEALTH RESET -->
-    <a class="tile" href="health-reset-test.html">
+  </div>
 
-      <div class="tile-icon">🏃🏾</div>
-
-      <h3>Health Reset</h3>
-
-      <p>
-        Weight loss dashboard, Mounjaro routine,
-        steps, workouts, protein and consistency tracking.
-      </p>
-
-      <div class="arrow">↗</div>
-
-    </a>
-
+  <div class="card note">
+    This page keeps creator work grouped in one place, so Shot Lists, Bookings and Creator Income do not clutter the main Pace dashboard.
   </div>
 
 </div>
