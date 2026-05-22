@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
 <title>Pace Dashboard</title>
 
 <link rel="manifest" href="site.webmanifest">
@@ -26,6 +25,7 @@
 
 *{
   box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 body{
@@ -137,6 +137,21 @@ body{
   border:1px solid rgba(255,59,48,0.35);
 }
 
+.private-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:14px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(255,59,48,0.12);
+  color:#ffd1cf;
+  border:1px solid rgba(255,59,48,0.25);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.03em;
+}
+
 .quote{
   margin-top:28px;
   background:rgba(255,255,255,0.05);
@@ -166,7 +181,6 @@ body{
 }
 
 @media(max-width:700px){
-
   body{
     padding:14px;
   }
@@ -296,7 +310,7 @@ body{
   </div>
 
   <div class="section">
-    <div class="section-title">Creators</div>
+    <div class="section-title">Private</div>
 
     <div class="grid">
 
@@ -304,32 +318,9 @@ body{
         <div class="tile-icon">🎬</div>
         <div class="tile-title">Creators</div>
         <div class="tile-sub">
-          Creative workflows, filming systems, editing structure and creator planning.
+          Your private creator hub for shot lists, bookings and creator income.
         </div>
-      </a>
-
-      <a class="tile highlight" href="shoot-day-test.html">
-        <div class="tile-icon">🎥</div>
-        <div class="tile-title">Shoot Day</div>
-        <div class="tile-sub">
-          Wedding shot lists, run sheet flow and live filming guidance.
-        </div>
-      </a>
-
-      <a class="tile highlight" href="bookings-test.html">
-        <div class="tile-icon">📆</div>
-        <div class="tile-title">Bookings</div>
-        <div class="tile-sub">
-          Client bookings, enquiries, dates, payments and booking status.
-        </div>
-      </a>
-
-      <a class="tile highlight" href="creator-income-test.html">
-        <div class="tile-icon">💸</div>
-        <div class="tile-title">Creator Income</div>
-        <div class="tile-sub">
-          Track creator money, paid work, expected income and content earnings.
-        </div>
+        <div class="private-tag">🔒 Me only</div>
       </a>
 
     </div>
