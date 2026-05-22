@@ -1,470 +1,929 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pace Attendance</title>
-  <link rel="manifest" href="site.webmanifest">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Pace Attendance</title>
+
+<link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
-  <style>
-    :root {
-      --bg1:#0f1115;
-      --bg2:#171a20;
-      --panel:rgba(255,255,255,0.06);
-      --panel-strong:rgba(255,255,255,0.08);
-      --line:rgba(255,255,255,0.10);
-      --text:#f5f7fb;
-      --muted:#a7afbe;
-      --accent:#ff3b30;
-      --office:#22c55e;
-      --wfh:#60a5fa;
-      --sick:#ef4444;
-      --holiday:#f59e0b;
-      --bank:#a855f7;
-      --blocked:#6b7280;
-      --shadow:0 20px 50px rgba(0,0,0,0.35);
-      --blur:18px;
-      --radius:24px;
-    }
 
-    * { box-sizing: border-box; }
+<style>
+:root{
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.09);
+  --panel3:rgba(255,255,255,0.12);
+  --line:rgba(255,255,255,0.10);
+  --line2:rgba(255,255,255,0.18);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --soft:#d6dbe4;
+  --accent:#ff3b30;
+  --office:#22c55e;
+  --wfh:#60a5fa;
+  --sick:#ef4444;
+  --holiday:#f59e0b;
+  --bank:#a855f7;
+  --blocked:#6b7280;
+  --shadow:0 24px 70px rgba(0,0,0,0.42);
+  --radius:28px;
+  --radius2:20px;
+  --blur:20px;
+}
 
-    body {
-      margin:0;
-      padding:18px;
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 26%),
-        radial-gradient(circle at top right, rgba(255,59,48,0.10), transparent 28%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-    }
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
-    .wrap {
-      max-width: 1120px;
-      margin: 0 auto;
-    }
+html{
+  min-height:100%;
+  background:#0f1115;
+}
 
-    .glass {
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      backdrop-filter:blur(var(--blur));
-      -webkit-backdrop-filter:blur(var(--blur));
-      box-shadow:var(--shadow);
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,255,255,0.08), transparent 26%),
+    radial-gradient(circle at 86% 8%, rgba(255,59,48,0.16), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(96,165,250,0.08), transparent 32%),
+    linear-gradient(180deg, var(--bg1), var(--bg2));
+  padding:18px;
+}
 
-    .card {
-      padding:20px;
-      margin-top:16px;
-    }
+a{
+  color:inherit;
+}
 
-    .topbar {
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
+button,
+input,
+select{
+  font:inherit;
+}
 
-    .back-btn {
-      width:auto;
-      padding:10px 14px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.08);
-      color:#fff;
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-block;
-    }
+button{
+  border:none;
+}
 
-    .muted { color:var(--muted); }
+.wrap{
+  max-width:1180px;
+  margin:0 auto;
+}
 
-    .kpis {
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:12px;
-      margin-top:14px;
-    }
+.glass{
+  background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.045));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  backdrop-filter:blur(var(--blur));
+  -webkit-backdrop-filter:blur(var(--blur));
+  box-shadow:var(--shadow);
+}
 
-    .kpi {
-      background:var(--panel-strong);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:12px 14px;
-    }
+.card{
+  padding:20px;
+}
 
-    .kpi-title {
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
+.top-shell{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:16px;
+  align-items:start;
+  margin-bottom:16px;
+}
 
-    .kpi-value {
-      font-size:18px;
-      font-weight:700;
-    }
+.brand-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 
-    .status-on { color:var(--office); }
-    .status-warn { color:var(--holiday); }
-    .status-bad { color:var(--sick); }
+.logo-mark{
+  width:42px;
+  height:42px;
+  border-radius:16px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.24), transparent 35%),
+    linear-gradient(145deg, #20242c, #0c0e12);
+  border:1px solid rgba(255,255,255,0.14);
+  display:grid;
+  place-items:center;
+  box-shadow:0 14px 34px rgba(0,0,0,0.35);
+  flex:0 0 auto;
+}
 
-    .section-title {
-      margin:0 0 8px 0;
-      font-size:22px;
-      letter-spacing:-0.03em;
-    }
+.logo-line{
+  width:18px;
+  height:18px;
+  border:2px solid #fff;
+  border-left-color:transparent;
+  border-bottom-color:transparent;
+  border-radius:50%;
+  transform:rotate(45deg);
+}
 
-    .grid-2 {
-      display:grid;
-      grid-template-columns:1.1fr 0.9fr;
-      gap:16px;
-      margin-top:16px;
-    }
+.eyebrow{
+  margin:0 0 4px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
 
-    .rule-form-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
+h1,
+h2,
+h3,
+p{
+  margin-top:0;
+}
 
-    .rule-form-grid-3 {
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
-    }
+h1{
+  margin-bottom:6px;
+  font-size:34px;
+  line-height:1;
+  letter-spacing:-0.055em;
+}
 
-    input, select, button {
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.05);
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.10);
-      font:inherit;
-    }
+.subtitle{
+  margin:0;
+  max-width:650px;
+  color:var(--muted);
+  line-height:1.45;
+  font-size:15px;
+}
 
-    input::placeholder {
-      color:#9da6b5;
-    }
+.page-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
 
-    button {
-      background:var(--accent);
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-    }
+.btn,
+button{
+  min-height:44px;
+  padding:12px 15px;
+  border-radius:16px;
+  background:var(--accent);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition:transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
 
-    .secondary-btn {
-      background:rgba(255,255,255,0.10);
-    }
+.btn:active,
+button:active{
+  transform:scale(0.98);
+}
 
-    .danger-btn {
-      background:rgba(239,68,68,0.18);
-    }
+.btn-secondary,
+.secondary-btn{
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.11);
+}
 
-    .notice {
-      color:#bbb;
-      white-space:pre-wrap;
-      margin-top:10px;
-      min-height:18px;
-    }
+.danger-btn{
+  background:rgba(239,68,68,0.16);
+  border:1px solid rgba(239,68,68,0.28);
+  color:#fecaca;
+}
 
-    .working-days {
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:8px;
-      margin-top:10px;
-    }
+.help-strip{
+  margin-top:16px;
+  padding:13px 14px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--soft);
+  font-size:14px;
+  line-height:1.45;
+}
 
-    .day-check {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      padding:10px 8px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.10);
-      font-size:13px;
-    }
+.help-strip strong{
+  color:#fff;
+}
 
-    .day-check input {
-      width:auto;
-      margin:0;
-      padding:0;
-    }
+.muted{
+  color:var(--muted);
+}
 
-    .rule-item {
-      background:var(--panel-strong);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:14px;
-      margin-top:10px;
-    }
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin-top:18px;
+}
 
-    .rule-head {
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-    }
+.kpi{
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,0.075);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:22px;
+  padding:15px;
+  min-height:108px;
+}
 
-    .rule-name {
-      font-weight:700;
-      margin-bottom:4px;
-      font-size:15px;
-    }
+.kpi::after{
+  content:"";
+  position:absolute;
+  right:-28px;
+  top:-28px;
+  width:72px;
+  height:72px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.045);
+}
 
-    .rule-meta {
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.5;
-    }
+.kpi-title{
+  position:relative;
+  z-index:1;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:9px;
+  line-height:1.25;
+}
 
-    .rule-actions {
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
+.kpi-value{
+  position:relative;
+  z-index:1;
+  font-size:21px;
+  font-weight:850;
+  letter-spacing:-0.035em;
+  line-height:1.08;
+}
 
-    .pill-row {
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:8px;
-    }
+.status-on{
+  color:var(--office);
+}
 
-    .pill {
-      display:inline-block;
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      color:#fff;
-    }
+.status-warn{
+  color:var(--holiday);
+}
 
-    .pill-monthly { background:#6b7280; }
-    .pill-rolling { background:#60a5fa; }
-    .pill-current { background:#22c55e; }
-    .pill-ended { background:#4b5563; }
+.status-bad{
+  color:var(--sick);
+}
 
-    .calendar-head {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-bottom:12px;
-    }
+.progress-wrap{
+  margin-top:16px;
+}
 
-    .calendar {
-      display:grid;
-      grid-template-columns:repeat(7,1fr);
-      gap:8px;
-      margin-top:8px;
-    }
+.progress-label{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:8px;
+}
 
-    .dow {
-      text-align:center;
-      font-size:12px;
-      color:var(--muted);
-      padding-bottom:2px;
-    }
+.progress-bar{
+  height:13px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.07);
+}
 
-    .day {
-      background:var(--panel-strong);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:16px;
-      min-height:96px;
-      padding:10px;
-      cursor:pointer;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
+.progress-fill{
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--office), #86efac);
+  transition:width 0.25s ease;
+}
 
-    .day.office { border-color:rgba(34,197,94,0.65); }
-    .day.wfh { border-color:rgba(96,165,250,0.65); }
-    .day.sick { border-color:rgba(239,68,68,0.65); }
-    .day.holiday { border-color:rgba(245,158,11,0.65); }
+.summary-lines{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  color:var(--soft);
+  line-height:1.45;
+  font-size:14px;
+}
 
-    .day.bank-holiday {
-      border-color:rgba(168,85,247,0.75);
-      box-shadow:inset 0 0 0 1px rgba(168,85,247,0.45);
-      cursor:not-allowed;
-      background:rgba(168,85,247,0.10);
-    }
+.summary-lines div{
+  padding:12px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.045);
+  border:1px solid rgba(255,255,255,0.08);
+}
 
-    .day.blocked {
-      border-color:rgba(107,114,128,0.45);
-      background:rgba(255,255,255,0.03);
-      color:#8a93a2;
-      cursor:not-allowed;
-      opacity:0.72;
-    }
+.summary-lines strong{
+  color:#fff;
+}
 
-    .day-number {
-      font-weight:700;
-    }
+.main-grid{
+  display:grid;
+  grid-template-columns:0.92fr 1.08fr;
+  gap:16px;
+  margin-top:16px;
+  align-items:start;
+}
 
-    .day-status {
-      font-size:11px;
-      color:var(--muted);
-      line-height:1.25;
-    }
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:14px;
+}
 
-    .progress-wrap {
-      margin-top:16px;
-    }
+.section-title{
+  margin:0;
+  font-size:22px;
+  letter-spacing:-0.04em;
+  line-height:1.08;
+}
 
-    .progress-label {
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
+.section-copy{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.45;
+}
 
-    .progress-bar {
-      height:12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.08);
-      overflow:hidden;
-    }
+.form-panel{
+  padding:14px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.045);
+  border:1px solid rgba(255,255,255,0.08);
+}
 
-    .progress-fill {
-      height:100%;
-      border-radius:999px;
-      background:var(--office);
-    }
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
 
-    .summary-lines {
-      margin-top:12px;
-      color:#d6dbe4;
-      line-height:1.55;
-    }
+.form-grid.single{
+  grid-template-columns:1fr;
+}
 
-    .summary-lines strong {
-      color:#fff;
-    }
+input,
+select{
+  width:100%;
+  min-height:46px;
+  padding:12px 13px;
+  margin-top:10px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.06);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.12);
+  outline:none;
+}
 
-    .legend {
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin:14px 0 10px;
-      color:var(--muted);
-      font-size:13px;
-    }
+select option{
+  background:#171a20;
+  color:#fff;
+}
 
-    .legend-item {
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
+input::placeholder{
+  color:#8f98aa;
+}
 
-    .dot {
-      width:12px;
-      height:12px;
-      border-radius:999px;
-      display:inline-block;
-    }
+input:focus,
+select:focus{
+  border-color:rgba(255,59,48,0.70);
+  box-shadow:0 0 0 4px rgba(255,59,48,0.12);
+}
 
-    @media (max-width:980px) {
-      .grid-2,
-      .kpis,
-      .rule-form-grid,
-      .rule-form-grid-3,
-      .working-days {
-        grid-template-columns:1fr;
-      }
-    }
+.field-label{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
+}
 
-    @media (max-width:700px) {
-      body {
-        padding:14px;
-      }
+.working-days{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+  margin-top:10px;
+}
 
-      .calendar {
-        gap:6px;
-      }
+.day-check{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:10px 8px;
+  border-radius:15px;
+  background:rgba(255,255,255,0.055);
+  border:1px solid rgba(255,255,255,0.10);
+  font-size:13px;
+  color:var(--soft);
+  cursor:pointer;
+}
 
-      .day {
-        min-height:78px;
-      }
-    }
-  </style>
+.day-check input{
+  width:auto;
+  min-height:auto;
+  margin:0;
+  padding:0;
+  accent-color:var(--accent);
+}
+
+.form-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:2px;
+}
+
+.notice{
+  color:var(--muted);
+  white-space:pre-wrap;
+  margin:11px 0 0;
+  min-height:18px;
+  font-size:14px;
+  line-height:1.45;
+}
+
+.rules-list{
+  margin-top:14px;
+}
+
+.rule-item{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:22px;
+  padding:14px;
+  margin-top:10px;
+}
+
+.rule-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.rule-name{
+  font-weight:850;
+  margin-bottom:5px;
+  font-size:15px;
+  letter-spacing:-0.02em;
+}
+
+.rule-meta{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.rule-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+
+.pill-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  padding:5px 9px;
+  border-radius:999px;
+  color:#fff;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,0.10);
+}
+
+.pill-monthly{
+  background:rgba(107,114,128,0.42);
+}
+
+.pill-rolling{
+  background:rgba(96,165,250,0.38);
+}
+
+.pill-current{
+  background:rgba(34,197,94,0.38);
+}
+
+.pill-ended{
+  background:rgba(75,85,99,0.45);
+}
+
+.calendar-card{
+  position:sticky;
+  top:18px;
+}
+
+.calendar-head{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.month-title{
+  margin:0;
+  font-size:26px;
+  letter-spacing:-0.05em;
+}
+
+.month-buttons{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.month-buttons button{
+  width:auto;
+  min-height:40px;
+  padding:10px 13px;
+}
+
+.legend{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin:12px 0 13px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.045);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  display:inline-block;
+  flex:0 0 auto;
+}
+
+.calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+  margin-top:8px;
+}
+
+.dow{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  padding:2px 0 4px;
+  font-weight:800;
+}
+
+.day{
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:18px;
+  min-height:96px;
+  padding:10px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.day::before{
+  content:"";
+  position:absolute;
+  inset:auto 10px 10px auto;
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.16);
+}
+
+.day:active{
+  transform:scale(0.98);
+}
+
+.day.blank:hover{
+  border-color:rgba(255,255,255,0.22);
+  background:rgba(255,255,255,0.09);
+}
+
+.day.office{
+  border-color:rgba(34,197,94,0.75);
+  background:rgba(34,197,94,0.12);
+}
+
+.day.office::before{
+  background:var(--office);
+}
+
+.day.wfh{
+  border-color:rgba(96,165,250,0.75);
+  background:rgba(96,165,250,0.12);
+}
+
+.day.wfh::before{
+  background:var(--wfh);
+}
+
+.day.sick{
+  border-color:rgba(239,68,68,0.75);
+  background:rgba(239,68,68,0.12);
+}
+
+.day.sick::before{
+  background:var(--sick);
+}
+
+.day.holiday{
+  border-color:rgba(245,158,11,0.75);
+  background:rgba(245,158,11,0.12);
+}
+
+.day.holiday::before{
+  background:var(--holiday);
+}
+
+.day.bank-holiday{
+  border-color:rgba(168,85,247,0.78);
+  background:rgba(168,85,247,0.13);
+  cursor:not-allowed;
+}
+
+.day.bank-holiday::before{
+  background:var(--bank);
+}
+
+.day.blocked{
+  border-color:rgba(107,114,128,0.42);
+  background:rgba(255,255,255,0.035);
+  color:#8a93a2;
+  cursor:not-allowed;
+  opacity:0.74;
+}
+
+.day.blocked::before{
+  background:var(--blocked);
+}
+
+.day-number{
+  position:relative;
+  z-index:1;
+  font-weight:850;
+  font-size:16px;
+}
+
+.day-status{
+  position:relative;
+  z-index:1;
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+
+.bottom-nav{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.nav-card{
+  padding:12px;
+  border-radius:19px;
+  background:rgba(255,255,255,0.055);
+  border:1px solid rgba(255,255,255,0.09);
+  text-decoration:none;
+  color:var(--soft);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.nav-card.active{
+  background:rgba(255,59,48,0.16);
+  border-color:rgba(255,59,48,0.35);
+  color:#fff;
+}
+
+@media (max-width:1050px){
+  .kpis{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .summary-lines{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .main-grid{
+    grid-template-columns:1fr;
+  }
+
+  .calendar-card{
+    position:relative;
+    top:auto;
+  }
+}
+
+@media (max-width:760px){
+  body{
+    padding:14px;
+  }
+
+  .card{
+    padding:16px;
+  }
+
+  .top-shell,
+  .calendar-head{
+    grid-template-columns:1fr;
+  }
+
+  .page-actions,
+  .month-buttons{
+    justify-content:flex-start;
+  }
+
+  h1{
+    font-size:30px;
+  }
+
+  .kpis,
+  .summary-lines,
+  .form-grid,
+  .form-actions,
+  .rule-actions{
+    grid-template-columns:1fr;
+  }
+
+  .working-days{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .calendar{
+    gap:6px;
+  }
+
+  .day{
+    min-height:78px;
+    border-radius:15px;
+    padding:8px;
+  }
+
+  .day-number{
+    font-size:14px;
+  }
+
+  .day-status{
+    font-size:10px;
+  }
+
+  .bottom-nav{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media (max-width:420px){
+  .working-days{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .legend-item{
+    width:100%;
+  }
+}
+</style>
 </head>
+
 <body>
 
 <div class="wrap">
 
-  <div class="glass card">
-    <div class="topbar">
+  <section class="glass card">
+    <div class="top-shell">
       <div>
-        <h2 style="margin:0;">Pace Attendance</h2>
-        <p class="muted" style="margin:6px 0 0 0;">Flexible rules by date range, with monthly or rolling periods.</p>
+        <div class="brand-row">
+          <div class="logo-mark">
+            <div class="logo-line"></div>
+          </div>
+
+          <div>
+            <p class="eyebrow">Pace</p>
+            <h1>Attendance</h1>
+          </div>
+        </div>
+
+        <p class="subtitle">
+          Track office days, WFH days, sick days and holidays against your attendance rule.
+        </p>
       </div>
-      <a class="back-btn" href="dashboard.html">← Dashboard</a>
+
+      <div class="page-actions">
+        <a class="btn btn-secondary" href="dashboard.html">Home</a>
+      </div>
     </div>
 
     <div id="stats"></div>
-  </div>
 
-  <div class="grid-2">
-    <div class="glass card">
-      <h3 class="section-title">Attendance Rules</h3>
-      <p class="muted" style="margin-bottom:0;">Each rule applies over its date range. Later rules override earlier ones.</p>
-
-      <input id="ruleName" placeholder="Rule name e.g. Rolling 2 days" />
-
-      <div class="rule-form-grid">
-        <input id="ruleStart" type="date" />
-        <input id="ruleEnd" type="date" />
-      </div>
-
-      <div class="rule-form-grid">
-        <select id="ruleMode">
-          <option value="monthly">Monthly</option>
-          <option value="rolling_28">Rolling 28 days</option>
-        </select>
-
-        <input id="ruleDaysPerWeek" type="number" min="0" step="0.5" placeholder="Days per week" />
-      </div>
-
-      <div style="margin-top:10px;font-size:13px;color:var(--muted);">Working days</div>
-      <div class="working-days">
-        <label class="day-check"><input type="checkbox" value="1" checked> Mon</label>
-        <label class="day-check"><input type="checkbox" value="2" checked> Tue</label>
-        <label class="day-check"><input type="checkbox" value="3" checked> Wed</label>
-        <label class="day-check"><input type="checkbox" value="4" checked> Thu</label>
-        <label class="day-check"><input type="checkbox" value="5" checked> Fri</label>
-        <label class="day-check"><input type="checkbox" value="6"> Sat</label>
-        <label class="day-check"><input type="checkbox" value="0"> Sun</label>
-      </div>
-
-      <div class="rule-form-grid">
-        <button id="saveRuleBtn" type="button">Save rule</button>
-        <button id="clearRuleBtn" class="secondary-btn" type="button">Clear form</button>
-      </div>
-
-      <p id="ruleMsg" class="notice"></p>
-
-      <div id="rulesList"></div>
+    <div class="help-strip">
+      <strong>How to use:</strong> tap a working day to cycle through blank, Office, WFH, Sick and Holiday. Bank holidays and non working days are locked.
     </div>
+  </section>
 
-    <div class="glass card">
-      <div class="calendar-head">
-        <h3 class="section-title" id="monthTitle" style="margin:0;"></h3>
+  <main class="main-grid">
+
+    <section class="glass card">
+      <div class="section-head">
         <div>
+          <h2 class="section-title">Attendance rules</h2>
+          <p class="section-copy">
+            Add rules by date range. The latest matching rule controls that day.
+          </p>
+        </div>
+      </div>
+
+      <div class="form-panel">
+        <div class="form-grid single">
+          <input id="ruleName" placeholder="Rule name e.g. Rolling 2 days" />
+        </div>
+
+        <div class="form-grid">
+          <input id="ruleStart" type="date" />
+          <input id="ruleEnd" type="date" />
+        </div>
+
+        <div class="form-grid">
+          <select id="ruleMode">
+            <option value="monthly">Monthly</option>
+            <option value="rolling_28">Rolling 28 days</option>
+          </select>
+
+          <input id="ruleDaysPerWeek" type="number" min="0" step="0.5" placeholder="Days per week" />
+        </div>
+
+        <div class="field-label">Working days</div>
+
+        <div class="working-days">
+          <label class="day-check"><input type="checkbox" value="1" checked> Mon</label>
+          <label class="day-check"><input type="checkbox" value="2" checked> Tue</label>
+          <label class="day-check"><input type="checkbox" value="3" checked> Wed</label>
+          <label class="day-check"><input type="checkbox" value="4" checked> Thu</label>
+          <label class="day-check"><input type="checkbox" value="5" checked> Fri</label>
+          <label class="day-check"><input type="checkbox" value="6"> Sat</label>
+          <label class="day-check"><input type="checkbox" value="0"> Sun</label>
+        </div>
+
+        <div class="form-actions">
+          <button id="saveRuleBtn" type="button">Save rule</button>
+          <button id="clearRuleBtn" class="secondary-btn" type="button">Clear form</button>
+        </div>
+
+        <p id="ruleMsg" class="notice"></p>
+      </div>
+
+      <div id="rulesList" class="rules-list"></div>
+    </section>
+
+    <section class="glass card calendar-card">
+      <div class="calendar-head">
+        <div>
+          <h2 class="month-title" id="monthTitle"></h2>
+          <p class="section-copy">Tap days to update your attendance.</p>
+        </div>
+
+        <div class="month-buttons">
           <button class="secondary-btn" onclick="changeMonth(-1)">Prev</button>
           <button class="secondary-btn" onclick="goToday()">Today</button>
           <button class="secondary-btn" onclick="changeMonth(1)">Next</button>
@@ -477,13 +936,23 @@
         <div class="legend-item"><span class="dot" style="background:#ef4444;"></span> Sick</div>
         <div class="legend-item"><span class="dot" style="background:#f59e0b;"></span> Holiday</div>
         <div class="legend-item"><span class="dot" style="background:#a855f7;"></span> Bank holiday</div>
-        <div class="legend-item"><span class="dot" style="background:#6b7280;"></span> Non-working day</div>
+        <div class="legend-item"><span class="dot" style="background:#6b7280;"></span> Non working</div>
       </div>
 
       <div class="calendar" id="calendar"></div>
+
       <p class="notice" id="msg"></p>
-    </div>
-  </div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-card" href="dashboard.html">🏠 Dashboard</a>
+    <a class="nav-card" href="life-test.html">✅ To do</a>
+    <a class="nav-card active" href="attendance-test.html">🏢 Attendance</a>
+    <a class="nav-card" href="reminders-test.html">⏰ Reminders</a>
+    <a class="nav-card" href="finance-test.html">💷 Finance</a>
+  </nav>
 
 </div>
 
@@ -519,7 +988,7 @@ const BANK_HOLIDAYS = {
   "2026-05-25": "Spring bank holiday",
   "2026-08-31": "Summer bank holiday",
   "2026-12-25": "Christmas Day",
-  "2026-12-28": "Boxing Day (substitute day)",
+  "2026-12-28": "Boxing Day substitute day",
 
   "2027-01-01": "New Year's Day",
   "2027-03-26": "Good Friday",
@@ -527,10 +996,10 @@ const BANK_HOLIDAYS = {
   "2027-05-03": "Early May bank holiday",
   "2027-05-31": "Spring bank holiday",
   "2027-08-30": "Summer bank holiday",
-  "2027-12-27": "Christmas Day (substitute day)",
-  "2027-12-28": "Boxing Day (substitute day)",
+  "2027-12-27": "Christmas Day substitute day",
+  "2027-12-28": "Boxing Day substitute day",
 
-  "2028-01-03": "New Year's Day (substitute day)",
+  "2028-01-03": "New Year's Day substitute day",
   "2028-04-14": "Good Friday",
   "2028-04-17": "Easter Monday",
   "2028-05-01": "Early May bank holiday",
@@ -568,6 +1037,16 @@ let editingRuleId = null;
 
 const attendanceOrder = ["blank", "Office", "WFH", "Sick", "Holiday"];
 
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[char]));
+}
+
 function formatDate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -604,6 +1083,7 @@ function checkedWorkingDays() {
 
 function setWorkingDays(values) {
   const chosen = new Set((values || []).map(Number));
+
   document.querySelectorAll('.working-days input').forEach(el => {
     el.checked = chosen.has(Number(el.value));
   });
@@ -655,6 +1135,7 @@ function getRuleForDate(date) {
 function getViewedMonthBounds() {
   const y = currentDate.getFullYear();
   const m = currentDate.getMonth();
+
   return {
     start: new Date(y, m, 1),
     end: new Date(y, m + 1, 0)
@@ -669,12 +1150,13 @@ function getPeriodForView() {
     const end = new Date(monthEnd);
     const start = new Date(monthEnd);
     start.setDate(start.getDate() - 27);
+
     return {
       start,
       end,
       mode: "rolling_28",
       rule: controllingRule,
-      label: `${formatDisplayDate(start)} - ${formatDisplayDate(end)}`
+      label: `${formatDisplayDate(start)} to ${formatDisplayDate(end)}`
     };
   }
 
@@ -689,7 +1171,10 @@ function getPeriodForView() {
 
 function getWorkingDaysForDate(date) {
   const rule = getRuleForDate(date) || DEFAULT_RULE;
-  return Array.isArray(rule.working_days) && rule.working_days.length ? rule.working_days.map(Number) : [1,2,3,4,5];
+
+  return Array.isArray(rule.working_days) && rule.working_days.length
+    ? rule.working_days.map(Number)
+    : [1,2,3,4,5];
 }
 
 function isWorkingDayForRule(date) {
@@ -700,7 +1185,10 @@ function isWorkingDayForRule(date) {
 
 function getDailyExpectedContribution(date) {
   const rule = getRuleForDate(date) || DEFAULT_RULE;
-  const days = Array.isArray(rule.working_days) && rule.working_days.length ? rule.working_days.map(Number) : [1,2,3,4,5];
+  const days = Array.isArray(rule.working_days) && rule.working_days.length
+    ? rule.working_days.map(Number)
+    : [1,2,3,4,5];
+
   const divisor = days.length || 5;
   return Number(rule.days_per_week || 0) / divisor;
 }
@@ -714,6 +1202,7 @@ function isEligibleWorkingDay(date) {
   if (!isWorkingDayForRule(date)) return false;
 
   const status = getDayStatus(formatDate(date));
+
   if (status === "Sick" || status === "Holiday") return false;
 
   return true;
@@ -739,6 +1228,7 @@ function countTarget(period) {
     if (isEligibleWorkingDay(d)) {
       sum += getDailyExpectedContribution(d);
     }
+
     d.setDate(d.getDate() + 1);
   }
 
@@ -753,6 +1243,7 @@ function countActualOffice(period) {
     if (getDayStatus(formatDate(d)) === "Office") {
       total++;
     }
+
     d.setDate(d.getDate() + 1);
   }
 
@@ -761,8 +1252,8 @@ function countActualOffice(period) {
 
 function getStatus(actual, target) {
   if (actual >= target) return { text: "On track", cls: "status-on" };
-  if (actual >= Math.max(target - 1, 0)) return { text: "Off track", cls: "status-warn" };
-  return { text: "Not met", cls: "status-bad" };
+  if (actual >= Math.max(target - 1, 0)) return { text: "Close", cls: "status-warn" };
+  return { text: "Behind", cls: "status-bad" };
 }
 
 function progressPercent(actual, target) {
@@ -776,10 +1267,15 @@ function ruleModeLabel(mode) {
 
 function workingDayNames(days) {
   const map = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  return (days || []).map(Number).sort((a,b) => {
-    const normalise = x => x === 0 ? 7 : x;
-    return normalise(a) - normalise(b);
-  }).map(d => map[d]).join(", ");
+
+  return (days || [])
+    .map(Number)
+    .sort((a,b) => {
+      const normalise = x => x === 0 ? 7 : x;
+      return normalise(a) - normalise(b);
+    })
+    .map(d => map[d])
+    .join(", ");
 }
 
 function renderStats() {
@@ -791,22 +1287,23 @@ function renderStats() {
   const status = getStatus(actual, target);
   const progress = progressPercent(actual, target);
   const rule = period.rule || DEFAULT_RULE;
-  const ratio = (Number(rule.days_per_week || 0) / ((rule.working_days || [1,2,3,4,5]).length || 5)) * 100;
+  const workingDays = rule.working_days || [1,2,3,4,5];
+  const ratio = (Number(rule.days_per_week || 0) / (workingDays.length || 5)) * 100;
 
   stats.innerHTML = `
     <div class="kpis">
       <div class="kpi">
-        <div class="kpi-title">Period Used</div>
-        <div class="kpi-value">${period.label}</div>
+        <div class="kpi-title">Period used</div>
+        <div class="kpi-value">${escapeHTML(period.label)}</div>
       </div>
 
       <div class="kpi">
-        <div class="kpi-title">Actual Days Attended</div>
+        <div class="kpi-title">Office days</div>
         <div class="kpi-value">${actual}</div>
       </div>
 
       <div class="kpi">
-        <div class="kpi-title">Eligible Days</div>
+        <div class="kpi-title">Eligible days</div>
         <div class="kpi-value">${eligibleDays}</div>
       </div>
 
@@ -816,28 +1313,29 @@ function renderStats() {
       </div>
 
       <div class="kpi">
-        <div class="kpi-title">${ruleModeLabel(period.mode)}</div>
-        <div class="kpi-value ${status.cls}">${status.text}</div>
+        <div class="kpi-title">${escapeHTML(ruleModeLabel(period.mode))}</div>
+        <div class="kpi-value ${status.cls}">${escapeHTML(status.text)}</div>
       </div>
     </div>
 
     <div class="progress-wrap">
       <div class="progress-label">
         <span>Progress to target</span>
-        <span>${actual} / ${target} office days</span>
+        <span>${actual} of ${target} office days</span>
       </div>
+
       <div class="progress-bar">
         <div class="progress-fill" style="width:${progress}%"></div>
       </div>
     </div>
 
     <div class="summary-lines">
-      <div><strong>Rule:</strong> ${rule.rule_name || "Unnamed rule"}</div>
-      <div><strong>Mode:</strong> ${ruleModeLabel(period.mode)}</div>
-      <div><strong>Days per week:</strong> ${Number(rule.days_per_week || 0)}</div>
-      <div><strong>Working days:</strong> ${workingDayNames(rule.working_days || [1,2,3,4,5])}</div>
-      <div><strong>Equivalent percentage:</strong> ${ratio.toFixed(0)}%</div>
-      <div><strong>Actual:</strong> ${actual} office days out of ${eligibleDays} eligible days</div>
+      <div><strong>Rule</strong><br>${escapeHTML(rule.rule_name || "Unnamed rule")}</div>
+      <div><strong>Mode</strong><br>${escapeHTML(ruleModeLabel(period.mode))}</div>
+      <div><strong>Days per week</strong><br>${Number(rule.days_per_week || 0)}</div>
+      <div><strong>Working days</strong><br>${escapeHTML(workingDayNames(workingDays))}</div>
+      <div><strong>Equivalent</strong><br>${ratio.toFixed(0)}%</div>
+      <div><strong>Actual</strong><br>${actual} office days from ${eligibleDays} eligible days</div>
     </div>
   `;
 }
@@ -861,16 +1359,17 @@ function renderRules() {
       <div class="rule-item">
         <div class="rule-head">
           <div>
-            <div class="rule-name">${rule.rule_name || "Unnamed rule"}</div>
+            <div class="rule-name">${escapeHTML(rule.rule_name || "Unnamed rule")}</div>
+
             <div class="rule-meta">
-              ${formatDisplayDate(start)}
-              ${end ? ` to ${formatDisplayDate(end)}` : ` onward`}<br>
-              ${ruleModeLabel(rule.calculation_mode)} • ${Number(rule.days_per_week)} days/week<br>
-              Working days: ${workingDayNames(rule.working_days)}
+              ${escapeHTML(formatDisplayDate(start))}
+              ${end ? ` to ${escapeHTML(formatDisplayDate(end))}` : ` onward`}<br>
+              ${escapeHTML(ruleModeLabel(rule.calculation_mode))} • ${Number(rule.days_per_week)} days per week<br>
+              Working days: ${escapeHTML(workingDayNames(rule.working_days))}
             </div>
 
             <div class="pill-row">
-              <span class="pill ${rule.calculation_mode === "rolling_28" ? "pill-rolling" : "pill-monthly"}">${ruleModeLabel(rule.calculation_mode)}</span>
+              <span class="pill ${rule.calculation_mode === "rolling_28" ? "pill-rolling" : "pill-monthly"}">${escapeHTML(ruleModeLabel(rule.calculation_mode))}</span>
               ${current ? `<span class="pill pill-current">Current</span>` : ``}
               ${ended ? `<span class="pill pill-ended">Ended</span>` : ``}
             </div>
@@ -890,6 +1389,7 @@ function renderCalendar() {
   calendar.innerHTML = "";
 
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
   days.forEach(d => {
     const el = document.createElement("div");
     el.className = "dow";
@@ -936,13 +1436,14 @@ function renderCalendar() {
     }
 
     let label = "";
+
     if (bankHoliday) label = bankHolidayTitle;
-    else if (!workingDay) label = "Non-working";
+    else if (!workingDay) label = "Non working";
     else if (status !== "blank") label = status;
 
     cell.innerHTML = `
       <div class="day-number">${d}</div>
-      <div class="day-status">${label}</div>
+      <div class="day-status">${escapeHTML(label)}</div>
     `;
 
     calendar.appendChild(cell);
@@ -963,6 +1464,7 @@ async function loadAttendance(userId) {
   }
 
   attendanceMap = {};
+
   (data || []).forEach(r => {
     attendanceMap[r.entry_date] = r.status;
   });
@@ -988,12 +1490,15 @@ window.editRule = function(id) {
   if (!rule) return;
 
   editingRuleId = id;
+
   ruleNameEl.value = rule.rule_name || "";
   ruleStartEl.value = rule.start_date || "";
   ruleEndEl.value = rule.end_date || "";
   ruleModeEl.value = rule.calculation_mode || "monthly";
   ruleDaysPerWeekEl.value = Number(rule.days_per_week || 0);
+
   setWorkingDays(rule.working_days || [1,2,3,4,5]);
+
   ruleMsg.textContent = "Editing rule.";
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
@@ -1069,7 +1574,9 @@ async function saveRule() {
   }
 
   ruleMsg.textContent = editingRuleId ? "Rule updated." : "Rule saved.";
+
   clearRuleForm();
+
   await initialise();
 }
 
