@@ -353,7 +353,7 @@ select option{
 
 .toolsRow{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-columns:minmax(0,1fr) auto auto;
   gap:8px;
   margin-bottom:10px;
 }
@@ -362,7 +362,8 @@ select option{
   min-width:0;
 }
 
-.clearBtn{
+.clearBtn,
+.recoverBtn{
   border:1px solid var(--line);
   background:rgba(255,255,255,0.06);
   color:var(--muted);
@@ -370,6 +371,30 @@ select option{
   padding:0 12px;
   font-weight:850;
   cursor:pointer;
+  white-space:nowrap;
+}
+
+.recoverBtn{
+  color:white;
+  border-color:rgba(255,59,48,0.38);
+  background:rgba(255,59,48,0.16);
+}
+
+.recoveryNotice{
+  margin-bottom:10px;
+  border:1px solid rgba(34,197,94,0.24);
+  background:rgba(34,197,94,0.10);
+  color:#a7f3d0;
+  border-radius:16px;
+  padding:10px 12px;
+  font-size:12px;
+  line-height:1.35;
+}
+
+.recoveryNotice.warning{
+  border-color:rgba(245,158,11,0.28);
+  background:rgba(245,158,11,0.10);
+  color:#fde68a;
 }
 
 .filters{
@@ -611,6 +636,14 @@ select option{
   .quickLinks{
     grid-template-columns:repeat(2, minmax(0,1fr));
   }
+
+  .toolsRow{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .searchInput{
+    grid-column:1 / 3;
+  }
 }
 
 @media(max-width:640px){
@@ -642,7 +675,12 @@ select option{
     grid-template-columns:1fr;
   }
 
-  .clearBtn{
+  .searchInput{
+    grid-column:auto;
+  }
+
+  .clearBtn,
+  .recoverBtn{
     padding:11px 12px;
   }
 
@@ -801,8 +839,11 @@ select option{
 
       <div class="toolsRow">
         <input class="searchInput" id="searchInput" type="search" placeholder="Search tasks...">
+        <button class="recoverBtn" id="recoverOldBtn" type="button">Recover old</button>
         <button class="clearBtn" id="clearDoneBtn" type="button">Clear done</button>
       </div>
+
+      <div class="recoveryNotice" id="recoveryNotice" hidden></div>
 
       <div class="filters">
         <button class="filterBtn active" type="button" data-filter="All">All</button>
@@ -865,6 +906,8 @@ const taskNotes = document.getElementById("taskNotes");
 const taskList = document.getElementById("taskList");
 const searchInput = document.getElementById("searchInput");
 const clearDoneBtn = document.getElementById("clearDoneBtn");
+const recoverOldBtn = document.getElementById("recoverOldBtn");
+const recoveryNotice = document.getElementById("recoveryNotice");
 const filterButtons = document.querySelectorAll(".filterBtn");
 
 const openCount = document.getElementById("openCount");
@@ -873,31 +916,58 @@ const highCount = document.getElementById("highCount");
 const doneCount = document.getElementById("doneCount");
 
 const storageKey = "pace_life_tasks_v1";
-const oldDashboardKey = "pace_dashboard_quick_tasks_v1";
+const backupKey = "pace_life_tasks_backup_v1";
+
+const legacyStorageKeys = [
+  "pace_life_tasks",
+  "pace_life_tasks_old",
+  "pace_life_items_v1",
+  "pace_life_items",
+  "pace_todo_tasks_v1",
+  "pace_todo_tasks",
+  "pace_to_do_tasks_v1",
+  "pace_to_do_tasks",
+  "pace_todos_v1",
+  "pace_todos",
+  "pace_tasks_v1",
+  "pace_tasks",
+  "todo_tasks",
+  "todoTasks",
+  "todos",
+  "tasks",
+  "life_tasks",
+  "lifeTasks",
+  "quick_tasks",
+  "quickTasks",
+  "pace_quick_tasks_v1",
+  "pace_dashboard_quick_tasks_v1"
+];
 
 let activeFilter = "All";
-let tasks = JSON.parse(localStorage.getItem(storageKey)) || [];
+let tasks = getSavedCurrentTasks();
 
-const oldDashboardTasks = JSON.parse(localStorage.getItem(oldDashboardKey)) || [];
+function getSavedCurrentTasks(){
+  const saved = safeJsonParse(localStorage.getItem(storageKey));
 
-if(tasks.length === 0 && oldDashboardTasks.length > 0){
-  tasks = oldDashboardTasks.map(item => ({
-    id:item.id || Date.now(),
-    title:item.text || "Untitled task",
-    category:"Life",
-    priority:"Normal",
-    due:"",
-    area:"Today",
-    notes:"",
-    done:item.done || false,
-    createdAt:new Date().toISOString()
-  }));
+  if(!Array.isArray(saved)){
+    return [];
+  }
 
-  saveTasks();
+  return saved
+    .map((item, index) => normaliseTask(item, storageKey, index))
+    .filter(Boolean);
 }
 
-function saveTasks(){
-  localStorage.setItem(storageKey, JSON.stringify(tasks));
+function safeJsonParse(value){
+  if(!value){
+    return null;
+  }
+
+  try{
+    return JSON.parse(value);
+  }catch(error){
+    return null;
+  }
 }
 
 function todayString(){
@@ -906,6 +976,344 @@ function todayString(){
   const month = String(today.getMonth() + 1).padStart(2, "0");
   const day = String(today.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function saveTasks(){
+  localStorage.setItem(storageKey, JSON.stringify(tasks));
+}
+
+function backupTasks(){
+  localStorage.setItem(backupKey, JSON.stringify(tasks));
+}
+
+function cleanText(value){
+  if(value === undefined || value === null){
+    return "";
+  }
+
+  return String(value).trim();
+}
+
+function cleanDate(value){
+  const raw = cleanText(value);
+
+  if(!raw){
+    return "";
+  }
+
+  if(/^\d{4}-\d{2}-\d{2}$/.test(raw)){
+    return raw;
+  }
+
+  const parsed = new Date(raw);
+
+  if(Number.isNaN(parsed.getTime())){
+    return "";
+  }
+
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, "0");
+  const day = String(parsed.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function cleanCategory(value){
+  const raw = cleanText(value);
+
+  const allowed = [
+    "Life",
+    "Work",
+    "Finance",
+    "Health",
+    "Faith",
+    "Creators",
+    "Admin"
+  ];
+
+  if(allowed.includes(raw)){
+    return raw;
+  }
+
+  return "Life";
+}
+
+function cleanPriority(value){
+  const raw = cleanText(value);
+
+  if(raw === "High" || raw === "Low" || raw === "Normal"){
+    return raw;
+  }
+
+  if(raw.toLowerCase() === "urgent"){
+    return "High";
+  }
+
+  return "Normal";
+}
+
+function cleanArea(value, due){
+  const raw = cleanText(value);
+
+  const allowed = [
+    "Today",
+    "This week",
+    "Later",
+    "Waiting"
+  ];
+
+  if(allowed.includes(raw)){
+    return raw;
+  }
+
+  if(raw.toLowerCase() === "done"){
+    return "Later";
+  }
+
+  if(due === todayString()){
+    return "Today";
+  }
+
+  return "Today";
+}
+
+function cleanDone(item){
+  if(typeof item === "string"){
+    return false;
+  }
+
+  return item.done === true ||
+    item.completed === true ||
+    item.isDone === true ||
+    item.checked === true ||
+    cleanText(item.status).toLowerCase() === "done" ||
+    cleanText(item.state).toLowerCase() === "done";
+}
+
+function normaliseTask(item, sourceKey, index){
+  if(typeof item === "string"){
+    const stringTitle = item.trim();
+
+    if(!stringTitle){
+      return null;
+    }
+
+    return {
+      id:`${sourceKey}_${index}_${Date.now()}`,
+      title:stringTitle,
+      category:"Life",
+      priority:"Normal",
+      due:"",
+      area:"Today",
+      notes:"",
+      done:false,
+      createdAt:new Date().toISOString(),
+      recoveredFrom:sourceKey
+    };
+  }
+
+  if(!item || typeof item !== "object"){
+    return null;
+  }
+
+  const title =
+    cleanText(item.title) ||
+    cleanText(item.text) ||
+    cleanText(item.task) ||
+    cleanText(item.taskTitle) ||
+    cleanText(item.name) ||
+    cleanText(item.label) ||
+    cleanText(item.content) ||
+    cleanText(item.value);
+
+  if(!title){
+    return null;
+  }
+
+  const due = cleanDate(item.due || item.dueDate || item.date || item.deadline);
+
+  return {
+    id:item.id ? `${sourceKey}_${item.id}` : `${sourceKey}_${index}_${Date.now()}`,
+    title:title,
+    category:cleanCategory(item.category || item.type),
+    priority:cleanPriority(item.priority || item.level),
+    due:due,
+    area:cleanArea(item.area || item.section || item.bucket || item.status, due),
+    notes:cleanText(item.notes || item.note || item.description || item.details),
+    done:cleanDone(item),
+    createdAt:item.createdAt || item.created || new Date().toISOString(),
+    recoveredFrom:sourceKey
+  };
+}
+
+function extractTaskArray(parsed){
+  if(Array.isArray(parsed)){
+    return parsed;
+  }
+
+  if(!parsed || typeof parsed !== "object"){
+    return [];
+  }
+
+  const possibleArrayKeys = [
+    "tasks",
+    "todos",
+    "items",
+    "list",
+    "taskList",
+    "quickTasks",
+    "lifeTasks",
+    "entries",
+    "data"
+  ];
+
+  for(const key of possibleArrayKeys){
+    if(Array.isArray(parsed[key])){
+      return parsed[key];
+    }
+  }
+
+  return [];
+}
+
+function isExcludedStorageKey(key){
+  const lowerKey = key.toLowerCase();
+
+  const excludedWords = [
+    "attendance",
+    "booking",
+    "bookings",
+    "finance",
+    "income",
+    "creator_income",
+    "health",
+    "quiet",
+    "shoot",
+    "shot",
+    "reminder",
+    "weekly",
+    "manifest",
+    "theme"
+  ];
+
+  return excludedWords.some(word => lowerKey.includes(word));
+}
+
+function isLikelyOldTaskKey(key, wideScan){
+  if(!key || key === storageKey || key === backupKey){
+    return false;
+  }
+
+  if(isExcludedStorageKey(key)){
+    return false;
+  }
+
+  if(legacyStorageKeys.includes(key)){
+    return true;
+  }
+
+  const lowerKey = key.toLowerCase();
+
+  const likelyWords = [
+    "task",
+    "todo",
+    "to_do",
+    "to-do",
+    "life",
+    "quick"
+  ];
+
+  if(likelyWords.some(word => lowerKey.includes(word))){
+    return true;
+  }
+
+  return wideScan;
+}
+
+function taskSignature(task){
+  return [
+    cleanText(task.title).toLowerCase(),
+    cleanText(task.notes).toLowerCase(),
+    cleanText(task.due),
+    cleanText(task.category),
+    cleanText(task.priority),
+    cleanText(task.area)
+  ].join("|");
+}
+
+function importOldTasks(wideScan = false){
+  const allKeys = Object.keys(localStorage);
+
+  const keysToCheck = [
+    ...legacyStorageKeys,
+    ...allKeys
+  ].filter((key, index, array) => {
+    return array.indexOf(key) === index && isLikelyOldTaskKey(key, wideScan);
+  });
+
+  const existingSignatures = new Set(tasks.map(taskSignature));
+  const recoveredTasks = [];
+  const recoverySources = [];
+
+  keysToCheck.forEach(key => {
+    const parsed = safeJsonParse(localStorage.getItem(key));
+    const possibleTasks = extractTaskArray(parsed);
+
+    if(!possibleTasks.length){
+      return;
+    }
+
+    possibleTasks.forEach((item, index) => {
+      const normalised = normaliseTask(item, key, index);
+
+      if(!normalised){
+        return;
+      }
+
+      const signature = taskSignature(normalised);
+
+      if(existingSignatures.has(signature)){
+        return;
+      }
+
+      existingSignatures.add(signature);
+      recoveredTasks.push(normalised);
+
+      if(!recoverySources.includes(key)){
+        recoverySources.push(key);
+      }
+    });
+  });
+
+  if(recoveredTasks.length > 0){
+    tasks = [
+      ...recoveredTasks,
+      ...tasks
+    ];
+
+    backupTasks();
+    saveTasks();
+
+    showRecoveryNotice(
+      `Recovered ${recoveredTasks.length} old task${recoveredTasks.length === 1 ? "" : "s"}. They are now saved into this new To Do page.`,
+      false
+    );
+
+    console.log("Pace recovered old tasks from:", recoverySources);
+  }
+
+  return recoveredTasks.length;
+}
+
+function showRecoveryNotice(message, warning = false){
+  recoveryNotice.textContent = message;
+  recoveryNotice.hidden = false;
+
+  if(warning){
+    recoveryNotice.classList.add("warning");
+  }else{
+    recoveryNotice.classList.remove("warning");
+  }
 }
 
 function formatDate(dateValue){
@@ -958,11 +1366,11 @@ function getFilteredTasks(){
 
   return tasks.filter(task => {
     const matchesSearch =
-      task.title.toLowerCase().includes(searchTerm) ||
-      task.category.toLowerCase().includes(searchTerm) ||
-      task.area.toLowerCase().includes(searchTerm) ||
-      task.priority.toLowerCase().includes(searchTerm) ||
-      task.notes.toLowerCase().includes(searchTerm);
+      cleanText(task.title).toLowerCase().includes(searchTerm) ||
+      cleanText(task.category).toLowerCase().includes(searchTerm) ||
+      cleanText(task.area).toLowerCase().includes(searchTerm) ||
+      cleanText(task.priority).toLowerCase().includes(searchTerm) ||
+      cleanText(task.notes).toLowerCase().includes(searchTerm);
 
     if(!matchesSearch){
       return false;
@@ -1006,7 +1414,7 @@ function renderTasks(){
   if(filteredTasks.length === 0){
     const empty = document.createElement("div");
     empty.className = "emptyState";
-    empty.textContent = "No tasks here yet. Add one task or change the filter.";
+    empty.textContent = "No tasks here yet. Add one task, tap Recover old, or change the filter.";
     taskList.appendChild(empty);
     return;
   }
@@ -1135,7 +1543,7 @@ taskForm.addEventListener("submit", event => {
   }
 
   tasks.unshift({
-    id:Date.now(),
+    id:`new_${Date.now()}`,
     title:title,
     category:taskCategory.value,
     priority:taskPriority.value,
@@ -1171,6 +1579,28 @@ clearDoneBtn.addEventListener("click", () => {
   saveTasks();
   renderTasks();
 });
+
+recoverOldBtn.addEventListener("click", () => {
+  const recovered = importOldTasks(true);
+
+  if(recovered === 0){
+    showRecoveryNotice(
+      "I could not find any extra old tasks in this browser. If they were saved on another device or another browser, open the app there first.",
+      true
+    );
+  }
+
+  renderTasks();
+});
+
+const recoveredOnLoad = importOldTasks(false);
+
+if(recoveredOnLoad === 0 && tasks.length === 0){
+  showRecoveryNotice(
+    "No tasks are showing yet. Tap Recover old to do a wider search through this browser storage.",
+    true
+  );
+}
 
 renderTasks();
 </script>
