@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pace To Do</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pace Lists</title>
 
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -24,8 +25,8 @@
   --soft:#d9dee8;
   --accent:#ff3b30;
   --green:#22c55e;
-  --amber:#f59e0b;
   --blue:#60a5fa;
+  --amber:#f59e0b;
   --red:#ef4444;
   --shadow:0 24px 70px rgba(0,0,0,0.42);
   --radius:28px;
@@ -36,14 +37,17 @@
   -webkit-tap-highlight-color:transparent;
 }
 
-html{
-  min-height:100%;
+html,
+body{
+  max-width:100%;
+  overflow-x:hidden;
 }
 
 body{
   margin:0;
   min-height:100dvh;
   padding:18px;
+  padding-bottom:96px;
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
   background:
@@ -54,7 +58,7 @@ body{
 
 button,
 input,
-select{
+textarea{
   font:inherit;
 }
 
@@ -62,7 +66,8 @@ button{
   cursor:pointer;
 }
 
-.wrap{
+.page{
+  width:100%;
   max-width:1220px;
   margin:0 auto;
 }
@@ -111,8 +116,17 @@ h1{
   line-height:1.05;
 }
 
-.back-btn{
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.back-btn,
+.icon-btn{
   width:auto;
+  min-width:46px;
+  min-height:46px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -127,7 +141,13 @@ h1{
   font-size:14px;
 }
 
-.back-btn:hover{
+.icon-btn{
+  font-size:22px;
+  padding:0 14px;
+}
+
+.back-btn:hover,
+.icon-btn:hover{
   background:rgba(255,255,255,0.12);
 }
 
@@ -225,15 +245,8 @@ h1{
   z-index:1;
 }
 
-.workspace{
-  display:grid;
-  grid-template-columns:minmax(0, 1.35fr) minmax(330px, 0.65fr);
-  gap:14px;
-  margin-top:14px;
-  align-items:start;
-}
-
 .panel{
+  margin-top:14px;
   padding:16px;
 }
 
@@ -258,8 +271,15 @@ h1{
   line-height:1.4;
 }
 
+.search-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  margin-bottom:14px;
+}
+
 input,
-select,
+textarea,
 button{
   width:100%;
   min-height:46px;
@@ -272,13 +292,20 @@ button{
 }
 
 input:focus,
-select:focus{
+textarea:focus{
   border-color:rgba(255,59,48,0.55);
   box-shadow:0 0 0 4px rgba(255,59,48,0.10);
 }
 
-input::placeholder{
+input::placeholder,
+textarea::placeholder{
   color:#919aaa;
+}
+
+textarea{
+  min-height:130px;
+  resize:vertical;
+  line-height:1.45;
 }
 
 .primary-btn{
@@ -291,142 +318,121 @@ input::placeholder{
   box-shadow:0 16px 35px rgba(255,59,48,0.20);
 }
 
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.form-grid.task-main-grid{
-  grid-template-columns:1fr 180px;
-}
-
-.field{
-  display:block;
-}
-
-.field span{
-  display:block;
-  font-size:12px;
-  color:var(--muted);
-  font-weight:750;
-  margin:0 0 7px;
-}
-
-.notice{
-  color:var(--soft);
-  min-height:18px;
-  margin:10px 0 0;
-  font-size:13px;
-}
-
-.search-row{
-  margin-bottom:12px;
-}
-
-.filters{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding-bottom:2px;
-  margin:8px 0 13px;
-}
-
-.filter-btn{
-  width:auto;
-  flex:0 0 auto;
-  min-height:36px;
-  padding:9px 12px;
+.secondary-btn{
   border:1px solid rgba(255,255,255,0.10);
-  border-radius:999px;
-  background:rgba(255,255,255,0.07);
+  background:rgba(255,255,255,0.09);
   color:#fff;
-  font-size:13px;
   font-weight:850;
+  margin-top:10px;
 }
 
-.filter-btn span{
-  opacity:0.68;
-  margin-left:5px;
+.danger-btn{
+  background:rgba(239,68,68,0.20);
+  border:1px solid rgba(239,68,68,0.22);
+  color:#fff;
+  font-weight:850;
+  margin-top:12px;
 }
 
-.filter-btn.active{
-  background:var(--accent);
-  border-color:rgba(255,255,255,0.08);
+.add-inline{
+  width:auto;
+  min-width:46px;
+  margin:0;
+  font-size:22px;
+  padding:0 16px;
+  border-radius:16px;
+  background:linear-gradient(135deg, var(--accent), #ff675d);
+  border:0;
+  box-shadow:0 16px 35px rgba(255,59,48,0.20);
 }
 
-.tasks-list{
-  max-height:calc(100dvh - 318px);
-  overflow:auto;
-  padding-right:3px;
+.grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
+  gap:14px;
 }
 
-.tasks-list::-webkit-scrollbar{
-  width:8px;
-}
-
-.tasks-list::-webkit-scrollbar-thumb{
-  background:rgba(255,255,255,0.12);
-  border-radius:999px;
-}
-
-.task{
-  background:rgba(255,255,255,0.075);
+.note-card{
+  min-width:0;
+  cursor:pointer;
+  background:rgba(255,255,255,0.065);
   border:1px solid rgba(255,255,255,0.09);
   border-radius:24px;
-  padding:14px;
-  margin-top:11px;
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
+  padding:12px;
+  transition:transform 0.18s ease, background 0.18s ease;
 }
 
-.task:first-child{
-  margin-top:0;
+.note-card:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.085);
 }
 
-.check{
-  width:32px;
-  height:32px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,0.14);
-  background:rgba(255,255,255,0.065);
-  color:#fff;
-  flex:0 0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
+.preview{
+  width:100%;
+  aspect-ratio:1.35 / 1;
+  min-height:126px;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,59,48,0.10), transparent 45%),
+    rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.11);
+  padding:12px;
+  overflow:hidden;
+}
+
+.preview-title{
+  font-size:13px;
+  font-weight:920;
+  margin-bottom:8px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  letter-spacing:-0.02em;
+}
+
+.preview-section{
+  font-size:10px;
   font-weight:900;
+  color:#fff;
+  margin-top:7px;
+  text-transform:lowercase;
 }
 
-.check.done{
-  background:var(--green);
-  border-color:rgba(34,197,94,0.45);
-}
-
-.task-main{
-  flex:1;
-  min-width:0;
-}
-
-.task-title{
-  font-size:15px;
+.preview-line{
+  font-size:11px;
+  color:var(--soft);
   line-height:1.45;
-  font-weight:850;
-  letter-spacing:-0.01em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-.task-title.done{
-  text-decoration:line-through;
+.note-title{
+  margin-top:12px;
+  font-size:16px;
+  font-weight:900;
+  line-height:1.16;
+  text-align:left;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  word-break:break-word;
+  letter-spacing:-0.02em;
+}
+
+.note-date{
   color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
 }
 
-.task-meta{
+.note-meta{
   display:flex;
   flex-wrap:wrap;
   gap:7px;
-  margin-top:9px;
+  margin-top:10px;
 }
 
 .chip{
@@ -442,77 +448,177 @@ input::placeholder{
   font-weight:750;
 }
 
-.chip.due{
-  background:rgba(96,165,250,0.12);
-  border-color:rgba(96,165,250,0.22);
-  color:#d7eaff;
-}
-
 .chip.done{
   background:rgba(34,197,94,0.14);
   border-color:rgba(34,197,94,0.22);
   color:#d7ffdf;
 }
 
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.small-btn{
-  width:auto;
-  min-height:38px;
-  margin:0;
-  padding:8px 11px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,0.10);
-  background:rgba(255,255,255,0.09);
-  color:#fff;
-  font-size:13px;
-  font-weight:850;
-}
-
-.save{
-  background:rgba(34,197,94,0.22);
-}
-
-.danger{
-  background:rgba(239,68,68,0.18);
-}
-
-.drawer{
-  margin-top:11px;
-  border-top:1px dashed rgba(255,255,255,0.13);
-  padding-top:11px;
-}
-
-.drawer summary{
-  cursor:pointer;
-  color:#fff;
-  font-weight:900;
-  font-size:13px;
-  list-style:none;
-}
-
-.drawer summary::-webkit-details-marker{
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.72);
   display:none;
+  align-items:flex-end;
+  z-index:10;
 }
 
-.drawer summary:after{
-  content:"Open";
-  float:right;
+.sheet{
+  width:100%;
+  max-height:92dvh;
+  overflow:auto;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,59,48,0.10), transparent 34%),
+    linear-gradient(180deg, #171a20, #101217);
+  border-radius:30px 30px 0 0;
+  padding:18px;
+  border-top:1px solid var(--line);
+  box-shadow:0 -24px 80px rgba(0,0,0,0.45);
+}
+
+.sheet-inner{
+  width:100%;
+  max-width:780px;
+  margin:0 auto;
+}
+
+.sheet-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.sheet-handle{
+  width:46px;
+  height:5px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.20);
+  margin:0 auto 12px;
+}
+
+.close-btn{
+  width:46px;
+  height:46px;
+  min-height:46px;
+  border-radius:16px;
+  padding:0;
+  margin:0;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  font-size:22px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.field{
+  display:block;
+}
+
+.field span{
+  display:block;
+  font-size:12px;
   color:var(--muted);
   font-weight:750;
+  margin:0 0 7px;
 }
 
-.drawer[open] summary:after{
-  content:"Close";
+.divider{
+  height:1px;
+  background:rgba(255,255,255,0.08);
+  margin:18px 0;
 }
 
-.drawer-body{
-  margin-top:11px;
+.section-title{
+  margin-top:18px;
+  margin-bottom:8px;
+  font-size:14px;
+  font-weight:950;
+  color:#fff;
+  text-transform:lowercase;
+  letter-spacing:-0.01em;
+}
+
+.item-row{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:13px;
+  margin-top:9px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  cursor:pointer;
+}
+
+.check{
+  width:30px;
+  height:30px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.14);
+  background:rgba(255,255,255,0.065);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  font-weight:900;
+}
+
+.check.done{
+  background:var(--green);
+  border-color:rgba(34,197,94,0.45);
+}
+
+.item-text{
+  flex:1;
+  min-width:0;
+  line-height:1.4;
+  word-break:break-word;
+  font-size:14px;
+  font-weight:760;
+}
+
+.item-text.done{
+  text-decoration:line-through;
+  color:var(--muted);
+}
+
+.item-date{
+  color:#d7eaff;
+  background:rgba(96,165,250,0.12);
+  border:1px solid rgba(96,165,250,0.20);
+  width:max-content;
+  max-width:100%;
+  border-radius:999px;
+  font-size:12px;
+  margin-top:7px;
+  padding:5px 8px;
+}
+
+.delete-small{
+  width:auto;
+  min-height:34px;
+  padding:7px 10px;
+  border-radius:12px;
+  background:rgba(239,68,68,0.18);
+  border:1px solid rgba(239,68,68,0.22);
+  margin-top:0;
+  font-size:12px;
+  font-weight:850;
+  flex:0 0 auto;
+}
+
+.status{
+  color:var(--soft);
+  min-height:18px;
+  font-size:13px;
+  margin-top:10px;
 }
 
 .empty{
@@ -529,20 +635,12 @@ input::placeholder{
   .summary-card{
     grid-column:1 / -1;
   }
-
-  .workspace{
-    grid-template-columns:1fr;
-  }
-
-  .tasks-list{
-    max-height:none;
-    overflow:visible;
-  }
 }
 
 @media(max-width:680px){
   body{
     padding:12px;
+    padding-bottom:96px;
   }
 
   .topbar{
@@ -555,15 +653,33 @@ input::placeholder{
 
   .kpis,
   .form-grid,
-  .form-grid.task-main-grid{
+  .search-row{
     grid-template-columns:1fr;
   }
 
-  .task{
-    padding:13px;
+  .add-inline{
+    width:100%;
   }
 
-  .small-btn{
+  .grid{
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:12px;
+  }
+
+  .preview{
+    min-height:116px;
+  }
+
+  .note-card{
+    border-radius:22px;
+    padding:10px;
+  }
+
+  .item-row{
+    flex-direction:column;
+  }
+
+  .delete-small{
     width:100%;
   }
 }
@@ -571,92 +687,130 @@ input::placeholder{
 </head>
 
 <body>
-<div class="wrap">
+
+<div class="page">
 
   <header class="topbar">
     <div class="brand-block">
       <div class="app-dot">P</div>
       <div>
         <p class="eyebrow">Pace</p>
-        <h1>To Do</h1>
+        <h1>Lists</h1>
       </div>
     </div>
 
-    <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
+    <div class="top-actions">
+      <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
+      <button class="icon-btn" onclick="openNew()">＋</button>
+    </div>
   </header>
 
   <section class="card overview">
     <div class="kpis" id="kpis"></div>
   </section>
 
-  <main class="workspace">
+  <section class="card panel">
+    <div class="panel-head">
+      <div>
+        <h2 class="panel-title">Saved lists</h2>
+        <p class="panel-copy">Checklists, wedding prep, errands, projects and anything you need to break down.</p>
+      </div>
+    </div>
 
-    <section class="card panel">
-      <div class="panel-head">
+    <div class="search-row">
+      <input id="search" placeholder="Search list, section or item" oninput="render()">
+      <button class="add-inline" onclick="openNew()">＋</button>
+    </div>
+
+    <div class="grid" id="notesGrid"></div>
+  </section>
+
+</div>
+
+<div class="modal" id="modal">
+  <div class="sheet">
+    <div class="sheet-inner">
+
+      <div class="sheet-handle"></div>
+
+      <div class="sheet-top">
         <div>
-          <h2 class="panel-title">Task list</h2>
-          <p class="panel-copy">Your main life list. Open tasks stay at the top. Done tasks drop down.</p>
+          <p class="eyebrow">List editor</p>
+          <h1 style="font-size:24px;">Edit list</h1>
         </div>
+
+        <button class="close-btn" onclick="closeModal()">×</button>
       </div>
 
-      <div class="search-row">
-        <input id="searchBox" placeholder="Search task, category or reminder">
-      </div>
+      <label class="field">
+        <span>Main list title</span>
+        <input id="listTitle" placeholder="Marvin and Blessing Wedding">
+      </label>
 
-      <div class="filters" id="filters"></div>
+      <button class="primary-btn" onclick="saveListTitle()">Save main list title</button>
 
-      <div id="tasks" class="tasks-list">
-        <div class="empty">Loading tasks...</div>
-      </div>
-    </section>
+      <div class="divider"></div>
 
-    <aside class="card panel">
-      <div class="panel-head">
-        <div>
-          <h2 class="panel-title">Add task</h2>
-          <p class="panel-copy">Add the task now. Add a reminder only if you need a nudge.</p>
-        </div>
-      </div>
+      <label class="field">
+        <span>Quick import</span>
+        <textarea id="quickPasteList" placeholder="Paste a section here, for example:
 
-      <div class="form-grid task-main-grid">
+admin
+
+• pre consultation form completed
+• both client emails received
+• docusign contract sent"></textarea>
+      </label>
+
+      <div class="form-grid">
         <label class="field">
-          <span>Task</span>
-          <input id="taskInput" placeholder="Add a task">
+          <span>Section reminder date</span>
+          <input id="sectionReminderDate" type="date">
         </label>
 
         <label class="field">
-          <span>Category</span>
-          <select id="categoryInput">
-            <option>Life</option>
-            <option>Business</option>
-            <option>Church</option>
-            <option>Household</option>
-            <option>Work</option>
-            <option>Health</option>
-            <option>Errands</option>
-            <option>Admin</option>
-          </select>
+          <span>Section reminder time</span>
+          <input id="sectionReminderTime" type="time">
+        </label>
+      </div>
+
+      <button class="secondary-btn" onclick="importSection()">Import section</button>
+
+      <div id="itemsWrap" style="margin-top:16px;"></div>
+
+      <div class="divider"></div>
+
+      <div class="form-grid">
+        <label class="field">
+          <span>Section</span>
+          <input id="newSectionName" placeholder="admin, payments, gear">
+        </label>
+
+        <label class="field">
+          <span>Checklist item</span>
+          <input id="newItemText" placeholder="Add checklist item">
         </label>
       </div>
 
       <div class="form-grid">
         <label class="field">
-          <span>Reminder date</span>
-          <input id="reminderDateInput" type="date">
+          <span>Item reminder date</span>
+          <input id="itemReminderDate" type="date">
         </label>
 
         <label class="field">
-          <span>Reminder time</span>
-          <input id="reminderTimeInput" type="time">
+          <span>Item reminder time</span>
+          <input id="itemReminderTime" type="time">
         </label>
       </div>
 
-      <button id="addBtn" class="primary-btn">Add task</button>
-      <p id="msg" class="notice"></p>
-    </aside>
+      <button class="primary-btn" onclick="addItem()">Add item</button>
+      <button class="danger-btn" onclick="deleteList()">Delete whole list</button>
 
-  </main>
+      <div id="status" class="status"></div>
 
+    </div>
+  </div>
 </div>
 
 <script type="module">
@@ -675,31 +829,34 @@ const supabase = createClient(
   }
 );
 
-const taskInput = document.getElementById("taskInput");
-const categoryInput = document.getElementById("categoryInput");
-const reminderDateInput = document.getElementById("reminderDateInput");
-const reminderTimeInput = document.getElementById("reminderTimeInput");
-const addBtn = document.getElementById("addBtn");
-const tasksEl = document.getElementById("tasks");
-const msgEl = document.getElementById("msg");
-const filtersEl = document.getElementById("filters");
+const notesGrid = document.getElementById("notesGrid");
+const modal = document.getElementById("modal");
+const listTitle = document.getElementById("listTitle");
+const quickPasteList = document.getElementById("quickPasteList");
+const sectionReminderDate = document.getElementById("sectionReminderDate");
+const sectionReminderTime = document.getElementById("sectionReminderTime");
+const newSectionName = document.getElementById("newSectionName");
+const newItemText = document.getElementById("newItemText");
+const itemReminderDate = document.getElementById("itemReminderDate");
+const itemReminderTime = document.getElementById("itemReminderTime");
+const itemsWrap = document.getElementById("itemsWrap");
+const searchEl = document.getElementById("search");
+const statusEl = document.getElementById("status");
 const kpisEl = document.getElementById("kpis");
-const searchBox = document.getElementById("searchBox");
-
-const categories = ["All","Life","Business","Church","Household","Work","Health","Errands","Admin"];
 
 let user = null;
-let tasks = [];
+let lists = [];
+let items = [];
 let reminders = [];
-let activeFilter = "All";
-let searchTerm = "";
+let activeId = null;
 
-function today(){
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+function setStatus(text){
+  statusEl.textContent = text;
+}
+
+async function getUser(){
+  const { data } = await supabase.auth.getUser();
+  return data.user;
 }
 
 function escapeHTML(value){
@@ -711,27 +868,22 @@ function escapeHTML(value){
     .replace(/'/g, "&#039;");
 }
 
+function today(){
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function formatDate(value){
   if(!value) return "";
-  return new Date(value + "T00:00:00").toLocaleDateString("en-GB");
-}
-
-function setMsg(text){
-  msgEl.textContent = text;
-}
-
-async function getUser(){
-  const { data } = await supabase.auth.getUser();
-  return data.user;
-}
-
-function reminderFor(taskId){
-  return reminders.find(r => r.source === "to do" && r.source_id === taskId) || null;
+  const raw = String(value).includes("T") ? String(value).split("T")[0] : value;
+  return new Date(raw + "T00:00:00").toLocaleDateString("en-GB");
 }
 
 function formatReminder(reminder){
   if(!reminder) return "";
-  if(!reminder.reminder_date && !reminder.reminder_time) return "";
 
   const date = reminder.reminder_date ? formatDate(reminder.reminder_date) : "";
   const time = reminder.reminder_time ? String(reminder.reminder_time).slice(0,5) : "";
@@ -739,54 +891,99 @@ function formatReminder(reminder){
   return `${date}${date && time ? " · " : ""}${time}`;
 }
 
-function categoryCount(category){
-  if(category === "All") return tasks.length;
-  return tasks.filter(t => (t.category || "Life") === category).length;
+function cleanBullet(line){
+  return line
+    .replace(/^[-*•◦▪▫‣]\s*/, "")
+    .replace(/^\[[ xX]\]\s*/, "")
+    .trim();
+}
+
+function itemsFor(listId){
+  return items.filter(i => i.list_id === listId);
+}
+
+function reminderForItem(itemId){
+  return reminders.find(r => r.source === "list" && r.source_id === itemId);
+}
+
+function groupItems(listId){
+  const grouped = {};
+
+  itemsFor(listId).forEach(item => {
+    const section = item.section || "general";
+
+    if(!grouped[section]){
+      grouped[section] = [];
+    }
+
+    grouped[section].push(item);
+  });
+
+  return grouped;
+}
+
+function filteredLists(){
+  const q = searchEl.value.toLowerCase().trim();
+
+  if(!q) return lists;
+
+  return lists.filter(list => {
+    const listItems = itemsFor(list.id);
+
+    return (
+      (list.title || "").toLowerCase().includes(q) ||
+      listItems.some(item =>
+        (item.text || "").toLowerCase().includes(q) ||
+        (item.section || "").toLowerCase().includes(q)
+      )
+    );
+  });
 }
 
 function renderKpis(){
-  const total = tasks.length;
-  const done = tasks.filter(t => t.done).length;
-  const open = tasks.filter(t => !t.done).length;
-  const completion = total ? Math.round((done / total) * 100) : 0;
+  const totalLists = lists.length;
+  const totalItems = items.length;
+  const doneItems = items.filter(i => i.done).length;
+  const openItems = totalItems - doneItems;
+  const completion = totalItems ? Math.round((doneItems / totalItems) * 100) : 0;
 
-  const todayReminderCount = reminders.filter(r =>
-    r.source === "to do" &&
+  const todayReminders = reminders.filter(r =>
+    r.source === "list" &&
     r.reminder_date === today() &&
     !r.done
   ).length;
 
   const nextReminder = [...reminders]
-    .filter(r => r.source === "to do" && !r.done && r.reminder_date)
+    .filter(r => r.source === "list" && !r.done && r.reminder_date)
     .sort((a,b) => new Date(a.reminder_date || "2999-01-01") - new Date(b.reminder_date || "2999-01-01"))[0];
 
   kpisEl.innerHTML = `
     <div class="summary-card">
-      <div class="kpi-title">Open tasks</div>
-      <div class="hero-number">${open}</div>
+      <div class="kpi-title">Open list items</div>
+      <div class="hero-number">${openItems}</div>
       <div class="progress"><span style="width:${completion}%"></span></div>
       <div class="mini-line">
-        <span>${done} done</span>
+        <span>${doneItems} done</span>
         <span>${completion}% complete</span>
       </div>
     </div>
 
     <div class="kpi">
-      <div class="kpi-title">Total tasks</div>
-      <div class="kpi-value">${total}</div>
-      <div class="kpi-sub">Everything saved</div>
+      <div class="kpi-title">Lists</div>
+      <div class="kpi-value">${totalLists}</div>
+      <div class="kpi-sub">Saved checklists</div>
     </div>
 
     <div class="kpi">
-      <div class="kpi-title">Done</div>
-      <div class="kpi-value">${done}</div>
-      <div class="kpi-sub">Completed tasks</div>
+      <div class="kpi-title">Items</div>
+      <div class="kpi-value">${totalItems}</div>
+      <div class="kpi-sub">Across all lists</div>
     </div>
 
     <div class="kpi">
       <div class="kpi-title">Today</div>
-      <div class="kpi-value">${todayReminderCount}</div>
-      <div class="kpi-sub">Reminders due today</div>
+      <div class="kpi-value">${todayReminders}</div>
+      <div class="kpi-sub">List reminders due</div>
     </div>
 
     <div class="kpi">
@@ -797,140 +994,6 @@ function renderKpis(){
   `;
 }
 
-function renderFilters(){
-  filtersEl.innerHTML = categories.map(cat => `
-    <button class="filter-btn ${activeFilter === cat ? "active" : ""}" onclick="setFilter('${cat}')">
-      ${cat}<span>${categoryCount(cat)}</span>
-    </button>
-  `).join("");
-}
-
-window.setFilter = function(cat){
-  activeFilter = cat;
-  render();
-};
-
-function sortedTasks(){
-  let rows = [...tasks];
-
-  if(activeFilter !== "All"){
-    rows = rows.filter(t => (t.category || "Life") === activeFilter);
-  }
-
-  if(searchTerm){
-    rows = rows.filter(t => {
-      const reminder = reminderFor(t.id);
-
-      const haystack = [
-        t.title,
-        t.category,
-        reminder?.title,
-        reminder?.reminder_date,
-        reminder?.reminder_time
-      ].join(" ").toLowerCase();
-
-      return haystack.includes(searchTerm);
-    });
-  }
-
-  rows.sort((a,b) => {
-    if(Boolean(a.done) !== Boolean(b.done)) return a.done ? 1 : -1;
-
-    const reminderA = reminderFor(a.id);
-    const reminderB = reminderFor(b.id);
-
-    const dateA = reminderA?.reminder_date || "2999-01-01";
-    const dateB = reminderB?.reminder_date || "2999-01-01";
-
-    if(dateA !== dateB){
-      return new Date(dateA) - new Date(dateB);
-    }
-
-    return new Date(b.created_at) - new Date(a.created_at);
-  });
-
-  return rows;
-}
-
-function render(){
-  renderKpis();
-  renderFilters();
-
-  const rows = sortedTasks();
-
-  if(!rows.length){
-    tasksEl.innerHTML = `<div class="empty">No tasks match this view yet.</div>`;
-    return;
-  }
-
-  tasksEl.innerHTML = rows.map(task => {
-    const reminder = reminderFor(task.id);
-    const reminderText = formatReminder(reminder);
-    const title = escapeHTML(task.title || "");
-    const category = escapeHTML(task.category || "Life");
-
-    return `
-      <article class="task">
-        <div class="check ${task.done ? "done" : ""}" onclick="toggleTask('${task.id}', ${task.done ? "false" : "true"})">
-          ${task.done ? "✓" : ""}
-        </div>
-
-        <div class="task-main">
-          <div class="task-title ${task.done ? "done" : ""}">
-            ${title}
-          </div>
-
-          <div class="task-meta">
-            <span class="chip">${category}</span>
-            ${reminderText ? `<span class="chip due">${reminderText}</span>` : ""}
-            ${task.done ? `<span class="chip done">Done</span>` : ""}
-          </div>
-
-          <div class="actions">
-            <button class="small-btn danger" onclick="deleteTask('${task.id}')">Delete</button>
-          </div>
-
-          <details class="drawer">
-            <summary>Edit task</summary>
-
-            <div class="drawer-body">
-              <div class="form-grid">
-                <label class="field">
-                  <span>Task</span>
-                  <input id="edit-title-${task.id}" value="${escapeHTML(task.title || "")}">
-                </label>
-
-                <label class="field">
-                  <span>Category</span>
-                  <select id="edit-category-${task.id}">
-                    ${categories.filter(c => c !== "All").map(cat => `
-                      <option ${task.category === cat ? "selected" : ""}>${cat}</option>
-                    `).join("")}
-                  </select>
-                </label>
-              </div>
-
-              <div class="form-grid">
-                <label class="field">
-                  <span>Reminder date</span>
-                  <input id="edit-reminder-date-${task.id}" type="date" value="${reminder?.reminder_date || ""}">
-                </label>
-
-                <label class="field">
-                  <span>Reminder time</span>
-                  <input id="edit-reminder-time-${task.id}" type="time" value="${reminder?.reminder_time ? String(reminder.reminder_time).slice(0,5) : ""}">
-                </label>
-              </div>
-
-              <button class="small-btn save" style="margin-top:10px;" onclick="saveEdit('${task.id}')">Save changes</button>
-            </div>
-          </details>
-        </div>
-      </article>
-    `;
-  }).join("");
-}
-
 async function load(){
   user = await getUser();
 
@@ -939,227 +1002,472 @@ async function load(){
     return;
   }
 
-  const [tasksRes, remindersRes] = await Promise.all([
+  const [listsRes, itemsRes, remindersRes] = await Promise.all([
     supabase
-      .from("tasks")
+      .from("lists")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending:false }),
 
     supabase
+      .from("list_items")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending:true }),
+
+    supabase
       .from("reminders")
       .select("*")
       .eq("user_id", user.id)
-      .eq("source", "to do")
-      .order("reminder_date", { ascending:true })
+      .eq("source", "list")
   ]);
 
-  if(tasksRes.error){
-    setMsg(tasksRes.error.message);
+  if(listsRes.error){
+    alert(listsRes.error.message);
+    return;
+  }
+
+  if(itemsRes.error){
+    alert(itemsRes.error.message);
     return;
   }
 
   if(remindersRes.error){
-    setMsg(remindersRes.error.message);
+    alert(remindersRes.error.message);
     return;
   }
 
-  tasks = tasksRes.data || [];
+  lists = listsRes.data || [];
+  items = itemsRes.data || [];
   reminders = remindersRes.data || [];
 
   render();
 }
 
-searchBox.addEventListener("input", () => {
-  searchTerm = searchBox.value.trim().toLowerCase();
-  render();
-});
+window.render = function(){
+  renderKpis();
 
-addBtn.addEventListener("click", async () => {
-  const title = taskInput.value.trim();
-  const category = categoryInput.value;
-  const reminderDate = reminderDateInput.value;
-  const reminderTime = reminderTimeInput.value || null;
+  const filtered = filteredLists();
 
-  if(!title){
-    setMsg("Type a task first.");
+  if(!filtered.length){
+    notesGrid.innerHTML = `<div class="empty">No lists match this view yet.</div>`;
     return;
   }
 
-  const { data: taskData, error } = await supabase
-    .from("tasks")
+  notesGrid.innerHTML = filtered.map(list => {
+    const grouped = groupItems(list.id);
+    const sections = Object.keys(grouped).slice(0,2);
+    const listItems = itemsFor(list.id);
+    const doneCount = listItems.filter(item => item.done).length;
+    const totalCount = listItems.length;
+
+    return `
+      <article class="note-card" onclick="openList('${list.id}')">
+        <div class="preview">
+          <div class="preview-title">${escapeHTML(list.title || "Untitled")}</div>
+          ${
+            sections.length
+              ? sections.map(section => `
+                  <div class="preview-section">${escapeHTML(section)}</div>
+                  ${
+                    grouped[section].slice(0,2).map(item => `
+                      <div class="preview-line">${item.done ? "☑" : "☐"} ${escapeHTML(item.text || "")}</div>
+                    `).join("")
+                  }
+                `).join("")
+              : `<div class="preview-line">No items yet</div>`
+          }
+        </div>
+
+        <div class="note-title">${escapeHTML(list.title || "Untitled")}</div>
+        <div class="note-date">${formatDate(list.created_at)}</div>
+
+        <div class="note-meta">
+          <span class="chip">${totalCount} items</span>
+          <span class="chip done">${doneCount} done</span>
+        </div>
+      </article>
+    `;
+  }).join("");
+};
+
+function renderActiveItems(){
+  if(!activeId){
+    itemsWrap.innerHTML = `<div class="status">Save the main list title first, then import sections.</div>`;
+    return;
+  }
+
+  const grouped = groupItems(activeId);
+  const sections = Object.keys(grouped);
+
+  if(!sections.length){
+    itemsWrap.innerHTML = `<div class="status">No checklist items yet.</div>`;
+    return;
+  }
+
+  itemsWrap.innerHTML = sections.map(section => `
+    <div class="section-title">${escapeHTML(section)}</div>
+    ${
+      grouped[section].map(item => {
+        const rem = reminderForItem(item.id);
+
+        return `
+          <div class="item-row" onclick="toggleItem('${item.id}', ${item.done ? "false" : "true"})">
+            <div class="check ${item.done ? "done" : ""}">
+              ${item.done ? "✓" : ""}
+            </div>
+
+            <div class="item-text ${item.done ? "done" : ""}">
+              ${escapeHTML(item.text || "")}
+              ${rem ? `<div class="item-date">⏰ ${formatReminder(rem)}</div>` : ""}
+            </div>
+
+            <button class="delete-small" onclick="event.stopPropagation(); deleteItem('${item.id}')">Delete</button>
+          </div>
+        `;
+      }).join("")
+    }
+  `).join("");
+}
+
+window.openNew = function(){
+  activeId = null;
+  listTitle.value = "";
+  quickPasteList.value = "";
+  sectionReminderDate.value = "";
+  sectionReminderTime.value = "";
+  newSectionName.value = "";
+  newItemText.value = "";
+  itemReminderDate.value = "";
+  itemReminderTime.value = "";
+  setStatus("");
+  renderActiveItems();
+  modal.style.display = "flex";
+  setTimeout(() => listTitle.focus(), 150);
+};
+
+window.openList = function(id){
+  const list = lists.find(l => l.id === id);
+  if(!list) return;
+
+  activeId = id;
+  listTitle.value = list.title || "";
+  quickPasteList.value = "";
+  sectionReminderDate.value = "";
+  sectionReminderTime.value = "";
+  newSectionName.value = "";
+  newItemText.value = "";
+  itemReminderDate.value = "";
+  itemReminderTime.value = "";
+  setStatus("");
+  renderActiveItems();
+  modal.style.display = "flex";
+  setTimeout(() => quickPasteList.focus(), 150);
+};
+
+window.closeModal = function(){
+  modal.style.display = "none";
+  activeId = null;
+};
+
+window.saveListTitle = async function(){
+  const title = listTitle.value.trim() || "Untitled";
+
+  if(activeId){
+    const { error } = await supabase
+      .from("lists")
+      .update({ title })
+      .eq("id", activeId)
+      .eq("user_id", user.id);
+
+    if(error){
+      setStatus(error.message);
+      return;
+    }
+
+    setStatus("Main list title saved.");
+  } else {
+    const { data, error } = await supabase
+      .from("lists")
+      .insert([{ user_id:user.id, title }])
+      .select()
+      .single();
+
+    if(error){
+      setStatus(error.message);
+      return;
+    }
+
+    activeId = data.id;
+    setStatus("Main list created. Now import a section.");
+  }
+
+  await load();
+  renderActiveItems();
+};
+
+window.importSection = async function(){
+  const raw = quickPasteList.value.trim();
+
+  if(!activeId){
+    setStatus("Save the main list title first.");
+    return;
+  }
+
+  if(!raw){
+    setStatus("Paste a section first.");
+    return;
+  }
+
+  const lines = raw
+    .split("\n")
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  if(lines.length < 2){
+    setStatus("Use first line as subheading, then bullet points underneath.");
+    return;
+  }
+
+  const section = cleanBullet(lines[0]).toLowerCase() || "general";
+
+  const bulletItems = lines
+    .slice(1)
+    .map(cleanBullet)
+    .filter(Boolean);
+
+  if(!bulletItems.length){
+    setStatus("Add bullet points under the subheading.");
+    return;
+  }
+
+  const itemsToInsert = bulletItems.map(item => ({
+    user_id:user.id,
+    list_id:activeId,
+    section,
+    text:item,
+    done:false
+  }));
+
+  const { data, error } = await supabase
+    .from("list_items")
+    .insert(itemsToInsert)
+    .select();
+
+  if(error){
+    setStatus(error.message);
+    return;
+  }
+
+  if(sectionReminderDate.value){
+    const remindersToInsert = (data || []).map(item => ({
+      user_id:user.id,
+      source:"list",
+      source_id:item.id,
+      title:`${listTitle.value || "List"} · ${section}: ${item.text}`,
+      reminder_date:sectionReminderDate.value,
+      reminder_time:sectionReminderTime.value || null,
+      done:false
+    }));
+
+    const remInsert = await supabase
+      .from("reminders")
+      .insert(remindersToInsert);
+
+    if(remInsert.error){
+      setStatus(remInsert.error.message);
+      return;
+    }
+  }
+
+  quickPasteList.value = "";
+  sectionReminderDate.value = "";
+  sectionReminderTime.value = "";
+
+  setStatus(`Section "${section}" imported.`);
+  await load();
+  renderActiveItems();
+  quickPasteList.focus();
+};
+
+window.addItem = async function(){
+  const text = newItemText.value.trim();
+  const section = (newSectionName.value.trim() || "general").toLowerCase();
+
+  if(!activeId){
+    setStatus("Save the main list title first.");
+    return;
+  }
+
+  if(!text){
+    setStatus("Type an item first.");
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("list_items")
     .insert([{
       user_id:user.id,
-      title,
-      category,
+      list_id:activeId,
+      section,
+      text,
       done:false
     }])
     .select()
     .single();
 
   if(error){
-    setMsg(error.message);
+    setStatus(error.message);
     return;
   }
 
-  if(reminderDate){
-    const reminderInsert = await supabase
+  if(itemReminderDate.value){
+    const remInsert = await supabase
       .from("reminders")
       .insert([{
         user_id:user.id,
-        source:"to do",
-        source_id:taskData.id,
-        title,
-        reminder_date:reminderDate,
-        reminder_time:reminderTime,
+        source:"list",
+        source_id:data.id,
+        title:`${listTitle.value || "List"} · ${section}: ${text}`,
+        reminder_date:itemReminderDate.value,
+        reminder_time:itemReminderTime.value || null,
         done:false
       }]);
 
-    if(reminderInsert.error){
-      setMsg(reminderInsert.error.message);
+    if(remInsert.error){
+      setStatus(remInsert.error.message);
       return;
     }
   }
 
-  taskInput.value = "";
-  reminderDateInput.value = "";
-  reminderTimeInput.value = "";
+  newItemText.value = "";
+  itemReminderDate.value = "";
+  itemReminderTime.value = "";
 
-  setMsg("Task added.");
+  setStatus("Item added.");
   await load();
-});
+  renderActiveItems();
+  newItemText.focus();
+};
 
-taskInput.addEventListener("keydown", e => {
-  if(e.key === "Enter") addBtn.click();
-});
-
-window.toggleTask = async function(id, done){
+window.toggleItem = async function(id, done){
   const { error } = await supabase
-    .from("tasks")
+    .from("list_items")
     .update({ done })
     .eq("id", id)
     .eq("user_id", user.id);
 
   if(error){
-    setMsg(error.message);
+    setStatus(error.message);
     return;
   }
 
   await supabase
     .from("reminders")
     .update({ done })
-    .eq("source", "to do")
+    .eq("source", "list")
     .eq("source_id", id)
     .eq("user_id", user.id);
 
   await load();
+  renderActiveItems();
 };
 
-window.saveEdit = async function(id){
-  const title = document.getElementById(`edit-title-${id}`).value.trim();
-  const category = document.getElementById(`edit-category-${id}`).value;
-  const reminderDate = document.getElementById(`edit-reminder-date-${id}`).value;
-  const reminderTime = document.getElementById(`edit-reminder-time-${id}`).value || null;
-  const existingReminder = reminderFor(id);
-
-  if(!title){
-    setMsg("Task cannot be empty.");
-    return;
-  }
-
-  const { error } = await supabase
-    .from("tasks")
-    .update({ title, category })
-    .eq("id", id)
-    .eq("user_id", user.id);
-
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-
-  if(reminderDate && existingReminder){
-    const reminderUpdate = await supabase
-      .from("reminders")
-      .update({
-        title,
-        reminder_date:reminderDate,
-        reminder_time:reminderTime
-      })
-      .eq("id", existingReminder.id)
-      .eq("user_id", user.id);
-
-    if(reminderUpdate.error){
-      setMsg(reminderUpdate.error.message);
-      return;
-    }
-  }
-
-  if(reminderDate && !existingReminder){
-    const reminderInsert = await supabase
-      .from("reminders")
-      .insert([{
-        user_id:user.id,
-        source:"to do",
-        source_id:id,
-        title,
-        reminder_date:reminderDate,
-        reminder_time:reminderTime,
-        done:false
-      }]);
-
-    if(reminderInsert.error){
-      setMsg(reminderInsert.error.message);
-      return;
-    }
-  }
-
-  if(!reminderDate && existingReminder){
-    const reminderDelete = await supabase
-      .from("reminders")
-      .delete()
-      .eq("id", existingReminder.id)
-      .eq("user_id", user.id);
-
-    if(reminderDelete.error){
-      setMsg(reminderDelete.error.message);
-      return;
-    }
-  }
-
-  setMsg("Task updated.");
-  await load();
-};
-
-window.deleteTask = async function(id){
-  const taskDelete = await supabase
-    .from("tasks")
+window.deleteItem = async function(id){
+  const itemDelete = await supabase
+    .from("list_items")
     .delete()
     .eq("id", id)
     .eq("user_id", user.id);
 
-  if(taskDelete.error){
-    setMsg(taskDelete.error.message);
+  if(itemDelete.error){
+    setStatus(itemDelete.error.message);
     return;
   }
 
   const reminderDelete = await supabase
     .from("reminders")
     .delete()
-    .eq("source", "to do")
+    .eq("source", "list")
     .eq("source_id", id)
     .eq("user_id", user.id);
 
   if(reminderDelete.error){
-    setMsg(reminderDelete.error.message);
+    setStatus(reminderDelete.error.message);
     return;
   }
 
-  setMsg("Task deleted.");
+  await load();
+  renderActiveItems();
+};
+
+window.deleteList = async function(){
+  if(!activeId){
+    closeModal();
+    return;
+  }
+
+  const ok = confirm("Delete this whole list?");
+  if(!ok) return;
+
+  const itemIds = itemsFor(activeId).map(item => item.id);
+
+  if(itemIds.length){
+    const remindersDelete = await supabase
+      .from("reminders")
+      .delete()
+      .eq("source", "list")
+      .in("source_id", itemIds)
+      .eq("user_id", user.id);
+
+    if(remindersDelete.error){
+      setStatus(remindersDelete.error.message);
+      return;
+    }
+  }
+
+  const itemsDelete = await supabase
+    .from("list_items")
+    .delete()
+    .eq("list_id", activeId)
+    .eq("user_id", user.id);
+
+  if(itemsDelete.error){
+    setStatus(itemsDelete.error.message);
+    return;
+  }
+
+  const listDelete = await supabase
+    .from("lists")
+    .delete()
+    .eq("id", activeId)
+    .eq("user_id", user.id);
+
+  if(listDelete.error){
+    setStatus(listDelete.error.message);
+    return;
+  }
+
+  closeModal();
   await load();
 };
 
+newItemText.addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    addItem();
+  }
+});
+
+listTitle.addEventListener("keydown", (e) => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    saveListTitle();
+  }
+});
+
 load();
 </script>
+
 </body>
 </html>
