@@ -3,1447 +3,1479 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <title>Pace Finance</title>
+
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
+
 <style>
 :root{
   --bg1:#0f1115;
   --bg2:#171a20;
-  --card:#171a20;
-  --card2:#1f232c;
-  --soft:rgba(255,255,255,0.06);
-  --soft2:rgba(255,255,255,0.09);
-  --line:rgba(255,255,255,0.10);
+  --panel:rgba(255,255,255,0.06);
+  --panel-strong:rgba(255,255,255,0.09);
+  --line:rgba(255,255,255,0.11);
   --text:#f5f7fb;
   --muted:#a7afbe;
-  --muted2:#737b8c;
   --accent:#ff3b30;
   --green:#22c55e;
-  --red:#ef4444;
   --blue:#60a5fa;
-  --amber:#f59e0b;
-  --shadow:0 22px 70px rgba(0,0,0,0.38);
-  --radius:28px;
+  --orange:#f59e0b;
+  --purple:#a78bfa;
+  --red:#ef4444;
+  --shadow:0 20px 50px rgba(0,0,0,0.35);
+  --radius:26px;
 }
+
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
 }
+
 body{
   margin:0;
   min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255,59,48,0.18), transparent 32%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(255,255,255,0.09), transparent 26%),
-    radial-gradient(circle at 88% 4%, rgba(255,59,48,0.14), transparent 28%),
-    linear-gradient(180deg, var(--bg1), var(--bg2));
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
 }
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-  background-size:42px 42px;
-  mask-image:linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 72%);
+
+a{
+  color:inherit;
+  text-decoration:none;
 }
+
+button,
+input,
+select{
+  font:inherit;
+}
+
 .app{
-  width:min(1220px, 100%);
+  width:min(1180px,100%);
   margin:0 auto;
   padding:18px;
-  position:relative;
-  z-index:1;
+  padding-bottom:110px;
 }
+
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:14px;
-  margin-bottom:16px;
+  margin-bottom:18px;
 }
-.brand{
+
+.logoRow{
   display:flex;
   align-items:center;
   gap:12px;
-  min-width:0;
 }
+
 .logo{
   width:44px;
   height:44px;
   border-radius:16px;
   background:
-    radial-gradient(circle at 32% 22%, rgba(255,255,255,0.35), transparent 28%),
-    linear-gradient(145deg, #242833, #101216);
-  border:1px solid rgba(255,255,255,0.12);
-  box-shadow:0 16px 34px rgba(0,0,0,0.34);
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.24), transparent 28%),
+    linear-gradient(145deg,#2a2f38,#111318);
+  border:1px solid rgba(255,255,255,0.14);
+  box-shadow:var(--shadow);
   display:grid;
   place-items:center;
-  flex:0 0 auto;
-}
-.logo span{
-  width:16px;
-  height:24px;
-  border:3px solid #fff;
-  border-left:none;
-  border-radius:0 14px 14px 0;
-  display:block;
-  opacity:0.92;
-}
-.brand-text{
-  min-width:0;
-}
-.eyebrow{
-  font-size:12px;
-  color:var(--muted);
-  margin:0 0 3px;
-  letter-spacing:0.02em;
-}
-h1,h2,h3,p{
-  margin-top:0;
-}
-h1{
-  margin:0;
-  font-size:30px;
-  letter-spacing:-0.05em;
-  line-height:1;
-}
-.top-actions{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-.nav-btn{
-  color:#fff;
-  text-decoration:none;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.10);
-  border-radius:999px;
-  padding:10px 14px;
-  font-size:13px;
   font-weight:800;
-  display:inline-flex;
+  letter-spacing:-0.04em;
+}
+
+.titleBlock h1{
+  margin:0;
+  font-size:24px;
+  letter-spacing:-0.04em;
+}
+
+.titleBlock p{
+  margin:3px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.homeBtn{
+  min-width:44px;
+  height:44px;
+  padding:0 15px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  color:var(--text);
+  display:flex;
   align-items:center;
+  justify-content:center;
   gap:8px;
+  font-weight:700;
 }
-.nav-btn.primary{
-  background:rgba(255,59,48,0.16);
-  border-color:rgba(255,59,48,0.32);
-}
-.shell{
+
+.grid{
   display:grid;
-  grid-template-columns:1.1fr 0.9fr;
+  grid-template-columns:1.05fr 0.95fr;
   gap:16px;
-  align-items:stretch;
 }
+
 .card{
-  background:linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.045));
+  background:var(--panel);
   border:1px solid var(--line);
   border-radius:var(--radius);
   box-shadow:var(--shadow);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(22px);
 }
-.card-pad{
+
+.cardInner{
   padding:18px;
 }
+
 .hero{
-  min-height:290px;
-  display:grid;
-  grid-template-rows:auto 1fr auto;
+  min-height:210px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
   overflow:hidden;
   position:relative;
 }
+
 .hero::after{
   content:"";
   position:absolute;
-  right:-80px;
-  top:-100px;
-  width:260px;
-  height:260px;
-  border-radius:999px;
-  background:rgba(255,59,48,0.16);
-  filter:blur(12px);
+  inset:auto -30px -80px auto;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:rgba(255,59,48,0.22);
+  filter:blur(18px);
 }
-.hero-head{
+
+.monthRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
   position:relative;
   z-index:1;
+}
+
+.monthPicker{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:rgba(255,255,255,0.06);
+}
+
+.monthPicker input{
+  width:140px;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--text);
+}
+
+.heroMoney{
+  margin-top:28px;
+  position:relative;
+  z-index:1;
+}
+
+.heroMoney span{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.heroMoney strong{
+  display:block;
+  font-size:44px;
+  letter-spacing:-0.06em;
+  line-height:1;
+}
+
+.heroMoney small{
+  display:block;
+  margin-top:8px;
+  color:var(--muted);
+}
+
+.summaryGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:18px;
+  position:relative;
+  z-index:1;
+}
+
+.summaryBox{
+  padding:14px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid var(--line);
+}
+
+.summaryBox span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:7px;
+}
+
+.summaryBox strong{
+  display:block;
+  font-size:21px;
+  letter-spacing:-0.04em;
+}
+
+.sectionTitle{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
   gap:12px;
-  margin-bottom:20px;
+  margin-bottom:14px;
 }
-.hero-title{
-  font-size:15px;
+
+.sectionTitle h2{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.035em;
+}
+
+.sectionTitle p{
+  margin:4px 0 0;
   color:var(--muted);
-  margin:0 0 8px;
+  font-size:13px;
 }
-.hero-money{
-  font-size:52px;
-  letter-spacing:-0.07em;
-  line-height:0.95;
-  font-weight:900;
-}
-.hero-label{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:8px;
-}
-.month-pill{
-  position:relative;
-  z-index:1;
+
+.pill{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
   border-radius:999px;
-  padding:9px 12px;
-  background:rgba(255,255,255,0.09);
-  border:1px solid rgba(255,255,255,0.10);
+  color:var(--muted);
+  padding:7px 10px;
   font-size:12px;
-  color:#fff;
-  font-weight:800;
   white-space:nowrap;
 }
-.hero-grid{
-  position:relative;
-  z-index:1;
+
+.formGrid{
   display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:10px;
-  align-self:end;
-}
-.mini-stat{
-  background:rgba(0,0,0,0.18);
-  border:1px solid rgba(255,255,255,0.09);
-  border-radius:22px;
-  padding:14px;
-}
-.stat-label{
-  color:var(--muted);
-  font-size:12px;
-  margin-bottom:7px;
-}
-.stat-value{
-  font-size:20px;
-  font-weight:900;
-  letter-spacing:-0.04em;
-}
-.good{
-  color:var(--green);
-}
-.bad{
-  color:var(--red);
-}
-.life-col{
-  color:var(--amber);
-}
-.biz-col{
-  color:var(--blue);
-}
-.quick-pay{
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  min-height:290px;
-}
-.section-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:10px;
-  margin-bottom:12px;
-}
-.section-title h2,
-.section-title h3{
-  margin:0;
-  font-size:20px;
-  letter-spacing:-0.04em;
-}
-.muted{
-  color:var(--muted);
-}
-.small-copy{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.45;
-  margin:6px 0 0;
-}
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:10px;
-  align-items:end;
-}
-input,
-select,
-button{
-  width:100%;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,0.10);
-  background:rgba(255,255,255,0.065);
-  color:#fff;
-  font:inherit;
-  padding:13px 14px;
-  outline:none;
-}
-input,
-select{
-  margin-top:10px;
-}
-input::placeholder{
-  color:#8e97a8;
-}
-select option{
-  color:#111;
-}
-button{
-  margin-top:10px;
-  background:var(--accent);
-  border:none;
-  font-weight:850;
-  cursor:pointer;
-}
-button:hover,
-.nav-btn:hover{
-  transform:translateY(-1px);
-}
-.notice{
-  color:var(--muted);
-  white-space:pre-wrap;
-  margin:10px 0 0;
-  min-height:18px;
-  font-size:13px;
-}
-.success{
-  color:#8ff0b2;
-}
-.kpis{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
+  grid-template-columns:repeat(2,1fr);
   gap:10px;
 }
-.kpi{
-  background:rgba(255,255,255,0.055);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:22px;
-  padding:14px;
+
+.formGrid.three{
+  grid-template-columns:1.1fr 0.8fr 0.9fr;
 }
-.kpi-title{
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:7px;
-}
-.kpi-value{
-  font-size:23px;
-  font-weight:900;
-  letter-spacing:-0.045em;
-}
-.main-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-  margin-top:16px;
-}
-.stack{
+
+.field{
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:7px;
 }
-.subcard{
-  background:rgba(255,255,255,0.045);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:24px;
-  padding:16px;
-  margin-top:14px;
+
+.field label{
+  color:var(--muted);
+  font-size:12px;
 }
-.subcard:first-child{
-  margin-top:0;
+
+.field input,
+.field select{
+  width:100%;
+  border:1px solid var(--line);
+  outline:0;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:16px;
+  padding:12px 12px;
 }
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+
+.field select option{
+  background:#171a20;
 }
-.row-3{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-}
-.budget-box{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
+
+.actions{
+  display:flex;
   gap:10px;
   margin-top:12px;
 }
-.budget-card{
-  background:rgba(255,255,255,0.055);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:22px;
-  padding:14px;
+
+.btn{
+  border:0;
+  outline:0;
+  border-radius:16px;
+  padding:12px 14px;
+  font-weight:800;
+  cursor:pointer;
 }
-.item{
+
+.btnPrimary{
+  background:var(--accent);
+  color:white;
+  flex:1;
+}
+
+.btnSoft{
+  background:rgba(255,255,255,0.08);
+  color:var(--text);
+  border:1px solid var(--line);
+}
+
+.billsGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.billColumn{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.045);
+  border-radius:22px;
+  overflow:hidden;
+}
+
+.billHead{
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+}
+
+.billHeadTitle{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:99px;
+}
+
+.dot.green{
+  background:var(--green);
+}
+
+.dot.blue{
+  background:var(--blue);
+}
+
+.dot.orange{
+  background:var(--orange);
+}
+
+.billHead h3{
+  margin:0;
+  font-size:14px;
+}
+
+.billHead strong{
+  font-size:14px;
+}
+
+.billList{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:12px;
+  min-height:90px;
+}
+
+.billItem{
+  padding:12px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.billTop{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  gap:12px;
-  padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,0.08);
+  gap:10px;
 }
-.item:last-child{
-  border-bottom:none;
+
+.billName{
+  font-weight:800;
+  font-size:14px;
 }
-.item-title{
-  font-weight:850;
-  margin-bottom:4px;
-  letter-spacing:-0.015em;
-}
-.item-meta{
-  font-size:12px;
+
+.billMeta{
+  margin-top:4px;
   color:var(--muted);
-  line-height:1.45;
+  font-size:12px;
 }
-.item-money{
+
+.billAmount{
   font-weight:900;
   white-space:nowrap;
-  letter-spacing:-0.025em;
 }
-.pill-row{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:8px;
-}
-.pill{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  line-height:1;
-  padding:6px 8px;
-  border-radius:999px;
-  color:#fff;
-  font-weight:800;
-}
-.pill-life{
-  background:rgba(245,158,11,0.82);
-}
-.pill-biz{
-  background:rgba(96,165,250,0.82);
-}
-.pill-income{
-  background:rgba(34,197,94,0.82);
-}
-.pill-expense{
-  background:rgba(239,68,68,0.82);
-}
-.pill-off{
-  background:rgba(107,114,128,0.82);
-}
-.pill-on{
-  background:rgba(34,197,94,0.82);
-}
-.pill-paid{
-  background:rgba(34,197,94,0.82);
-}
-.pill-unpaid{
-  background:rgba(239,68,68,0.82);
-}
-.inline-actions{
+
+.billButtons{
   display:flex;
   gap:8px;
-  flex-wrap:wrap;
   margin-top:10px;
-  align-items:center;
 }
-.small-btn{
-  width:auto;
-  margin:0;
-  padding:9px 11px;
-  background:rgba(255,255,255,0.10);
+
+.iconBtn{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:13px;
+  padding:8px 10px;
   font-size:12px;
-  border-radius:999px;
-  font-weight:850;
+  font-weight:800;
+  cursor:pointer;
 }
-.ghost-btn{
-  background:rgba(255,255,255,0.09);
+
+.iconBtn.danger{
+  color:#fecaca;
 }
-.danger-btn{
-  background:rgba(239,68,68,0.18);
-  color:#ffd2d2;
-}
-.save-btn{
-  background:rgba(34,197,94,0.20);
-  color:#d7ffe4;
-}
-.paid-btn{
-  background:rgba(34,197,94,0.28);
-  color:#d7ffe4;
-}
-.edit-box{
-  margin-top:12px;
-  padding-top:12px;
-  border-top:1px dashed rgba(255,255,255,0.14);
-}
+
 .empty{
   color:var(--muted);
-  padding:10px 0 2px;
   font-size:13px;
+  padding:10px;
+  text-align:center;
 }
-.toggle-wrap{
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.transaction{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:13px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.055);
+}
+
+.transactionLeft strong{
+  display:block;
+  font-size:14px;
+}
+
+.transactionLeft span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.transactionRight{
   display:flex;
   align-items:center;
   gap:10px;
-  margin-top:10px;
 }
-.toggle{
-  position:relative;
-  width:52px;
-  height:30px;
-  background:rgba(255,255,255,0.12);
-  border-radius:999px;
+
+.transactionAmount{
+  font-weight:900;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  padding:5px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--line);
+  border-radius:18px;
+  margin-bottom:14px;
+}
+
+.tab{
+  flex:1;
+  border:0;
+  border-radius:13px;
+  background:transparent;
+  color:var(--muted);
+  padding:10px;
+  font-weight:800;
   cursor:pointer;
-  border:1px solid rgba(255,255,255,0.08);
-  flex:0 0 auto;
 }
-.toggle.on{
-  background:rgba(34,197,94,0.35);
+
+.tab.active{
+  background:rgba(255,255,255,0.11);
+  color:var(--text);
 }
-.toggle-knob{
-  position:absolute;
-  top:3px;
-  left:3px;
-  width:22px;
-  height:22px;
-  background:#fff;
-  border-radius:50%;
-  transition:left .15s ease;
+
+.hidden{
+  display:none;
 }
-.toggle.on .toggle-knob{
-  left:25px;
+
+.bottomNav{
+  position:fixed;
+  left:50%;
+  bottom:16px;
+  transform:translateX(-50%);
+  width:min(720px,calc(100% - 28px));
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+  padding:8px;
+  border-radius:24px;
+  background:rgba(20,22,28,0.82);
+  border:1px solid var(--line);
+  backdrop-filter:blur(24px);
+  box-shadow:var(--shadow);
+  z-index:50;
 }
-.checkoff-card{
-  margin-top:16px;
+
+.navItem{
+  border-radius:18px;
+  padding:10px 6px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
 }
-.compact-list{
-  max-height:360px;
-  overflow:auto;
-  padding-right:4px;
+
+.navItem span{
+  font-size:18px;
 }
-.compact-list::-webkit-scrollbar{
-  width:6px;
+
+.navItem.active{
+  background:rgba(255,59,48,0.16);
+  color:var(--text);
 }
-.compact-list::-webkit-scrollbar-thumb{
-  background:rgba(255,255,255,0.12);
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%);
+  background:rgba(20,22,28,0.92);
+  border:1px solid var(--line);
+  color:var(--text);
+  padding:12px 16px;
   border-radius:999px;
+  font-size:13px;
+  box-shadow:var(--shadow);
+  opacity:0;
+  pointer-events:none;
+  transition:0.25s ease;
+  z-index:60;
 }
-.footer-space{
-  height:18px;
+
+.toast.show{
+  opacity:1;
+  bottom:104px;
 }
-@media (max-width:980px){
-  .shell,
-  .main-grid{
+
+@media(max-width:900px){
+  .grid{
     grid-template-columns:1fr;
   }
-  .hero,
-  .quick-pay{
-    min-height:auto;
-  }
-  .hero-money{
-    font-size:44px;
-  }
-  .hero-grid,
-  .kpis,
-  .budget-box,
-  .row,
-  .row-3,
-  .form-grid{
+
+  .billsGrid{
     grid-template-columns:1fr;
   }
-  .topbar{
-    align-items:flex-start;
-  }
 }
-@media (max-width:620px){
+
+@media(max-width:620px){
   .app{
     padding:14px;
+    padding-bottom:105px;
   }
-  h1{
-    font-size:26px;
-  }
-  .topbar{
-    flex-direction:column;
-  }
-  .top-actions{
-    width:100%;
-    justify-content:flex-start;
-  }
-  .nav-btn{
-    flex:1;
-    justify-content:center;
-  }
-  .hero-money{
+
+  .heroMoney strong{
     font-size:38px;
   }
-  .card-pad{
-    padding:16px;
+
+  .summaryGrid,
+  .formGrid,
+  .formGrid.three{
+    grid-template-columns:1fr;
+  }
+
+  .homeBtn span{
+    display:none;
+  }
+
+  .bottomNav{
+    grid-template-columns:repeat(5,1fr);
+  }
+
+  .navItem{
+    font-size:10px;
   }
 }
 </style>
 </head>
+
 <body>
+
 <div class="app">
+
   <header class="topbar">
-    <div class="brand">
-      <div class="logo" aria-hidden="true">
-        <span></span>
-      </div>
-      <div class="brand-text">
-        <p class="eyebrow">Pace</p>
-        <h1>Finance</h1>
+    <div class="logoRow">
+      <div class="logo">p</div>
+      <div class="titleBlock">
+        <h1>finance</h1>
+        <p>track money clearly, without the stress</p>
       </div>
     </div>
-    <nav class="top-actions">
-      <a class="nav-btn primary" href="dashboard.html">Home</a>
-      <a class="nav-btn" href="bookings-test.html">Bookings</a>
-      <a class="nav-btn" href="creator-income-test.html">Creator income</a>
-    </nav>
+
+    <a class="homeBtn" href="dashboard.html">
+      🏠 <span>home</span>
+    </a>
   </header>
-  <section class="shell">
-    <div class="card card-pad hero">
-      <div class="hero-head">
-        <div>
-          <p class="hero-title">Current balance view</p>
-          <div class="hero-money" id="heroBalance">£0.00</div>
-          <p class="hero-label">Life and business money combined</p>
+
+  <main class="grid">
+
+    <section class="card hero">
+      <div class="cardInner">
+
+        <div class="monthRow">
+          <div>
+            <div class="pill">monthly view</div>
+          </div>
+
+          <div class="monthPicker">
+            <span>📅</span>
+            <input id="monthInput" type="month">
+          </div>
         </div>
-        <div class="month-pill" id="monthPill">This month</div>
-      </div>
-      <div class="hero-grid" id="combinedKpis"></div>
-    </div>
-    <div class="card card-pad quick-pay">
-      <div class="section-title">
-        <div>
-          <h2>Monthly pay</h2>
-          <p class="small-copy">Save your monthly income so Pace can show what is left after bills.</p>
+
+        <div class="heroMoney">
+          <span>money left after fixed bills and spending</span>
+          <strong id="leftAmount">£0.00</strong>
+          <small id="monthStatus">Set your income to start.</small>
         </div>
-      </div>
-      <div>
-        <div class="form-grid">
-          <input id="monthlyPay" type="number" placeholder="Monthly pay e.g. 1854.09">
-          <button id="savePayBtn" type="button">Save</button>
+
+        <div class="summaryGrid">
+          <div class="summaryBox">
+            <span>income</span>
+            <strong id="incomeSummary">£0.00</strong>
+          </div>
+
+          <div class="summaryBox">
+            <span>fixed bills</span>
+            <strong id="fixedSummary">£0.00</strong>
+          </div>
+
+          <div class="summaryBox">
+            <span>spending</span>
+            <strong id="spentSummary">£0.00</strong>
+          </div>
+
+          <div class="summaryBox">
+            <span>safe daily spend</span>
+            <strong id="dailySummary">£0.00</strong>
+          </div>
         </div>
-        <p id="paySaved" class="notice"></p>
-      </div>
-      <div class="budget-box" id="budgetBox"></div>
-      <p id="msg" class="notice"></p>
-    </div>
-  </section>
-  <section class="card card-pad checkoff-card">
-    <div class="section-title">
-      <div>
-        <h2>Monthly check off</h2>
-        <p class="small-copy">Tick bills and expenses once they are paid this month.</p>
-      </div>
-    </div>
-    <div class="budget-box" id="monthlyPaidBox"></div>
-    <div class="main-grid">
-      <div class="subcard">
-        <h3>Left to pay</h3>
-        <div id="unpaidExpenseList" class="compact-list"></div>
-      </div>
-      <div class="subcard">
-        <h3>Paid this month</h3>
-        <div id="paidExpenseList" class="compact-list"></div>
-      </div>
-    </div>
-  </section>
-  <main class="main-grid">
-    <section class="card card-pad">
-      <div class="section-title">
-        <div>
-          <h2>Life</h2>
-          <p class="small-copy">Personal income, spending and fixed bills.</p>
-        </div>
-      </div>
-      <div class="kpis" id="lifeKpis"></div>
-      <div class="subcard">
-        <h3>Add life transaction</h3>
-        <div class="row">
-          <select id="lifeType">
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
-          <input id="lifeAmount" type="number" placeholder="Amount">
-        </div>
-        <div class="row">
-          <select id="lifeSubtype">
-            <option value="Pay">Pay</option>
-            <option value="Gift">Gift</option>
-            <option value="Refund">Refund</option>
-            <option value="Food">Food</option>
-            <option value="Travel">Travel</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Other">Other</option>
-          </select>
-          <input id="lifeDate" type="date">
-        </div>
-        <input id="lifeNote" placeholder="Note">
-        <button id="saveLifeBtn" type="button">Save life transaction</button>
-      </div>
-      <div class="subcard">
-        <h3>Fixed bills</h3>
-        <p class="small-copy">Active bills are included in your monthly totals.</p>
-        <div class="row">
-          <input id="fixedName" placeholder="Bill name e.g. Rent, Utilities, Phone">
-          <input id="fixedAmount" type="number" placeholder="Amount">
-        </div>
-        <button id="saveFixedBtn" type="button">Add fixed bill</button>
-        <div id="fixedList"></div>
-      </div>
-      <div class="subcard">
-        <h3>Life transactions</h3>
-        <div id="lifeList"></div>
+
       </div>
     </section>
-    <section class="card card-pad">
-      <div class="section-title">
-        <div>
-          <h2>Business</h2>
-          <p class="small-copy">Business income, bookings and spending.</p>
+
+    <section class="card">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>money setup</h2>
+            <p>Add your monthly income for this month.</p>
+          </div>
+          <span class="pill">saved</span>
         </div>
-      </div>
-      <div class="kpis" id="businessKpis"></div>
-      <div class="subcard">
-        <h3>Expected money</h3>
-        <p class="small-copy">Shows booking payments and business income records.</p>
-        <div id="businessExpectedList"></div>
-      </div>
-      <div class="subcard">
-        <h3>Add business transaction</h3>
-        <div class="row">
-          <select id="businessType">
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
-          <input id="businessAmount" type="number" placeholder="Amount">
+
+        <div class="formGrid">
+          <div class="field">
+            <label>monthly income</label>
+            <input id="incomeInput" type="number" min="0" step="0.01" placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label>starting balance</label>
+            <input id="balanceInput" type="number" min="0" step="0.01" placeholder="optional">
+          </div>
         </div>
-        <div class="row">
-          <select id="businessSubtype">
-            <option value="Other business income">Other business income</option>
-            <option value="Client payment">Client payment</option>
-            <option value="Gear">Gear</option>
-            <option value="Travel">Travel</option>
-            <option value="Subscription">Subscription</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Outsourcing">Outsourcing</option>
-            <option value="Software">Software</option>
-            <option value="Other">Other</option>
-          </select>
-          <input id="businessDate" type="date">
+
+        <div class="actions">
+          <button class="btn btnPrimary" id="saveSetupBtn">save setup</button>
+          <button class="btn btnSoft" id="resetMonthBtn">reset month</button>
         </div>
-        <input id="businessNote" placeholder="Note / who from">
-        <button id="saveBusinessBtn" type="button">Save business transaction</button>
-      </div>
-      <div class="subcard">
-        <h3>Business transactions</h3>
-        <div id="businessList"></div>
+
       </div>
     </section>
-  </main>
-  <div class="footer-space"></div>
-</div>
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-const supabase = createClient(
-  "https://grgagroautlpphjsjpjh.supabase.co",
-  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true,
-      storage:localStorage
-    }
-  }
-);
-const combinedKpisEl = document.getElementById("combinedKpis");
-const lifeKpisEl = document.getElementById("lifeKpis");
-const businessKpisEl = document.getElementById("businessKpis");
-const fixedListEl = document.getElementById("fixedList");
-const lifeListEl = document.getElementById("lifeList");
-const businessListEl = document.getElementById("businessList");
-const businessExpectedListEl = document.getElementById("businessExpectedList");
-const budgetBoxEl = document.getElementById("budgetBox");
-const monthlyPaidBoxEl = document.getElementById("monthlyPaidBox");
-const unpaidExpenseListEl = document.getElementById("unpaidExpenseList");
-const paidExpenseListEl = document.getElementById("paidExpenseList");
-const msgEl = document.getElementById("msg");
-const monthlyPayEl = document.getElementById("monthlyPay");
-const paySavedEl = document.getElementById("paySaved");
-const heroBalanceEl = document.getElementById("heroBalance");
-const monthPillEl = document.getElementById("monthPill");
-const lifeTypeEl = document.getElementById("lifeType");
-const lifeAmountEl = document.getElementById("lifeAmount");
-const lifeSubtypeEl = document.getElementById("lifeSubtype");
-const lifeDateEl = document.getElementById("lifeDate");
-const lifeNoteEl = document.getElementById("lifeNote");
-const businessTypeEl = document.getElementById("businessType");
-const businessAmountEl = document.getElementById("businessAmount");
-const businessSubtypeEl = document.getElementById("businessSubtype");
-const businessDateEl = document.getElementById("businessDate");
-const businessNoteEl = document.getElementById("businessNote");
-const fixedNameEl = document.getElementById("fixedName");
-const fixedAmountEl = document.getElementById("fixedAmount");
-let currentUser = null;
-let transactions = [];
-let payments = [];
-let fixedExpenses = [];
-let expenseStatuses = [];
-let monthlyPay = 0;
-function money(v){
-  return `£${Number(v || 0).toFixed(2)}`;
-}
-function setMsg(text, good=false){
-  msgEl.textContent = text;
-  msgEl.className = good ? "notice success" : "notice";
-}
-function setPayMsg(text, good=false){
-  paySavedEl.textContent = text;
-  paySavedEl.className = good ? "notice success" : "notice";
-}
-function todayString(){
-  return new Date().toISOString().split("T")[0];
-}
-function currentMonth(){
-  return new Date().toISOString().slice(0,7);
-}
-function displayMonth(){
-  const value = currentMonth();
-  const [year,month] = value.split("-");
-  const date = new Date(Number(year), Number(month) - 1, 1);
-  return date.toLocaleDateString("en-GB", { month:"long", year:"numeric" });
-}
-function clean(value){
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-function safe(value){
-  return clean(value).replace(/"/g, "&quot;");
-}
-async function getUser(){
-  const { data } = await supabase.auth.getUser();
-  return data.user;
-}
-async function upsertSettings(userId, patch){
-  const { error } = await supabase
-    .from("app_settings")
-    .upsert([{ user_id:userId, ...patch }], { onConflict:"user_id" });
-  return error;
-}
-async function loadSettings(userId){
-  const { data } = await supabase
-    .from("app_settings")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-  monthlyPay = Number(data?.monthly_pay || 0);
-  monthlyPayEl.value = monthlyPay || "";
-}
-function isPaid(sourceTable, sourceId){
-  return expenseStatuses.some(s =>
-    s.source_table === sourceTable &&
-    s.source_id === sourceId &&
-    s.paid_month === currentMonth() &&
-    s.paid === true
-  );
-}
-async function togglePaid(sourceTable, sourceId, current){
-  const user = currentUser || await getUser();
-  if(!user){
-    setMsg("Not logged in.");
-    return;
-  }
-  if(current){
-    const { error } = await supabase
-      .from("monthly_expense_status")
-      .delete()
-      .eq("user_id", user.id)
-      .eq("source_table", sourceTable)
-      .eq("source_id", sourceId)
-      .eq("paid_month", currentMonth());
-    if(error){
-      setMsg(error.message);
-      return;
-    }
-  } else {
-    const { error } = await supabase
-      .from("monthly_expense_status")
-      .upsert([{
-        user_id:user.id,
-        source_table:sourceTable,
-        source_id:sourceId,
-        paid_month:currentMonth(),
-        paid:true,
-        paid_date:todayString()
-      }], { onConflict:"user_id,source_table,source_id,paid_month" });
-    if(error){
-      setMsg(error.message);
-      return;
-    }
-  }
-  await load();
-}
-window.togglePaid = togglePaid;
-function groupFigures(){
-  const activeFixedBills = fixedExpenses
-    .filter(x => x.is_active)
-    .reduce((sum,x) => sum + Number(x.amount || 0), 0);
-  const lifeIncome = transactions
-    .filter(t => t.bucket === "life" && t.type === "income")
-    .reduce((sum,t) => sum + Number(t.amount || 0), 0);
-  const lifeExpense = transactions
-    .filter(t => t.bucket === "life" && t.type === "expense")
-    .reduce((sum,t) => sum + Number(t.amount || 0), 0);
-  const businessManualIncome = transactions
-    .filter(t => t.bucket === "business" && t.type === "income")
-    .reduce((sum,t) => sum + Number(t.amount || 0), 0);
-  const businessManualExpense = transactions
-    .filter(t => t.bucket === "business" && t.type === "expense")
-    .reduce((sum,t) => sum + Number(t.amount || 0), 0);
-  const bookingIncome = payments.reduce((sum,p) => sum + Number(p.amount || 0), 0);
-  const businessIncome = businessManualIncome + bookingIncome;
-  const lifeOut = lifeExpense + activeFixedBills;
-  const businessOut = businessManualExpense;
-  return {
-    activeFixedBills,
-    lifeIncome,
-    lifeOut,
-    lifeNet:lifeIncome - lifeOut,
-    businessIncome,
-    businessOut,
-    businessNet:businessIncome - businessOut,
-    combinedIn:lifeIncome + businessIncome,
-    combinedOut:lifeOut + businessOut,
-    combinedNet:(lifeIncome + businessIncome) - (lifeOut + businessOut)
-  };
-}
-function renderKpis(){
-  const f = groupFigures();
-  heroBalanceEl.textContent = money(f.combinedNet);
-  heroBalanceEl.className = `hero-money ${f.combinedNet >= 0 ? "good" : "bad"}`;
-  monthPillEl.textContent = displayMonth();
-  combinedKpisEl.innerHTML = `
-    <div class="mini-stat">
-      <div class="stat-label">Money in</div>
-      <div class="stat-value good">${money(f.combinedIn)}</div>
-    </div>
-    <div class="mini-stat">
-      <div class="stat-label">Money out</div>
-      <div class="stat-value bad">${money(f.combinedOut)}</div>
-    </div>
-    <div class="mini-stat">
-      <div class="stat-label">Net</div>
-      <div class="stat-value ${f.combinedNet >= 0 ? "good" : "bad"}">${money(f.combinedNet)}</div>
-    </div>
-  `;
-  lifeKpisEl.innerHTML = `
-    <div class="kpi">
-      <div class="kpi-title">Life in</div>
-      <div class="kpi-value life-col">${money(f.lifeIncome)}</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-title">Life out</div>
-      <div class="kpi-value bad">${money(f.lifeOut)}</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-title">Life balance</div>
-      <div class="kpi-value ${f.lifeNet >= 0 ? "good" : "bad"}">${money(f.lifeNet)}</div>
-    </div>
-  `;
-  businessKpisEl.innerHTML = `
-    <div class="kpi">
-      <div class="kpi-title">Business in</div>
-      <div class="kpi-value biz-col">${money(f.businessIncome)}</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-title">Business out</div>
-      <div class="kpi-value bad">${money(f.businessOut)}</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-title">Business balance</div>
-      <div class="kpi-value ${f.businessNet >= 0 ? "good" : "bad"}">${money(f.businessNet)}</div>
-    </div>
-  `;
-}
-function expenseRows(){
-  const txExpenses = transactions
-    .filter(t => t.type === "expense")
-    .map(t => ({
-      source_table:"transactions",
-      source_id:t.id,
-      name:t.subtype || t.category || "Expense",
-      amount:Number(t.amount || 0),
-      bucket:t.bucket || "life",
-      note:t.note || "",
-      kind:"Transaction"
-    }));
-  const fixedRows = fixedExpenses
-    .filter(x => x.is_active)
-    .map(x => ({
-      source_table:"fixed_expenses",
-      source_id:x.id,
-      name:x.name || "Fixed bill",
-      amount:Number(x.amount || 0),
-      bucket:"life",
-      note:"Fixed bill",
-      kind:"Fixed bill"
-    }));
-  return [...fixedRows, ...txExpenses];
-}
-function renderMonthlyPaidChecklist(){
-  const rows = expenseRows();
-  let total = 0;
-  let paidTotal = 0;
-  let unpaidTotal = 0;
-  const paidRows = [];
-  const unpaidRows = [];
-  rows.forEach(row => {
-    const paid = isPaid(row.source_table, row.source_id);
-    total += row.amount;
-    const html = expenseRowTemplate(row, paid);
-    if(paid){
-      paidTotal += row.amount;
-      paidRows.push(html);
-    } else {
-      unpaidTotal += row.amount;
-      unpaidRows.push(html);
-    }
-  });
-  monthlyPaidBoxEl.innerHTML = `
-    <div class="budget-card">
-      <div class="kpi-title">Total expenses</div>
-      <div class="kpi-value">${money(total)}</div>
-    </div>
-    <div class="budget-card">
-      <div class="kpi-title">Paid</div>
-      <div class="kpi-value good">${money(paidTotal)}</div>
-    </div>
-    <div class="budget-card">
-      <div class="kpi-title">Left</div>
-      <div class="kpi-value bad">${money(unpaidTotal)}</div>
-    </div>
-    <div class="budget-card">
-      <div class="kpi-title">Month</div>
-      <div class="kpi-value">${currentMonth()}</div>
-    </div>
-  `;
-  unpaidExpenseListEl.innerHTML = unpaidRows.length
-    ? unpaidRows.join("")
-    : `<div class="empty">Nothing left to pay 🎉</div>`;
-  paidExpenseListEl.innerHTML = paidRows.length
-    ? paidRows.join("")
-    : `<div class="empty">Nothing marked paid yet.</div>`;
-}
-function expenseRowTemplate(e, paid){
-  return `
-    <div class="item">
-      <div style="flex:1;min-width:0;">
-        <div class="item-title">${clean(e.name)}</div>
-        <div class="item-meta">${clean(e.kind)} • ${clean(e.bucket)}${e.note ? ` • ${clean(e.note)}` : ""}</div>
-        <div class="pill-row">
-          <span class="pill ${paid ? "pill-paid" : "pill-unpaid"}">${paid ? "Paid" : "Not paid"}</span>
-          <span class="pill ${e.bucket === "business" ? "pill-biz" : "pill-life"}">${clean(e.bucket)}</span>
-        </div>
-        <div class="inline-actions">
-          <button class="small-btn ${paid ? "danger-btn" : "save-btn"}"
-            onclick="togglePaid('${e.source_table}', '${e.source_id}', ${paid})">
-            ${paid ? "Mark unpaid" : "Mark paid"}
-          </button>
-        </div>
-      </div>
-      <div class="item-money bad">${money(e.amount)}</div>
-    </div>
-  `;
-}
-function renderBudgetSnapshot(){
-  const f = groupFigures();
-  const rows = expenseRows();
-  const paid = rows
-    .filter(e => isPaid(e.source_table, e.source_id))
-    .reduce((sum,e) => sum + e.amount, 0);
-  const unpaid = rows
-    .filter(e => !isPaid(e.source_table, e.source_id))
-    .reduce((sum,e) => sum + e.amount, 0);
-  const afterFixedBills = monthlyPay - f.activeFixedBills;
-  budgetBoxEl.innerHTML = `
-    <div class="budget-card">
-      <div class="kpi-title">Pay</div>
-      <div class="kpi-value">${money(monthlyPay)}</div>
-    </div>
-    <div class="budget-card">
-      <div class="kpi-title">Fixed bills</div>
-      <div class="kpi-value bad">${money(f.activeFixedBills)}</div>
-    </div>
-    <div class="budget-card">
-      <div class="kpi-title">After bills</div>
-      <div class="kpi-value ${afterFixedBills >= 0 ? "good" : "bad"}">${money(afterFixedBills)}</div>
-    </div>
-    <div class="budget-card">
-      <div class="kpi-title">Left to pay</div>
-      <div class="kpi-value bad">${money(unpaid)}</div>
-    </div>
-  `;
-}
-function paidButton(sourceTable, sourceId){
-  const paid = isPaid(sourceTable, sourceId);
-  return `
-    <button class="small-btn ${paid ? "paid-btn" : "save-btn"}"
-      onclick="togglePaid('${sourceTable}', '${sourceId}', ${paid})">
-      ${paid ? "Paid ✓" : "Mark paid"}
-    </button>
-  `;
-}
-function renderFixedExpenses(){
-  if(!fixedExpenses.length){
-    fixedListEl.innerHTML = `<div class="empty">No fixed bills yet.</div>`;
-    return;
-  }
-  fixedListEl.innerHTML = fixedExpenses.map(item => `
-    <div class="item">
-      <div style="flex:1;min-width:0;">
-        <div class="item-title">${clean(item.name)}</div>
-        <div class="item-meta">${item.is_active ? "Active" : "Inactive"}</div>
-        <div class="toggle-wrap">
-          <div class="toggle ${item.is_active ? 'on' : ''}" onclick="toggleFixed('${item.id}', ${item.is_active ? 'false' : 'true'})">
-            <div class="toggle-knob"></div>
+
+    <section class="card">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>add fixed bill</h2>
+            <p>Choose how the bill is paid.</p>
           </div>
-          <span class="pill ${item.is_active ? "pill-on" : "pill-off"}">
-            ${item.is_active ? "Included" : "Not included"}
-          </span>
+          <span class="pill">new bill</span>
         </div>
-        <div class="inline-actions">
-          ${paidButton("fixed_expenses", item.id)}
-          <button class="small-btn ghost-btn" onclick="toggleFixedEdit('${item.id}')">Edit</button>
-          <button class="small-btn danger-btn" onclick="deleteFixed('${item.id}')">Delete</button>
-        </div>
-        <div id="fixed-edit-${item.id}" class="edit-box" style="display:none;">
-          <div class="row">
-            <input id="fixed-edit-name-${item.id}" value="${safe(item.name)}" placeholder="Bill name">
-            <input id="fixed-edit-amount-${item.id}" type="number" value="${Number(item.amount || 0)}" placeholder="Amount">
+
+        <div class="formGrid three">
+          <div class="field">
+            <label>bill name</label>
+            <input id="billNameInput" type="text" placeholder="rent, phone, gym">
           </div>
-          <button class="small-btn save-btn" style="margin-top:10px;" onclick="saveFixedEdit('${item.id}')">Save changes</button>
+
+          <div class="field">
+            <label>amount</label>
+            <input id="billAmountInput" type="number" min="0" step="0.01" placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label>due day</label>
+            <input id="billDueInput" type="number" min="1" max="31" placeholder="1 to 31">
+          </div>
         </div>
-      </div>
-      <div class="item-money">${money(item.amount)}</div>
-    </div>
-  `).join("");
-}
-function renderTransactionList(targetEl, rows, bucketType){
-  if(!rows.length){
-    targetEl.innerHTML = `<div class="empty">Nothing here yet.</div>`;
-    return;
-  }
-  targetEl.innerHTML = rows.map(t => `
-    <div class="item">
-      <div style="flex:1;min-width:0;">
-        <div class="item-title">${clean(t.subtype || t.category || "Uncategorised")}</div>
-        <div class="item-meta">${clean(t.date || "")}${t.note ? ` • ${clean(t.note)}` : ""}</div>
-        <div class="pill-row">
-          <span class="pill ${bucketType === "life" ? "pill-life" : "pill-biz"}">${bucketType}</span>
-          <span class="pill ${t.type === "income" ? "pill-income" : "pill-expense"}">${t.type}</span>
-        </div>
-        <div class="inline-actions">
-          ${t.type === "expense" ? paidButton("transactions", t.id) : ""}
-          <button class="small-btn ghost-btn" onclick="toggleTransactionEdit('${t.id}')">Edit</button>
-          <button class="small-btn danger-btn" onclick="deleteTransaction('${t.id}')">Delete</button>
-        </div>
-        <div id="tx-edit-${t.id}" class="edit-box" style="display:none;">
-          <div class="row-3">
-            <select id="tx-edit-type-${t.id}">
-              <option value="income" ${t.type === "income" ? "selected" : ""}>Income</option>
-              <option value="expense" ${t.type === "expense" ? "selected" : ""}>Expense</option>
+
+        <div class="formGrid" style="margin-top:10px;">
+          <div class="field">
+            <label>payment type</label>
+            <select id="billTypeInput">
+              <option value="standingOrder">standing order</option>
+              <option value="directDebit">direct debit</option>
+              <option value="manualPayment">manual payment</option>
             </select>
-            <input id="tx-edit-amount-${t.id}" type="number" value="${Number(t.amount || 0)}">
-            <input id="tx-edit-date-${t.id}" type="date" value="${t.date || ""}">
           </div>
-          <div class="row">
-            <input id="tx-edit-subtype-${t.id}" value="${safe(t.subtype || t.category || "")}" placeholder="Category">
-            <input id="tx-edit-note-${t.id}" value="${safe(t.note || "")}" placeholder="Note">
+
+          <div class="field">
+            <label>category</label>
+            <select id="billCategoryInput">
+              <option value="home">home</option>
+              <option value="transport">transport</option>
+              <option value="phone">phone</option>
+              <option value="subscription">subscription</option>
+              <option value="debt">debt</option>
+              <option value="savings">savings</option>
+              <option value="other">other</option>
+            </select>
           </div>
-          <button class="small-btn save-btn" style="margin-top:10px;" onclick="saveTransactionEdit('${t.id}', '${bucketType}')">Save changes</button>
         </div>
+
+        <div class="actions">
+          <button class="btn btnPrimary" id="addBillBtn">add fixed bill</button>
+          <button class="btn btnSoft" id="clearBillBtn">clear</button>
+        </div>
+
       </div>
-      <div class="item-money ${t.type === "income" ? "good" : "bad"}">
-        ${t.type === "income" ? "+" : ""}${t.type === "expense" ? "-" : ""}${money(t.amount)}
+    </section>
+
+    <section class="card">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>quick spend</h2>
+            <p>Add spending that is not a fixed bill.</p>
+          </div>
+          <span class="pill">daily tracking</span>
+        </div>
+
+        <div class="formGrid">
+          <div class="field">
+            <label>what was it?</label>
+            <input id="spendNameInput" type="text" placeholder="food, train, coffee">
+          </div>
+
+          <div class="field">
+            <label>amount</label>
+            <input id="spendAmountInput" type="number" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+
+        <div class="formGrid" style="margin-top:10px;">
+          <div class="field">
+            <label>category</label>
+            <select id="spendCategoryInput">
+              <option value="food">food</option>
+              <option value="travel">travel</option>
+              <option value="shopping">shopping</option>
+              <option value="social">social</option>
+              <option value="business">business</option>
+              <option value="other">other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>date</label>
+            <input id="spendDateInput" type="date">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btnPrimary" id="addSpendBtn">add spend</button>
+          <button class="btn btnSoft" id="clearSpendBtn">clear</button>
+        </div>
+
       </div>
-    </div>
-  `).join("");
-}
-function renderTransactions(){
-  const lifeRows = transactions.filter(t => t.bucket === "life");
-  const businessRows = transactions.filter(t => t.bucket === "business");
-  renderTransactionList(lifeListEl, lifeRows, "life");
-  renderTransactionList(businessListEl, businessRows, "business");
-  renderBusinessExpected();
-}
-function renderBusinessExpected(){
-  const businessIncomeRows = transactions.filter(t => t.bucket === "business" && t.type === "income");
-  const paymentRows = payments.map(p => ({
-    label:p.client_name || p.name || p.note || "Booking payment",
-    amount:Number(p.amount || 0),
-    date:p.payment_date || "",
-    source:"booking payment"
-  }));
-  const manualRows = businessIncomeRows.map(t => ({
-    label:t.note || t.subtype || t.category || "Business income",
-    amount:Number(t.amount || 0),
-    date:t.date || "",
-    source:"manual"
-  }));
-  const rows = [...paymentRows, ...manualRows];
-  if(!rows.length){
-    businessExpectedListEl.innerHTML = `<div class="empty">No expected business money yet.</div>`;
-    return;
-  }
-  businessExpectedListEl.innerHTML = rows.map(row => `
-    <div class="item">
-      <div style="flex:1;min-width:0;">
-        <div class="item-title">${clean(row.label)}</div>
-        <div class="item-meta">${clean(row.date || "No date")} • ${clean(row.source)}</div>
+    </section>
+
+    <section class="card" style="grid-column:1 / -1;">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>fixed bills</h2>
+            <p>Now split by standing order, direct debit, and manual payment.</p>
+          </div>
+          <span class="pill" id="billCountPill">0 bills</span>
+        </div>
+
+        <div class="billsGrid">
+
+          <div class="billColumn">
+            <div class="billHead">
+              <div class="billHeadTitle">
+                <span class="dot green"></span>
+                <h3>standing order</h3>
+              </div>
+              <strong id="standingOrderTotal">£0.00</strong>
+            </div>
+            <div class="billList" id="standingOrderList"></div>
+          </div>
+
+          <div class="billColumn">
+            <div class="billHead">
+              <div class="billHeadTitle">
+                <span class="dot blue"></span>
+                <h3>direct debit</h3>
+              </div>
+              <strong id="directDebitTotal">£0.00</strong>
+            </div>
+            <div class="billList" id="directDebitList"></div>
+          </div>
+
+          <div class="billColumn">
+            <div class="billHead">
+              <div class="billHeadTitle">
+                <span class="dot orange"></span>
+                <h3>manual payment</h3>
+              </div>
+              <strong id="manualPaymentTotal">£0.00</strong>
+            </div>
+            <div class="billList" id="manualPaymentList"></div>
+          </div>
+
+        </div>
+
       </div>
-      <div class="item-money good">+${money(row.amount)}</div>
-    </div>
-  `).join("");
+    </section>
+
+    <section class="card" style="grid-column:1 / -1;">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>spending list</h2>
+            <p>Your non fixed spending for this month.</p>
+          </div>
+          <span class="pill" id="spendCountPill">0 items</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" id="allSpendTab">all</button>
+          <button class="tab" id="todaySpendTab">today</button>
+          <button class="tab" id="highSpendTab">£20 plus</button>
+        </div>
+
+        <div class="list" id="spendList"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<nav class="bottomNav">
+  <a class="navItem" href="dashboard.html">
+    <span>🏠</span>
+    home
+  </a>
+
+  <a class="navItem" href="life-test.html">
+    <span>✅</span>
+    to do
+  </a>
+
+  <a class="navItem" href="attendance-test.html">
+    <span>🏢</span>
+    office
+  </a>
+
+  <a class="navItem" href="bookings-test.html">
+    <span>📅</span>
+    bookings
+  </a>
+
+  <a class="navItem active" href="finance-test.html">
+    <span>💸</span>
+    money
+  </a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = "pace_finance_v3";
+
+const els = {
+  monthInput: document.getElementById("monthInput"),
+  incomeInput: document.getElementById("incomeInput"),
+  balanceInput: document.getElementById("balanceInput"),
+  saveSetupBtn: document.getElementById("saveSetupBtn"),
+  resetMonthBtn: document.getElementById("resetMonthBtn"),
+
+  billNameInput: document.getElementById("billNameInput"),
+  billAmountInput: document.getElementById("billAmountInput"),
+  billDueInput: document.getElementById("billDueInput"),
+  billTypeInput: document.getElementById("billTypeInput"),
+  billCategoryInput: document.getElementById("billCategoryInput"),
+  addBillBtn: document.getElementById("addBillBtn"),
+  clearBillBtn: document.getElementById("clearBillBtn"),
+
+  spendNameInput: document.getElementById("spendNameInput"),
+  spendAmountInput: document.getElementById("spendAmountInput"),
+  spendCategoryInput: document.getElementById("spendCategoryInput"),
+  spendDateInput: document.getElementById("spendDateInput"),
+  addSpendBtn: document.getElementById("addSpendBtn"),
+  clearSpendBtn: document.getElementById("clearSpendBtn"),
+
+  leftAmount: document.getElementById("leftAmount"),
+  monthStatus: document.getElementById("monthStatus"),
+  incomeSummary: document.getElementById("incomeSummary"),
+  fixedSummary: document.getElementById("fixedSummary"),
+  spentSummary: document.getElementById("spentSummary"),
+  dailySummary: document.getElementById("dailySummary"),
+
+  standingOrderList: document.getElementById("standingOrderList"),
+  directDebitList: document.getElementById("directDebitList"),
+  manualPaymentList: document.getElementById("manualPaymentList"),
+
+  standingOrderTotal: document.getElementById("standingOrderTotal"),
+  directDebitTotal: document.getElementById("directDebitTotal"),
+  manualPaymentTotal: document.getElementById("manualPaymentTotal"),
+
+  billCountPill: document.getElementById("billCountPill"),
+  spendCountPill: document.getElementById("spendCountPill"),
+  spendList: document.getElementById("spendList"),
+
+  allSpendTab: document.getElementById("allSpendTab"),
+  todaySpendTab: document.getElementById("todaySpendTab"),
+  highSpendTab: document.getElementById("highSpendTab"),
+
+  toast: document.getElementById("toast")
+};
+
+let activeSpendFilter = "all";
+
+let state = {
+  selectedMonth: getCurrentMonth(),
+  months: {},
+  fixedBills: [],
+  spends: []
+};
+
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
 }
-async function addTransaction(bucket,type,amount,subtype,date,note){
-  const user = currentUser || await getUser();
-  if(!user){
-    setMsg("Not logged in.");
-    return;
-  }
-  const value = Number(amount || 0);
-  if(!value){
-    setMsg("Enter an amount.");
-    return;
-  }
-  const { error } = await supabase.from("transactions").insert([{
-    user_id:user.id,
-    type,
-    bucket,
-    amount:value,
-    category:subtype,
-    subtype:subtype,
-    date:date || todayString(),
-    note:note || null
-  }]);
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-  setMsg("Transaction saved.", true);
-  await load();
+
+function getCurrentMonth(){
+  const now = new Date();
+  return now.toISOString().slice(0,7);
 }
-async function addFixedBill(){
-  const user = currentUser || await getUser();
-  if(!user){
-    setMsg("Not logged in.");
+
+function getToday(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function money(value){
+  return new Intl.NumberFormat("en-GB", {
+    style:"currency",
+    currency:"GBP"
+  }).format(Number(value) || 0);
+}
+
+function numberValue(value){
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function load(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  if(!saved){
+    state.selectedMonth = getCurrentMonth();
     return;
   }
-  const name = fixedNameEl.value.trim();
-  const amount = Number(fixedAmountEl.value || 0);
+
+  try{
+    const parsed = JSON.parse(saved);
+
+    state = {
+      selectedMonth: parsed.selectedMonth || getCurrentMonth(),
+      months: parsed.months || {},
+      fixedBills: parsed.fixedBills || [],
+      spends: parsed.spends || []
+    };
+
+    state.fixedBills = state.fixedBills.map(bill => ({
+      id: bill.id || uid(),
+      name: bill.name || "untitled bill",
+      amount: numberValue(bill.amount),
+      dueDay: bill.dueDay || "",
+      type: bill.type || "manualPayment",
+      category: bill.category || "other"
+    }));
+
+    state.spends = state.spends.map(spend => ({
+      id: spend.id || uid(),
+      name: spend.name || "spend",
+      amount: numberValue(spend.amount),
+      category: spend.category || "other",
+      date: spend.date || getToday(),
+      month: spend.month || (spend.date || getToday()).slice(0,7)
+    }));
+
+  }catch(error){
+    state.selectedMonth = getCurrentMonth();
+  }
+}
+
+function getMonthData(){
+  if(!state.months[state.selectedMonth]){
+    state.months[state.selectedMonth] = {
+      income: 0,
+      startingBalance: 0
+    };
+  }
+
+  return state.months[state.selectedMonth];
+}
+
+function getMonthSpends(){
+  return state.spends.filter(spend => spend.month === state.selectedMonth);
+}
+
+function getBillTypeLabel(type){
+  const labels = {
+    standingOrder: "standing order",
+    directDebit: "direct debit",
+    manualPayment: "manual payment"
+  };
+
+  return labels[type] || "manual payment";
+}
+
+function getBillTypeEmoji(type){
+  const emojis = {
+    standingOrder: "🟢",
+    directDebit: "🔵",
+    manualPayment: "🟠"
+  };
+
+  return emojis[type] || "🟠";
+}
+
+function billTotalByType(type){
+  return state.fixedBills
+    .filter(bill => bill.type === type)
+    .reduce((sum,bill) => sum + numberValue(bill.amount),0);
+}
+
+function totalFixedBills(){
+  return state.fixedBills.reduce((sum,bill) => sum + numberValue(bill.amount),0);
+}
+
+function totalSpending(){
+  return getMonthSpends().reduce((sum,spend) => sum + numberValue(spend.amount),0);
+}
+
+function daysLeftInMonth(){
+  const [year, month] = state.selectedMonth.split("-").map(Number);
+  const today = new Date();
+  const selectedIsCurrent = state.selectedMonth === getCurrentMonth();
+
+  if(!selectedIsCurrent){
+    return new Date(year, month, 0).getDate();
+  }
+
+  const end = new Date(year, month, 0).getDate();
+  return Math.max(end - today.getDate() + 1, 1);
+}
+
+function showToast(message){
+  els.toast.textContent = message;
+  els.toast.classList.add("show");
+
+  setTimeout(() => {
+    els.toast.classList.remove("show");
+  }, 1800);
+}
+
+function clearBillForm(){
+  els.billNameInput.value = "";
+  els.billAmountInput.value = "";
+  els.billDueInput.value = "";
+  els.billTypeInput.value = "standingOrder";
+  els.billCategoryInput.value = "home";
+}
+
+function clearSpendForm(){
+  els.spendNameInput.value = "";
+  els.spendAmountInput.value = "";
+  els.spendCategoryInput.value = "food";
+  els.spendDateInput.value = getToday();
+}
+
+function addBill(){
+  const name = els.billNameInput.value.trim();
+  const amount = numberValue(els.billAmountInput.value);
+  const dueDay = Number(els.billDueInput.value);
+  const type = els.billTypeInput.value;
+  const category = els.billCategoryInput.value;
+
   if(!name){
-    setMsg("Enter a fixed bill name.");
+    showToast("Add a bill name.");
     return;
   }
-  if(!amount){
-    setMsg("Enter a fixed bill amount.");
+
+  if(amount <= 0){
+    showToast("Add a bill amount.");
     return;
   }
-  const { error } = await supabase.from("fixed_expenses").insert([{
-    user_id:user.id,
+
+  if(!dueDay || dueDay < 1 || dueDay > 31){
+    showToast("Due day must be 1 to 31.");
+    return;
+  }
+
+  state.fixedBills.push({
+    id: uid(),
     name,
     amount,
-    bucket:"bills",
-    is_active:true
-  }]);
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-  fixedNameEl.value = "";
-  fixedAmountEl.value = "";
-  setMsg("Fixed bill added.", true);
-  await load();
+    dueDay,
+    type,
+    category
+  });
+
+  save();
+  clearBillForm();
+  render();
+  showToast("Fixed bill added.");
 }
-document.getElementById("saveLifeBtn").addEventListener("click", async () => {
-  await addTransaction("life", lifeTypeEl.value, lifeAmountEl.value, lifeSubtypeEl.value, lifeDateEl.value, lifeNoteEl.value.trim());
-  lifeTypeEl.value = "income";
-  lifeAmountEl.value = "";
-  lifeSubtypeEl.value = "Pay";
-  lifeDateEl.value = "";
-  lifeNoteEl.value = "";
-});
-document.getElementById("saveBusinessBtn").addEventListener("click", async () => {
-  await addTransaction("business", businessTypeEl.value, businessAmountEl.value, businessSubtypeEl.value, businessDateEl.value, businessNoteEl.value.trim());
-  businessTypeEl.value = "income";
-  businessAmountEl.value = "";
-  businessSubtypeEl.value = "Other business income";
-  businessDateEl.value = "";
-  businessNoteEl.value = "";
-});
-document.getElementById("saveFixedBtn").addEventListener("click", addFixedBill);
-document.getElementById("savePayBtn").addEventListener("click", async () => {
-  const user = currentUser || await getUser();
-  if(!user){
-    setPayMsg("Not logged in.");
-    return;
-  }
-  const value = Number(monthlyPayEl.value || 0);
-  const error = await upsertSettings(user.id, { monthly_pay:value });
-  if(error){
-    setPayMsg(error.message);
-    return;
-  }
-  setPayMsg("Monthly pay saved.", true);
-  await load();
-});
-window.toggleFixed = async function(id,nextState){
-  const { error } = await supabase
-    .from("fixed_expenses")
-    .update({ is_active:nextState })
-    .eq("id", id);
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-  setMsg(nextState ? "Bill turned on." : "Bill turned off.", true);
-  await load();
-};
-window.toggleFixedEdit = function(id){
-  const box = document.getElementById(`fixed-edit-${id}`);
-  if(!box) return;
-  box.style.display = box.style.display === "none" ? "block" : "none";
-};
-window.saveFixedEdit = async function(id){
-  const name = document.getElementById(`fixed-edit-name-${id}`).value.trim();
-  const amount = Number(document.getElementById(`fixed-edit-amount-${id}`).value || 0);
-  if(!name || !amount){
-    setMsg("Fixed bill name and amount are required.");
-    return;
-  }
-  const { error } = await supabase
-    .from("fixed_expenses")
-    .update({ name, amount })
-    .eq("id", id);
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-  setMsg("Fixed bill updated.", true);
-  await load();
-};
-window.deleteFixed = async function(id){
-  await supabase
-    .from("monthly_expense_status")
-    .delete()
-    .eq("source_table", "fixed_expenses")
-    .eq("source_id", id);
-  const { error } = await supabase
-    .from("fixed_expenses")
-    .delete()
-    .eq("id", id);
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-  setMsg("Fixed bill deleted.", true);
-  await load();
-};
-window.toggleTransactionEdit = function(id){
-  const box = document.getElementById(`tx-edit-${id}`);
-  if(!box) return;
-  box.style.display = box.style.display === "none" ? "block" : "none";
-};
-window.saveTransactionEdit = async function(id,bucketType){
-  const type = document.getElementById(`tx-edit-type-${id}`).value;
-  const amount = Number(document.getElementById(`tx-edit-amount-${id}`).value || 0);
-  const date = document.getElementById(`tx-edit-date-${id}`).value || null;
-  const subtype = document.getElementById(`tx-edit-subtype-${id}`).value.trim();
-  const note = document.getElementById(`tx-edit-note-${id}`).value.trim();
-  if(!amount){
-    setMsg("Transaction amount is required.");
-    return;
-  }
-  const { error } = await supabase
-    .from("transactions")
-    .update({
-      type,
-      amount,
-      date,
-      category:subtype,
-      subtype,
-      note:note || null
-    })
-    .eq("id", id);
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-  setMsg(`${bucketType === "life" ? "Life" : "Business"} transaction updated.`, true);
-  await load();
-};
-window.deleteTransaction = async function(id){
-  await supabase
-    .from("monthly_expense_status")
-    .delete()
-    .eq("source_table", "transactions")
-    .eq("source_id", id);
-  const { error } = await supabase
-    .from("transactions")
-    .delete()
-    .eq("id", id);
-  if(error){
-    setMsg(error.message);
-    return;
-  }
-  setMsg("Transaction deleted.", true);
-  await load();
-};
-async function load(){
-  const user = await getUser();
-  if(!user){
-    setMsg("Not logged in.");
-    return;
-  }
-  currentUser = user;
-  await loadSettings(user.id);
-  const [txRes,payRes,fixedRes,statusRes] = await Promise.all([
-    supabase.from("transactions").select("*").eq("user_id", user.id).order("date", { ascending:false }),
-    supabase.from("payments").select("*").eq("user_id", user.id).order("payment_date", { ascending:false }),
-    supabase.from("fixed_expenses").select("*").eq("user_id", user.id).order("created_at", { ascending:true }),
-    supabase.from("monthly_expense_status").select("*").eq("user_id", user.id).eq("paid_month", currentMonth())
-  ]);
-  if(txRes.error) return setMsg(txRes.error.message);
-  if(payRes.error) return setMsg(payRes.error.message);
-  if(fixedRes.error) return setMsg(fixedRes.error.message);
-  if(statusRes.error) return setMsg(statusRes.error.message);
-  transactions = txRes.data || [];
-  payments = payRes.data || [];
-  fixedExpenses = fixedRes.data || [];
-  expenseStatuses = statusRes.data || [];
-  renderKpis();
-  renderMonthlyPaidChecklist();
-  renderBudgetSnapshot();
-  renderFixedExpenses();
-  renderTransactions();
+
+function deleteBill(id){
+  state.fixedBills = state.fixedBills.filter(bill => bill.id !== id);
+  save();
+  render();
+  showToast("Bill deleted.");
 }
+
+function editBill(id){
+  const bill = state.fixedBills.find(item => item.id === id);
+
+  if(!bill) return;
+
+  els.billNameInput.value = bill.name;
+  els.billAmountInput.value = bill.amount;
+  els.billDueInput.value = bill.dueDay;
+  els.billTypeInput.value = bill.type;
+  els.billCategoryInput.value = bill.category;
+
+  state.fixedBills = state.fixedBills.filter(item => item.id !== id);
+
+  save();
+  render();
+  showToast("Bill loaded for editing.");
+}
+
+function addSpend(){
+  const name = els.spendNameInput.value.trim();
+  const amount = numberValue(els.spendAmountInput.value);
+  const category = els.spendCategoryInput.value;
+  const date = els.spendDateInput.value || getToday();
+  const month = date.slice(0,7);
+
+  if(!name){
+    showToast("Add what you spent on.");
+    return;
+  }
+
+  if(amount <= 0){
+    showToast("Add a spend amount.");
+    return;
+  }
+
+  state.spends.push({
+    id: uid(),
+    name,
+    amount,
+    category,
+    date,
+    month
+  });
+
+  save();
+  clearSpendForm();
+  render();
+  showToast("Spend added.");
+}
+
+function deleteSpend(id){
+  state.spends = state.spends.filter(spend => spend.id !== id);
+  save();
+  render();
+  showToast("Spend deleted.");
+}
+
+function saveSetup(){
+  const monthData = getMonthData();
+
+  monthData.income = numberValue(els.incomeInput.value);
+  monthData.startingBalance = numberValue(els.balanceInput.value);
+
+  save();
+  render();
+  showToast("Setup saved.");
+}
+
+function resetMonth(){
+  const confirmed = confirm("Reset this month's income, balance and spending? Fixed bills will stay.");
+
+  if(!confirmed) return;
+
+  state.months[state.selectedMonth] = {
+    income: 0,
+    startingBalance: 0
+  };
+
+  state.spends = state.spends.filter(spend => spend.month !== state.selectedMonth);
+
+  save();
+  render();
+  showToast("Month reset.");
+}
+
+function renderBills(){
+  const lists = {
+    standingOrder: els.standingOrderList,
+    directDebit: els.directDebitList,
+    manualPayment: els.manualPaymentList
+  };
+
+  Object.keys(lists).forEach(type => {
+    const container = lists[type];
+    const bills = state.fixedBills
+      .filter(bill => bill.type === type)
+      .sort((a,b) => Number(a.dueDay) - Number(b.dueDay));
+
+    container.innerHTML = "";
+
+    if(bills.length === 0){
+      container.innerHTML = `<div class="empty">No ${getBillTypeLabel(type)} bills yet.</div>`;
+      return;
+    }
+
+    bills.forEach(bill => {
+      const item = document.createElement("div");
+      item.className = "billItem";
+
+      item.innerHTML = `
+        <div class="billTop">
+          <div>
+            <div class="billName">${escapeHtml(bill.name)}</div>
+            <div class="billMeta">${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)}</div>
+          </div>
+          <div class="billAmount">${money(bill.amount)}</div>
+        </div>
+
+        <div class="billButtons">
+          <button class="iconBtn" data-edit-bill="${bill.id}">edit</button>
+          <button class="iconBtn danger" data-delete-bill="${bill.id}">delete</button>
+        </div>
+      `;
+
+      container.appendChild(item);
+    });
+  });
+
+  els.standingOrderTotal.textContent = money(billTotalByType("standingOrder"));
+  els.directDebitTotal.textContent = money(billTotalByType("directDebit"));
+  els.manualPaymentTotal.textContent = money(billTotalByType("manualPayment"));
+
+  const billCount = state.fixedBills.length;
+  els.billCountPill.textContent = billCount === 1 ? "1 bill" : `${billCount} bills`;
+}
+
+function renderSpends(){
+  const spends = getMonthSpends()
+    .slice()
+    .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  let filtered = spends;
+
+  if(activeSpendFilter === "today"){
+    filtered = spends.filter(spend => spend.date === getToday());
+  }
+
+  if(activeSpendFilter === "high"){
+    filtered = spends.filter(spend => numberValue(spend.amount) >= 20);
+  }
+
+  els.spendList.innerHTML = "";
+
+  if(filtered.length === 0){
+    els.spendList.innerHTML = `<div class="empty">No spending here yet.</div>`;
+  }
+
+  filtered.forEach(spend => {
+    const item = document.createElement("div");
+    item.className = "transaction";
+
+    item.innerHTML = `
+      <div class="transactionLeft">
+        <strong>${escapeHtml(spend.name)}</strong>
+        <span>${escapeHtml(spend.category)} • ${spend.date}</span>
+      </div>
+
+      <div class="transactionRight">
+        <div class="transactionAmount">${money(spend.amount)}</div>
+        <button class="iconBtn danger" data-delete-spend="${spend.id}">delete</button>
+      </div>
+    `;
+
+    els.spendList.appendChild(item);
+  });
+
+  const spendCount = spends.length;
+  els.spendCountPill.textContent = spendCount === 1 ? "1 item" : `${spendCount} items`;
+}
+
+function renderSummary(){
+  const monthData = getMonthData();
+  const fixed = totalFixedBills();
+  const spent = totalSpending();
+  const available = numberValue(monthData.income) + numberValue(monthData.startingBalance);
+  const left = available - fixed - spent;
+  const daily = left > 0 ? left / daysLeftInMonth() : 0;
+
+  els.incomeInput.value = monthData.income || "";
+  els.balanceInput.value = monthData.startingBalance || "";
+
+  els.incomeSummary.textContent = money(monthData.income);
+  els.fixedSummary.textContent = money(fixed);
+  els.spentSummary.textContent = money(spent);
+  els.leftAmount.textContent = money(left);
+  els.dailySummary.textContent = money(daily);
+
+  if(available <= 0){
+    els.monthStatus.textContent = "Add your income so Pace can calculate what is safe to spend.";
+  }else if(left < 0){
+    els.monthStatus.textContent = "You are over your planned money for this month.";
+  }else{
+    els.monthStatus.textContent = `${money(daily)} safe to spend per day for the rest of the month.`;
+  }
+}
+
+function setActiveTab(type){
+  activeSpendFilter = type;
+
+  els.allSpendTab.classList.toggle("active", type === "all");
+  els.todaySpendTab.classList.toggle("active", type === "today");
+  els.highSpendTab.classList.toggle("active", type === "high");
+
+  renderSpends();
+}
+
+function render(){
+  els.monthInput.value = state.selectedMonth;
+  renderSummary();
+  renderBills();
+  renderSpends();
+}
+
+function escapeHtml(text){
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+els.monthInput.addEventListener("change", () => {
+  state.selectedMonth = els.monthInput.value || getCurrentMonth();
+  save();
+  render();
+});
+
+els.saveSetupBtn.addEventListener("click", saveSetup);
+els.resetMonthBtn.addEventListener("click", resetMonth);
+
+els.addBillBtn.addEventListener("click", addBill);
+els.clearBillBtn.addEventListener("click", clearBillForm);
+
+els.addSpendBtn.addEventListener("click", addSpend);
+els.clearSpendBtn.addEventListener("click", clearSpendForm);
+
+els.allSpendTab.addEventListener("click", () => setActiveTab("all"));
+els.todaySpendTab.addEventListener("click", () => setActiveTab("today"));
+els.highSpendTab.addEventListener("click", () => setActiveTab("high"));
+
+document.addEventListener("click", event => {
+  const editBillId = event.target.getAttribute("data-edit-bill");
+  const deleteBillId = event.target.getAttribute("data-delete-bill");
+  const deleteSpendId = event.target.getAttribute("data-delete-spend");
+
+  if(editBillId){
+    editBill(editBillId);
+  }
+
+  if(deleteBillId){
+    deleteBill(deleteBillId);
+  }
+
+  if(deleteSpendId){
+    deleteSpend(deleteSpendId);
+  }
+});
+
 load();
+
+els.spendDateInput.value = getToday();
+
+if(!state.selectedMonth){
+  state.selectedMonth = getCurrentMonth();
+}
+
+render();
 </script>
+
 </body>
 </html>
