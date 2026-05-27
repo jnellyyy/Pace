@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Pace Shoot Day</title>
+
 <link rel="manifest" href="/Pace/site.webmanifest">
 <link rel="apple-touch-icon" href="/Pace/icon-180.png">
 <link rel="icon" href="/Pace/icon-32.png">
@@ -257,6 +258,30 @@ button{
   padding:10px;
 }
 
+.shot-actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:10px;
+}
+
+.mini-btn{
+  padding:9px 10px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.09);
+  color:white;
+  font-weight:800;
+  font-size:13px;
+}
+
+.mini-btn.blue{
+  background:rgba(96,165,250,0.18);
+}
+
+.mini-btn.red{
+  background:rgba(239,68,68,0.18);
+}
+
 .progress{
   height:12px;
   border-radius:999px;
@@ -306,8 +331,18 @@ button{
   background:rgba(255,255,255,0.10);
 }
 
+.green{
+  background:rgba(34,197,94,0.20);
+}
+
 .form-grid{
   display:grid;
+  gap:12px;
+}
+
+.edit-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
   gap:12px;
 }
 
@@ -317,7 +352,9 @@ label{
   color:#d7dbe3;
 }
 
-input,textarea{
+input,
+textarea,
+select{
   width:100%;
   margin-top:6px;
   padding:12px;
@@ -329,9 +366,13 @@ input,textarea{
 }
 
 textarea{
-  min-height:360px;
+  min-height:180px;
   resize:vertical;
   line-height:1.45;
+}
+
+.big-textarea{
+  min-height:360px;
 }
 
 .helper{
@@ -351,10 +392,22 @@ textarea{
   font-size:13px;
 }
 
+.edit-banner{
+  background:rgba(96,165,250,0.13);
+  border:1px solid rgba(96,165,250,0.22);
+  color:#dbeafe;
+  border-radius:16px;
+  padding:12px;
+  line-height:1.45;
+  margin-bottom:12px;
+}
+
 @media(max-width:800px){
   .rule-grid,
   .meta,
-  .actions{
+  .actions,
+  .edit-grid,
+  .shot-actions{
     grid-template-columns:1fr;
   }
 
@@ -432,6 +485,102 @@ textarea{
     </div>
 
     <div class="card">
+      <h2>Edit current list</h2>
+
+      <div class="helper small">
+        Use this area to add a shot, edit a shot, paste extra rows, add a section, or update wedding notes.
+      </div>
+
+      <div id="editingBanner" class="edit-banner hidden"></div>
+
+      <div class="form-grid" style="margin-top:14px;">
+        <div class="edit-grid">
+          <label>
+            Location
+            <input id="shotLocation" placeholder="Example: The County Hotel Venue">
+          </label>
+
+          <label>
+            Shot
+            <input id="shotName" placeholder="Example: couple entrance">
+          </label>
+
+          <label>
+            Lens + FPS
+            <input id="shotLensFps" placeholder="Example: mid 35 to 50mm | 50fps">
+          </label>
+
+          <label>
+            Movement
+            <input id="shotMovement" placeholder="Example: backward move">
+          </label>
+
+          <label>
+            Priority
+            <select id="shotPriority">
+              <option value="A">A</option>
+              <option value="B" selected>B</option>
+              <option value="C">C</option>
+            </select>
+          </label>
+
+          <label>
+            Framing
+            <input id="shotFraming" placeholder="Example: mid close">
+          </label>
+        </div>
+
+        <label>
+          Creative example
+          <textarea id="shotCreative" placeholder="Example: treat this as a hero moment"></textarea>
+        </label>
+
+        <div class="actions">
+          <button class="action-btn save" onclick="saveShotFromForm()">Save shot</button>
+          <button class="action-btn secondary" onclick="clearShotForm()">Clear form</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Add more to this wedding</h2>
+
+      <div class="form-grid">
+        <label>
+          Paste extra rows or sections
+          <textarea id="appendRowsText" placeholder="Paste extra rows here.
+
+Example:
+The County Hotel Venue | bride dancing | mid 35 to 50mm | 50fps | in-crowd handheld | A | mid close | signature energy shot
+
+Or paste a full section:
+After party
+location | shot | lens | fps | movement | priority | framing | creative example
+The County Hotel Venue | room energy | wide 24mm | 50fps | handheld | B | wide to mid | keep it alive"></textarea>
+        </label>
+
+        <button class="action-btn green" onclick="appendPastedRows()">Add pasted shots</button>
+
+        <div class="edit-grid">
+          <label>
+            New section name
+            <input id="newSectionName" placeholder="Example: After party">
+          </label>
+
+          <label>
+            Wedding notes
+            <textarea id="notesEditor" placeholder="One note per line"></textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="action-btn secondary" onclick="addNewSection()">Add section</button>
+          <button class="action-btn secondary" onclick="saveNotesFromEditor()">Save notes</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
       <h2 id="sectionTitle"></h2>
       <div class="timeline" id="shotList"></div>
     </div>
@@ -468,7 +617,7 @@ textarea{
 
       <label>
         Paste full shot list
-        <textarea id="newWeddingText" placeholder="Paste the whole shot list here. You can include bullet notes, lens logic, fps logic, section headings, tables, and creative shots bank."></textarea>
+        <textarea id="newWeddingText" class="big-textarea" placeholder="Paste the whole shot list here. You can include bullet notes, lens logic, fps logic, section headings, tables, and creative shots bank."></textarea>
       </label>
 
       <button class="action-btn save" onclick="saveNewWedding()">Save wedding shot list</button>
@@ -481,6 +630,7 @@ textarea{
 <script>
 const STORAGE_CUSTOM_WEDDINGS = "pace_shoot_day_custom_weddings_v2";
 const STORAGE_ACTIVE_WEDDING = "pace_shoot_day_active_wedding_v2";
+const STORAGE_DEFAULT_OVERRIDES = "pace_shoot_day_default_overrides_v1";
 
 const DEFAULT_WEDDINGS = [
   {
@@ -715,12 +865,14 @@ const DEFAULT_WEDDINGS = [
 ];
 
 let customWeddings = loadCustomWeddings();
+let defaultOverrides = loadDefaultOverrides();
 let activeWeddingId = localStorage.getItem(STORAGE_ACTIVE_WEDDING) || "main";
 let activeSection = "";
 let viewMode = "list";
+let editingShotIndex = null;
 
-function allWeddings(){
-  return [...DEFAULT_WEDDINGS, ...customWeddings];
+function deepClone(value){
+  return JSON.parse(JSON.stringify(value));
 }
 
 function loadCustomWeddings(){
@@ -732,12 +884,89 @@ function loadCustomWeddings(){
   }
 }
 
+function loadDefaultOverrides(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_DEFAULT_OVERRIDES));
+    return saved && typeof saved === "object" ? saved : {};
+  }catch(error){
+    return {};
+  }
+}
+
 function saveCustomWeddings(){
   localStorage.setItem(STORAGE_CUSTOM_WEDDINGS, JSON.stringify(customWeddings));
 }
 
+function saveDefaultOverrides(){
+  localStorage.setItem(STORAGE_DEFAULT_OVERRIDES, JSON.stringify(defaultOverrides));
+}
+
+function mergedDefaultWeddings(){
+  return DEFAULT_WEDDINGS.map(wedding => {
+    const override = defaultOverrides[wedding.id];
+
+    if(!override){
+      return deepClone(wedding);
+    }
+
+    return {
+      ...deepClone(wedding),
+      ...deepClone(override),
+      id:wedding.id,
+      locked:true,
+      edited:true
+    };
+  });
+}
+
+function allWeddings(){
+  return [...mergedDefaultWeddings(), ...deepClone(customWeddings)];
+}
+
 function getWedding(){
   return allWeddings().find(wedding => wedding.id === activeWeddingId) || allWeddings()[0];
+}
+
+function saveWeddingChanges(updatedWedding){
+  if(!updatedWedding) return;
+
+  if(updatedWedding.locked){
+    defaultOverrides[updatedWedding.id] = {
+      name:updatedWedding.name,
+      description:updatedWedding.description,
+      notes:updatedWedding.notes || [],
+      sections:updatedWedding.sections || {},
+      edited:true
+    };
+
+    saveDefaultOverrides();
+    return;
+  }
+
+  customWeddings = customWeddings.map(wedding => {
+    if(wedding.id === updatedWedding.id){
+      return deepClone(updatedWedding);
+    }
+
+    return wedding;
+  });
+
+  saveCustomWeddings();
+}
+
+function resetDefaultWedding(){
+  const wedding = getWedding();
+
+  if(!wedding.locked) return;
+
+  const confirmed = confirm(`Reset ${wedding.name} back to the built in version?`);
+
+  if(!confirmed) return;
+
+  delete defaultOverrides[wedding.id];
+  saveDefaultOverrides();
+  clearShotForm();
+  showWedding(wedding.id);
 }
 
 function escapeHtml(value){
@@ -791,6 +1020,7 @@ function showWedding(id){
   activeWeddingId = id;
   localStorage.setItem(STORAGE_ACTIVE_WEDDING, activeWeddingId);
   viewMode = "list";
+  clearShotForm(false);
 
   const wedding = getWedding();
   const sections = getSectionNames(wedding);
@@ -811,6 +1041,7 @@ function showAddArea(){
 function showSection(section){
   activeSection = section;
   localStorage.setItem(`pace_active_section_${activeWeddingId}`, activeSection);
+  clearShotForm(false);
   render();
 }
 
@@ -880,6 +1111,8 @@ function renderNotes(){
   const list = document.getElementById("notesList");
   const notes = Array.isArray(wedding.notes) ? wedding.notes : [];
 
+  document.getElementById("notesEditor").value = notes.join("\n");
+
   if(!notes.length){
     card.classList.add("hidden");
     list.innerHTML = "";
@@ -916,7 +1149,7 @@ function renderShots(){
   title.textContent = activeSection || "No section yet";
 
   if(!shots.length){
-    list.innerHTML = `<p class="muted">No shots in this section yet.</p>`;
+    list.innerHTML = `<p class="muted">No shots in this section yet. Add one above.</p>`;
     return;
   }
 
@@ -959,6 +1192,13 @@ function renderShots(){
         <div class="creative">
           <strong>Creative:</strong> ${escapeHtml(shot[6] || "")}
         </div>
+
+        <div class="shot-actions">
+          <button class="mini-btn blue" onclick="editShot(${index})">Edit</button>
+          <button class="mini-btn" onclick="moveShot(${index}, -1)">Move up</button>
+          <button class="mini-btn" onclick="moveShot(${index}, 1)">Move down</button>
+          <button class="mini-btn red" onclick="deleteShot(${index})">Delete</button>
+        </div>
       </div>
     `;
   }).join("");
@@ -983,14 +1223,168 @@ function renderCustomActions(){
     actions.innerHTML = `
       <button class="action-btn clear" onclick="clearWeddingTicks()">Clear all ticks for this wedding</button>
       <button class="action-btn secondary" onclick="duplicateCurrentWedding()">Duplicate this list</button>
+      <button class="action-btn delete" onclick="resetDefaultWedding()">Reset built in list</button>
     `;
     return;
   }
 
   actions.innerHTML = `
     <button class="action-btn clear" onclick="clearWeddingTicks()">Clear all ticks for this wedding</button>
+    <button class="action-btn secondary" onclick="duplicateCurrentWedding()">Duplicate this list</button>
     <button class="action-btn delete" onclick="deleteCurrentWedding()">Delete this custom list</button>
   `;
+}
+
+function getShotFromForm(){
+  return [
+    document.getElementById("shotLocation").value.trim(),
+    document.getElementById("shotName").value.trim(),
+    document.getElementById("shotLensFps").value.trim(),
+    document.getElementById("shotMovement").value.trim(),
+    document.getElementById("shotPriority").value.trim().toUpperCase() || "B",
+    document.getElementById("shotFraming").value.trim(),
+    document.getElementById("shotCreative").value.trim()
+  ];
+}
+
+function setShotForm(shot){
+  document.getElementById("shotLocation").value = shot[0] || "";
+  document.getElementById("shotName").value = shot[1] || "";
+  document.getElementById("shotLensFps").value = shot[2] || "";
+  document.getElementById("shotMovement").value = shot[3] || "";
+  document.getElementById("shotPriority").value = shot[4] || "B";
+  document.getElementById("shotFraming").value = shot[5] || "";
+  document.getElementById("shotCreative").value = shot[6] || "";
+}
+
+function clearShotForm(shouldRender = true){
+  editingShotIndex = null;
+
+  setShotForm(["","","","","B","",""]);
+
+  const banner = document.getElementById("editingBanner");
+
+  if(banner){
+    banner.classList.add("hidden");
+    banner.textContent = "";
+  }
+
+  if(shouldRender){
+    render();
+  }
+}
+
+function saveShotFromForm(){
+  const wedding = getWedding();
+  const shot = getShotFromForm();
+
+  if(!activeSection){
+    alert("Create or choose a section first.");
+    return;
+  }
+
+  if(!shot[0] || !shot[1]){
+    alert("Add at least the location and shot name.");
+    return;
+  }
+
+  wedding.sections[activeSection] = wedding.sections[activeSection] || [];
+
+  if(editingShotIndex !== null){
+    wedding.sections[activeSection][editingShotIndex] = shot;
+  }else{
+    wedding.sections[activeSection].push(shot);
+  }
+
+  saveWeddingChanges(wedding);
+  clearShotForm(false);
+  render();
+}
+
+function editShot(index){
+  const wedding = getWedding();
+  const shot = wedding.sections[activeSection][index];
+
+  editingShotIndex = index;
+  setShotForm(shot);
+
+  const banner = document.getElementById("editingBanner");
+  banner.classList.remove("hidden");
+  banner.textContent = `Editing shot ${index + 1} in ${activeSection}. Make changes, then press Save shot.`;
+
+  window.scrollTo({
+    top:document.getElementById("editingBanner").getBoundingClientRect().top + window.scrollY - 80,
+    behavior:"smooth"
+  });
+}
+
+function deleteShot(index){
+  const wedding = getWedding();
+  const shot = wedding.sections[activeSection][index];
+
+  const confirmed = confirm(`Delete this shot: ${shot[1]}?`);
+
+  if(!confirmed) return;
+
+  wedding.sections[activeSection].splice(index, 1);
+  saveWeddingChanges(wedding);
+  clearShotForm(false);
+  render();
+}
+
+function moveShot(index, direction){
+  const wedding = getWedding();
+  const shots = wedding.sections[activeSection];
+
+  const newIndex = index + direction;
+
+  if(newIndex < 0 || newIndex >= shots.length) return;
+
+  const item = shots[index];
+  shots.splice(index, 1);
+  shots.splice(newIndex, 0, item);
+
+  saveWeddingChanges(wedding);
+  render();
+}
+
+function addNewSection(){
+  const input = document.getElementById("newSectionName");
+  const sectionName = input.value.trim();
+
+  if(!sectionName){
+    alert("Add a section name first.");
+    return;
+  }
+
+  const wedding = getWedding();
+
+  if(wedding.sections[sectionName]){
+    alert("That section already exists.");
+    return;
+  }
+
+  wedding.sections[sectionName] = [];
+  saveWeddingChanges(wedding);
+
+  input.value = "";
+  activeSection = sectionName;
+  localStorage.setItem(`pace_active_section_${activeWeddingId}`, activeSection);
+
+  render();
+}
+
+function saveNotesFromEditor(){
+  const wedding = getWedding();
+  const raw = document.getElementById("notesEditor").value;
+
+  wedding.notes = raw
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  saveWeddingChanges(wedding);
+  render();
 }
 
 function isDivider(line){
@@ -1005,6 +1399,7 @@ function cleanBullet(line){
 function isHeaderRow(parts){
   const first = String(parts[0] || "").toLowerCase();
   const second = String(parts[1] || "").toLowerCase();
+
   return first.includes("location") && second.includes("shot");
 }
 
@@ -1191,6 +1586,46 @@ function saveNewWedding(){
   showWedding(newWedding.id);
 }
 
+function appendPastedRows(){
+  const input = document.getElementById("appendRowsText");
+  const raw = input.value.trim();
+
+  if(!raw){
+    alert("Paste the extra shots first.");
+    return;
+  }
+
+  const parsed = parseShotList(raw);
+
+  if(!Object.keys(parsed.sections).length){
+    alert("No valid shots found.");
+    return;
+  }
+
+  const wedding = getWedding();
+
+  if(parsed.notes && parsed.notes.length){
+    wedding.notes = [...(wedding.notes || []), ...parsed.notes];
+  }
+
+  const parsedSections = Object.keys(parsed.sections);
+
+  if(parsedSections.length === 1 && parsedSections[0] === "Shots"){
+    wedding.sections[activeSection] = wedding.sections[activeSection] || [];
+    wedding.sections[activeSection].push(...parsed.sections.Shots);
+  }else{
+    parsedSections.forEach(section => {
+      wedding.sections[section] = wedding.sections[section] || [];
+      wedding.sections[section].push(...parsed.sections[section]);
+    });
+  }
+
+  saveWeddingChanges(wedding);
+
+  input.value = "";
+  render();
+}
+
 function duplicateCurrentWedding(){
   const wedding = getWedding();
   const copyName = `${wedding.name} copy`;
@@ -1200,8 +1635,8 @@ function duplicateCurrentWedding(){
     name:copyName,
     description:"Custom copy saved on this device.",
     locked:false,
-    notes:JSON.parse(JSON.stringify(wedding.notes || [])),
-    sections:JSON.parse(JSON.stringify(wedding.sections))
+    notes:deepClone(wedding.notes || []),
+    sections:deepClone(wedding.sections || {})
   };
 
   customWeddings.push(newWedding);
