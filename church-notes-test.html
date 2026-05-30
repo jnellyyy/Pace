@@ -34,6 +34,10 @@
   -webkit-tap-highlight-color:transparent;
 }
 
+html{
+  color-scheme:dark;
+}
+
 body{
   margin:0;
   min-height:100vh;
@@ -119,7 +123,7 @@ body{
   padding:17px;
   box-shadow:var(--shadow);
   display:grid;
-  grid-template-columns:1fr 1.2fr;
+  grid-template-columns:0.9fr 1.3fr;
   gap:14px;
   align-items:center;
 }
@@ -139,7 +143,7 @@ body{
 }
 
 .verse-box{
-  background:rgba(0,0,0,0.22);
+  background:rgba(0,0,0,0.24);
   border:1px solid rgba(255,255,255,0.10);
   border-radius:24px;
   padding:13px;
@@ -158,10 +162,30 @@ body{
   gap:8px;
 }
 
+.version-grid{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.version-btn{
+  padding:9px 11px;
+  font-size:12px;
+  background:rgba(255,255,255,0.08);
+  border-color:rgba(255,255,255,0.10);
+}
+
+.version-btn.active{
+  background:rgba(255,59,48,0.22);
+  border-color:rgba(255,59,48,0.42);
+  color:var(--text);
+}
+
 .verse-actions{
   display:flex;
   gap:8px;
-  margin-top:9px;
+  margin-top:10px;
   flex-wrap:wrap;
 }
 
@@ -527,21 +551,23 @@ button.danger{
     <div>
       <h2>Keep what God is teaching you.</h2>
       <p>
-        Save the message, the scripture, what stood out, your prayer and your action step.
+        Type a verse, pick your version, open it, then save your notes in one place.
       </p>
     </div>
 
     <div class="verse-box">
-      <label for="verseLookup">AMP verse lookup</label>
+      <label for="verseLookup">Verse lookup</label>
 
       <div class="verse-row">
         <input id="verseLookup" placeholder="Example: Romans 8:28">
-        <button class="primary" type="button" onclick="openAmpVerse()">Open AMP</button>
+        <button class="primary" type="button" onclick="openSelectedVerse()">Open</button>
       </div>
 
+      <div class="version-grid" id="versionGrid"></div>
+
       <div class="verse-actions">
-        <button class="soft" type="button" onclick="openAmpcVerse()">Open AMPC</button>
         <button class="purple" type="button" onclick="addVerseToNotes()">Add reference to note</button>
+        <button class="soft" type="button" onclick="copyVerseLink()">Copy verse link</button>
       </div>
     </div>
   </section>
@@ -663,6 +689,21 @@ button.danger{
 
 <script>
 const STORAGE_KEY = "paceChurchNotesV1";
+const SELECTED_VERSION_KEY = "paceChurchNotesSelectedVersionV1";
+
+const favouriteVersions = [
+  { code:"KJV", label:"KJV" },
+  { code:"AMP", label:"AMP" },
+  { code:"AMPC", label:"AMPC" },
+  { code:"NLT", label:"NLT" },
+  { code:"ESV", label:"ESV" },
+  { code:"TLB", label:"TLB" },
+  { code:"EASY", label:"EASY" },
+  { code:"ICB", label:"ICB" },
+  { code:"CJB", label:"CJB" }
+];
+
+let selectedVersion = localStorage.getItem(SELECTED_VERSION_KEY) || "AMP";
 
 const noteForm = document.getElementById("noteForm");
 const noteId = document.getElementById("noteId");
@@ -682,6 +723,7 @@ const totalNotes = document.getElementById("totalNotes");
 const formTitle = document.getElementById("formTitle");
 const toast = document.getElementById("toast");
 const verseLookup = document.getElementById("verseLookup");
+const versionGrid = document.getElementById("versionGrid");
 
 function todayISO(){
   const today = new Date();
@@ -736,6 +778,75 @@ function shorten(value, maxLength = 135){
   if(text.length <= maxLength) return text;
 
   return text.slice(0, maxLength) + "...";
+}
+
+function renderVersionButtons(){
+  versionGrid.innerHTML = favouriteVersions.map(version => {
+    const activeClass = version.code === selectedVersion ? "active" : "";
+
+    return `
+      <button class="version-btn ${activeClass}" type="button" onclick="selectVersion('${version.code}')">
+        ${version.label}
+      </button>
+    `;
+  }).join("");
+}
+
+function selectVersion(versionCode){
+  selectedVersion = versionCode;
+  localStorage.setItem(SELECTED_VERSION_KEY, selectedVersion);
+  renderVersionButtons();
+  showToast(versionCode + " selected");
+}
+
+function makeBibleGatewayUrl(versionCode){
+  const verse = verseLookup.value.trim();
+
+  if(!verse){
+    showToast("Type a verse first");
+    return "";
+  }
+
+  return "https://www.biblegateway.com/passage/?search=" + encodeURIComponent(verse) + "&version=" + versionCode;
+}
+
+function openSelectedVerse(){
+  const url = makeBibleGatewayUrl(selectedVersion);
+
+  if(!url) return;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function addVerseToNotes(){
+  const verse = verseLookup.value.trim();
+
+  if(!verse){
+    showToast("Type a verse first");
+    return;
+  }
+
+  const verseText = verse + " " + selectedVersion;
+  const current = scriptures.value.trim();
+
+  if(current){
+    scriptures.value = current + "\n" + verseText;
+  } else {
+    scriptures.value = verseText;
+  }
+
+  showTabById("serviceTab");
+  showToast("Verse added");
+}
+
+function copyVerseLink(){
+  const url = makeBibleGatewayUrl(selectedVersion);
+
+  if(!url) return;
+
+  navigator.clipboard.writeText(url).then(() => {
+    showToast("Verse link copied");
+  });
 }
 
 function renderNotes(){
@@ -840,73 +951,6 @@ function showTabById(tabId){
   buttons[buttonMap[tabId]].classList.add("active");
 }
 
-function makeBibleGatewayUrl(version){
-  const verse = verseLookup.value.trim();
-
-  if(!verse){
-    showToast("Type a verse first");
-    return "";
-  }
-
-  return "https://www.biblegateway.com/passage/?search=" + encodeURIComponent(verse) + "&version=" + version;
-}
-
-function openAmpVerse(){
-  const url = makeBibleGatewayUrl("AMP");
-
-  if(!url) return;
-
-  window.open(url, "_blank", "noopener,noreferrer");
-}
-
-function openAmpcVerse(){
-  const url = makeBibleGatewayUrl("AMPC");
-
-  if(!url) return;
-
-  window.open(url, "_blank", "noopener,noreferrer");
-}
-
-function addVerseToNotes(){
-  const verse = verseLookup.value.trim();
-
-  if(!verse){
-    showToast("Type a verse first");
-    return;
-  }
-
-  const current = scriptures.value.trim();
-
-  if(current){
-    scriptures.value = current + "\\n" + verse;
-  } else {
-    scriptures.value = verse;
-  }
-
-  showTabById("serviceTab");
-  showToast("Verse added");
-}
-
-function openFirstScripture(id){
-  const notes = getNotes();
-  const note = notes.find(item => item.id === id);
-
-  if(!note || !note.scriptures){
-    showToast("No scripture saved");
-    return;
-  }
-
-  const firstLine = note.scriptures.split("\\n")[0].trim();
-
-  if(!firstLine){
-    showToast("No scripture saved");
-    return;
-  }
-
-  verseLookup.value = firstLine;
-  openAmpVerse();
-}
-
 noteForm.addEventListener("submit", function(event){
   event.preventDefault();
 
@@ -983,6 +1027,38 @@ function deleteNote(id){
   showToast("Note deleted");
 }
 
+function openFirstScripture(id){
+  const notes = getNotes();
+  const note = notes.find(item => item.id === id);
+
+  if(!note || !note.scriptures){
+    showToast("No scripture saved");
+    return;
+  }
+
+  const firstLine = note.scriptures.split("\n")[0].trim();
+
+  if(!firstLine){
+    showToast("No scripture saved");
+    return;
+  }
+
+  const parts = firstLine.split(" ");
+  const lastPart = parts[parts.length - 1];
+
+  const versionCodes = favouriteVersions.map(version => version.code);
+
+  if(versionCodes.includes(lastPart)){
+    selectedVersion = lastPart;
+    localStorage.setItem(SELECTED_VERSION_KEY, selectedVersion);
+    parts.pop();
+  }
+
+  verseLookup.value = parts.join(" ");
+  renderVersionButtons();
+  openSelectedVerse();
+}
+
 function copyNote(id){
   const notes = getNotes();
   const note = notes.find(item => item.id === id);
@@ -1032,11 +1108,12 @@ searchInput.addEventListener("input", renderNotes);
 
 verseLookup.addEventListener("keydown", function(event){
   if(event.key === "Enter"){
-    openAmpVerse();
+    openSelectedVerse();
   }
 });
 
 serviceDate.value = todayISO();
+renderVersionButtons();
 renderNotes();
 </script>
 
