@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <title>Pace Dashboard</title>
 
@@ -16,567 +16,1020 @@
   --bg1:#0f1115;
   --bg2:#171a20;
   --panel:rgba(255,255,255,0.06);
-  --panel-strong:rgba(255,255,255,0.10);
-  --line:rgba(255,255,255,0.11);
+  --panel2:rgba(255,255,255,0.10);
+  --line:rgba(255,255,255,0.10);
+  --line2:rgba(255,255,255,0.20);
   --text:#f5f7fb;
   --muted:#a7afbe;
-  --soft:#d7dce7;
   --accent:#ff3b30;
   --green:#22c55e;
+  --amber:#f59e0b;
   --blue:#60a5fa;
   --purple:#a78bfa;
-  --gold:#f7c948;
-  --pink:#fb7185;
-  --shadow:0 24px 70px rgba(0,0,0,0.36);
-  --radius:28px;
+  --shadow:0 20px 55px rgba(0,0,0,0.34);
+  --radius:24px;
 }
 
 *{
   box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
 }
 
 html,
 body{
-  margin:0;
-  min-height:100%;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(255,59,48,0.20), transparent 32%),
-    radial-gradient(circle at top right, rgba(96,165,250,0.12), transparent 30%),
-    linear-gradient(145deg,var(--bg1),var(--bg2));
-  color:var(--text);
+  width:100%;
+  height:100%;
 }
 
 body{
-  padding:16px;
+  margin:0;
+  padding:12px;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.07), transparent 28%),
+    radial-gradient(circle at top right, rgba(255,59,48,0.12), transparent 30%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
   overflow:hidden;
 }
 
 a{
   color:inherit;
-  text-decoration:none;
 }
 
-.app{
-  max-width:1220px;
-  height:calc(100svh - 32px);
+.wrap{
+  width:100%;
+  max-width:1360px;
+  height:calc(100svh - 24px);
   margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:10px;
+  min-height:0;
 }
 
 .topbar{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:14px;
-  flex-shrink:0;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
   gap:12px;
-  min-width:0;
+  min-height:42px;
 }
 
-.logo{
-  width:46px;
-  height:46px;
-  border-radius:17px;
+.homeLogo{
+  width:42px;
+  height:42px;
+  border-radius:15px;
   background:
-    linear-gradient(145deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04));
-  border:1px solid var(--line);
-  box-shadow:var(--shadow);
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.28), transparent 34%),
+    linear-gradient(145deg, #252a33, #0f1115);
+  border:1px solid var(--line2);
+  box-shadow:0 14px 30px rgba(0,0,0,0.28);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:900;
-  font-size:21px;
-  letter-spacing:-1px;
-}
-
-.brand-text{
-  min-width:0;
-}
-
-.brand h1{
-  margin:0;
   font-size:23px;
-  letter-spacing:-0.8px;
+  font-weight:950;
+  letter-spacing:-0.08em;
+  text-decoration:none;
+  flex:0 0 auto;
+  transition:.18s ease;
+}
+
+.homeLogo:hover{
+  transform:translateY(-2px);
+  border-color:var(--line2);
+}
+
+.datePill{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.06);
+  border-radius:999px;
+  padding:9px 12px;
+  color:var(--muted);
+  font-size:12px;
+  backdrop-filter:blur(18px);
   white-space:nowrap;
 }
 
-.brand p{
-  margin:2px 0 0;
+.hero{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(255,59,48,0.24), transparent 34%),
+    radial-gradient(circle at 10% 10%, rgba(255,255,255,0.10), transparent 28%),
+    var(--panel);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:14px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+}
+
+.heroInner{
+  display:grid;
+  grid-template-columns:1.5fr 0.9fr;
+  gap:12px;
+  align-items:center;
+}
+
+.hero h1{
+  margin:0;
+  font-size:clamp(28px, 4vw, 48px);
+  line-height:0.95;
+  letter-spacing:-0.075em;
+}
+
+.hero p{
+  margin:7px 0 0;
   color:var(--muted);
   font-size:13px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  line-height:1.35;
+  max-width:620px;
 }
 
-.top-actions{
+.heroActions{
   display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.actionBtn{
+  display:inline-flex;
   align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  border-radius:999px;
+  padding:9px 12px;
+  font-weight:850;
+  font-size:12px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.08);
+  transition:.18s ease;
+  text-align:center;
+}
+
+.actionBtn.primary{
+  background:var(--accent);
+  border-color:rgba(255,59,48,0.8);
+  color:white;
+}
+
+.actionBtn:hover{
+  transform:translateY(-2px);
+  border-color:var(--line2);
+}
+
+.heroPanel{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  border-radius:22px;
+  padding:13px;
+}
+
+.heroPanelLabel{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+}
+
+.heroPanelValue{
+  margin-top:6px;
+  font-size:clamp(28px, 4vw, 42px);
+  font-weight:950;
+  line-height:1;
+  letter-spacing:-0.08em;
+}
+
+.heroPanelText{
+  margin-top:5px;
+  color:var(--muted);
+  line-height:1.3;
+  font-size:12px;
+}
+
+.progressShell{
+  margin-top:10px;
+  width:100%;
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+}
+
+.progressFill{
+  width:68%;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--accent), #ff8a80);
+}
+
+.mainArea{
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0, 1.9fr) minmax(300px, 0.82fr);
   gap:10px;
 }
 
-.date-pill,
-.home-pill{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:10px 13px;
-  color:var(--soft);
-  font-size:13px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.home-pill{
-  background:rgba(255,59,48,0.14);
-  border-color:rgba(255,59,48,0.24);
-}
-
-.main{
-  flex:1;
+.board{
   min-height:0;
   display:grid;
-  grid-template-columns:1.35fr 0.65fr;
-  gap:14px;
+  grid-template-rows:auto 1fr;
+  gap:8px;
+}
+
+.sectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 4px;
+  min-height:20px;
+}
+
+.sectionTitle{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--muted);
+}
+
+.sectionHint{
+  color:var(--muted);
+  font-size:12px;
 }
 
 .bento{
   min-height:0;
+  height:100%;
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  grid-template-rows:1.25fr 1fr 1fr;
-  gap:14px;
+  grid-template-columns:repeat(5, minmax(0,1fr));
+  grid-template-rows:repeat(3, minmax(0,1fr));
+  gap:10px;
 }
 
 .card{
   position:relative;
-  background:
-    linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.035));
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-  min-height:0;
-}
-
-.card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at top right, rgba(255,255,255,0.11), transparent 38%);
-  pointer-events:none;
-}
-
-.card-content{
-  position:relative;
-  height:100%;
-  padding:17px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  gap:12px;
-}
-
-.hero{
-  grid-column:span 2;
-  grid-row:span 1;
-}
-
-.hero h2{
-  margin:0;
-  font-size:32px;
-  line-height:0.98;
-  letter-spacing:-1.5px;
-}
-
-.hero p{
-  margin:8px 0 0;
-  color:var(--muted);
-  max-width:420px;
-  font-size:14px;
-  line-height:1.38;
-}
-
-.mini-row{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.mini-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:7px 9px;
-  border-radius:999px;
-  background:rgba(0,0,0,0.22);
-  border:1px solid rgba(255,255,255,0.08);
-  color:var(--muted);
-  font-size:12px;
-  font-weight:800;
-}
-
-.tile{
   min-height:0;
+  text-decoration:none;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.08), transparent 38%),
+    var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+  transition:.18s ease;
 }
 
-.tile:hover{
+.card:hover{
   transform:translateY(-2px);
-  transition:0.18s ease;
+  border-color:var(--line2);
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 38%),
+    var(--panel2);
 }
 
-.tile-icon{
-  width:42px;
-  height:42px;
-  border-radius:16px;
+.cardTop{
+  position:relative;
+  z-index:2;
+  min-height:0;
+}
+
+.iconRow{
   display:flex;
   align-items:center;
-  justify-content:center;
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.10);
-  font-size:20px;
-}
-
-.tile h3{
-  margin:0;
-  font-size:17px;
-  letter-spacing:-0.4px;
-}
-
-.tile p{
-  margin:5px 0 0;
-  color:var(--muted);
-  font-size:12.5px;
-  line-height:1.32;
-}
-
-.tile-footer{
-  display:flex;
   justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  color:var(--soft);
-  font-size:12px;
-  font-weight:900;
+  gap:8px;
+  margin-bottom:8px;
 }
 
-.arrow{
-  width:28px;
-  height:28px;
-  border-radius:999px;
+.icon{
+  width:36px;
+  height:36px;
+  border-radius:13px;
+  background:rgba(255,255,255,0.09);
+  border:1px solid var(--line);
   display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(255,255,255,0.09);
-  border:1px solid rgba(255,255,255,0.10);
+  font-size:20px;
+  flex:0 0 auto;
 }
 
-.todo{
-  grid-column:span 2;
+.status{
+  font-size:10px;
+  color:var(--muted);
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.05);
+  border-radius:999px;
+  padding:6px 8px;
+  white-space:normal;
+  text-align:center;
+  line-height:1.15;
+  overflow-wrap:anywhere;
 }
 
-.finance,
-.church{
-  grid-column:span 1;
+.cardTitle{
+  font-size:clamp(15px, 1.45vw, 22px);
+  font-weight:950;
+  letter-spacing:-0.055em;
+  line-height:1.05;
+  overflow-wrap:anywhere;
 }
 
-.wide{
-  grid-column:span 2;
+.cardSub{
+  margin-top:6px;
+  color:var(--muted);
+  line-height:1.22;
+  font-size:12px;
+  overflow-wrap:anywhere;
 }
 
-.side{
-  min-height:0;
-  display:grid;
-  grid-template-rows:1.2fr 0.8fr;
-  gap:14px;
-}
-
-.panel{
-  min-height:0;
-}
-
-.panel .card-content{
-  padding:17px;
-}
-
-.panel h3{
-  margin:0;
-  font-size:17px;
-  letter-spacing:-0.4px;
-}
-
-.quick-input{
-  display:flex;
-  gap:8px;
+.cardMetric{
   margin-top:10px;
+  font-size:clamp(28px, 4vw, 48px);
+  line-height:0.95;
+  font-weight:950;
+  letter-spacing:-0.08em;
 }
 
-.quick-input input{
-  flex:1;
+.metricSmall{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:5px;
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+
+.cardBottom{
+  position:relative;
+  z-index:2;
+  margin-top:8px;
+}
+
+.miniGrid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:7px;
+}
+
+.miniItem{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.055);
+  border-radius:14px;
+  padding:8px;
   min-width:0;
 }
 
-input,
-textarea,
-button{
-  font-family:inherit;
+.miniLabel{
+  color:var(--muted);
+  font-size:10px;
 }
 
-input,
-textarea{
-  width:100%;
-  border:none;
-  outline:none;
-  color:var(--text);
-  background:rgba(0,0,0,0.24);
-  border:1px solid rgba(255,255,255,0.10);
-  border-radius:17px;
-  padding:12px 13px;
-  font-size:14px;
-}
-
-textarea{
-  resize:none;
-  min-height:96px;
-  line-height:1.4;
-}
-
-input::placeholder,
-textarea::placeholder{
-  color:rgba(167,175,190,0.74);
-}
-
-button{
-  border:none;
-  outline:none;
-  cursor:pointer;
-  color:var(--text);
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.10);
-  border-radius:999px;
-  padding:11px 13px;
+.miniValue{
+  margin-top:4px;
   font-weight:900;
-  font-size:13px;
-  white-space:nowrap;
+  font-size:12px;
+  letter-spacing:-0.03em;
+  white-space:normal;
+  overflow-wrap:anywhere;
 }
 
-button.primary{
-  background:var(--accent);
-  border-color:rgba(255,59,48,0.7);
-}
-
-.quick-list{
-  margin:10px 0 0;
-  padding:0;
-  list-style:none;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  overflow:auto;
-  max-height:180px;
-}
-
-.quick-list li{
+.openLine{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:8px;
-  background:rgba(0,0,0,0.20);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:16px;
-  padding:9px 10px;
-  color:var(--soft);
-  font-size:13px;
-  line-height:1.25;
-}
-
-.quick-list span{
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.delete-small{
-  width:24px;
-  height:24px;
-  padding:0;
-  flex:0 0 24px;
-  border-radius:999px;
+  margin-top:8px;
   color:var(--muted);
+  font-size:11px;
+  flex-wrap:wrap;
+}
+
+.openText{
+  overflow-wrap:anywhere;
+  line-height:1.2;
+}
+
+.openPill{
+  border:1px solid var(--line);
   background:rgba(255,255,255,0.06);
+  color:var(--text);
+  border-radius:999px;
+  padding:6px 8px;
+  font-size:10px;
+  font-weight:850;
+  flex:0 0 auto;
 }
 
-.note-box{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  height:100%;
+.largeTitle{
+  font-size:clamp(24px, 3vw, 38px);
 }
 
-.saved-status{
+.accent{
+  border-color:rgba(255,59,48,0.30);
+}
+
+.accent::after,
+.green::after,
+.blue::after,
+.purple::after,
+.amber::after{
+  content:"";
+  position:absolute;
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  right:-45px;
+  bottom:-45px;
+  filter:blur(1px);
+}
+
+.accent::after{
+  background:rgba(255,59,48,0.16);
+}
+
+.green::after{
+  background:rgba(34,197,94,0.13);
+}
+
+.blue::after{
+  background:rgba(96,165,250,0.13);
+}
+
+.purple::after{
+  background:rgba(167,139,250,0.14);
+}
+
+.amber::after{
+  background:rgba(245,158,11,0.14);
+}
+
+.quoteText{
+  font-size:clamp(14px, 1.35vw, 20px);
+  line-height:1.22;
+  font-weight:900;
+  letter-spacing:-0.04em;
+  overflow-wrap:anywhere;
+}
+
+.quoteRef{
+  margin-top:7px;
   color:var(--muted);
   font-size:12px;
-  font-weight:800;
 }
 
-.bottom-dock{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  flex-shrink:0;
-  padding:9px;
-  border-radius:28px;
-  background:rgba(255,255,255,0.055);
-  border:1px solid var(--line);
+.todo{
+  grid-column:1 / 3;
+  grid-row:1 / 3;
+}
+
+.weekly{
+  grid-column:3 / 5;
+  grid-row:1 / 2;
+}
+
+.finance{
+  grid-column:5 / 6;
+  grid-row:1 / 2;
+}
+
+.quiet{
+  grid-column:3 / 4;
+  grid-row:2 / 3;
+}
+
+.church{
+  grid-column:4 / 5;
+  grid-row:2 / 3;
+}
+
+.health{
+  grid-column:5 / 6;
+  grid-row:2 / 3;
+}
+
+.reminders{
+  grid-column:1 / 2;
+  grid-row:3 / 4;
+}
+
+.attendance{
+  grid-column:2 / 4;
+  grid-row:3 / 4;
+}
+
+.lists{
+  grid-column:4 / 6;
+  grid-row:3 / 4;
+}
+
+.quickPanel{
+  min-height:0;
+  border:1px solid rgba(255,59,48,0.25);
+  background:
+    radial-gradient(circle at top right, rgba(255,59,48,0.16), transparent 34%),
+    rgba(255,255,255,0.07);
+  border-radius:var(--radius);
+  padding:14px;
   box-shadow:var(--shadow);
+  backdrop-filter:blur(20px);
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:10px;
+  overflow:hidden;
 }
 
-.dock-link{
+.quickTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.quickLabel{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+}
+
+.quickTitle{
+  margin-top:5px;
+  font-size:26px;
+  font-weight:950;
+  letter-spacing:-0.06em;
+  line-height:1;
+}
+
+.quickSub{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+
+.quickIcon{
+  width:42px;
+  height:42px;
+  border-radius:15px;
+  background:rgba(255,255,255,0.09);
+  border:1px solid var(--line);
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:7px;
-  min-width:110px;
-  padding:11px 14px;
-  border-radius:999px;
-  background:rgba(0,0,0,0.18);
-  border:1px solid rgba(255,255,255,0.08);
-  color:var(--soft);
+  font-size:22px;
+  flex:0 0 auto;
+}
+
+.quickForm{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+}
+
+.quickInput{
+  min-width:0;
+  width:100%;
+  border:none;
+  outline:none;
+  border-radius:16px;
+  padding:12px 13px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  color:var(--text);
   font-size:13px;
+}
+
+.quickInput::placeholder{
+  color:rgba(167,175,190,0.72);
+}
+
+.quickAdd{
+  border:none;
+  cursor:pointer;
+  border-radius:16px;
+  padding:0 14px;
+  background:var(--accent);
+  color:white;
   font-weight:900;
+  font-size:18px;
 }
 
-.dock-link.active{
-  background:rgba(255,59,48,0.16);
-  border-color:rgba(255,59,48,0.26);
+.quickList{
+  min-height:0;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding-right:2px;
 }
 
-.red-glow{
+.quickList::-webkit-scrollbar{
+  width:4px;
+}
+
+.quickList::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.15);
+  border-radius:999px;
+}
+
+.quickTask{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:9px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.055);
+  border-radius:16px;
+  padding:9px;
+}
+
+.quickCheck{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  border:1px solid var(--line2);
+  background:rgba(255,255,255,0.05);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:transparent;
+  font-size:12px;
+}
+
+.quickTask.done .quickCheck{
+  background:var(--green);
+  color:white;
+  border-color:var(--green);
+}
+
+.quickTaskText{
+  min-width:0;
+  font-size:13px;
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+
+.quickTask.done .quickTaskText{
+  color:var(--muted);
+  text-decoration:line-through;
+}
+
+.quickDelete{
+  border:none;
+  background:rgba(255,255,255,0.06);
+  border:1px solid var(--line);
+  color:var(--muted);
+  width:25px;
+  height:25px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.emptyState{
+  height:100%;
+  min-height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+  border:1px dashed rgba(255,255,255,0.12);
+  border-radius:18px;
+  padding:16px;
+}
+
+.quickFooter{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+}
+
+.quickCount{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.fullLink{
+  text-decoration:none;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  border-radius:999px;
+  padding:9px 11px;
+  font-size:12px;
+  font-weight:850;
+  white-space:normal;
+  text-align:center;
+}
+
+.creatorsFixed{
+  display:grid;
+  grid-template-columns:1fr;
+}
+
+.creatorBar{
+  min-height:72px;
+  text-decoration:none;
+  color:var(--text);
+  border:1px solid rgba(255,59,48,0.30);
   background:
-    radial-gradient(circle at top right, rgba(255,59,48,0.22), transparent 44%),
-    linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.035));
+    radial-gradient(circle at 12% 0%, rgba(255,255,255,0.10), transparent 28%),
+    radial-gradient(circle at 90% 10%, rgba(255,59,48,0.20), transparent 30%),
+    rgba(255,255,255,0.07);
+  border-radius:24px;
+  padding:14px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(20px);
+  transition:.18s ease;
+  overflow:hidden;
 }
 
-.blue-glow{
-  background:
-    radial-gradient(circle at top right, rgba(96,165,250,0.20), transparent 44%),
-    linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.035));
+.creatorBar:hover{
+  transform:translateY(-2px);
+  border-color:var(--line2);
 }
 
-.green-glow{
-  background:
-    radial-gradient(circle at top right, rgba(34,197,94,0.20), transparent 44%),
-    linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.035));
+.creatorIcon{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.09);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
 }
 
-.gold-glow{
-  background:
-    radial-gradient(circle at top right, rgba(247,201,72,0.20), transparent 44%),
-    linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.035));
+.creatorTitle{
+  font-size:22px;
+  font-weight:950;
+  letter-spacing:-0.055em;
+  line-height:1;
 }
 
-.purple-glow{
-  background:
-    radial-gradient(circle at top right, rgba(167,139,250,0.20), transparent 44%),
-    linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.035));
+.creatorSub{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
+  overflow-wrap:anywhere;
 }
 
-.pink-glow{
-  background:
-    radial-gradient(circle at top right, rgba(251,113,133,0.18), transparent 44%),
-    linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.035));
+.creatorOpen{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  border-radius:999px;
+  padding:9px 12px;
+  font-size:12px;
+  font-weight:850;
 }
 
-@media(max-width:940px){
+@media(max-width:950px){
+
   body{
-    overflow:auto;
+    padding:9px;
   }
 
-  .app{
-    height:auto;
-    min-height:calc(100svh - 32px);
+  .wrap{
+    height:calc(100svh - 18px);
+    gap:8px;
+    grid-template-rows:auto auto 1fr auto;
   }
 
-  .main{
+  .hero{
+    padding:11px;
+    border-radius:23px;
+  }
+
+  .heroInner{
     grid-template-columns:1fr;
+    gap:8px;
   }
 
-  .bento{
-    grid-template-columns:repeat(2,1fr);
-    grid-template-rows:auto;
+  .hero h1{
+    font-size:26px;
   }
 
-  .hero,
-  .todo,
-  .wide{
-    grid-column:span 2;
+  .hero p,
+  .heroActions,
+  .heroPanel{
+    display:none;
   }
 
-  .side{
-    grid-template-rows:auto;
-  }
-}
-
-@media(max-width:620px){
-  body{
-    padding:13px;
+  .mainArea{
+    grid-template-columns:1fr;
+    grid-template-rows:1fr auto;
+    gap:8px;
   }
 
-  .app{
-    gap:12px;
-  }
-
-  .topbar{
-    align-items:flex-start;
-  }
-
-  .brand h1{
-    font-size:21px;
-  }
-
-  .brand p{
-    max-width:210px;
-  }
-
-  .date-pill{
+  .sectionHint{
     display:none;
   }
 
   .bento{
-    grid-template-columns:1fr;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    grid-template-rows:repeat(3, minmax(0,1fr));
+    gap:8px;
   }
 
-  .hero,
-  .todo,
-  .wide,
-  .finance,
-  .church{
-    grid-column:span 1;
+  .card{
+    grid-column:auto !important;
+    grid-row:auto !important;
+    padding:9px;
+    border-radius:18px;
   }
 
-  .hero h2{
-    font-size:29px;
+  .todo{
+    grid-column:span 2 !important;
   }
 
-  .bottom-dock{
-    position:sticky;
-    bottom:10px;
-    overflow:auto;
-    justify-content:flex-start;
+  .attendance,
+  .lists{
+    grid-column:span 2 !important;
   }
 
-  .dock-link{
-    min-width:max-content;
+  .icon{
+    width:30px;
+    height:30px;
+    border-radius:11px;
+    font-size:17px;
+  }
+
+  .status,
+  .cardSub,
+  .miniGrid,
+  .metricSmall,
+  .openText{
+    display:none;
+  }
+
+  .cardTitle,
+  .largeTitle{
+    font-size:14px;
+    line-height:1.05;
+  }
+
+  .cardMetric{
+    font-size:20px;
+    margin-top:5px;
+  }
+
+  .quickPanel{
+    min-height:128px;
+    grid-template-rows:auto auto;
+    padding:10px;
+  }
+
+  .quickSub,
+  .quickList,
+  .quickCount{
+    display:none;
+  }
+
+  .quickTitle{
+    font-size:18px;
+  }
+
+  .quickFooter{
+    display:none;
+  }
+
+  .creatorBar{
+    min-height:58px;
+    padding:10px;
+    border-radius:18px;
+  }
+
+  .creatorIcon{
+    width:36px;
+    height:36px;
+    border-radius:13px;
+    font-size:19px;
+  }
+
+  .creatorTitle{
+    font-size:17px;
+  }
+
+  .creatorSub{
+    display:none;
+  }
+}
+
+@media(max-height:720px){
+
+  body{
+    padding:8px;
+  }
+
+  .wrap{
+    height:calc(100svh - 16px);
+    gap:7px;
+  }
+
+  .topbar{
+    min-height:36px;
+  }
+
+  .homeLogo{
+    width:36px;
+    height:36px;
+  }
+
+  .datePill{
+    padding:7px 10px;
+  }
+
+  .hero{
+    padding:10px;
+  }
+
+  .hero h1{
+    font-size:30px;
+  }
+
+  .hero p{
+    font-size:12px;
+    margin-top:5px;
+  }
+
+  .heroActions{
+    margin-top:8px;
+  }
+
+  .actionBtn{
+    padding:7px 10px;
+  }
+
+  .heroPanel{
+    padding:10px;
+  }
+
+  .heroPanelValue{
+    font-size:30px;
+  }
+
+  .heroPanelText{
+    display:none;
+  }
+
+  .bento{
+    gap:8px;
+  }
+
+  .card{
+    padding:10px;
+    border-radius:20px;
+  }
+
+  .icon{
+    width:32px;
+    height:32px;
+    font-size:18px;
+  }
+
+  .miniGrid{
+    display:none;
+  }
+
+  .cardMetric{
+    font-size:32px;
+  }
+
+  .quickPanel{
+    padding:10px;
+  }
+
+  .quickTitle{
+    font-size:22px;
+  }
+
+  .quickSub{
+    display:none;
+  }
+
+  .creatorBar{
+    min-height:62px;
   }
 }
 </style>
@@ -584,378 +1037,421 @@ button.primary{
 
 <body>
 
-<div class="app">
+<div class="wrap">
 
-  <header class="topbar">
-    <a class="brand" href="dashboard.html" aria-label="Pace dashboard">
-      <div class="logo">P</div>
-      <div class="brand-text">
-        <h1>Pace</h1>
-        <p>Life, work, money, faith and creators in one place.</p>
+  <div class="topbar">
+    <a class="homeLogo" href="index.html" aria-label="Home">P</a>
+
+    <div class="datePill" id="todayDate">Today</div>
+  </div>
+
+  <section class="hero">
+    <div class="heroInner">
+
+      <div>
+        <h1>Everything at a glance.</h1>
+
+        <p>
+          A banking style overview of your life, work, money, health, faith and church systems.
+        </p>
+
+        <div class="heroActions">
+          <a class="actionBtn primary" href="life-test.html">Open To Do</a>
+          <a class="actionBtn" href="weekly-test.html">Plan Week</a>
+          <a class="actionBtn" href="church-notes-test.html">Church Notes</a>
+        </div>
       </div>
-    </a>
 
-    <div class="top-actions">
-      <div class="date-pill" id="todayText">Today</div>
-      <a class="home-pill" href="dashboard.html">Home</a>
+      <div class="heroPanel">
+        <div class="heroPanelLabel">Today’s pace</div>
+        <div class="heroPanelValue">68%</div>
+        <div class="heroPanelText">
+          One calm screen. Tap any box for the full tracker.
+        </div>
+
+        <div class="progressShell">
+          <div class="progressFill"></div>
+        </div>
+      </div>
+
     </div>
-  </header>
+  </section>
 
-  <main class="main">
+  <main class="mainArea">
 
-    <section class="bento">
+    <section class="board">
+      <div class="sectionHead">
+        <div class="sectionTitle">Dashboard</div>
+        <div class="sectionHint">Main spaces only</div>
+      </div>
 
-      <a class="card hero red-glow" href="life-test.html">
-        <div class="card-content">
-          <div>
-            <h2>Move your life forward today.</h2>
-            <p>Open your main to do space. Plan the day, sort the mess and keep things moving.</p>
+      <div class="bento">
+
+        <a class="card todo accent" href="life-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📝</div>
+              <div class="status">Most used</div>
+            </div>
+
+            <div class="cardTitle largeTitle">To Do</div>
+
+            <div class="cardSub">
+              Running task list, categories, priorities and completed tracking.
+            </div>
+
+            <div class="cardMetric">Today</div>
+            <div class="metricSmall">Start here when your brain feels busy.</div>
           </div>
 
-          <div class="mini-row">
-            <span class="mini-pill">To Do</span>
-            <span class="mini-pill">Life admin</span>
-            <span class="mini-pill">Focus</span>
-          </div>
-        </div>
-      </a>
+          <div class="cardBottom">
+            <div class="miniGrid">
+              <div class="miniItem">
+                <div class="miniLabel">Focus</div>
+                <div class="miniValue">Top tasks</div>
+              </div>
 
-      <a class="card tile blue-glow" href="attendance-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">🏢</div>
-          </div>
+              <div class="miniItem">
+                <div class="miniLabel">Status</div>
+                <div class="miniValue">Keep moving</div>
+              </div>
+            </div>
 
-          <div>
-            <h3>Attendance</h3>
-            <p>Track office days, working from home, sick days and leave.</p>
+            <div class="openLine">
+              <span class="openText">Open the full To Do page</span>
+              <span class="openPill">Open</span>
+            </div>
           </div>
+        </a>
 
-          <div class="tile-footer">
-            <span>Open tracker</span>
-            <span class="arrow">›</span>
-          </div>
-        </div>
-      </a>
+        <a class="card weekly blue" href="weekly-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📅</div>
+              <div class="status">Planning</div>
+            </div>
 
-      <a class="card tile green-glow" href="finance-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">💷</div>
-          </div>
+            <div class="cardTitle">Weekly</div>
 
-          <div>
-            <h3>Finance</h3>
-            <p>Bills, payments, spending, income and money checks.</p>
+            <div class="cardSub">
+              Weekly planning board and structured day scheduling.
+            </div>
           </div>
 
-          <div class="tile-footer">
-            <span>Open money</span>
-            <span class="arrow">›</span>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Map your week</span>
+              <span class="openPill">Open</span>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a class="card tile todo red-glow" href="life-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">✅</div>
-          </div>
+        <a class="card finance green" href="finance-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">💳</div>
+              <div class="status">Money</div>
+            </div>
 
-          <div>
-            <h3>To Do</h3>
-            <p>Your main task page. This now goes to life-test.html, not lists-test.html.</p>
-          </div>
+            <div class="cardTitle">Finance</div>
 
-          <div class="tile-footer">
-            <span>Open tasks</span>
-            <span class="arrow">›</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card tile gold-glow church" href="quiet-time-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">📖</div>
+            <div class="cardSub">
+              Bills, income, expected payments and monthly check offs.
+            </div>
           </div>
 
-          <div>
-            <h3>Quiet Time</h3>
-            <p>Daily scripture, reflection, prayer and devotion space.</p>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">View money</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="card quiet accent" href="quiet-time-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📖</div>
+              <div class="status">Quiet time</div>
+            </div>
+
+            <div class="quoteText">
+              “Seek first the kingdom of God.”
+            </div>
+
+            <div class="quoteRef">
+              Matthew 6:33
+            </div>
           </div>
 
-          <div class="tile-footer">
-            <span>Open devotion</span>
-            <span class="arrow">›</span>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Open quiet time</span>
+              <span class="openPill">Open</span>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a class="card tile purple-glow church" href="church-notes-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">📝</div>
-          </div>
+        <a class="card church amber" href="church-notes-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">⛪</div>
+              <div class="status">Sermon notes</div>
+            </div>
 
-          <div>
-            <h3>Church Notes</h3>
-            <p>Save weekly service notes, scriptures, prayer points and action steps.</p>
-          </div>
+            <div class="cardTitle">Church Notes</div>
 
-          <div class="tile-footer">
-            <span id="churchCount">Open notes</span>
-            <span class="arrow">›</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card tile pink-glow" href="bookings-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">📸</div>
+            <div class="cardSub">
+              Save service notes, scriptures, key points and things to pray through.
+            </div>
           </div>
 
-          <div>
-            <h3>Bookings</h3>
-            <p>Client enquiries, shoots, payments and booking progress.</p>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Open notes</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="card health green" href="health-reset-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">🧘🏽‍♀️</div>
+              <div class="status">Health</div>
+            </div>
+
+            <div class="cardTitle">Health</div>
+
+            <div class="cardSub">
+              Food, movement, reset routines and health tracking.
+            </div>
           </div>
 
-          <div class="tile-footer">
-            <span>Open bookings</span>
-            <span class="arrow">›</span>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Reset body</span>
+              <span class="openPill">Open</span>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a class="card tile blue-glow" href="weekly-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">🗓️</div>
-          </div>
+        <a class="card reminders amber" href="reminders-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">⏰</div>
+              <div class="status">Follow up</div>
+            </div>
 
-          <div>
-            <h3>Weekly</h3>
-            <p>Plan the week clearly before it gets busy.</p>
-          </div>
+            <div class="cardTitle">Reminders</div>
 
-          <div class="tile-footer">
-            <span>Open week</span>
-            <span class="arrow">›</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card tile gold-glow" href="reminders-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">🔔</div>
+            <div class="cardSub">
+              Dates, actions and things you cannot afford to forget.
+            </div>
           </div>
 
-          <div>
-            <h3>Reminders</h3>
-            <p>Keep small things from slipping through the cracks.</p>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Check reminders</span>
+              <span class="openPill">Open</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="card attendance blue" href="attendance-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">🏢</div>
+              <div class="status">Work pattern</div>
+            </div>
+
+            <div class="cardTitle">Attendance</div>
+
+            <div class="cardSub">
+              Office days, home days, work patterns and attendance tracking.
+            </div>
           </div>
 
-          <div class="tile-footer">
-            <span>Open reminders</span>
-            <span class="arrow">›</span>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Track office days</span>
+              <span class="openPill">Open</span>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a class="card tile green-glow" href="health-reset-test.html">
-        <div class="card-content">
-          <div>
-            <div class="tile-icon">🌿</div>
+        <a class="card lists purple" href="lists-test.html">
+          <div class="cardTop">
+            <div class="iconRow">
+              <div class="icon">📋</div>
+              <div class="status">Lists</div>
+            </div>
+
+            <div class="cardTitle">Lists</div>
+
+            <div class="cardSub">
+              Lists, notes, saved items and quick reference spaces.
+            </div>
           </div>
 
-          <div>
-            <h3>Health Reset</h3>
-            <p>Simple health, reset and routine tracking.</p>
+          <div class="cardBottom">
+            <div class="openLine">
+              <span class="openText">Open lists</span>
+              <span class="openPill">Open</span>
+            </div>
           </div>
+        </a>
 
-          <div class="tile-footer">
-            <span>Open reset</span>
-            <span class="arrow">›</span>
-          </div>
-        </div>
-      </a>
-
+      </div>
     </section>
 
-    <aside class="side">
-
-      <section class="card panel">
-        <div class="card-content">
-          <div>
-            <h3>Quick add</h3>
-            <p style="margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35;">
-              Drop quick things here before sorting them properly.
-            </p>
-
-            <div class="quick-input">
-              <input id="quickTaskInput" placeholder="Add a quick task">
-              <button class="primary" onclick="addQuickTask()">Add</button>
-            </div>
-
-            <ul class="quick-list" id="quickTaskList"></ul>
-          </div>
-
-          <a class="dock-link active" href="life-test.html" style="width:100%;">
-            Open full to do page
-          </a>
-        </div>
-      </section>
-
-      <section class="card panel">
-        <div class="card-content">
-          <div class="note-box">
-            <div>
-              <h3>Open panel</h3>
-              <p style="margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35;">
-                A fast space for anything you need to remember today.
-              </p>
-            </div>
-
-            <textarea id="quickNote" placeholder="Type a quick note here..."></textarea>
-
-            <div class="saved-status" id="saveStatus">Saved on this device</div>
+    <aside class="quickPanel">
+      <div class="quickTop">
+        <div>
+          <div class="quickLabel">Quick edit</div>
+          <div class="quickTitle">To Do panel</div>
+          <div class="quickSub">
+            Add quick tasks here, then open the full To Do page when you need more detail.
           </div>
         </div>
-      </section>
 
+        <div class="quickIcon">📝</div>
+      </div>
+
+      <form class="quickForm" id="quickTaskForm">
+        <input class="quickInput" id="quickTaskInput" type="text" placeholder="Add a quick task..." autocomplete="off">
+        <button class="quickAdd" type="submit">+</button>
+      </form>
+
+      <div class="quickList" id="quickTaskList"></div>
+
+      <div class="quickFooter">
+        <div class="quickCount" id="quickTaskCount">0 tasks</div>
+        <a class="fullLink" href="life-test.html">Open full To Do</a>
+      </div>
     </aside>
 
   </main>
 
-  <nav class="bottom-dock">
-    <a class="dock-link active" href="dashboard.html">⌂ Home</a>
-    <a class="dock-link" href="life-test.html">✅ To Do</a>
-    <a class="dock-link" href="church-notes-test.html">📝 Church Notes</a>
-    <a class="dock-link" href="creators-test.html">🎬 Creators</a>
-  </nav>
+  <section class="creatorsFixed">
+    <a class="creatorBar" href="creators-test.html">
+      <div class="creatorIcon">🎬</div>
+
+      <div>
+        <div class="creatorTitle">Creators</div>
+        <div class="creatorSub">
+          Shoot day, bookings and creator income live inside here.
+        </div>
+      </div>
+
+      <div class="creatorOpen">Open</div>
+    </a>
+  </section>
 
 </div>
 
 <script>
-const QUICK_TASK_KEY = "paceDashboardQuickTasksV1";
-const QUICK_NOTE_KEY = "paceDashboardQuickNoteV1";
-const CHURCH_NOTES_KEY = "paceChurchNotesV1";
+const todayDate = document.getElementById("todayDate");
 
-const todayText = document.getElementById("todayText");
-const quickTaskInput = document.getElementById("quickTaskInput");
-const quickTaskList = document.getElementById("quickTaskList");
-const quickNote = document.getElementById("quickNote");
-const saveStatus = document.getElementById("saveStatus");
-const churchCount = document.getElementById("churchCount");
+const dateOptions = {
+  weekday:"long",
+  day:"numeric",
+  month:"long"
+};
 
-function setToday(){
-  const today = new Date();
+todayDate.textContent = new Date().toLocaleDateString("en-GB", dateOptions);
 
-  todayText.textContent = today.toLocaleDateString("en-GB", {
-    weekday:"long",
-    day:"numeric",
-    month:"short"
+const taskForm = document.getElementById("quickTaskForm");
+const taskInput = document.getElementById("quickTaskInput");
+const taskList = document.getElementById("quickTaskList");
+const taskCount = document.getElementById("quickTaskCount");
+
+const storageKey = "pace_life_tasks_v1";
+
+let quickTasks = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+function saveTasks(){
+  localStorage.setItem(storageKey, JSON.stringify(quickTasks));
+}
+
+function renderTasks(){
+  taskList.innerHTML = "";
+
+  const activeCount = quickTasks.filter(task => !task.done).length;
+  taskCount.textContent = activeCount === 1 ? "1 task left" : activeCount + " tasks left";
+
+  if(quickTasks.length === 0){
+    const empty = document.createElement("div");
+    empty.className = "emptyState";
+    empty.textContent = "No quick tasks yet. Add one thing you need to remember.";
+    taskList.appendChild(empty);
+    return;
+  }
+
+  quickTasks.slice(0, 8).forEach(task => {
+    const taskItem = document.createElement("div");
+    taskItem.className = task.done ? "quickTask done" : "quickTask";
+
+    const checkButton = document.createElement("button");
+    checkButton.className = "quickCheck";
+    checkButton.type = "button";
+    checkButton.textContent = "✓";
+    checkButton.addEventListener("click", () => {
+      task.done = !task.done;
+      saveTasks();
+      renderTasks();
+    });
+
+    const taskText = document.createElement("div");
+    taskText.className = "quickTaskText";
+    taskText.textContent = task.title || task.text || "Untitled task";
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "quickDelete";
+    deleteButton.type = "button";
+    deleteButton.textContent = "×";
+    deleteButton.addEventListener("click", () => {
+      quickTasks = quickTasks.filter(item => item.id !== task.id);
+      saveTasks();
+      renderTasks();
+    });
+
+    taskItem.appendChild(checkButton);
+    taskItem.appendChild(taskText);
+    taskItem.appendChild(deleteButton);
+
+    taskList.appendChild(taskItem);
   });
 }
 
-function getQuickTasks(){
-  return JSON.parse(localStorage.getItem(QUICK_TASK_KEY) || "[]");
-}
+taskForm.addEventListener("submit", event => {
+  event.preventDefault();
 
-function saveQuickTasks(tasks){
-  localStorage.setItem(QUICK_TASK_KEY, JSON.stringify(tasks));
-}
+  const text = taskInput.value.trim();
 
-function renderQuickTasks(){
-  const tasks = getQuickTasks();
-
-  if(tasks.length === 0){
-    quickTaskList.innerHTML = `
-      <li>
-        <span>No quick tasks yet.</span>
-      </li>
-    `;
+  if(!text){
     return;
   }
 
-  quickTaskList.innerHTML = tasks.map((task, index) => {
-    return `
-      <li>
-        <span>${escapeHtml(task)}</span>
-        <button class="delete-small" onclick="deleteQuickTask(${index})">×</button>
-      </li>
-    `;
-  }).join("");
-}
-
-function addQuickTask(){
-  const value = quickTaskInput.value.trim();
-
-  if(!value) return;
-
-  const tasks = getQuickTasks();
-  tasks.unshift(value);
-
-  saveQuickTasks(tasks.slice(0, 8));
-
-  quickTaskInput.value = "";
-  renderQuickTasks();
-}
-
-function deleteQuickTask(index){
-  const tasks = getQuickTasks();
-  tasks.splice(index, 1);
-
-  saveQuickTasks(tasks);
-  renderQuickTasks();
-}
-
-function setupQuickNote(){
-  quickNote.value = localStorage.getItem(QUICK_NOTE_KEY) || "";
-
-  quickNote.addEventListener("input", () => {
-    localStorage.setItem(QUICK_NOTE_KEY, quickNote.value);
-    saveStatus.textContent = "Saved just now";
+  quickTasks.unshift({
+    id:Date.now(),
+    title:text,
+    category:"Life",
+    priority:"Normal",
+    due:"",
+    area:"Today",
+    notes:"",
+    done:false,
+    createdAt:new Date().toISOString()
   });
-}
 
-function updateChurchCount(){
-  const notes = JSON.parse(localStorage.getItem(CHURCH_NOTES_KEY) || "[]");
+  taskInput.value = "";
 
-  if(notes.length === 0){
-    churchCount.textContent = "Open notes";
-    return;
-  }
-
-  if(notes.length === 1){
-    churchCount.textContent = "1 saved note";
-    return;
-  }
-
-  churchCount.textContent = notes.length + " saved notes";
-}
-
-function escapeHtml(text){
-  return String(text)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-quickTaskInput.addEventListener("keydown", function(event){
-  if(event.key === "Enter"){
-    addQuickTask();
-  }
+  saveTasks();
+  renderTasks();
 });
 
-setToday();
-renderQuickTasks();
-setupQuickNote();
-updateChurchCount();
+renderTasks();
 </script>
 
 </body>
