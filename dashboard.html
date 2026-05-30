@@ -264,7 +264,7 @@ a{
   min-height:0;
   height:100%;
   display:grid;
-  grid-template-columns:repeat(5, minmax(0,1fr));
+  grid-template-columns:repeat(3, minmax(0,1fr));
   grid-template-rows:repeat(3, minmax(0,1fr));
   gap:10px;
 }
@@ -289,12 +289,30 @@ a{
   transition:.18s ease;
 }
 
-.card:hover{
+a.card:hover{
   transform:translateY(-2px);
   border-color:var(--line2);
   background:
     radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 38%),
     var(--panel2);
+}
+
+.groupCard{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:0;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.08), transparent 38%),
+    var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
 }
 
 .cardTop{
@@ -434,6 +452,67 @@ a{
   font-size:clamp(24px, 3vw, 38px);
 }
 
+.linkGrid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:8px;
+  margin-top:10px;
+  position:relative;
+  z-index:2;
+}
+
+.groupLink{
+  min-height:42px;
+  text-decoration:none;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.065);
+  border-radius:16px;
+  padding:9px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  transition:.18s ease;
+  overflow:hidden;
+}
+
+.groupLink:hover{
+  transform:translateY(-2px);
+  border-color:var(--line2);
+  background:rgba(255,255,255,0.10);
+}
+
+.groupLinkIcon{
+  width:26px;
+  height:26px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  flex:0 0 auto;
+}
+
+.groupLinkText{
+  min-width:0;
+}
+
+.groupLinkTitle{
+  font-size:12px;
+  font-weight:900;
+  line-height:1.1;
+  overflow-wrap:anywhere;
+}
+
+.groupLinkSub{
+  margin-top:2px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.1;
+  overflow-wrap:anywhere;
+}
+
 .accent{
   border-color:rgba(255,59,48,0.30);
 }
@@ -493,42 +572,22 @@ a{
 }
 
 .weekly{
-  grid-column:3 / 5;
+  grid-column:3 / 4;
   grid-row:1 / 2;
 }
 
 .finance{
-  grid-column:5 / 6;
-  grid-row:1 / 2;
-}
-
-.quiet{
   grid-column:3 / 4;
   grid-row:2 / 3;
 }
 
-.church{
-  grid-column:4 / 5;
-  grid-row:2 / 3;
-}
-
-.health{
-  grid-column:5 / 6;
-  grid-row:2 / 3;
-}
-
-.reminders{
+.faith{
   grid-column:1 / 2;
   grid-row:3 / 4;
 }
 
-.attendance{
+.lifeAdmin{
   grid-column:2 / 4;
-  grid-row:3 / 4;
-}
-
-.lists{
-  grid-column:4 / 6;
   grid-row:3 / 4;
 }
 
@@ -848,11 +907,12 @@ a{
 
   .bento{
     grid-template-columns:repeat(4, minmax(0,1fr));
-    grid-template-rows:repeat(3, minmax(0,1fr));
+    grid-template-rows:repeat(2, minmax(0,1fr));
     gap:8px;
   }
 
-  .card{
+  .card,
+  .groupCard{
     grid-column:auto !important;
     grid-row:auto !important;
     padding:9px;
@@ -863,8 +923,7 @@ a{
     grid-column:span 2 !important;
   }
 
-  .attendance,
-  .lists{
+  .lifeAdmin{
     grid-column:span 2 !important;
   }
 
@@ -879,7 +938,8 @@ a{
   .cardSub,
   .miniGrid,
   .metricSmall,
-  .openText{
+  .openText,
+  .groupLinkSub{
     display:none;
   }
 
@@ -892,6 +952,28 @@ a{
   .cardMetric{
     font-size:20px;
     margin-top:5px;
+  }
+
+  .linkGrid{
+    gap:6px;
+    margin-top:7px;
+  }
+
+  .groupLink{
+    min-height:34px;
+    padding:7px;
+    border-radius:13px;
+  }
+
+  .groupLinkIcon{
+    width:22px;
+    height:22px;
+    border-radius:8px;
+    font-size:12px;
+  }
+
+  .groupLinkTitle{
+    font-size:10px;
   }
 
   .quickPanel{
@@ -997,7 +1079,8 @@ a{
     gap:8px;
   }
 
-  .card{
+  .card,
+  .groupCard{
     padding:10px;
     border-radius:20px;
   }
@@ -1052,7 +1135,7 @@ a{
         <h1>Everything at a glance.</h1>
 
         <p>
-          A banking style overview of your life, work, money, health, faith and church systems.
+          Your main daily spaces stay one tap away, with the rest grouped neatly.
         </p>
 
         <div class="heroActions">
@@ -1082,7 +1165,7 @@ a{
     <section class="board">
       <div class="sectionHead">
         <div class="sectionTitle">Dashboard</div>
-        <div class="sectionHint">Main spaces only</div>
+        <div class="sectionHint">Grouped, but still quick</div>
       </div>
 
       <div class="bento">
@@ -1168,139 +1251,87 @@ a{
           </div>
         </a>
 
-        <a class="card quiet accent" href="quiet-time-test.html">
+        <div class="groupCard faith amber">
           <div class="cardTop">
             <div class="iconRow">
               <div class="icon">📖</div>
-              <div class="status">Quiet time</div>
+              <div class="status">Faith</div>
             </div>
 
-            <div class="quoteText">
-              “Seek first the kingdom of God.”
-            </div>
-
-            <div class="quoteRef">
-              Matthew 6:33
-            </div>
-          </div>
-
-          <div class="cardBottom">
-            <div class="openLine">
-              <span class="openText">Open quiet time</span>
-              <span class="openPill">Open</span>
-            </div>
-          </div>
-        </a>
-
-        <a class="card church amber" href="church-notes-test.html">
-          <div class="cardTop">
-            <div class="iconRow">
-              <div class="icon">⛪</div>
-              <div class="status">Sermon notes</div>
-            </div>
-
-            <div class="cardTitle">Church Notes</div>
+            <div class="cardTitle">Faith</div>
 
             <div class="cardSub">
-              Save service notes, scriptures, key points and things to pray through.
+              Quiet time, Bible reflection and church notes in one calm place.
             </div>
           </div>
 
-          <div class="cardBottom">
-            <div class="openLine">
-              <span class="openText">Open notes</span>
-              <span class="openPill">Open</span>
-            </div>
-          </div>
-        </a>
+          <div class="linkGrid">
+            <a class="groupLink" href="quiet-time-test.html">
+              <div class="groupLinkIcon">📖</div>
+              <div class="groupLinkText">
+                <div class="groupLinkTitle">Quiet Time</div>
+                <div class="groupLinkSub">Daily reset</div>
+              </div>
+            </a>
 
-        <a class="card health green" href="health-reset-test.html">
+            <a class="groupLink" href="church-notes-test.html">
+              <div class="groupLinkIcon">⛪</div>
+              <div class="groupLinkText">
+                <div class="groupLinkTitle">Church Notes</div>
+                <div class="groupLinkSub">Service notes</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="groupCard lifeAdmin purple">
           <div class="cardTop">
             <div class="iconRow">
-              <div class="icon">🧘🏽‍♀️</div>
-              <div class="status">Health</div>
+              <div class="icon">📂</div>
+              <div class="status">Life admin</div>
             </div>
 
-            <div class="cardTitle">Health</div>
+            <div class="cardTitle">Life Admin</div>
 
             <div class="cardSub">
-              Food, movement, reset routines and health tracking.
+              The things you need, but do not need as giant dashboard boxes.
             </div>
           </div>
 
-          <div class="cardBottom">
-            <div class="openLine">
-              <span class="openText">Reset body</span>
-              <span class="openPill">Open</span>
-            </div>
+          <div class="linkGrid">
+            <a class="groupLink" href="reminders-test.html">
+              <div class="groupLinkIcon">⏰</div>
+              <div class="groupLinkText">
+                <div class="groupLinkTitle">Reminders</div>
+                <div class="groupLinkSub">Follow ups</div>
+              </div>
+            </a>
+
+            <a class="groupLink" href="attendance-test.html">
+              <div class="groupLinkIcon">🏢</div>
+              <div class="groupLinkText">
+                <div class="groupLinkTitle">Attendance</div>
+                <div class="groupLinkSub">Work pattern</div>
+              </div>
+            </a>
+
+            <a class="groupLink" href="lists-test.html">
+              <div class="groupLinkIcon">📋</div>
+              <div class="groupLinkText">
+                <div class="groupLinkTitle">Lists</div>
+                <div class="groupLinkSub">Saved things</div>
+              </div>
+            </a>
+
+            <a class="groupLink" href="health-reset-test.html">
+              <div class="groupLinkIcon">🧘🏽‍♀️</div>
+              <div class="groupLinkText">
+                <div class="groupLinkTitle">Health</div>
+                <div class="groupLinkSub">Reset body</div>
+              </div>
+            </a>
           </div>
-        </a>
-
-        <a class="card reminders amber" href="reminders-test.html">
-          <div class="cardTop">
-            <div class="iconRow">
-              <div class="icon">⏰</div>
-              <div class="status">Follow up</div>
-            </div>
-
-            <div class="cardTitle">Reminders</div>
-
-            <div class="cardSub">
-              Dates, actions and things you cannot afford to forget.
-            </div>
-          </div>
-
-          <div class="cardBottom">
-            <div class="openLine">
-              <span class="openText">Check reminders</span>
-              <span class="openPill">Open</span>
-            </div>
-          </div>
-        </a>
-
-        <a class="card attendance blue" href="attendance-test.html">
-          <div class="cardTop">
-            <div class="iconRow">
-              <div class="icon">🏢</div>
-              <div class="status">Work pattern</div>
-            </div>
-
-            <div class="cardTitle">Attendance</div>
-
-            <div class="cardSub">
-              Office days, home days, work patterns and attendance tracking.
-            </div>
-          </div>
-
-          <div class="cardBottom">
-            <div class="openLine">
-              <span class="openText">Track office days</span>
-              <span class="openPill">Open</span>
-            </div>
-          </div>
-        </a>
-
-        <a class="card lists purple" href="lists-test.html">
-          <div class="cardTop">
-            <div class="iconRow">
-              <div class="icon">📋</div>
-              <div class="status">Lists</div>
-            </div>
-
-            <div class="cardTitle">Lists</div>
-
-            <div class="cardSub">
-              Lists, notes, saved items and quick reference spaces.
-            </div>
-          </div>
-
-          <div class="cardBottom">
-            <div class="openLine">
-              <span class="openText">Open lists</span>
-              <span class="openPill">Open</span>
-            </div>
-          </div>
-        </a>
+        </div>
 
       </div>
     </section>
