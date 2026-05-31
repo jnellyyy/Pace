@@ -37,7 +37,7 @@
 html,
 body{
   width:100%;
-  height:100%;
+  min-height:100%;
 }
 
 body{
@@ -49,7 +49,7 @@ body{
     radial-gradient(circle at top left, rgba(255,255,255,0.07), transparent 28%),
     radial-gradient(circle at top right, rgba(255,59,48,0.12), transparent 30%),
     linear-gradient(180deg,var(--bg1),var(--bg2));
-  overflow:hidden;
+  overflow:auto;
 }
 
 a{
@@ -59,12 +59,11 @@ a{
 .wrap{
   width:100%;
   max-width:1360px;
-  height:calc(100svh - 24px);
+  min-height:calc(100svh - 24px);
   margin:0 auto;
   display:grid;
   grid-template-rows:auto auto 1fr auto;
   gap:10px;
-  min-height:0;
 }
 
 .topbar{
@@ -870,9 +869,9 @@ a.card:hover{
   }
 
   .wrap{
-    height:calc(100svh - 18px);
+    min-height:calc(100svh - 18px);
     gap:8px;
-    grid-template-rows:auto auto 1fr auto;
+    grid-template-rows:auto auto auto auto;
   }
 
   .hero{
@@ -897,7 +896,7 @@ a.card:hover{
 
   .mainArea{
     grid-template-columns:1fr;
-    grid-template-rows:1fr auto;
+    grid-template-rows:auto auto;
     gap:8px;
   }
 
@@ -906,8 +905,8 @@ a.card:hover{
   }
 
   .bento{
-    grid-template-columns:repeat(4, minmax(0,1fr));
-    grid-template-rows:repeat(2, minmax(0,1fr));
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    grid-template-rows:none;
     gap:8px;
   }
 
@@ -920,6 +919,10 @@ a.card:hover{
   }
 
   .todo{
+    grid-column:span 2 !important;
+  }
+
+  .faith{
     grid-column:span 2 !important;
   }
 
@@ -978,14 +981,17 @@ a.card:hover{
 
   .quickPanel{
     min-height:128px;
-    grid-template-rows:auto auto;
+    grid-template-rows:auto auto auto;
     padding:10px;
   }
 
   .quickSub,
-  .quickList,
   .quickCount{
     display:none;
+  }
+
+  .quickList{
+    max-height:148px;
   }
 
   .quickTitle{
@@ -1025,7 +1031,7 @@ a.card:hover{
   }
 
   .wrap{
-    height:calc(100svh - 16px);
+    min-height:calc(100svh - 16px);
     gap:7px;
   }
 
@@ -1123,7 +1129,7 @@ a.card:hover{
 <div class="wrap">
 
   <div class="topbar">
-    <a class="homeLogo" href="index.html" aria-label="Home">P</a>
+    <a class="homeLogo" href="dashboard.html" aria-label="Dashboard">P</a>
 
     <div class="datePill" id="todayDate">Today</div>
   </div>
@@ -1381,7 +1387,22 @@ a.card:hover{
 
 </div>
 
-<script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const supabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true,
+      storage:localStorage
+    }
+  }
+);
+
 const todayDate = document.getElementById("todayDate");
 
 const dateOptions = {
@@ -1397,12 +1418,16 @@ const taskInput = document.getElementById("quickTaskInput");
 const taskList = document.getElementById("quickTaskList");
 const taskCount = document.getElementById("quickTaskCount");
 
-const storageKey = "pace_life_tasks_v1";
+let user = null;
+let quickTasks = [];
 
-let quickTasks = JSON.parse(localStorage.getItem(storageKey)) || [];
+function setQuickMessage(text){
+  taskList.innerHTML = "";
 
-function saveTasks(){
-  localStorage.setItem(storageKey, JSON.stringify(quickTasks));
+  const empty = document.createElement("div");
+  empty.className = "emptyState";
+  empty.textContent = text;
+  taskList.appendChild(empty);
 }
 
 function renderTasks(){
@@ -1427,10 +1452,24 @@ function renderTasks(){
     checkButton.className = "quickCheck";
     checkButton.type = "button";
     checkButton.textContent = "✓";
-    checkButton.addEventListener("click", () => {
-      task.done = !task.done;
-      saveTasks();
+    checkButton.addEventListener("click", async () => {
+      const nextDone = !task.done;
+      const previousDone = task.done;
+
+      task.done = nextDone;
       renderTasks();
+
+      const { error } = await supabase
+        .from("tasks")
+        .update({ done:nextDone })
+        .eq("id", task.id)
+        .eq("user_id", user.id);
+
+      if(error){
+        task.done = previousDone;
+        renderTasks();
+        setQuickMessage(error.message);
+      }
     });
 
     const taskText = document.createElement("div");
@@ -1441,10 +1480,22 @@ function renderTasks(){
     deleteButton.className = "quickDelete";
     deleteButton.type = "button";
     deleteButton.textContent = "×";
-    deleteButton.addEventListener("click", () => {
+    deleteButton.addEventListener("click", async () => {
+      const previousTasks = [...quickTasks];
       quickTasks = quickTasks.filter(item => item.id !== task.id);
-      saveTasks();
       renderTasks();
+
+      const { error } = await supabase
+        .from("tasks")
+        .delete()
+        .eq("id", task.id)
+        .eq("user_id", user.id);
+
+      if(error){
+        quickTasks = previousTasks;
+        renderTasks();
+        setQuickMessage(error.message);
+      }
     });
 
     taskItem.appendChild(checkButton);
@@ -1455,7 +1506,43 @@ function renderTasks(){
   });
 }
 
-taskForm.addEventListener("submit", event => {
+async function loadTasks(){
+  setQuickMessage("Loading your quick tasks...");
+
+  const { data:sessionData } = await supabase.auth.getSession();
+
+  if(!sessionData.session){
+    window.location.href = "index.html";
+    return;
+  }
+
+  const { data:userData, error:userError } = await supabase.auth.getUser();
+
+  if(userError || !userData.user){
+    window.location.href = "index.html";
+    return;
+  }
+
+  user = userData.user;
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending:false })
+    .limit(8);
+
+  if(error){
+    setQuickMessage(error.message);
+    taskCount.textContent = "Unable to load";
+    return;
+  }
+
+  quickTasks = data || [];
+  renderTasks();
+}
+
+taskForm.addEventListener("submit", async event => {
   event.preventDefault();
 
   const text = taskInput.value.trim();
@@ -1464,25 +1551,42 @@ taskForm.addEventListener("submit", event => {
     return;
   }
 
-  quickTasks.unshift({
-    id:Date.now(),
+  if(!user){
+    setQuickMessage("Sign in again to add tasks.");
+    return;
+  }
+
+  taskInput.disabled = true;
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .insert([{
+      user_id:user.id,
+      title:text,
+      category:"Life",
+      done:false
+    }])
+    .select()
+    .single();
+
+  taskInput.disabled = false;
+
+  if(error){
+    setQuickMessage(error.message);
+    return;
+  }
+
+  quickTasks.unshift(data || {
     title:text,
     category:"Life",
-    priority:"Normal",
-    due:"",
-    area:"Today",
-    notes:"",
-    done:false,
-    createdAt:new Date().toISOString()
+    done:false
   });
 
   taskInput.value = "";
-
-  saveTasks();
   renderTasks();
 });
 
-renderTasks();
+loadTasks();
 </script>
 
 </body>

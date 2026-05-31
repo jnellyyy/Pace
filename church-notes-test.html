@@ -733,7 +733,12 @@ function todayISO(){
 }
 
 function getNotes(){
-  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  try{
+    const notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(notes) ? notes : [];
+  }catch(error){
+    return [];
+  }
 }
 
 function saveNotes(notes){

@@ -1205,7 +1205,12 @@ devotional.prompts.forEach(function(prompt){
 });
 
 function getEntries(){
-  return JSON.parse(localStorage.getItem("paceQuietTimeEntriesV1")) || {};
+  try{
+    const entries = JSON.parse(localStorage.getItem("paceQuietTimeEntriesV1")) || {};
+    return entries && typeof entries === "object" ? entries : {};
+  }catch(error){
+    return {};
+  }
 }
 
 function setEntries(entries){
