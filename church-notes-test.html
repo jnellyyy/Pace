@@ -11,6 +11,8 @@
 <link rel="icon" href="icon-32.png">
 <meta name="theme-color" content="#0f1115">
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root{
   --bg1:#0f1115;
@@ -162,11 +164,17 @@ body{
   gap:8px;
 }
 
+.version-title{
+  margin:10px 0 7px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
 .version-grid{
   display:flex;
   gap:7px;
   flex-wrap:wrap;
-  margin-top:10px;
 }
 
 .version-btn{
@@ -361,7 +369,7 @@ button.danger{
   display:flex;
   flex-direction:column;
   gap:11px;
-  max-height:calc(100vh - 295px);
+  max-height:calc(100vh - 330px);
   overflow:auto;
   padding-right:3px;
 }
@@ -444,9 +452,16 @@ button.danger{
   justify-content:space-between;
   align-items:center;
   gap:10px;
-  margin-bottom:12px;
+  margin-bottom:8px;
   color:var(--muted);
   font-size:13px;
+  font-weight:800;
+}
+
+.sync-status{
+  margin:0 0 12px;
+  color:var(--muted);
+  font-size:12px;
   font-weight:800;
 }
 
@@ -551,7 +566,7 @@ button.danger{
     <div>
       <h2>Keep what God is teaching you.</h2>
       <p>
-        Type a verse, pick your version, open it, then save your notes in one place.
+        Type a verse, pick your version, open it, then save your notes to Supabase.
       </p>
     </div>
 
@@ -562,6 +577,8 @@ button.danger{
         <input id="verseLookup" placeholder="Example: Romans 8:28">
         <button class="primary" type="button" onclick="openSelectedVerse()">Open</button>
       </div>
+
+      <div class="version-title">Choose Bible version</div>
 
       <div class="version-grid" id="versionGrid"></div>
 
@@ -579,6 +596,8 @@ button.danger{
         <span id="formTitle">New service note</span>
         <span id="totalNotes">0 saved</span>
       </div>
+
+      <p class="sync-status" id="syncStatus">Connecting to Supabase...</p>
 
       <form id="noteForm">
         <input type="hidden" id="noteId">
@@ -627,7 +646,7 @@ button.danger{
 
             <div class="field full">
               <label for="scriptures">Scriptures mentioned</label>
-              <textarea id="scriptures" placeholder="Add Bible verses here. Example: Romans 8:28, Psalm 23, John 15:5"></textarea>
+              <textarea id="scriptures" placeholder="Add Bible verses here. Example: Romans 8:28 AMP"></textarea>
             </div>
 
           </div>
@@ -665,6 +684,7 @@ button.danger{
           <button class="primary" type="submit">Save note</button>
           <button class="soft" type="button" onclick="resetForm()">Clear form</button>
           <button class="gold" type="button" onclick="showTabById('serviceTab')">Back to service</button>
+          <button class="purple" type="button" onclick="importLocalNotes()">Import local notes</button>
         </div>
       </form>
     </section>
@@ -677,7 +697,7 @@ button.danger{
       </div>
 
       <div class="notes-list" id="notesList">
-        <div class="empty">No notes saved yet.</div>
+        <div class="empty">Loading notes...</div>
       </div>
     </aside>
 
@@ -688,7 +708,11 @@ button.danger{
 <div class="toast" id="toast">Saved</div>
 
 <script>
-const STORAGE_KEY = "paceChurchNotesV1";
+const PACE_SUPABASE_URL = "https://grgagroautlpphjsjpjh.supabase.co";
+const PACE_SUPABASE_ANON_KEY = "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn";
+
+const TABLE_NAME = "pace_church_notes";
+const LOCAL_STORAGE_KEY = "paceChurchNotesV1";
 const SELECTED_VERSION_KEY = "paceChurchNotesSelectedVersionV1";
 
 const favouriteVersions = [
@@ -704,6 +728,8 @@ const favouriteVersions = [
 ];
 
 let selectedVersion = localStorage.getItem(SELECTED_VERSION_KEY) || "AMP";
+let allNotes = [];
+let db = null;
 
 const noteForm = document.getElementById("noteForm");
 const noteId = document.getElementById("noteId");
@@ -724,6 +750,19 @@ const formTitle = document.getElementById("formTitle");
 const toast = document.getElementById("toast");
 const verseLookup = document.getElementById("verseLookup");
 const versionGrid = document.getElementById("versionGrid");
+const syncStatus = document.getElementById("syncStatus");
+
+function initSupabase(){
+  if(!window.supabase){
+    syncStatus.textContent = "Supabase library failed to load.";
+    notesList.innerHTML = `<div class="empty">Supabase library failed to load. Check your internet connection.</div>`;
+    return false;
+  }
+
+  db = window.supabase.createClient(PACE_SUPABASE_URL, PACE_SUPABASE_ANON_KEY);
+  syncStatus.textContent = "Connected to Supabase.";
+  return true;
+}
 
 function todayISO(){
   const today = new Date();
@@ -732,21 +771,13 @@ function todayISO(){
   return localDate.toISOString().slice(0,10);
 }
 
-function getNotes(){
+function getLocalNotes(){
   try{
-    const notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const notes = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]");
     return Array.isArray(notes) ? notes : [];
   }catch(error){
     return [];
   }
-}
-
-function saveNotes(notes){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-}
-
-function makeId(){
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
 }
 
 function showToast(message){
@@ -834,11 +865,7 @@ function addVerseToNotes(){
   const verseText = verse + " " + selectedVersion;
   const current = scriptures.value.trim();
 
-  if(current){
-    scriptures.value = current + "\n" + verseText;
-  } else {
-    scriptures.value = verseText;
-  }
+  scriptures.value = current ? current + "\n" + verseText : verseText;
 
   showTabById("serviceTab");
   showToast("Verse added");
@@ -851,35 +878,55 @@ function copyVerseLink(){
 
   navigator.clipboard.writeText(url).then(() => {
     showToast("Verse link copied");
+  }).catch(() => {
+    showToast("Could not copy link");
   });
 }
 
+async function loadNotes(){
+  if(!db) return;
+
+  syncStatus.textContent = "Loading notes from Supabase...";
+
+  const { data, error } = await db
+    .from(TABLE_NAME)
+    .select("*")
+    .order("service_date", { ascending:false })
+    .order("created_at", { ascending:false });
+
+  if(error){
+    console.error(error);
+    syncStatus.textContent = "Could not load notes from Supabase.";
+    notesList.innerHTML = `<div class="empty">Could not load notes. Check your table and policies.</div>`;
+    return;
+  }
+
+  allNotes = data || [];
+  syncStatus.textContent = "Synced with Supabase.";
+  renderNotes();
+}
+
 function renderNotes(){
-  const notes = getNotes();
   const query = searchInput.value.toLowerCase().trim();
 
-  totalNotes.textContent = notes.length === 1 ? "1 saved" : notes.length + " saved";
+  totalNotes.textContent = allNotes.length === 1 ? "1 saved" : allNotes.length + " saved";
 
-  const filteredNotes = notes
-    .filter(note => {
-      const joined = [
-        note.serviceDate,
-        note.serviceType,
-        note.preacher,
-        note.theme,
-        note.title,
-        note.scriptures,
-        note.mainNotes,
-        note.revelation,
-        note.prayer,
-        note.actionStep
-      ].join(" ").toLowerCase();
+  const filteredNotes = allNotes.filter(note => {
+    const joined = [
+      note.service_date,
+      note.service_type,
+      note.preacher,
+      note.theme,
+      note.title,
+      note.scriptures,
+      note.main_notes,
+      note.revelation,
+      note.prayer,
+      note.action_step
+    ].join(" ").toLowerCase();
 
-      return joined.includes(query);
-    })
-    .sort((a,b) => {
-      return new Date(b.serviceDate || 0) - new Date(a.serviceDate || 0);
-    });
+    return joined.includes(query);
+  });
 
   if(filteredNotes.length === 0){
     notesList.innerHTML = `<div class="empty">No matching notes found.</div>`;
@@ -891,16 +938,16 @@ function renderNotes(){
       <article class="note-item">
         <div class="note-head">
           <div class="note-title">${escapeHtml(note.title || "Untitled service")}</div>
-          <div class="note-date">${formatDate(note.serviceDate)}</div>
+          <div class="note-date">${formatDate(note.service_date)}</div>
         </div>
 
         <div class="note-meta">
-          <span class="pill">${escapeHtml(note.serviceType || "Service")}</span>
+          <span class="pill">${escapeHtml(note.service_type || "Service")}</span>
           ${note.preacher ? `<span class="pill">${escapeHtml(note.preacher)}</span>` : ""}
           ${note.theme ? `<span class="pill">${escapeHtml(note.theme)}</span>` : ""}
         </div>
 
-        <p class="note-preview">${escapeHtml(shorten(note.mainNotes || note.revelation || note.scriptures))}</p>
+        <p class="note-preview">${escapeHtml(shorten(note.main_notes || note.revelation || note.scriptures))}</p>
 
         <div class="note-actions">
           <button class="gold" onclick="editNote('${note.id}')">Edit</button>
@@ -914,7 +961,7 @@ function renderNotes(){
 }
 
 function escapeHtml(text){
-  return String(text)
+  return String(text || "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -956,61 +1003,81 @@ function showTabById(tabId){
   buttons[buttonMap[tabId]].classList.add("active");
 }
 
-noteForm.addEventListener("submit", function(event){
+noteForm.addEventListener("submit", async function(event){
   event.preventDefault();
 
-  const notes = getNotes();
+  if(!db){
+    showToast("Supabase not connected");
+    return;
+  }
+
   const existingId = noteId.value;
 
   const noteData = {
-    id: existingId || makeId(),
-    serviceDate: serviceDate.value,
-    serviceType: serviceType.value,
+    service_date: serviceDate.value || null,
+    service_type: serviceType.value,
     preacher: cleanText(preacher.value),
     theme: cleanText(theme.value),
     title: cleanText(title.value),
     scriptures: cleanText(scriptures.value),
-    mainNotes: cleanText(mainNotes.value),
+    main_notes: cleanText(mainNotes.value),
     revelation: cleanText(revelation.value),
     prayer: cleanText(prayer.value),
-    actionStep: cleanText(actionStep.value),
-    updatedAt: new Date().toISOString()
+    action_step: cleanText(actionStep.value)
   };
 
-  if(existingId){
-    const updatedNotes = notes.map(note => {
-      return note.id === existingId ? noteData : note;
-    });
-
-    saveNotes(updatedNotes);
-    showToast("Note updated");
-  } else {
-    notes.push(noteData);
-    saveNotes(notes);
-    showToast("Note saved");
+  if(!noteData.title){
+    showToast("Add a title first");
+    return;
   }
 
+  syncStatus.textContent = "Saving to Supabase...";
+
+  let result;
+
+  if(existingId){
+    result = await db
+      .from(TABLE_NAME)
+      .update(noteData)
+      .eq("id", existingId)
+      .select()
+      .single();
+  } else {
+    result = await db
+      .from(TABLE_NAME)
+      .insert(noteData)
+      .select()
+      .single();
+  }
+
+  if(result.error){
+    console.error(result.error);
+    syncStatus.textContent = "Save failed.";
+    showToast("Save failed");
+    return;
+  }
+
+  showToast(existingId ? "Note updated" : "Note saved");
   resetForm();
-  renderNotes();
+  await loadNotes();
 });
 
 function editNote(id){
-  const notes = getNotes();
-  const note = notes.find(item => item.id === id);
+  const note = allNotes.find(item => item.id === id);
 
   if(!note) return;
 
   noteId.value = note.id;
-  serviceDate.value = note.serviceDate || todayISO();
-  serviceType.value = note.serviceType || "Sunday Service";
+  serviceDate.value = note.service_date || todayISO();
+  serviceType.value = note.service_type || "Sunday Service";
   preacher.value = note.preacher || "";
   theme.value = note.theme || "";
   title.value = note.title || "";
   scriptures.value = note.scriptures || "";
-  mainNotes.value = note.mainNotes || "";
+  mainNotes.value = note.main_notes || "";
   revelation.value = note.revelation || "";
   prayer.value = note.prayer || "";
-  actionStep.value = note.actionStep || "";
+  actionStep.value = note.action_step || "";
 
   formTitle.textContent = "Edit service note";
   showTabById("serviceTab");
@@ -1021,20 +1088,36 @@ function editNote(id){
   });
 }
 
-function deleteNote(id){
+async function deleteNote(id){
+  if(!db){
+    showToast("Supabase not connected");
+    return;
+  }
+
   const confirmed = confirm("Delete this church note?");
 
   if(!confirmed) return;
 
-  const notes = getNotes().filter(note => note.id !== id);
-  saveNotes(notes);
-  renderNotes();
+  syncStatus.textContent = "Deleting note...";
+
+  const { error } = await db
+    .from(TABLE_NAME)
+    .delete()
+    .eq("id", id);
+
+  if(error){
+    console.error(error);
+    syncStatus.textContent = "Delete failed.";
+    showToast("Delete failed");
+    return;
+  }
+
   showToast("Note deleted");
+  await loadNotes();
 }
 
 function openFirstScripture(id){
-  const notes = getNotes();
-  const note = notes.find(item => item.id === id);
+  const note = allNotes.find(item => item.id === id);
 
   if(!note || !note.scriptures){
     showToast("No scripture saved");
@@ -1065,16 +1148,15 @@ function openFirstScripture(id){
 }
 
 function copyNote(id){
-  const notes = getNotes();
-  const note = notes.find(item => item.id === id);
+  const note = allNotes.find(item => item.id === id);
 
   if(!note) return;
 
   const text = `
 Church Notes
 
-Date: ${formatDate(note.serviceDate)}
-Service: ${note.serviceType || ""}
+Date: ${formatDate(note.service_date)}
+Service: ${note.service_type || ""}
 Preacher: ${note.preacher || ""}
 Theme: ${note.theme || ""}
 Title: ${note.title || ""}
@@ -1083,7 +1165,7 @@ Scriptures:
 ${note.scriptures || ""}
 
 Main Notes:
-${note.mainNotes || ""}
+${note.main_notes || ""}
 
 What Stood Out:
 ${note.revelation || ""}
@@ -1092,12 +1174,63 @@ Prayer:
 ${note.prayer || ""}
 
 Action Step:
-${note.actionStep || ""}
+${note.action_step || ""}
   `.trim();
 
   navigator.clipboard.writeText(text).then(() => {
     showToast("Note copied");
+  }).catch(() => {
+    showToast("Could not copy note");
   });
+}
+
+async function importLocalNotes(){
+  if(!db){
+    showToast("Supabase not connected");
+    return;
+  }
+
+  const localNotes = getLocalNotes();
+
+  if(localNotes.length === 0){
+    showToast("No local notes found");
+    return;
+  }
+
+  const confirmed = confirm("Import the church notes saved locally on this phone into Supabase?");
+
+  if(!confirmed) return;
+
+  const rows = localNotes.map(note => {
+    return {
+      service_date: note.serviceDate || null,
+      service_type: note.serviceType || "Sunday Service",
+      preacher: note.preacher || "",
+      theme: note.theme || "",
+      title: note.title || "Untitled service",
+      scriptures: note.scriptures || "",
+      main_notes: note.mainNotes || "",
+      revelation: note.revelation || "",
+      prayer: note.prayer || "",
+      action_step: note.actionStep || ""
+    };
+  });
+
+  syncStatus.textContent = "Importing local notes...";
+
+  const { error } = await db
+    .from(TABLE_NAME)
+    .insert(rows);
+
+  if(error){
+    console.error(error);
+    syncStatus.textContent = "Import failed.";
+    showToast("Import failed");
+    return;
+  }
+
+  showToast("Local notes imported");
+  await loadNotes();
 }
 
 function resetForm(){
@@ -1119,7 +1252,10 @@ verseLookup.addEventListener("keydown", function(event){
 
 serviceDate.value = todayISO();
 renderVersionButtons();
-renderNotes();
+
+if(initSupabase()){
+  loadNotes();
+}
 </script>
 
 </body>
