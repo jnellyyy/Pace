@@ -5,8 +5,14 @@ const SCOPES = [
 ].join(" ");
 
 const MONEY_QUERY = [
-  "newer_than:60d",
-  "(payment OR payments OR pay OR due OR overdue OR invoice OR bill OR bills OR renewal OR subscription OR charge OR Klarna OR PayPal OR direct debit OR standing order OR balance)"
+  "newer_than:90d",
+  "(\"payment due\" OR \"due soon\" OR overdue OR invoice OR bill OR renewal OR subscription OR \"direct debit\" OR \"standing order\" OR Klarna OR \"minimum payment\" OR \"payment reminder\" OR \"action required\" OR \"failed payment\" OR \"upcoming payment\")",
+  "-receipt",
+  "-receipts",
+  "-\"order confirmation\"",
+  "-\"thanks for your order\"",
+  "-\"your order\"",
+  "-\"food order\""
 ].join(" ");
 
 export default {
@@ -27,6 +33,10 @@ export default {
         return finishAuth(request, env);
       }
 
+      if(url.pathname === "/connected"){
+        return connectedPage();
+      }
+
       if(url.pathname === "/sync"){
         requireAppAccess(request, env);
         const actions = await syncGmail(env);
@@ -43,6 +53,11 @@ export default {
         return corsResponse({ ok:true, connected:Boolean(await getTokens(env)) }, env);
       }
 
+      if(url.pathname === "/debug"){
+        requireAppAccess(request, env);
+        return corsResponse(await getDebugInfo(env), env);
+      }
+
       return corsResponse({ ok:false, error:"Not found" }, env, 404);
     }catch(error){
       return corsResponse({ ok:false, error:error.message || "Worker error" }, env, 500);
@@ -56,7 +71,7 @@ export default {
 
 function corsHeaders(env){
   return {
-    "Access-Control-Allow-Origin": env.APP_ORIGIN || "*",
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Content-Type": "application/json"
@@ -78,6 +93,54 @@ function redirectTo(location){
   return new Response(null, {
     status:302,
     headers:{ Location:location }
+  });
+}
+
+function connectedPage(){
+  return new Response(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pace Gmail Connected</title>
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  color:#f5f7fb;
+  background:linear-gradient(180deg,#0f1115,#171a20);
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+}
+.card{
+  width:min(520px,100%);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:24px;
+  padding:24px;
+  background:rgba(255,255,255,0.06);
+  box-shadow:0 24px 60px rgba(0,0,0,0.36);
+}
+h1{
+  margin:0;
+  font-size:28px;
+  letter-spacing:-0.04em;
+}
+p{
+  color:#a7afbe;
+  line-height:1.55;
+}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Gmail connected.</h1>
+    <p>Go back to Pace Email Command, paste your Worker URL and private key if needed, then press <strong>Sync now</strong>.</p>
+  </div>
+</body>
+</html>`, {
+    headers:{ "Content-Type":"text/html" }
   });
 }
 
@@ -158,9 +221,13 @@ async function finishAuth(request, env){
     expires_at:Date.now() + (Number(tokens.expires_in) || 3600) * 1000
   });
 
-  await syncGmail(env);
+  try{
+    await syncGmail(env);
+  }catch(error){
+    await env.PACE_GMAIL_KV.put("last_sync_error", error.message || "Gmail connected, but first sync failed");
+  }
 
-  return redirectTo(getAppUrl(env, "gmail=connected"));
+  return redirectTo(`${new URL(request.url).origin}/connected`);
 }
 
 function getAppUrl(env, query){
@@ -227,6 +294,24 @@ async function getActions(env){
   return Array.isArray(saved) ? saved : [];
 }
 
+async function getDebugInfo(env){
+  const tokens = await getTokens(env);
+  const actions = await getActions(env);
+  const lastSyncError = await env.PACE_GMAIL_KV.get("last_sync_error");
+
+  return {
+    ok:true,
+    hasClientId:Boolean(env.GOOGLE_CLIENT_ID),
+    hasClientSecret:Boolean(env.GOOGLE_CLIENT_SECRET),
+    hasAccessKey:Boolean(env.PACE_ACCESS_KEY),
+    hasTokens:Boolean(tokens),
+    hasRefreshToken:Boolean(tokens?.refresh_token),
+    tokenExpiresAt:tokens?.expires_at || null,
+    actionCount:actions.length,
+    lastSyncError:lastSyncError || ""
+  };
+}
+
 async function saveActions(env, actions){
   await env.PACE_GMAIL_KV.put(ACTIONS_KEY, JSON.stringify(actions.slice(0, 100)));
 }
@@ -258,10 +343,14 @@ async function syncGmail(env){
 
     const detail = await fetchMessage(accessToken, message.id);
     const action = messageToAction(detail);
-    byId.set(message.id, action);
+
+    if(action){
+      byId.set(message.id, action);
+    }
   }
 
   const actions = [...byId.values()]
+    .filter(action => isActionableMoney(`${action.subject || ""} ${action.nextAction || ""}`))
     .sort((a,b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
     .slice(0, 100);
 
@@ -301,8 +390,14 @@ function messageToAction(message){
   const date = headerValue(message, "Date");
   const snippet = message.snippet || "";
   const text = `${subject} ${snippet}`;
+
+  if(!isActionableMoney(text)){
+    return null;
+  }
+
   const amount = extractAmount(text);
-  const priority = /overdue|final notice|failed|declined|due soon|urgent|reminder/i.test(text) ? "must" : "soon";
+  const reason = getActionReason(text);
+  const priority = /overdue|final notice|failed|declined|due soon|urgent|action required|payment reminder|minimum payment/i.test(text) ? "must" : "soon";
 
   const createdAt = safeIsoDate(date) || new Date(Number(message.internalDate || Date.now())).toISOString();
 
@@ -312,6 +407,8 @@ function messageToAction(message){
     from,
     subject,
     type:"money",
+    moneyStatus:"action_needed",
+    reason,
     priority,
     due:"",
     amount,
@@ -321,6 +418,36 @@ function messageToAction(message){
     createdAt,
     gmailUrl:`https://mail.google.com/mail/u/0/#inbox/${message.id}`
   };
+}
+
+function isActionableMoney(text){
+  const value = String(text || "");
+  const actionWords = /(payment due|due soon|overdue|invoice|bill|renewal|subscription|direct debit|standing order|klarna|minimum payment|payment reminder|action required|failed payment|upcoming payment|pay by|amount due|balance due|please pay|scheduled payment)/i;
+  const receiptWords = /(receipt|your receipt|order confirmation|thanks for your order|your order is confirmed|delivered|takeaway|uber eats|deliveroo order|just eat|food order|paid successfully|payment received|thanks for your payment|you paid|purchase confirmation)/i;
+
+  if(!actionWords.test(value)){
+    return false;
+  }
+
+  if(receiptWords.test(value) && !/(amount due|balance due|overdue|failed payment|payment due|due soon|pay by|action required|minimum payment)/i.test(value)){
+    return false;
+  }
+
+  return true;
+}
+
+function getActionReason(text){
+  const value = String(text || "");
+
+  if(/overdue|final notice/i.test(value)) return "overdue";
+  if(/failed payment|declined/i.test(value)) return "failed payment";
+  if(/payment due|due soon|pay by|amount due|balance due|minimum payment/i.test(value)) return "payment due";
+  if(/invoice|bill/i.test(value)) return "bill or invoice";
+  if(/renewal|subscription|direct debit|standing order|upcoming payment/i.test(value)) return "upcoming payment";
+  if(/klarna/i.test(value)) return "pay later";
+  if(/action required|reminder/i.test(value)) return "action required";
+
+  return "money action";
 }
 
 function safeIsoDate(value){

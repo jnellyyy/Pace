@@ -1264,17 +1264,25 @@ function getMonthTrickles(){
 }
 
 function getEmailPaymentActions(){
-  const moneyWords = /bill|payment|invoice|due|overdue|renewal|subscription|receipt|klarna|direct debit|standing order|balance|charge|paid|pay/i;
+  const actionWords = /payment due|due soon|overdue|invoice|bill|renewal|subscription|klarna|direct debit|standing order|balance due|amount due|pay by|minimum payment|payment reminder|action required|failed payment|upcoming payment/i;
+  const receiptWords = /receipt|order confirmation|thanks for your order|food order|takeaway|deliveroo order|uber eats|just eat|paid successfully|payment received|you paid|purchase confirmation/i;
 
   return emailActions.filter(action => {
     const text = `${action.subject || ""} ${action.nextAction || ""} ${action.from || ""}`;
     const month = (action.due || action.createdAt || getToday()).slice(0,7);
     const alreadyImported = action.financeImported === true;
+    const looksActionable = action.moneyStatus === "action_needed"
+      || actionWords.test(text)
+      || action.priority === "must";
+    const looksLikeReceipt = receiptWords.test(text)
+      && !/amount due|balance due|overdue|failed payment|payment due|due soon|pay by|action required|minimum payment/i.test(text);
 
     return !action.done
       && !alreadyImported
       && month === state.selectedMonth
-      && (action.type === "money" || numberValue(action.amount) > 0 || moneyWords.test(text));
+      && action.type === "money"
+      && looksActionable
+      && !looksLikeReceipt;
   });
 }
 

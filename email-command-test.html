@@ -207,7 +207,7 @@ p{
 
 .connectionGrid{
   display:grid;
-  grid-template-columns:1fr 0.8fr auto auto;
+  grid-template-columns:1fr 0.8fr auto auto auto;
   gap:9px;
   margin-top:14px;
 }
@@ -502,6 +502,7 @@ p{
           <input class="connectionInput" id="workerUrlInput" placeholder="Cloudflare Worker URL">
           <input class="connectionInput" id="workerKeyInput" placeholder="Private key">
           <button class="gmailBtn" id="connectGmailBtn" type="button">Connect Gmail</button>
+          <button class="gmailBtn" id="checkGmailBtn" type="button">Check</button>
           <button class="gmailBtn" id="syncGmailBtn" type="button">Sync now</button>
         </div>
 
@@ -617,6 +618,7 @@ const els = {
   workerUrlInput: document.getElementById("workerUrlInput"),
   workerKeyInput: document.getElementById("workerKeyInput"),
   connectGmailBtn: document.getElementById("connectGmailBtn"),
+  checkGmailBtn: document.getElementById("checkGmailBtn"),
   syncGmailBtn: document.getElementById("syncGmailBtn"),
   syncStatus: document.getElementById("syncStatus"),
   fromInput: document.getElementById("fromInput"),
@@ -677,9 +679,12 @@ function saveWorkerKey(){
   return workerKey;
 }
 
-function workerHeaders(){
+function buildWorkerUrl(path){
+  const base = getWorkerUrl();
   const key = saveWorkerKey();
-  return key ? { "X-Pace-Key":key } : {};
+  const separator = path.includes("?") ? "&" : "?";
+
+  return key ? `${base}${path}${separator}key=${encodeURIComponent(key)}` : `${base}${path}`;
 }
 
 function setSyncStatus(text){
@@ -794,9 +799,7 @@ async function fetchPulledActions(){
   setSyncStatus("Loading pulled Gmail actions...");
 
   try{
-    const response = await fetch(`${workerUrl}/actions`, {
-      headers:workerHeaders()
-    });
+    const response = await fetch(buildWorkerUrl("/actions"));
     const data = await response.json();
 
     if(!response.ok || !data.ok){
@@ -821,9 +824,7 @@ async function syncGmail(){
   setSyncStatus("Checking Gmail for money and due-soon emails...");
 
   try{
-    const response = await fetch(`${workerUrl}/sync`, {
-      headers:workerHeaders()
-    });
+    const response = await fetch(buildWorkerUrl("/sync"));
     const data = await response.json();
 
     if(!response.ok || !data.ok){
@@ -834,6 +835,40 @@ async function syncGmail(){
     setSyncStatus(`Synced ${(data.actions || []).length} Gmail action${(data.actions || []).length === 1 ? "" : "s"}.`);
   }catch(error){
     setSyncStatus(error.message || "Could not sync Gmail.");
+  }
+}
+
+async function checkGmailConnection(){
+  const workerUrl = saveWorkerUrl();
+
+  if(!workerUrl){
+    setSyncStatus("Paste your Cloudflare Worker URL first.");
+    return;
+  }
+
+  setSyncStatus("Checking Gmail connection...");
+
+  try{
+    const response = await fetch(buildWorkerUrl("/debug"));
+    const data = await response.json();
+
+    if(!response.ok || !data.ok){
+      throw new Error(data.error || "Could not check Gmail connection.");
+    }
+
+    const parts = [
+      data.hasTokens ? "Gmail token saved" : "Gmail token missing",
+      data.hasRefreshToken ? "refresh token saved" : "refresh token missing",
+      `${data.actionCount || 0} pulled actions`
+    ];
+
+    if(data.lastSyncError){
+      parts.push(`last sync error: ${data.lastSyncError}`);
+    }
+
+    setSyncStatus(parts.join(" • "));
+  }catch(error){
+    setSyncStatus(error.message || "Could not check Gmail connection.");
   }
 }
 
@@ -867,12 +902,13 @@ function render(){
     const tagClass = action.priority === "must" ? "must" : action.type === "money" ? "money" : "";
     const amount = action.amount ? ` • ${money(action.amount)}` : "";
     const due = action.due ? ` • due ${escapeHtml(action.due)}` : "";
+    const reason = action.reason ? ` • ${escapeHtml(action.reason)}` : "";
 
     item.innerHTML = `
       <div class="itemTop">
         <div>
           <div class="itemTitle">${escapeHtml(action.subject)}</div>
-          <div class="itemMeta">${escapeHtml(action.from || "no sender")} • ${escapeHtml(action.type)}${due}${amount}</div>
+          <div class="itemMeta">${escapeHtml(action.from || "no sender")} • ${escapeHtml(action.type)}${reason}${due}${amount}</div>
         </div>
         <div class="tag ${tagClass}">${action.done ? "done" : escapeHtml(action.priority)}</div>
       </div>
@@ -900,6 +936,7 @@ els.saveBtn.addEventListener("click", addAction);
 els.clearBtn.addEventListener("click", clearForm);
 els.workerUrlInput.addEventListener("change", saveWorkerUrl);
 els.workerKeyInput.addEventListener("change", saveWorkerKey);
+els.checkGmailBtn.addEventListener("click", checkGmailConnection);
 els.connectGmailBtn.addEventListener("click", () => {
   const workerUrl = saveWorkerUrl();
   const workerKey = saveWorkerKey();
