@@ -876,6 +876,22 @@ textarea{
 
         <div class="sectionTitle">
           <div>
+            <h2>from email</h2>
+            <p>Money actions captured from Email Command, ready to turn into payments.</p>
+          </div>
+          <span class="pill" id="emailPaymentCountPill">0 found</span>
+        </div>
+
+        <div class="list" id="emailPaymentList"></div>
+
+      </div>
+    </section>
+
+    <section class="card" style="grid-column:1 / -1;">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
             <h2>mid-month trickles</h2>
             <p>Catch the extra things that appear after the main bills are paid.</p>
           </div>
@@ -1055,6 +1071,7 @@ textarea{
 
 <script>
 const STORAGE_KEY = "pace_finance_v3";
+const EMAIL_ACTIONS_KEY = "pace_email_command_v1";
 
 const els = {
   monthInput: document.getElementById("monthInput"),
@@ -1108,8 +1125,10 @@ const els = {
   billCountPill: document.getElementById("billCountPill"),
   spendCountPill: document.getElementById("spendCountPill"),
   trickleCountPill: document.getElementById("trickleCountPill"),
+  emailPaymentCountPill: document.getElementById("emailPaymentCountPill"),
   spendList: document.getElementById("spendList"),
   trickleList: document.getElementById("trickleList"),
+  emailPaymentList: document.getElementById("emailPaymentList"),
 
   allSpendTab: document.getElementById("allSpendTab"),
   todaySpendTab: document.getElementById("todaySpendTab"),
@@ -1119,6 +1138,7 @@ const els = {
 };
 
 let activeSpendFilter = "all";
+let emailActions = [];
 
 let state = {
   selectedMonth: getCurrentMonth(),
@@ -1155,6 +1175,19 @@ function numberValue(value){
 
 function save(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadEmailActions(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(EMAIL_ACTIONS_KEY) || "[]");
+    emailActions = Array.isArray(saved) ? saved : [];
+  }catch(error){
+    emailActions = [];
+  }
+}
+
+function saveEmailActions(){
+  localStorage.setItem(EMAIL_ACTIONS_KEY, JSON.stringify(emailActions));
 }
 
 function load(){
@@ -1228,6 +1261,21 @@ function getMonthSpends(){
 
 function getMonthTrickles(){
   return state.trickles.filter(trickle => trickle.month === state.selectedMonth);
+}
+
+function getEmailPaymentActions(){
+  const moneyWords = /bill|payment|invoice|due|overdue|renewal|subscription|receipt|klarna|direct debit|standing order|balance|charge|paid|pay/i;
+
+  return emailActions.filter(action => {
+    const text = `${action.subject || ""} ${action.nextAction || ""} ${action.from || ""}`;
+    const month = (action.due || action.createdAt || getToday()).slice(0,7);
+    const alreadyImported = action.financeImported === true;
+
+    return !action.done
+      && !alreadyImported
+      && month === state.selectedMonth
+      && (action.type === "money" || numberValue(action.amount) > 0 || moneyWords.test(text));
+  });
 }
 
 function getBillTypeLabel(type){
@@ -1457,6 +1505,35 @@ function addTrickle(){
   showToast("Trickle added.");
 }
 
+function importEmailPayment(id){
+  const action = emailActions.find(item => item.id === id);
+
+  if(!action){
+    return;
+  }
+
+  const dueDate = action.due || "";
+  const amount = numberValue(action.amount);
+  const name = action.subject || action.nextAction || "Email payment";
+
+  state.trickles.push({
+    id: uid(),
+    name,
+    amount,
+    priority: action.priority === "must" ? "must" : "soon",
+    dueDate,
+    source: "Email",
+    month: (dueDate || `${state.selectedMonth}-01`).slice(0,7),
+    paid:false
+  });
+
+  action.financeImported = true;
+  save();
+  saveEmailActions();
+  render();
+  showToast("Added to Finance.");
+}
+
 function toggleTricklePaid(id){
   const trickle = state.trickles.find(item => item.id === id);
 
@@ -1654,6 +1731,39 @@ function renderTrickles(){
   });
 }
 
+function renderEmailPayments(){
+  const payments = getEmailPaymentActions()
+    .slice()
+    .sort((a,b) => String(a.due || "9999").localeCompare(String(b.due || "9999")));
+
+  els.emailPaymentCountPill.textContent = payments.length === 1 ? "1 found" : `${payments.length} found`;
+  els.emailPaymentList.innerHTML = "";
+
+  if(payments.length === 0){
+    els.emailPaymentList.innerHTML = `<div class="empty">No money email actions waiting. Add one from Email Command when an email says something is due.</div>`;
+    return;
+  }
+
+  payments.forEach(action => {
+    const item = document.createElement("div");
+    item.className = "transaction";
+
+    item.innerHTML = `
+      <div class="transactionLeft">
+        <strong>${escapeHtml(action.subject || "Email payment")}</strong>
+        <span>${escapeHtml(action.from || "email")} ${action.due ? "• due " + escapeHtml(action.due) : ""} ${action.nextAction ? "• " + escapeHtml(action.nextAction) : ""}</span>
+      </div>
+
+      <div class="transactionRight">
+        <div class="transactionAmount">${action.amount ? money(action.amount) : "amount?"}</div>
+        <button class="iconBtn" data-import-email-payment="${action.id}">add to trickles</button>
+      </div>
+    `;
+
+    els.emailPaymentList.appendChild(item);
+  });
+}
+
 function renderSummary(){
   const monthData = getMonthData();
   const fixed = totalFixedBills();
@@ -1698,6 +1808,7 @@ function render(){
   els.monthInput.value = state.selectedMonth;
   renderSummary();
   renderBills();
+  renderEmailPayments();
   renderTrickles();
   renderSpends();
 }
@@ -1737,6 +1848,7 @@ document.addEventListener("click", event => {
   const editBillId = event.target.getAttribute("data-edit-bill");
   const deleteBillId = event.target.getAttribute("data-delete-bill");
   const deleteSpendId = event.target.getAttribute("data-delete-spend");
+  const importEmailPaymentId = event.target.getAttribute("data-import-email-payment");
   const toggleTrickleId = event.target.getAttribute("data-toggle-trickle");
   const deleteTrickleId = event.target.getAttribute("data-delete-trickle");
 
@@ -1752,6 +1864,10 @@ document.addEventListener("click", event => {
     deleteSpend(deleteSpendId);
   }
 
+  if(importEmailPaymentId){
+    importEmailPayment(importEmailPaymentId);
+  }
+
   if(toggleTrickleId){
     toggleTricklePaid(toggleTrickleId);
   }
@@ -1762,6 +1878,7 @@ document.addEventListener("click", event => {
 });
 
 load();
+loadEmailActions();
 
 els.spendDateInput.value = getToday();
 

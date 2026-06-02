@@ -136,6 +136,13 @@ p{
   white-space:nowrap;
 }
 
+.topActions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
 .grid{
   display:grid;
   grid-template-columns:0.95fr 1.05fr;
@@ -447,7 +454,10 @@ p{
       </div>
     </div>
 
-    <a class="backBtn" href="dashboard.html">Dashboard</a>
+    <div class="topActions">
+      <a class="backBtn" href="dashboard.html">Dashboard</a>
+      <a class="backBtn" href="finance-test.html">Finance</a>
+    </div>
   </header>
 
   <main class="grid">
