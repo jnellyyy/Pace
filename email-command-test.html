@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pace Email Command</title>
+
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
+<meta name="robots" content="noindex,nofollow">
+
+<style>
+:root{
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --panel2:rgba(255,255,255,0.10);
+  --line:rgba(255,255,255,0.11);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --accent:#ff3b30;
+  --green:#22c55e;
+  --blue:#60a5fa;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --shadow:0 22px 58px rgba(0,0,0,0.38);
+  --radius:26px;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(96,165,250,0.13), transparent 30%),
+    radial-gradient(circle at 90% 6%, rgba(255,59,48,0.14), transparent 30%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.wrap{
+  width:min(1180px,100%);
+  margin:0 auto;
+  padding:18px;
+  padding-bottom:38px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:16px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.dot{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  font-weight:900;
+}
+
+h1,
+h2,
+h3,
+p{
+  margin:0;
+}
+
+.title p,
+.sectionTitle p,
+.miniText,
+.itemMeta{
+  color:var(--muted);
+}
+
+.title h1{
+  font-size:25px;
+  letter-spacing:-0.045em;
+}
+
+.title p{
+  margin-top:4px;
+  font-size:13px;
+}
+
+.backBtn,
+.gmailBtn,
+.softBtn,
+.primaryBtn,
+.smallBtn{
+  border:1px solid var(--line);
+  border-radius:16px;
+  color:var(--text);
+  background:rgba(255,255,255,0.075);
+  font-weight:850;
+}
+
+.backBtn{
+  padding:11px 14px;
+  white-space:nowrap;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:0.95fr 1.05fr;
+  gap:14px;
+  align-items:start;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+  padding:16px;
+}
+
+.hero{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:1.2fr 0.8fr;
+  gap:14px;
+  align-items:stretch;
+  overflow:hidden;
+  position:relative;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  right:-70px;
+  bottom:-90px;
+  border-radius:50%;
+  background:rgba(96,165,250,0.16);
+}
+
+.heroContent,
+.heroStats{
+  position:relative;
+  z-index:1;
+}
+
+.heroContent h2{
+  font-size:34px;
+  letter-spacing:-0.06em;
+}
+
+.heroContent p{
+  margin-top:9px;
+  color:var(--muted);
+  line-height:1.55;
+  max-width:620px;
+}
+
+.searchGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+  margin-top:14px;
+}
+
+.gmailBtn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:10px;
+  text-align:center;
+}
+
+.heroStats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.stat{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.06);
+  border-radius:20px;
+  padding:14px;
+}
+
+.stat span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.stat strong{
+  display:block;
+  margin-top:6px;
+  font-size:26px;
+  letter-spacing:-0.05em;
+}
+
+.sectionTitle{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.sectionTitle h2{
+  font-size:18px;
+  letter-spacing:-0.03em;
+}
+
+.sectionTitle p{
+  margin-top:4px;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.pill{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  border-radius:999px;
+  padding:7px 10px;
+  color:var(--muted);
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.formGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.field label{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border:1px solid var(--line);
+  outline:0;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:16px;
+  padding:12px;
+}
+
+.field textarea{
+  min-height:96px;
+  resize:vertical;
+}
+
+.field select option{
+  background:#171a20;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+.primaryBtn{
+  flex:1;
+  background:var(--accent);
+  border-color:rgba(255,59,48,0.65);
+  padding:12px 14px;
+}
+
+.softBtn{
+  padding:12px 14px;
+}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.item{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.055);
+  border-radius:20px;
+  padding:13px;
+}
+
+.itemTop{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.itemTitle{
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+
+.itemMeta{
+  margin-top:5px;
+  font-size:12px;
+  line-height:1.35;
+}
+
+.itemAction{
+  margin-top:10px;
+  color:#dce3ef;
+  font-size:14px;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}
+
+.tag{
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 9px;
+  color:var(--muted);
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.tag.must{
+  color:#fecaca;
+  border-color:rgba(239,68,68,0.35);
+}
+
+.tag.money{
+  color:#bbf7d0;
+  border-color:rgba(34,197,94,0.35);
+}
+
+.itemBtns{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.smallBtn{
+  padding:8px 10px;
+  font-size:12px;
+}
+
+.smallBtn.danger{
+  color:#fecaca;
+}
+
+.empty{
+  border:1px dashed rgba(255,255,255,0.14);
+  border-radius:18px;
+  padding:18px;
+  color:var(--muted);
+  text-align:center;
+  line-height:1.45;
+}
+
+@media(max-width:850px){
+  .grid,
+  .hero{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:620px){
+  .wrap{
+    padding:14px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .title h1{
+    font-size:22px;
+  }
+
+  .heroContent h2{
+    font-size:28px;
+  }
+
+  .searchGrid,
+  .heroStats,
+  .formGrid{
+    grid-template-columns:1fr;
+  }
+
+  .backBtn{
+    padding:10px 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <div class="dot">P</div>
+      <div class="title">
+        <h1>Email Command</h1>
+        <p>One calm place for email actions.</p>
+      </div>
+    </div>
+
+    <a class="backBtn" href="dashboard.html">Dashboard</a>
+  </header>
+
+  <main class="grid">
+    <section class="card hero">
+      <div class="heroContent">
+        <h2>Pull out what matters.</h2>
+        <p>Use the Gmail searches to sweep the noisy inbox, then park anything important here as a tiny action.</p>
+
+        <div class="searchGrid">
+          <button class="gmailBtn" data-query="newer_than:14d (payment OR bill OR invoice OR receipt OR overdue)">Money emails</button>
+          <button class="gmailBtn" data-query="newer_than:14d (reply OR respond OR action OR urgent OR important)">Needs action</button>
+          <button class="gmailBtn" data-query="newer_than:30d (delivery OR booking OR client OR shoot OR invoice)">Creator work</button>
+          <button class="gmailBtn" data-query="newer_than:14d is:unread -category:promotions">Unread clean sweep</button>
+        </div>
+      </div>
+
+      <div class="heroStats">
+        <div class="stat">
+          <span>open</span>
+          <strong id="openCount">0</strong>
+        </div>
+        <div class="stat">
+          <span>money</span>
+          <strong id="moneyCount">0</strong>
+        </div>
+        <div class="stat">
+          <span>must</span>
+          <strong id="mustCount">0</strong>
+        </div>
+        <div class="stat">
+          <span>done</span>
+          <strong id="doneCount">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sectionTitle">
+        <div>
+          <h2>Add email action</h2>
+          <p>Turn one email into one next step.</p>
+        </div>
+        <span class="pill">capture</span>
+      </div>
+
+      <div class="formGrid">
+        <div class="field">
+          <label>from</label>
+          <input id="fromInput" placeholder="bank, client, school, supplier">
+        </div>
+
+        <div class="field">
+          <label>subject</label>
+          <input id="subjectInput" placeholder="what the email is about">
+        </div>
+      </div>
+
+      <div class="formGrid" style="margin-top:10px;">
+        <div class="field">
+          <label>type</label>
+          <select id="typeInput">
+            <option value="money">money</option>
+            <option value="reply">reply</option>
+            <option value="booking">booking</option>
+            <option value="admin">admin</option>
+            <option value="waiting">waiting</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>priority</label>
+          <select id="priorityInput">
+            <option value="must">must do</option>
+            <option value="soon">soon</option>
+            <option value="later">later</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="formGrid" style="margin-top:10px;">
+        <div class="field">
+          <label>due date</label>
+          <input id="dueInput" type="date">
+        </div>
+
+        <div class="field">
+          <label>amount</label>
+          <input id="amountInput" type="number" min="0" step="0.01" placeholder="optional">
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label>next action</label>
+        <textarea id="actionInput" placeholder="pay it, reply, add to finance, check booking, save receipt"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primaryBtn" id="saveBtn">save action</button>
+        <button class="softBtn" id="clearBtn">clear</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sectionTitle">
+        <div>
+          <h2>Action queue</h2>
+          <p>Only the emails that still need you.</p>
+        </div>
+        <span class="pill" id="queuePill">0 actions</span>
+      </div>
+
+      <div class="list" id="actionList"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const STORAGE_KEY = "pace_email_command_v1";
+
+const els = {
+  fromInput: document.getElementById("fromInput"),
+  subjectInput: document.getElementById("subjectInput"),
+  typeInput: document.getElementById("typeInput"),
+  priorityInput: document.getElementById("priorityInput"),
+  dueInput: document.getElementById("dueInput"),
+  amountInput: document.getElementById("amountInput"),
+  actionInput: document.getElementById("actionInput"),
+  saveBtn: document.getElementById("saveBtn"),
+  clearBtn: document.getElementById("clearBtn"),
+  actionList: document.getElementById("actionList"),
+  queuePill: document.getElementById("queuePill"),
+  openCount: document.getElementById("openCount"),
+  moneyCount: document.getElementById("moneyCount"),
+  mustCount: document.getElementById("mustCount"),
+  doneCount: document.getElementById("doneCount")
+};
+
+let actions = loadActions();
+
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function loadActions(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  }catch(error){
+    return [];
+  }
+}
+
+function saveActions(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(actions));
+}
+
+function money(value){
+  return new Intl.NumberFormat("en-GB", {
+    style:"currency",
+    currency:"GBP"
+  }).format(Number(value) || 0);
+}
+
+function escapeHtml(text){
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function gmailUrl(query){
+  return "https://mail.google.com/mail/u/0/#search/" + encodeURIComponent(query);
+}
+
+function clearForm(){
+  els.fromInput.value = "";
+  els.subjectInput.value = "";
+  els.typeInput.value = "money";
+  els.priorityInput.value = "must";
+  els.dueInput.value = "";
+  els.amountInput.value = "";
+  els.actionInput.value = "";
+}
+
+function addAction(){
+  const from = els.fromInput.value.trim();
+  const subject = els.subjectInput.value.trim();
+  const nextAction = els.actionInput.value.trim();
+
+  if(!subject && !nextAction){
+    return;
+  }
+
+  actions.unshift({
+    id: uid(),
+    from,
+    subject: subject || "Email action",
+    type: els.typeInput.value,
+    priority: els.priorityInput.value,
+    due: els.dueInput.value,
+    amount: Number(els.amountInput.value) || 0,
+    nextAction,
+    done:false,
+    createdAt: new Date().toISOString()
+  });
+
+  saveActions();
+  clearForm();
+  render();
+}
+
+function toggleDone(id){
+  const item = actions.find(action => action.id === id);
+  if(!item) return;
+  item.done = !item.done;
+  saveActions();
+  render();
+}
+
+function deleteAction(id){
+  actions = actions.filter(action => action.id !== id);
+  saveActions();
+  render();
+}
+
+function openActionSearch(action){
+  const bits = [action.from, action.subject].filter(Boolean).join(" ");
+  window.open(gmailUrl(bits || "newer_than:30d"), "_blank", "noopener");
+}
+
+function render(){
+  const open = actions.filter(action => !action.done);
+  const done = actions.filter(action => action.done);
+
+  els.openCount.textContent = open.length;
+  els.moneyCount.textContent = open.filter(action => action.type === "money").length;
+  els.mustCount.textContent = open.filter(action => action.priority === "must").length;
+  els.doneCount.textContent = done.length;
+  els.queuePill.textContent = open.length === 1 ? "1 action" : `${open.length} actions`;
+
+  const sorted = actions.slice().sort((a,b) => {
+    if(a.done !== b.done) return a.done ? 1 : -1;
+    if(a.priority !== b.priority) return a.priority === "must" ? -1 : 1;
+    return String(a.due || "9999").localeCompare(String(b.due || "9999"));
+  });
+
+  els.actionList.innerHTML = "";
+
+  if(sorted.length === 0){
+    els.actionList.innerHTML = `<div class="empty">No email actions saved yet.</div>`;
+    return;
+  }
+
+  sorted.forEach(action => {
+    const item = document.createElement("div");
+    item.className = "item";
+
+    const tagClass = action.priority === "must" ? "must" : action.type === "money" ? "money" : "";
+    const amount = action.amount ? ` • ${money(action.amount)}` : "";
+    const due = action.due ? ` • due ${escapeHtml(action.due)}` : "";
+
+    item.innerHTML = `
+      <div class="itemTop">
+        <div>
+          <div class="itemTitle">${escapeHtml(action.subject)}</div>
+          <div class="itemMeta">${escapeHtml(action.from || "no sender")} • ${escapeHtml(action.type)}${due}${amount}</div>
+        </div>
+        <div class="tag ${tagClass}">${action.done ? "done" : escapeHtml(action.priority)}</div>
+      </div>
+
+      <div class="itemAction">${escapeHtml(action.nextAction || "Open Gmail and decide the next step.")}</div>
+
+      <div class="itemBtns">
+        <button class="smallBtn" data-open="${action.id}">open Gmail</button>
+        <button class="smallBtn" data-done="${action.id}">${action.done ? "undo" : "done"}</button>
+        <button class="smallBtn danger" data-delete="${action.id}">delete</button>
+      </div>
+    `;
+
+    els.actionList.appendChild(item);
+  });
+}
+
+document.querySelectorAll("[data-query]").forEach(button => {
+  button.addEventListener("click", () => {
+    window.open(gmailUrl(button.getAttribute("data-query")), "_blank", "noopener");
+  });
+});
+
+els.saveBtn.addEventListener("click", addAction);
+els.clearBtn.addEventListener("click", clearForm);
+
+document.addEventListener("click", event => {
+  const openId = event.target.getAttribute("data-open");
+  const doneId = event.target.getAttribute("data-done");
+  const deleteId = event.target.getAttribute("data-delete");
+
+  if(openId){
+    const action = actions.find(item => item.id === openId);
+    if(action) openActionSearch(action);
+  }
+
+  if(doneId){
+    toggleDone(doneId);
+  }
+
+  if(deleteId){
+    deleteAction(deleteId);
+  }
+});
+
+render();
+</script>
+</body>
+</html>

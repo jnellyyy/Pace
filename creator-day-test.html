@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pace Creator Day Plan</title>
+
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
+<meta name="robots" content="noindex,nofollow">
+
+<style>
+:root{
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --line:rgba(255,255,255,0.11);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --accent:#ff3b30;
+  --green:#22c55e;
+  --blue:#60a5fa;
+  --amber:#f59e0b;
+  --shadow:0 22px 58px rgba(0,0,0,0.38);
+  --radius:26px;
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,59,48,0.15), transparent 32%),
+    radial-gradient(circle at 90% 8%, rgba(245,158,11,0.10), transparent 30%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.wrap{
+  width:min(1180px,100%);
+  margin:0 auto;
+  padding:18px;
+  padding-bottom:40px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:16px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  font-weight:900;
+}
+
+h1,
+h2,
+h3,
+p{
+  margin:0;
+}
+
+.title h1{
+  font-size:25px;
+  letter-spacing:-0.045em;
+}
+
+.title p,
+.sectionTitle p,
+.muted{
+  color:var(--muted);
+}
+
+.title p{
+  margin-top:4px;
+  font-size:13px;
+}
+
+.backBtn,
+.primaryBtn,
+.softBtn,
+.smallBtn{
+  border:1px solid var(--line);
+  border-radius:16px;
+  color:var(--text);
+  background:rgba(255,255,255,0.075);
+  font-weight:850;
+}
+
+.backBtn{
+  padding:11px 14px;
+  white-space:nowrap;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  align-items:start;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+  padding:16px;
+}
+
+.hero{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:1.1fr 0.9fr;
+  gap:14px;
+  overflow:hidden;
+  position:relative;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  right:-70px;
+  bottom:-90px;
+  border-radius:50%;
+  background:rgba(255,59,48,0.18);
+}
+
+.heroContent,
+.stats{
+  position:relative;
+  z-index:1;
+}
+
+.heroContent h2{
+  font-size:34px;
+  letter-spacing:-0.06em;
+}
+
+.heroContent p{
+  margin-top:9px;
+  color:var(--muted);
+  line-height:1.55;
+  max-width:620px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.stat{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.06);
+  border-radius:20px;
+  padding:14px;
+}
+
+.stat span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.stat strong{
+  display:block;
+  margin-top:6px;
+  font-size:26px;
+  letter-spacing:-0.05em;
+}
+
+.sectionTitle{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.sectionTitle h2{
+  font-size:18px;
+  letter-spacing:-0.03em;
+}
+
+.sectionTitle p{
+  margin-top:4px;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.pill{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  border-radius:999px;
+  padding:7px 10px;
+  color:var(--muted);
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.formGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.field label{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border:1px solid var(--line);
+  outline:0;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:16px;
+  padding:12px;
+}
+
+.field textarea{
+  min-height:118px;
+  resize:vertical;
+}
+
+.field select option{
+  background:#171a20;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+.primaryBtn{
+  flex:1;
+  background:var(--accent);
+  border-color:rgba(255,59,48,0.65);
+  padding:12px 14px;
+}
+
+.softBtn{
+  padding:12px 14px;
+}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.item{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.055);
+  border-radius:20px;
+  padding:13px;
+}
+
+.itemTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.itemTitle{
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+
+.itemMeta{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+}
+
+.itemBody{
+  margin-top:10px;
+  color:#dce3ef;
+  font-size:14px;
+  line-height:1.45;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.smallBtn{
+  padding:8px 10px;
+  font-size:12px;
+}
+
+.smallBtn.danger{
+  color:#fecaca;
+}
+
+.itemBtns{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.empty{
+  border:1px dashed rgba(255,255,255,0.14);
+  border-radius:18px;
+  padding:18px;
+  color:var(--muted);
+  text-align:center;
+  line-height:1.45;
+}
+
+@media(max-width:850px){
+  .grid,
+  .hero{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:620px){
+  .wrap{
+    padding:14px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .heroContent h2{
+    font-size:28px;
+  }
+
+  .stats,
+  .formGrid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">P</div>
+      <div class="title">
+        <h1>Creator Day Plan</h1>
+        <p>Deliveroo, filming, editing and the money target.</p>
+      </div>
+    </div>
+
+    <a class="backBtn" href="creators-test.html">Creators</a>
+  </header>
+
+  <main class="grid">
+    <section class="card hero">
+      <div class="heroContent">
+        <h2 id="heroDate">Today</h2>
+        <p id="heroLine">Set a clear target for the day, then log what happened.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span>need</span>
+          <strong id="needStat">£0</strong>
+        </div>
+        <div class="stat">
+          <span>earned</span>
+          <strong id="earnedStat">£0</strong>
+        </div>
+        <div class="stat">
+          <span>left</span>
+          <strong id="leftStat">£0</strong>
+        </div>
+        <div class="stat">
+          <span>hours</span>
+          <strong id="hoursStat">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sectionTitle">
+        <div>
+          <h2>Today setup</h2>
+          <p>The amount, the reason, and the plan.</p>
+        </div>
+        <span class="pill">daily</span>
+      </div>
+
+      <div class="formGrid">
+        <div class="field">
+          <label>date</label>
+          <input id="dateInput" type="date">
+        </div>
+
+        <div class="field">
+          <label>need today</label>
+          <input id="targetInput" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+
+      <div class="formGrid" style="margin-top:10px;">
+        <div class="field">
+          <label>earned so far</label>
+          <input id="earnedInput" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+
+        <div class="field">
+          <label>available hours</label>
+          <input id="hoursInput" type="number" min="0" step="0.25" placeholder="0">
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label>what is this money for?</label>
+        <input id="reasonInput" placeholder="food shop, bill, travel, buffer, debt">
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label>day plan</label>
+        <textarea id="planInput" placeholder="Deliveroo window, edit block, admin, rest, backup plan"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primaryBtn" id="saveDayBtn">save day</button>
+        <button class="softBtn" id="resetDayBtn">reset</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sectionTitle">
+        <div>
+          <h2>Add day note</h2>
+          <p>Quickly document what happened.</p>
+        </div>
+        <span class="pill">log</span>
+      </div>
+
+      <div class="formGrid">
+        <div class="field">
+          <label>type</label>
+          <select id="noteTypeInput">
+            <option value="Deliveroo">Deliveroo</option>
+            <option value="Creator">Creator</option>
+            <option value="Money">Money</option>
+            <option value="Admin">Admin</option>
+            <option value="Energy">Energy</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>amount</label>
+          <input id="noteAmountInput" type="number" min="0" step="0.01" placeholder="optional">
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label>note</label>
+        <textarea id="noteTextInput" placeholder="what you did, what you earned, what needs carrying forward"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primaryBtn" id="addNoteBtn">add note</button>
+        <button class="softBtn" id="clearNoteBtn">clear</button>
+      </div>
+    </section>
+
+    <section class="card" style="grid-column:1 / -1;">
+      <div class="sectionTitle">
+        <div>
+          <h2>Day log</h2>
+          <p>Notes for the selected date.</p>
+        </div>
+        <span class="pill" id="noteCountPill">0 notes</span>
+      </div>
+
+      <div class="list" id="noteList"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const STORAGE_KEY = "pace_creator_day_v1";
+
+const els = {
+  dateInput: document.getElementById("dateInput"),
+  targetInput: document.getElementById("targetInput"),
+  earnedInput: document.getElementById("earnedInput"),
+  hoursInput: document.getElementById("hoursInput"),
+  reasonInput: document.getElementById("reasonInput"),
+  planInput: document.getElementById("planInput"),
+  saveDayBtn: document.getElementById("saveDayBtn"),
+  resetDayBtn: document.getElementById("resetDayBtn"),
+  noteTypeInput: document.getElementById("noteTypeInput"),
+  noteAmountInput: document.getElementById("noteAmountInput"),
+  noteTextInput: document.getElementById("noteTextInput"),
+  addNoteBtn: document.getElementById("addNoteBtn"),
+  clearNoteBtn: document.getElementById("clearNoteBtn"),
+  noteList: document.getElementById("noteList"),
+  noteCountPill: document.getElementById("noteCountPill"),
+  heroDate: document.getElementById("heroDate"),
+  heroLine: document.getElementById("heroLine"),
+  needStat: document.getElementById("needStat"),
+  earnedStat: document.getElementById("earnedStat"),
+  leftStat: document.getElementById("leftStat"),
+  hoursStat: document.getElementById("hoursStat")
+};
+
+let state = loadState();
+
+function today(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function numberValue(value){
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function money(value){
+  return new Intl.NumberFormat("en-GB", {
+    style:"currency",
+    currency:"GBP",
+    maximumFractionDigits:0
+  }).format(Number(value) || 0);
+}
+
+function escapeHtml(text){
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function loadState(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    return {
+      selectedDate: saved.selectedDate || today(),
+      days: saved.days && typeof saved.days === "object" ? saved.days : {}
+    };
+  }catch(error){
+    return {
+      selectedDate: today(),
+      days: {}
+    };
+  }
+}
+
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function getDay(){
+  if(!state.days[state.selectedDate]){
+    state.days[state.selectedDate] = {
+      target:0,
+      earned:0,
+      hours:0,
+      reason:"",
+      plan:"",
+      notes:[]
+    };
+  }
+
+  return state.days[state.selectedDate];
+}
+
+function saveDay(){
+  const day = getDay();
+  day.target = numberValue(els.targetInput.value);
+  day.earned = numberValue(els.earnedInput.value);
+  day.hours = numberValue(els.hoursInput.value);
+  day.reason = els.reasonInput.value.trim();
+  day.plan = els.planInput.value.trim();
+  saveState();
+  render();
+}
+
+function resetDay(){
+  const confirmed = confirm("Reset this creator day?");
+  if(!confirmed) return;
+  delete state.days[state.selectedDate];
+  saveState();
+  render();
+}
+
+function clearNote(){
+  els.noteTypeInput.value = "Deliveroo";
+  els.noteAmountInput.value = "";
+  els.noteTextInput.value = "";
+}
+
+function addNote(){
+  const text = els.noteTextInput.value.trim();
+  const amount = numberValue(els.noteAmountInput.value);
+
+  if(!text && amount <= 0){
+    return;
+  }
+
+  const day = getDay();
+
+  day.notes.unshift({
+    id:uid(),
+    type:els.noteTypeInput.value,
+    amount,
+    text,
+    createdAt:new Date().toISOString()
+  });
+
+  if(els.noteTypeInput.value === "Deliveroo" && amount > 0){
+    day.earned = numberValue(day.earned) + amount;
+  }
+
+  saveState();
+  clearNote();
+  render();
+}
+
+function deleteNote(id){
+  const day = getDay();
+  day.notes = day.notes.filter(note => note.id !== id);
+  saveState();
+  render();
+}
+
+function render(){
+  const day = getDay();
+  const left = Math.max(numberValue(day.target) - numberValue(day.earned), 0);
+  const perHour = numberValue(day.hours) > 0 ? left / numberValue(day.hours) : 0;
+
+  els.dateInput.value = state.selectedDate;
+  els.targetInput.value = day.target || "";
+  els.earnedInput.value = day.earned || "";
+  els.hoursInput.value = day.hours || "";
+  els.reasonInput.value = day.reason || "";
+  els.planInput.value = day.plan || "";
+
+  els.heroDate.textContent = state.selectedDate;
+  els.heroLine.textContent = day.reason
+    ? `${day.reason}. ${money(left)} left, about ${money(perHour)} per hour.`
+    : `${money(left)} left, about ${money(perHour)} per hour.`;
+
+  els.needStat.textContent = money(day.target);
+  els.earnedStat.textContent = money(day.earned);
+  els.leftStat.textContent = money(left);
+  els.hoursStat.textContent = String(day.hours || 0);
+
+  els.noteCountPill.textContent = day.notes.length === 1 ? "1 note" : `${day.notes.length} notes`;
+  els.noteList.innerHTML = "";
+
+  if(day.notes.length === 0){
+    els.noteList.innerHTML = `<div class="empty">No notes for this day yet.</div>`;
+    return;
+  }
+
+  day.notes.forEach(note => {
+    const item = document.createElement("div");
+    item.className = "item";
+
+    item.innerHTML = `
+      <div class="itemTop">
+        <div>
+          <div class="itemTitle">${escapeHtml(note.type)}</div>
+          <div class="itemMeta">${note.amount ? money(note.amount) + " • " : ""}${new Date(note.createdAt).toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" })}</div>
+        </div>
+      </div>
+      <div class="itemBody">${escapeHtml(note.text || "Money logged.")}</div>
+      <div class="itemBtns">
+        <button class="smallBtn danger" data-delete-note="${note.id}">delete</button>
+      </div>
+    `;
+
+    els.noteList.appendChild(item);
+  });
+}
+
+els.dateInput.addEventListener("change", () => {
+  state.selectedDate = els.dateInput.value || today();
+  saveState();
+  render();
+});
+
+els.saveDayBtn.addEventListener("click", saveDay);
+els.resetDayBtn.addEventListener("click", resetDay);
+els.addNoteBtn.addEventListener("click", addNote);
+els.clearNoteBtn.addEventListener("click", clearNote);
+
+document.addEventListener("click", event => {
+  const deleteId = event.target.getAttribute("data-delete-note");
+
+  if(deleteId){
+    deleteNote(deleteId);
+  }
+});
+
+render();
+</script>
+</body>
+</html>
