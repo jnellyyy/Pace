@@ -1,0 +1,14 @@
+name = "pace-gmail-worker"
+main = "src/index.js"
+compatibility_date = "2026-06-02"
+
+[triggers]
+crons = ["0 */6 * * *"]
+
+[[kv_namespaces]]
+binding = "PACE_GMAIL_KV"
+id = "3790b2dd48bc42d8947baaccec39b86b"
+
+[vars]
+APP_ORIGIN = "https://janellelamptey.github.io"
+APP_PATH = "/Pace/email-command-test.html"

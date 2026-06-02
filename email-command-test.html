@@ -205,6 +205,30 @@ p{
   margin-top:14px;
 }
 
+.connectionGrid{
+  display:grid;
+  grid-template-columns:1fr 0.8fr auto auto;
+  gap:9px;
+  margin-top:14px;
+}
+
+.connectionInput{
+  min-width:0;
+  border:1px solid var(--line);
+  outline:0;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:16px;
+  padding:12px;
+}
+
+.syncStatus{
+  margin-top:9px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
 .gmailBtn{
   display:flex;
   align-items:center;
@@ -431,6 +455,7 @@ p{
   }
 
   .searchGrid,
+  .connectionGrid,
   .heroStats,
   .formGrid{
     grid-template-columns:1fr;
@@ -472,6 +497,15 @@ p{
           <button class="gmailBtn" data-query="newer_than:30d (delivery OR booking OR client OR shoot OR invoice)">Creator work</button>
           <button class="gmailBtn" data-query="newer_than:14d is:unread -category:promotions">Unread clean sweep</button>
         </div>
+
+        <div class="connectionGrid">
+          <input class="connectionInput" id="workerUrlInput" placeholder="Cloudflare Worker URL">
+          <input class="connectionInput" id="workerKeyInput" placeholder="Private key">
+          <button class="gmailBtn" id="connectGmailBtn" type="button">Connect Gmail</button>
+          <button class="gmailBtn" id="syncGmailBtn" type="button">Sync now</button>
+        </div>
+
+        <div class="syncStatus" id="syncStatus">Connect the Gmail catcher when the Worker is deployed.</div>
       </div>
 
       <div class="heroStats">
@@ -576,8 +610,15 @@ p{
 
 <script>
 const STORAGE_KEY = "pace_email_command_v1";
+const WORKER_URL_KEY = "pace_gmail_worker_url_v1";
+const WORKER_ACCESS_KEY = "pace_gmail_worker_access_key_v1";
 
 const els = {
+  workerUrlInput: document.getElementById("workerUrlInput"),
+  workerKeyInput: document.getElementById("workerKeyInput"),
+  connectGmailBtn: document.getElementById("connectGmailBtn"),
+  syncGmailBtn: document.getElementById("syncGmailBtn"),
+  syncStatus: document.getElementById("syncStatus"),
   fromInput: document.getElementById("fromInput"),
   subjectInput: document.getElementById("subjectInput"),
   typeInput: document.getElementById("typeInput"),
@@ -596,6 +637,8 @@ const els = {
 };
 
 let actions = loadActions();
+els.workerUrlInput.value = localStorage.getItem(WORKER_URL_KEY) || "";
+els.workerKeyInput.value = localStorage.getItem(WORKER_ACCESS_KEY) || "";
 
 function uid(){
   return Date.now().toString(36) + Math.random().toString(36).slice(2);
@@ -612,6 +655,35 @@ function loadActions(){
 
 function saveActions(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(actions));
+}
+
+function getWorkerUrl(){
+  return els.workerUrlInput.value.trim().replace(/\/+$/, "");
+}
+
+function saveWorkerUrl(){
+  const workerUrl = getWorkerUrl();
+  localStorage.setItem(WORKER_URL_KEY, workerUrl);
+  return workerUrl;
+}
+
+function getWorkerKey(){
+  return els.workerKeyInput.value.trim();
+}
+
+function saveWorkerKey(){
+  const workerKey = getWorkerKey();
+  localStorage.setItem(WORKER_ACCESS_KEY, workerKey);
+  return workerKey;
+}
+
+function workerHeaders(){
+  const key = saveWorkerKey();
+  return key ? { "X-Pace-Key":key } : {};
+}
+
+function setSyncStatus(text){
+  els.syncStatus.textContent = text;
 }
 
 function money(value){
@@ -686,8 +758,83 @@ function deleteAction(id){
 }
 
 function openActionSearch(action){
+  if(action.gmailUrl){
+    window.open(action.gmailUrl, "_blank", "noopener");
+    return;
+  }
+
   const bits = [action.from, action.subject].filter(Boolean).join(" ");
   window.open(gmailUrl(bits || "newer_than:30d"), "_blank", "noopener");
+}
+
+function mergePulledActions(pulledActions){
+  const byId = new Map(actions.map(action => [action.gmailId || action.id, action]));
+
+  pulledActions.forEach(action => {
+    const key = action.gmailId || action.id;
+
+    if(!byId.has(key)){
+      byId.set(key, action);
+    }
+  });
+
+  actions = [...byId.values()];
+  saveActions();
+  render();
+}
+
+async function fetchPulledActions(){
+  const workerUrl = saveWorkerUrl();
+
+  if(!workerUrl){
+    setSyncStatus("Paste your Cloudflare Worker URL first.");
+    return;
+  }
+
+  setSyncStatus("Loading pulled Gmail actions...");
+
+  try{
+    const response = await fetch(`${workerUrl}/actions`, {
+      headers:workerHeaders()
+    });
+    const data = await response.json();
+
+    if(!response.ok || !data.ok){
+      throw new Error(data.error || "Could not load Gmail actions.");
+    }
+
+    mergePulledActions(data.actions || []);
+    setSyncStatus(`Loaded ${(data.actions || []).length} pulled Gmail action${(data.actions || []).length === 1 ? "" : "s"}.`);
+  }catch(error){
+    setSyncStatus(error.message || "Could not load Gmail actions.");
+  }
+}
+
+async function syncGmail(){
+  const workerUrl = saveWorkerUrl();
+
+  if(!workerUrl){
+    setSyncStatus("Paste your Cloudflare Worker URL first.");
+    return;
+  }
+
+  setSyncStatus("Checking Gmail for money and due-soon emails...");
+
+  try{
+    const response = await fetch(`${workerUrl}/sync`, {
+      headers:workerHeaders()
+    });
+    const data = await response.json();
+
+    if(!response.ok || !data.ok){
+      throw new Error(data.error || "Could not sync Gmail.");
+    }
+
+    mergePulledActions(data.actions || []);
+    setSyncStatus(`Synced ${(data.actions || []).length} Gmail action${(data.actions || []).length === 1 ? "" : "s"}.`);
+  }catch(error){
+    setSyncStatus(error.message || "Could not sync Gmail.");
+  }
 }
 
 function render(){
@@ -751,6 +898,21 @@ document.querySelectorAll("[data-query]").forEach(button => {
 
 els.saveBtn.addEventListener("click", addAction);
 els.clearBtn.addEventListener("click", clearForm);
+els.workerUrlInput.addEventListener("change", saveWorkerUrl);
+els.workerKeyInput.addEventListener("change", saveWorkerKey);
+els.connectGmailBtn.addEventListener("click", () => {
+  const workerUrl = saveWorkerUrl();
+  const workerKey = saveWorkerKey();
+
+  if(!workerUrl){
+    setSyncStatus("Paste your Cloudflare Worker URL first.");
+    return;
+  }
+
+  const keyParam = workerKey ? `?key=${encodeURIComponent(workerKey)}` : "";
+  window.location.href = `${workerUrl}/auth/start${keyParam}`;
+});
+els.syncGmailBtn.addEventListener("click", syncGmail);
 
 document.addEventListener("click", event => {
   const openId = event.target.getAttribute("data-open");
@@ -772,6 +934,13 @@ document.addEventListener("click", event => {
 });
 
 render();
+
+if(new URLSearchParams(window.location.search).get("gmail") === "connected"){
+  setSyncStatus("Gmail connected. Loading pulled actions...");
+  fetchPulledActions();
+}else if(getWorkerUrl()){
+  fetchPulledActions();
+}
 </script>
 </body>
 </html>
