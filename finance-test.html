@@ -756,6 +756,7 @@ textarea{
         <div class="actions">
           <button class="btn btnPrimary" id="saveSetupBtn">save setup</button>
           <button class="btn btnSoft" id="resetMonthBtn">reset month</button>
+          <button class="btn btnSoft" id="restorePlanBtn">load June plan</button>
         </div>
 
       </div>
@@ -867,6 +868,39 @@ textarea{
           <button class="btn btnPrimary" id="addSpendBtn">add spend</button>
           <button class="btn btnSoft" id="clearSpendBtn">clear</button>
         </div>
+
+      </div>
+    </section>
+
+    <section class="card" style="grid-column:1 / -1;">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>pay order</h2>
+            <p>Clear these in this order before payday, then put anything left into buffer.</p>
+          </div>
+          <span class="pill" id="payOrderCountPill">0 left</span>
+        </div>
+
+        <div class="plannerStrip">
+          <div class="plannerBox">
+            <span>pre-payday total</span>
+            <strong id="prePaydayTotal">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>safe Deliveroo target</span>
+            <strong id="safeDeliverooTarget">£275.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>peace target</span>
+            <strong id="peaceDeliverooTarget">£300.00</strong>
+          </div>
+        </div>
+
+        <div class="list" id="payOrderList"></div>
 
       </div>
     </section>
@@ -1079,6 +1113,7 @@ const els = {
   balanceInput: document.getElementById("balanceInput"),
   saveSetupBtn: document.getElementById("saveSetupBtn"),
   resetMonthBtn: document.getElementById("resetMonthBtn"),
+  restorePlanBtn: document.getElementById("restorePlanBtn"),
 
   billNameInput: document.getElementById("billNameInput"),
   billAmountInput: document.getElementById("billAmountInput"),
@@ -1113,6 +1148,10 @@ const els = {
   trickleNeedSummary: document.getElementById("trickleNeedSummary"),
   mustPaySummary: document.getElementById("mustPaySummary"),
   earnPerDaySummary: document.getElementById("earnPerDaySummary"),
+  payOrderCountPill: document.getElementById("payOrderCountPill"),
+  prePaydayTotal: document.getElementById("prePaydayTotal"),
+  safeDeliverooTarget: document.getElementById("safeDeliverooTarget"),
+  peaceDeliverooTarget: document.getElementById("peaceDeliverooTarget"),
 
   standingOrderList: document.getElementById("standingOrderList"),
   directDebitList: document.getElementById("directDebitList"),
@@ -1128,6 +1167,7 @@ const els = {
   emailPaymentCountPill: document.getElementById("emailPaymentCountPill"),
   spendList: document.getElementById("spendList"),
   trickleList: document.getElementById("trickleList"),
+  payOrderList: document.getElementById("payOrderList"),
   emailPaymentList: document.getElementById("emailPaymentList"),
 
   allSpendTab: document.getElementById("allSpendTab"),
@@ -1139,6 +1179,59 @@ const els = {
 
 let activeSpendFilter = "all";
 let emailActions = [];
+
+const JUNE_PLAN = {
+  month:"2026-06",
+  income:1826.55,
+  deliverooTargets:{
+    minimum:245,
+    safe:275,
+    peace:300
+  },
+  fixedBills:[
+    { name:"Cityrise rent", amount:740, dueDay:1, type:"standingOrder", category:"home" },
+    { name:"Sheffield Credit Union", amount:200, dueDay:1, type:"standingOrder", category:"debt" },
+    { name:"Credit Spring", amount:60, dueDay:1, type:"directDebit", category:"debt" },
+    { name:"E.ON", amount:106.21, dueDay:1, type:"directDebit", category:"home" },
+    { name:"Rotherham Borough", amount:97, dueDay:1, type:"directDebit", category:"home" },
+    { name:"EE phone", amount:37.46, dueDay:1, type:"directDebit", category:"phone" },
+    { name:"Plusnet", amount:29.99, dueDay:1, type:"directDebit", category:"phone" },
+    { name:"Zero Deposit", amount:17.98, dueDay:1, type:"directDebit", category:"home" },
+    { name:"Water", amount:48.46, dueDay:2, type:"directDebit", category:"home" },
+    { name:"Mr Lender", amount:109.16, dueDay:19, type:"manualPayment", category:"debt" },
+    { name:"Zable", amount:60, dueDay:1, type:"manualPayment", category:"debt" },
+    { name:"Capital One", amount:34.53, dueDay:23, type:"manualPayment", category:"debt" },
+    { name:"Brum charging costs", amount:60, dueDay:1, type:"manualPayment", category:"transport" }
+  ],
+  trickles:[
+    { name:"Water", amount:48.46, priority:"must", dueDate:"2026-06-02", source:"Due now", paid:false, note:"Due now" },
+    { name:"Mini charging", amount:46.50, priority:"must", dueDate:"2026-06-05", source:"Car", paid:false, note:"Car related, clear before more charging stress" },
+    { name:"Electroverse balance", amount:28, priority:"must", dueDate:"2026-06-05", source:"Charging", paid:false, note:"Clear before more long trips" },
+    { name:"Subscription charge", amount:10.50, priority:"must", dueDate:"2026-06-05", source:"Subscription", paid:false, note:"Small, clear so it does not keep hanging" },
+    { name:"Mr Lender", amount:109.16, priority:"must", dueDate:"2026-06-19", source:"Debt", paid:false, note:"Due before payday, so this is the big one" },
+    { name:"Klarna June", amount:110.18, priority:"must", dueDate:"2026-06-20", source:"BNPL", paid:false, note:"Needs BNPL pot" },
+    { name:"Clearpay", amount:58.21, priority:"soon", dueDate:"2026-06-20", source:"BNPL", paid:false, note:"Approx amount. Wait until hold ends and confirm in app" },
+    { name:"Capital One", amount:34.53, priority:"soon", dueDate:"2026-06-23", source:"Debt", paid:false, note:"Can be handled from payday if needed" }
+  ],
+  payOrder:[
+    "Water",
+    "Mini charging",
+    "Electroverse balance",
+    "Subscription charge",
+    "Mr Lender",
+    "Klarna June",
+    "Clearpay",
+    "Capital One"
+  ],
+  nextMonth:{
+    fixed:1600.79,
+    klarna:182.76,
+    clearpay:"check after 20 June hold ends",
+    miniCharging:46.50,
+    knownBeforeClearpay:1830.05,
+    warning:"July known total is already about £1,830.05 against £1,826.55 salary, before Clearpay, food, fun, emergency or extra charging."
+  }
+};
 
 let state = {
   selectedMonth: getCurrentMonth(),
@@ -1560,6 +1653,34 @@ function deleteTrickle(id){
   showToast("Trickle deleted.");
 }
 
+function loadJunePlan(){
+  const confirmed = confirm("Load your June finance plan? This will replace saved fixed bills and June pressure items, but keep spending history.");
+
+  if(!confirmed) return;
+
+  state.selectedMonth = JUNE_PLAN.month;
+  state.months[JUNE_PLAN.month] = {
+    income:JUNE_PLAN.income,
+    startingBalance:0
+  };
+
+  state.fixedBills = JUNE_PLAN.fixedBills.map(bill => ({
+    id:uid(),
+    ...bill
+  }));
+
+  state.trickles = state.trickles.filter(trickle => trickle.month !== JUNE_PLAN.month);
+  state.trickles.push(...JUNE_PLAN.trickles.map(trickle => ({
+    id:uid(),
+    ...trickle,
+    month:JUNE_PLAN.month
+  })));
+
+  save();
+  render();
+  showToast("June plan loaded.");
+}
+
 function saveSetup(){
   const monthData = getMonthData();
 
@@ -1694,6 +1815,54 @@ function getPriorityLabel(priority){
   return labels[priority] || "soon";
 }
 
+function getOrderedJuneTrickles(){
+  const order = new Map(JUNE_PLAN.payOrder.map((name,index) => [name,index]));
+
+  return getMonthTrickles()
+    .filter(trickle => order.has(trickle.name))
+    .slice()
+    .sort((a,b) => order.get(a.name) - order.get(b.name));
+}
+
+function renderPayOrder(){
+  const ordered = getOrderedJuneTrickles();
+  const remaining = ordered.filter(item => !item.paid);
+  const prePaydayNames = new Set(["Water", "Mini charging", "Electroverse balance", "Subscription charge", "Mr Lender"]);
+  const prePaydayTotal = remaining
+    .filter(item => prePaydayNames.has(item.name))
+    .reduce((sum,item) => sum + numberValue(item.amount),0);
+
+  els.prePaydayTotal.textContent = money(prePaydayTotal);
+  els.safeDeliverooTarget.textContent = money(JUNE_PLAN.deliverooTargets.safe);
+  els.peaceDeliverooTarget.textContent = money(JUNE_PLAN.deliverooTargets.peace);
+  els.payOrderCountPill.textContent = remaining.length === 1 ? "1 left" : `${remaining.length} left`;
+  els.payOrderList.innerHTML = "";
+
+  if(ordered.length === 0){
+    els.payOrderList.innerHTML = `<div class="empty">Load the June plan to see the pay order.</div>`;
+    return;
+  }
+
+  ordered.forEach((item,index) => {
+    const row = document.createElement("div");
+    row.className = "transaction";
+
+    row.innerHTML = `
+      <div class="transactionLeft">
+        <strong>${index + 1}. ${escapeHtml(item.name)}</strong>
+        <span>${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}</span>
+      </div>
+
+      <div class="transactionRight">
+        <div class="transactionAmount">${money(item.amount)}</div>
+        <button class="iconBtn" data-toggle-trickle="${item.id}">${item.paid ? "unpaid" : "paid"}</button>
+      </div>
+    `;
+
+    els.payOrderList.appendChild(row);
+  });
+}
+
 function renderTrickles(){
   const trickles = getMonthTrickles()
     .slice()
@@ -1795,6 +1964,8 @@ function renderSummary(){
     els.monthStatus.textContent = "Add your income so Pace can calculate what is safe to spend.";
   }else if(left < 0){
     els.monthStatus.textContent = `${money(Math.abs(left))} needs covering before the month is clear.`;
+  }else if(state.selectedMonth === JUNE_PLAN.month && trickles > 0){
+    els.monthStatus.textContent = `${money(daily)} safe per day after June pressure. July is already tight before Clearpay.`;
   }else if(trickles > 0){
     els.monthStatus.textContent = `${money(daily)} safe per day after covering ${money(trickles)} of extras.`;
   }else{
@@ -1816,6 +1987,7 @@ function render(){
   els.monthInput.value = state.selectedMonth;
   renderSummary();
   renderBills();
+  renderPayOrder();
   renderEmailPayments();
   renderTrickles();
   renderSpends();
@@ -1838,6 +2010,7 @@ els.monthInput.addEventListener("change", () => {
 
 els.saveSetupBtn.addEventListener("click", saveSetup);
 els.resetMonthBtn.addEventListener("click", resetMonth);
+els.restorePlanBtn.addEventListener("click", loadJunePlan);
 
 els.addBillBtn.addEventListener("click", addBill);
 els.clearBillBtn.addEventListener("click", clearBillForm);
