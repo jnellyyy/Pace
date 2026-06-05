@@ -474,8 +474,8 @@ p{
       </div>
 
       <div class="actions">
-        <button class="primaryBtn" id="saveDayBtn">save day</button>
-        <button class="softBtn" id="resetDayBtn">reset</button>
+        <button type="button" class="primaryBtn" id="saveDayBtn">save day</button>
+        <button type="button" class="softBtn" id="resetDayBtn">reset</button>
       </div>
     </section>
 
@@ -512,8 +512,8 @@ p{
       </div>
 
       <div class="actions">
-        <button class="primaryBtn" id="addNoteBtn">add note</button>
-        <button class="softBtn" id="clearNoteBtn">clear</button>
+        <button type="button" class="primaryBtn" id="addNoteBtn">add note</button>
+        <button type="button" class="softBtn" id="clearNoteBtn">clear</button>
       </div>
     </section>
 
@@ -726,7 +726,7 @@ function render(){
       </div>
       <div class="itemBody">${escapeHtml(note.text || "Money logged.")}</div>
       <div class="itemBtns">
-        <button class="smallBtn danger" data-delete-note="${note.id}">delete</button>
+        <button type="button" class="smallBtn danger" data-delete-note="${note.id}">delete</button>
       </div>
     `;
 

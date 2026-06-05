@@ -924,9 +924,9 @@ select:focus{
         </div>
 
         <div class="month-buttons">
-          <button class="secondary-btn" onclick="changeMonth(-1)">Prev</button>
-          <button class="secondary-btn" onclick="goToday()">Today</button>
-          <button class="secondary-btn" onclick="changeMonth(1)">Next</button>
+          <button type="button" class="secondary-btn" onclick="changeMonth(-1)">Prev</button>
+          <button type="button" class="secondary-btn" onclick="goToday()">Today</button>
+          <button type="button" class="secondary-btn" onclick="changeMonth(1)">Next</button>
         </div>
       </div>
 
@@ -1377,8 +1377,8 @@ function renderRules() {
         </div>
 
         <div class="rule-actions">
-          <button class="secondary-btn" onclick="editRule('${rule.id}')">Edit</button>
-          <button class="danger-btn" onclick="deleteRule('${rule.id}')">Delete</button>
+          <button type="button" class="secondary-btn" onclick="editRule('${rule.id}')">Edit</button>
+          <button type="button" class="danger-btn" onclick="deleteRule('${rule.id}')">Delete</button>
         </div>
       </div>
     `;

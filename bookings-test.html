@@ -787,7 +787,7 @@ textarea{
         <textarea id="note" placeholder="Package, venue, next step, client preference"></textarea>
       </label>
 
-      <button id="saveBookingBtn" class="primary-btn">Save booking</button>
+      <button type="button" id="saveBookingBtn" class="primary-btn">Save booking</button>
       <p id="msg" class="notice"></p>
     </aside>
 
@@ -919,7 +919,7 @@ function getNextBooking(){
 
 function renderTabs(){
   tabsEl.innerHTML = statuses.map(s => `
-    <button class="tab ${activeTab === s ? "active" : ""}" onclick="setTab('${s}')">
+    <button type="button" class="tab ${activeTab === s ? "active" : ""}" onclick="setTab('${s}')">
       ${s}<span>${statusCount(s)}</span>
     </button>
   `).join("");
@@ -1073,8 +1073,8 @@ function render(){
             `).join("")}
           </select>
 
-          <button class="small-btn save" onclick="moveBooking('${b.id}')">Move</button>
-          <button class="small-btn danger" onclick="deleteBooking('${b.id}')">Delete</button>
+          <button type="button" class="small-btn save" onclick="moveBooking('${b.id}')">Move</button>
+          <button type="button" class="small-btn danger" onclick="deleteBooking('${b.id}')">Delete</button>
         </div>
 
         <details class="drawer">
@@ -1131,7 +1131,7 @@ function render(){
               <textarea id="edit-note-${b.id}">${escapeHTML(b.note || "")}</textarea>
             </label>
 
-            <button class="small-btn save" onclick="saveEdit('${b.id}')">Save changes</button>
+            <button type="button" class="small-btn save" onclick="saveEdit('${b.id}')">Save changes</button>
           </div>
         </details>
 
@@ -1151,7 +1151,7 @@ function render(){
 
                     <div class="payment-amount">
                       ${money(p.amount)}
-                      <button class="small-btn danger" onclick="deletePayment('${p.id}')">Delete</button>
+                      <button type="button" class="small-btn danger" onclick="deletePayment('${p.id}')">Delete</button>
                     </div>
                   </div>
                 `).join("")
@@ -1185,7 +1185,7 @@ function render(){
               <input id="pay-note-${b.id}" placeholder="Optional note">
             </label>
 
-            <button class="small-btn" onclick="addPayment('${b.id}')">Add payment</button>
+            <button type="button" class="small-btn" onclick="addPayment('${b.id}')">Add payment</button>
           </div>
         </details>
       </article>

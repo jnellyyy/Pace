@@ -701,7 +701,7 @@ textarea{
 
     <div class="top-actions">
       <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
-      <button class="icon-btn" onclick="openNew()">＋</button>
+      <button type="button" class="icon-btn" onclick="openNew()">＋</button>
     </div>
   </header>
 
@@ -719,7 +719,7 @@ textarea{
 
     <div class="search-row">
       <input id="search" placeholder="Search list, section or item" oninput="render()">
-      <button class="add-inline" onclick="openNew()">＋</button>
+      <button type="button" class="add-inline" onclick="openNew()">＋</button>
     </div>
 
     <div class="grid" id="notesGrid"></div>
@@ -739,7 +739,7 @@ textarea{
           <h1 style="font-size:24px;">Edit list</h1>
         </div>
 
-        <button class="close-btn" onclick="closeModal()">×</button>
+        <button type="button" class="close-btn" onclick="closeModal()">×</button>
       </div>
 
       <label class="field">
@@ -747,7 +747,7 @@ textarea{
         <input id="listTitle" placeholder="Marvin and Blessing Wedding">
       </label>
 
-      <button class="primary-btn" onclick="saveListTitle()">Save main list title</button>
+      <button type="button" class="primary-btn" onclick="saveListTitle()">Save main list title</button>
 
       <div class="divider"></div>
 
@@ -774,7 +774,7 @@ admin
         </label>
       </div>
 
-      <button class="secondary-btn" onclick="importSection()">Import section</button>
+      <button type="button" class="secondary-btn" onclick="importSection()">Import section</button>
 
       <div id="itemsWrap" style="margin-top:16px;"></div>
 
@@ -804,8 +804,8 @@ admin
         </label>
       </div>
 
-      <button class="primary-btn" onclick="addItem()">Add item</button>
-      <button class="danger-btn" onclick="deleteList()">Delete whole list</button>
+      <button type="button" class="primary-btn" onclick="addItem()">Add item</button>
+      <button type="button" class="danger-btn" onclick="deleteList()">Delete whole list</button>
 
       <div id="status" class="status"></div>
 
@@ -1122,7 +1122,7 @@ function renderActiveItems(){
               ${rem ? `<div class="item-date">⏰ ${formatReminder(rem)}</div>` : ""}
             </div>
 
-            <button class="delete-small" onclick="event.stopPropagation(); deleteItem('${item.id}')">Delete</button>
+            <button type="button" class="delete-small" onclick="event.stopPropagation(); deleteItem('${item.id}')">Delete</button>
           </div>
         `;
       }).join("")

@@ -651,7 +651,7 @@ input::placeholder{
           </label>
         </div>
 
-        <button class="primary-btn" onclick="addEntry()">Add entry</button>
+        <button type="button" class="primary-btn" onclick="addEntry()">Add entry</button>
         <div id="msg" class="notice"></div>
       </div>
 
@@ -675,7 +675,7 @@ input::placeholder{
           </label>
         </div>
 
-        <button class="primary-btn" onclick="saveSettings()">Save target</button>
+        <button type="button" class="primary-btn" onclick="saveSettings()">Save target</button>
       </div>
 
     </aside>
@@ -902,7 +902,7 @@ function entryTemplate(e){
         <div class="entry-pill">${mode}</div>
       </div>
 
-      <button class="small-btn" onclick="deleteEntry('${e.id}')">Delete</button>
+      <button type="button" class="small-btn" onclick="deleteEntry('${e.id}')">Delete</button>
     </div>
   `;
 }

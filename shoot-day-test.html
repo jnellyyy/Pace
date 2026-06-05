@@ -536,8 +536,8 @@ textarea{
         </label>
 
         <div class="actions">
-          <button class="action-btn save" onclick="saveShotFromForm()">Save shot</button>
-          <button class="action-btn secondary" onclick="clearShotForm()">Clear form</button>
+          <button type="button" class="action-btn save" onclick="saveShotFromForm()">Save shot</button>
+          <button type="button" class="action-btn secondary" onclick="clearShotForm()">Clear form</button>
         </div>
       </div>
     </div>
@@ -559,7 +559,7 @@ location | shot | lens | fps | movement | priority | framing | creative example
 The County Hotel Venue | room energy | wide 24mm | 50fps | handheld | B | wide to mid | keep it alive"></textarea>
         </label>
 
-        <button class="action-btn green" onclick="appendPastedRows()">Add pasted shots</button>
+        <button type="button" class="action-btn green" onclick="appendPastedRows()">Add pasted shots</button>
 
         <div class="edit-grid">
           <label>
@@ -574,8 +574,8 @@ The County Hotel Venue | room energy | wide 24mm | 50fps | handheld | B | wide t
         </div>
 
         <div class="actions">
-          <button class="action-btn secondary" onclick="addNewSection()">Add section</button>
-          <button class="action-btn secondary" onclick="saveNotesFromEditor()">Save notes</button>
+          <button type="button" class="action-btn secondary" onclick="addNewSection()">Add section</button>
+          <button type="button" class="action-btn secondary" onclick="saveNotesFromEditor()">Save notes</button>
         </div>
       </div>
     </div>
@@ -586,8 +586,8 @@ The County Hotel Venue | room energy | wide 24mm | 50fps | handheld | B | wide t
     </div>
 
     <div class="actions">
-      <button class="action-btn clear" onclick="clearSection()">Clear current section ticks</button>
-      <button class="action-btn export" onclick="copyCurrentWedding()">Copy this wedding list</button>
+      <button type="button" class="action-btn clear" onclick="clearSection()">Clear current section ticks</button>
+      <button type="button" class="action-btn export" onclick="copyCurrentWedding()">Copy this wedding list</button>
     </div>
 
     <div class="actions" id="customActions"></div>
@@ -620,8 +620,8 @@ The County Hotel Venue | room energy | wide 24mm | 50fps | handheld | B | wide t
         <textarea id="newWeddingText" class="big-textarea" placeholder="Paste the whole shot list here. You can include bullet notes, lens logic, fps logic, section headings, tables, and creative shots bank."></textarea>
       </label>
 
-      <button class="action-btn save" onclick="saveNewWedding()">Save wedding shot list</button>
-      <button class="action-btn secondary" onclick="showWedding(activeWeddingId)">Cancel</button>
+      <button type="button" class="action-btn save" onclick="saveNewWedding()">Save wedding shot list</button>
+      <button type="button" class="action-btn secondary" onclick="showWedding(activeWeddingId)">Cancel</button>
     </div>
   </div>
 
@@ -1094,14 +1094,14 @@ function renderWeddingTabs(){
   const tabs = document.getElementById("weddingTabs");
 
   const weddingButtons = allWeddings().map(wedding => `
-    <button class="tab ${viewMode === "list" && wedding.id === activeWeddingId ? "active" : ""}" onclick="showWedding('${wedding.id}')">
+    <button type="button" class="tab ${viewMode === "list" && wedding.id === activeWeddingId ? "active" : ""}" onclick="showWedding('${wedding.id}')">
       ${escapeHtml(wedding.name)}
     </button>
   `).join("");
 
   tabs.innerHTML = `
     ${weddingButtons}
-    <button class="tab add ${viewMode === "add" ? "active" : ""}" onclick="showAddArea()">+ Add shot list</button>
+    <button type="button" class="tab add ${viewMode === "add" ? "active" : ""}" onclick="showAddArea()">+ Add shot list</button>
   `;
 }
 
@@ -1133,7 +1133,7 @@ function renderSectionTabs(){
     const encoded = encodeURIComponent(section);
 
     return `
-      <button class="tab ${section === activeSection ? "active" : ""}" onclick="showSection(decodeURIComponent('${encoded}'))">
+      <button type="button" class="tab ${section === activeSection ? "active" : ""}" onclick="showSection(decodeURIComponent('${encoded}'))">
         ${escapeHtml(section)}
       </button>
     `;
@@ -1165,7 +1165,7 @@ function renderShots(){
             <div class="shot-title">${escapeHtml(shot[1] || "")}</div>
             <div class="priority ${priorityClass(priority)}">Priority ${escapeHtml(priority)}</div>
           </div>
-          <button class="check ${done ? "done" : ""}" onclick="toggleDone(${index})">
+          <button type="button" class="check ${done ? "done" : ""}" onclick="toggleDone(${index})">
             ${done ? "✓" : ""}
           </button>
         </div>
@@ -1194,10 +1194,10 @@ function renderShots(){
         </div>
 
         <div class="shot-actions">
-          <button class="mini-btn blue" onclick="editShot(${index})">Edit</button>
-          <button class="mini-btn" onclick="moveShot(${index}, -1)">Move up</button>
-          <button class="mini-btn" onclick="moveShot(${index}, 1)">Move down</button>
-          <button class="mini-btn red" onclick="deleteShot(${index})">Delete</button>
+          <button type="button" class="mini-btn blue" onclick="editShot(${index})">Edit</button>
+          <button type="button" class="mini-btn" onclick="moveShot(${index}, -1)">Move up</button>
+          <button type="button" class="mini-btn" onclick="moveShot(${index}, 1)">Move down</button>
+          <button type="button" class="mini-btn red" onclick="deleteShot(${index})">Delete</button>
         </div>
       </div>
     `;
@@ -1221,17 +1221,17 @@ function renderCustomActions(){
 
   if(wedding.locked){
     actions.innerHTML = `
-      <button class="action-btn clear" onclick="clearWeddingTicks()">Clear all ticks for this wedding</button>
-      <button class="action-btn secondary" onclick="duplicateCurrentWedding()">Duplicate this list</button>
-      <button class="action-btn delete" onclick="resetDefaultWedding()">Reset built in list</button>
+      <button type="button" class="action-btn clear" onclick="clearWeddingTicks()">Clear all ticks for this wedding</button>
+      <button type="button" class="action-btn secondary" onclick="duplicateCurrentWedding()">Duplicate this list</button>
+      <button type="button" class="action-btn delete" onclick="resetDefaultWedding()">Reset built in list</button>
     `;
     return;
   }
 
   actions.innerHTML = `
-    <button class="action-btn clear" onclick="clearWeddingTicks()">Clear all ticks for this wedding</button>
-    <button class="action-btn secondary" onclick="duplicateCurrentWedding()">Duplicate this list</button>
-    <button class="action-btn delete" onclick="deleteCurrentWedding()">Delete this custom list</button>
+    <button type="button" class="action-btn clear" onclick="clearWeddingTicks()">Clear all ticks for this wedding</button>
+    <button type="button" class="action-btn secondary" onclick="duplicateCurrentWedding()">Duplicate this list</button>
+    <button type="button" class="action-btn delete" onclick="deleteCurrentWedding()">Delete this custom list</button>
   `;
 }
 

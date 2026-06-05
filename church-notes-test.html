@@ -950,10 +950,10 @@ function renderNotes(){
         <p class="note-preview">${escapeHtml(shorten(note.main_notes || note.revelation || note.scriptures))}</p>
 
         <div class="note-actions">
-          <button class="gold" onclick="editNote('${note.id}')">Edit</button>
-          <button class="soft" onclick="copyNote('${note.id}')">Copy</button>
-          <button class="purple" onclick="openFirstScripture('${note.id}')">Open verse</button>
-          <button class="danger" onclick="deleteNote('${note.id}')">Delete</button>
+          <button type="button" class="gold" onclick="editNote('${note.id}')">Edit</button>
+          <button type="button" class="soft" onclick="copyNote('${note.id}')">Copy</button>
+          <button type="button" class="purple" onclick="openFirstScripture('${note.id}')">Open verse</button>
+          <button type="button" class="danger" onclick="deleteNote('${note.id}')">Delete</button>
         </div>
       </article>
     `;

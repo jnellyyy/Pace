@@ -609,7 +609,7 @@ input::placeholder{
 
     <div class="top-actions">
       <a href="dashboard.html" class="back-btn">‹ Dashboard</a>
-      <button class="icon-btn" onclick="toggleAddForm()">＋</button>
+      <button type="button" class="icon-btn" onclick="toggleAddForm()">＋</button>
     </div>
   </header>
 
@@ -626,7 +626,7 @@ input::placeholder{
           <p class="panel-copy">Everything due from To Do, Lists, Bookings, Creators and manual reminders.</p>
         </div>
 
-        <button class="small-btn" onclick="setView('Today')">Reset</button>
+        <button type="button" class="small-btn" onclick="setView('Today')">Reset</button>
       </div>
 
       <div id="reminderList" class="reminder-list">
@@ -661,7 +661,7 @@ input::placeholder{
           </label>
         </div>
 
-        <button class="primary-btn" onclick="addManualReminder()">Save reminder</button>
+        <button type="button" class="primary-btn" onclick="addManualReminder()">Save reminder</button>
         <div id="msg" class="notice"></div>
       </div>
 
@@ -924,7 +924,7 @@ function render(){
       </div>
 
       <div class="actions">
-        ${row.synthetic ? "" : `<button class="small-btn danger" onclick="deleteReminder('${row.id}')">Delete</button>`}
+        ${row.synthetic ? "" : `<button type="button" class="small-btn danger" onclick="deleteReminder('${row.id}')">Delete</button>`}
       </div>
     </article>
   `).join("");

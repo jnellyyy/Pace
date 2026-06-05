@@ -492,10 +492,10 @@ p{
         <p>Use the Gmail searches to sweep the noisy inbox, then park anything important here as a tiny action.</p>
 
         <div class="searchGrid">
-          <button class="gmailBtn" data-query="newer_than:14d (payment OR bill OR invoice OR receipt OR overdue)">Money emails</button>
-          <button class="gmailBtn" data-query="newer_than:14d (reply OR respond OR action OR urgent OR important)">Needs action</button>
-          <button class="gmailBtn" data-query="newer_than:30d (delivery OR booking OR client OR shoot OR invoice)">Creator work</button>
-          <button class="gmailBtn" data-query="newer_than:14d is:unread -category:promotions">Unread clean sweep</button>
+          <button type="button" class="gmailBtn" data-query="newer_than:14d (payment OR bill OR invoice OR receipt OR overdue)">Money emails</button>
+          <button type="button" class="gmailBtn" data-query="newer_than:14d (reply OR respond OR action OR urgent OR important)">Needs action</button>
+          <button type="button" class="gmailBtn" data-query="newer_than:30d (delivery OR booking OR client OR shoot OR invoice)">Creator work</button>
+          <button type="button" class="gmailBtn" data-query="newer_than:14d is:unread -category:promotions">Unread clean sweep</button>
         </div>
 
         <div class="connectionGrid">
@@ -590,8 +590,8 @@ p{
       </div>
 
       <div class="actions">
-        <button class="primaryBtn" id="saveBtn">save action</button>
-        <button class="softBtn" id="clearBtn">clear</button>
+        <button type="button" class="primaryBtn" id="saveBtn">save action</button>
+        <button type="button" class="softBtn" id="clearBtn">clear</button>
       </div>
     </section>
 
@@ -916,9 +916,9 @@ function render(){
       <div class="itemAction">${escapeHtml(action.nextAction || "Open Gmail and decide the next step.")}</div>
 
       <div class="itemBtns">
-        <button class="smallBtn" data-open="${action.id}">open Gmail</button>
-        <button class="smallBtn" data-done="${action.id}">${action.done ? "undo" : "done"}</button>
-        <button class="smallBtn danger" data-delete="${action.id}">delete</button>
+        <button type="button" class="smallBtn" data-open="${action.id}">open Gmail</button>
+        <button type="button" class="smallBtn" data-done="${action.id}">${action.done ? "undo" : "done"}</button>
+        <button type="button" class="smallBtn danger" data-delete="${action.id}">delete</button>
       </div>
     `;
 

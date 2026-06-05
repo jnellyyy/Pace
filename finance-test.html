@@ -754,9 +754,9 @@ textarea{
         </div>
 
         <div class="actions">
-          <button class="btn btnPrimary" id="saveSetupBtn">save setup</button>
-          <button class="btn btnSoft" id="resetMonthBtn">reset month</button>
-          <button class="btn btnSoft" id="restorePlanBtn">load June plan</button>
+          <button type="button" class="btn btnPrimary" id="saveSetupBtn">save setup</button>
+          <button type="button" class="btn btnSoft" id="resetMonthBtn">reset month</button>
+          <button type="button" class="btn btnSoft" id="restorePlanBtn">load June plan</button>
         </div>
 
       </div>
@@ -815,8 +815,8 @@ textarea{
         </div>
 
         <div class="actions">
-          <button class="btn btnPrimary" id="addBillBtn">add fixed bill</button>
-          <button class="btn btnSoft" id="clearBillBtn">clear</button>
+          <button type="button" class="btn btnPrimary" id="addBillBtn">add fixed bill</button>
+          <button type="button" class="btn btnSoft" id="clearBillBtn">clear</button>
         </div>
 
       </div>
@@ -865,8 +865,8 @@ textarea{
         </div>
 
         <div class="actions">
-          <button class="btn btnPrimary" id="addSpendBtn">add spend</button>
-          <button class="btn btnSoft" id="clearSpendBtn">clear</button>
+          <button type="button" class="btn btnPrimary" id="addSpendBtn">add spend</button>
+          <button type="button" class="btn btnSoft" id="clearSpendBtn">clear</button>
         </div>
 
       </div>
@@ -988,8 +988,8 @@ textarea{
         </div>
 
         <div class="actions">
-          <button class="btn btnPrimary" id="addTrickleBtn">add trickle</button>
-          <button class="btn btnSoft" id="clearTrickleBtn">clear</button>
+          <button type="button" class="btn btnPrimary" id="addTrickleBtn">add trickle</button>
+          <button type="button" class="btn btnSoft" id="clearTrickleBtn">clear</button>
         </div>
 
         <div class="list" id="trickleList" style="margin-top:14px;"></div>
@@ -1060,9 +1060,9 @@ textarea{
         </div>
 
         <div class="tabs">
-          <button class="tab active" id="allSpendTab">all</button>
-          <button class="tab" id="todaySpendTab">today</button>
-          <button class="tab" id="highSpendTab">£20 plus</button>
+          <button type="button" class="tab active" id="allSpendTab">all</button>
+          <button type="button" class="tab" id="todaySpendTab">today</button>
+          <button type="button" class="tab" id="highSpendTab">£20 plus</button>
         </div>
 
         <div class="list" id="spendList"></div>
@@ -1755,8 +1755,8 @@ function renderBills(){
         </div>
 
         <div class="billButtons">
-          <button class="iconBtn" data-edit-bill="${bill.id}">edit</button>
-          <button class="iconBtn danger" data-delete-bill="${bill.id}">delete</button>
+          <button type="button" class="iconBtn" data-edit-bill="${bill.id}">edit</button>
+          <button type="button" class="iconBtn danger" data-delete-bill="${bill.id}">delete</button>
         </div>
       `;
 
@@ -1805,7 +1805,7 @@ function renderSpends(){
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(spend.amount)}</div>
-        <button class="iconBtn danger" data-delete-spend="${spend.id}">delete</button>
+        <button type="button" class="iconBtn danger" data-delete-spend="${spend.id}">delete</button>
       </div>
     `;
 
@@ -1866,7 +1866,7 @@ function renderPayOrder(){
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(item.amount)}</div>
-        <button class="iconBtn" data-toggle-trickle="${item.id}">${item.paid ? "unpaid" : "paid"}</button>
+        <button type="button" class="iconBtn" data-toggle-trickle="${item.id}">${item.paid ? "unpaid" : "paid"}</button>
       </div>
     `;
 
@@ -1910,8 +1910,8 @@ function renderTrickles(){
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(trickle.amount)}</div>
-        <button class="iconBtn" data-toggle-trickle="${trickle.id}">${trickle.paid ? "unpaid" : "paid"}</button>
-        <button class="iconBtn danger" data-delete-trickle="${trickle.id}">delete</button>
+        <button type="button" class="iconBtn" data-toggle-trickle="${trickle.id}">${trickle.paid ? "unpaid" : "paid"}</button>
+        <button type="button" class="iconBtn danger" data-delete-trickle="${trickle.id}">delete</button>
       </div>
     `;
 
@@ -1944,7 +1944,7 @@ function renderEmailPayments(){
 
       <div class="transactionRight">
         <div class="transactionAmount">${action.amount ? money(action.amount) : "amount?"}</div>
-        <button class="iconBtn" data-import-email-payment="${action.id}">add to trickles</button>
+        <button type="button" class="iconBtn" data-import-email-payment="${action.id}">add to trickles</button>
       </div>
     `;
 

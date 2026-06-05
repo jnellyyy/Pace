@@ -625,8 +625,8 @@ textarea{
           <span>Notes</span>
           <input id="mealNotes" placeholder="No spaghetti, small portion, extra sauce">
         </label>
-        <button class="primary-btn" onclick="saveMeal()">Save meal</button>
-        <button class="secondary-btn" onclick="clearMealForm()">Clear meal form</button>
+        <button type="button" class="primary-btn" onclick="saveMeal()">Save meal</button>
+        <button type="button" class="secondary-btn" onclick="clearMealForm()">Clear meal form</button>
         <div id="mealMsg" class="notice"></div>
       </div>
       <div class="card panel">
@@ -776,7 +776,7 @@ textarea{
           <div class="check" data-key="no_takeaway">No takeaway</div>
           <div class="check" data-key="slept_properly">Slept properly</div>
         </div>
-        <button class="primary-btn" onclick="saveHealthLog()">Save today</button>
+        <button type="button" class="primary-btn" onclick="saveHealthLog()">Save today</button>
         <div id="msg" class="notice"></div>
       </div>
       <div class="card panel">
@@ -849,7 +849,7 @@ textarea{
           <span>Dose notes</span>
           <textarea id="doseNotes" placeholder="Digestion, appetite, water, side effects"></textarea>
         </label>
-        <button class="primary-btn" onclick="saveDose()">Save dose log</button>
+        <button type="button" class="primary-btn" onclick="saveDose()">Save dose log</button>
       </div>
     </aside>
   </main>
@@ -1074,7 +1074,7 @@ function renderMeals(){
           ${meal.notes ? `<br>${escapeHTML(meal.notes)}` : ""}
         </div>
       </div>
-      <button class="small-btn" onclick="deleteMeal('${meal.id}')">Delete</button>
+      <button type="button" class="small-btn" onclick="deleteMeal('${meal.id}')">Delete</button>
     </div>
   `).join("");
 }
