@@ -1653,10 +1653,12 @@ function deleteTrickle(id){
   showToast("Trickle deleted.");
 }
 
-function loadJunePlan(){
-  const confirmed = confirm("Load your June finance plan? This will replace saved fixed bills and June pressure items, but keep spending history.");
+function loadJunePlan(askFirst = true){
+  if(askFirst){
+    const confirmed = confirm("Load your June finance plan? This will replace saved fixed bills and June pressure items, but keep spending history.");
 
-  if(!confirmed) return;
+    if(!confirmed) return;
+  }
 
   state.selectedMonth = JUNE_PLAN.month;
   state.months[JUNE_PLAN.month] = {
@@ -1679,6 +1681,15 @@ function loadJunePlan(){
   save();
   render();
   showToast("June plan loaded.");
+}
+
+function shouldAutoLoadJunePlan(){
+  const monthData = state.months[JUNE_PLAN.month] || {};
+  const hasIncome = numberValue(monthData.income) > 0;
+  const hasBills = state.fixedBills.length > 0;
+  const hasJunePressure = state.trickles.some(trickle => trickle.month === JUNE_PLAN.month);
+
+  return !hasIncome && !hasBills && !hasJunePressure;
 }
 
 function saveSetup(){
@@ -2059,6 +2070,11 @@ document.addEventListener("click", event => {
 });
 
 load();
+
+if(shouldAutoLoadJunePlan()){
+  loadJunePlan(false);
+}
+
 loadEmailActions();
 
 els.spendDateInput.value = getToday();
