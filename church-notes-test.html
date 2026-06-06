@@ -458,11 +458,20 @@ button.danger{
   font-weight:800;
 }
 
-.sync-status{
-  margin:0 0 12px;
+.sync-status,
+.draft-status{
+  margin:0 0 8px;
   color:var(--muted);
   font-size:12px;
   font-weight:800;
+}
+
+.draft-status.saved{
+  color:var(--green);
+}
+
+.draft-status.warning{
+  color:var(--gold);
 }
 
 .toast{
@@ -598,6 +607,7 @@ button.danger{
       </div>
 
       <p class="sync-status" id="syncStatus">Connecting to Supabase...</p>
+      <p class="draft-status" id="draftStatus">Draft autosave ready.</p>
 
       <form id="noteForm">
         <input type="hidden" id="noteId">
@@ -713,6 +723,7 @@ const PACE_SUPABASE_ANON_KEY = "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn";
 
 const TABLE_NAME = "pace_church_notes";
 const LOCAL_STORAGE_KEY = "paceChurchNotesV1";
+const DRAFT_STORAGE_KEY = "paceChurchNotesCurrentDraftV2";
 const SELECTED_VERSION_KEY = "paceChurchNotesSelectedVersionV1";
 
 const favouriteVersions = [
@@ -730,6 +741,9 @@ const favouriteVersions = [
 let selectedVersion = localStorage.getItem(SELECTED_VERSION_KEY) || "AMP";
 let allNotes = [];
 let db = null;
+let draftTimer = null;
+let activeTabId = "serviceTab";
+let isRestoringDraft = false;
 
 const noteForm = document.getElementById("noteForm");
 const noteId = document.getElementById("noteId");
@@ -751,6 +765,7 @@ const toast = document.getElementById("toast");
 const verseLookup = document.getElementById("verseLookup");
 const versionGrid = document.getElementById("versionGrid");
 const syncStatus = document.getElementById("syncStatus");
+const draftStatus = document.getElementById("draftStatus");
 
 function initSupabase(){
   if(!window.supabase){
@@ -780,6 +795,10 @@ function getLocalNotes(){
   }
 }
 
+function setLocalNotes(notes){
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(notes));
+}
+
 function showToast(message){
   toast.textContent = message;
   toast.classList.add("show");
@@ -790,7 +809,7 @@ function showToast(message){
 }
 
 function cleanText(value){
-  return value.trim();
+  return String(value || "").trim();
 }
 
 function formatDate(value){
@@ -803,6 +822,19 @@ function formatDate(value){
     day:"numeric",
     month:"short",
     year:"numeric"
+  });
+}
+
+function formatTime(value){
+  if(!value) return "";
+
+  const date = new Date(value);
+
+  if(Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleTimeString("en-GB", {
+    hour:"2-digit",
+    minute:"2-digit"
   });
 }
 
@@ -832,6 +864,7 @@ function selectVersion(versionCode){
   selectedVersion = versionCode;
   localStorage.setItem(SELECTED_VERSION_KEY, selectedVersion);
   renderVersionButtons();
+  saveDraftNow();
   showToast(versionCode + " selected");
 }
 
@@ -851,6 +884,7 @@ function openSelectedVerse(){
 
   if(!url) return;
 
+  saveDraftNow();
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
@@ -868,6 +902,7 @@ function addVerseToNotes(){
   scriptures.value = current ? current + "\n" + verseText : verseText;
 
   showTabById("serviceTab");
+  saveDraftNow();
   showToast("Verse added");
 }
 
@@ -876,11 +911,153 @@ function copyVerseLink(){
 
   if(!url) return;
 
+  saveDraftNow();
+
   navigator.clipboard.writeText(url).then(() => {
     showToast("Verse link copied");
   }).catch(() => {
     showToast("Could not copy link");
   });
+}
+
+function getCurrentFormData(){
+  return {
+    noteId: noteId.value || "",
+    serviceDate: serviceDate.value || todayISO(),
+    serviceType: serviceType.value || "Sunday Service",
+    preacher: preacher.value || "",
+    theme: theme.value || "",
+    title: title.value || "",
+    scriptures: scriptures.value || "",
+    mainNotes: mainNotes.value || "",
+    revelation: revelation.value || "",
+    prayer: prayer.value || "",
+    actionStep: actionStep.value || "",
+    verseLookup: verseLookup.value || "",
+    selectedVersion: selectedVersion,
+    activeTabId: activeTabId,
+    savedAt: new Date().toISOString()
+  };
+}
+
+function hasMeaningfulDraft(data){
+  if(!data) return false;
+
+  return Boolean(
+    cleanText(data.noteId) ||
+    cleanText(data.preacher) ||
+    cleanText(data.theme) ||
+    cleanText(data.title) ||
+    cleanText(data.scriptures) ||
+    cleanText(data.mainNotes) ||
+    cleanText(data.revelation) ||
+    cleanText(data.prayer) ||
+    cleanText(data.actionStep) ||
+    cleanText(data.verseLookup)
+  );
+}
+
+function hasCurrentFormContent(){
+  return hasMeaningfulDraft(getCurrentFormData());
+}
+
+function saveDraftNow(){
+  if(isRestoringDraft) return;
+
+  const draft = getCurrentFormData();
+
+  localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+
+  draftStatus.textContent = "Draft autosaved at " + formatTime(draft.savedAt) + ".";
+  draftStatus.classList.add("saved");
+  draftStatus.classList.remove("warning");
+}
+
+function scheduleDraftSave(){
+  if(isRestoringDraft) return;
+
+  clearTimeout(draftTimer);
+
+  draftTimer = setTimeout(() => {
+    saveDraftNow();
+  }, 250);
+}
+
+function getSavedDraft(){
+  try{
+    const draft = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || "null");
+    return draft && typeof draft === "object" ? draft : null;
+  }catch(error){
+    return null;
+  }
+}
+
+function clearSavedDraft(){
+  localStorage.removeItem(DRAFT_STORAGE_KEY);
+  draftStatus.textContent = "Draft cleared.";
+  draftStatus.classList.remove("saved");
+  draftStatus.classList.remove("warning");
+}
+
+function restoreDraft(){
+  const draft = getSavedDraft();
+
+  if(!hasMeaningfulDraft(draft)){
+    draftStatus.textContent = "Draft autosave ready.";
+    return;
+  }
+
+  isRestoringDraft = true;
+
+  noteId.value = draft.noteId || "";
+  serviceDate.value = draft.serviceDate || todayISO();
+  serviceType.value = draft.serviceType || "Sunday Service";
+  preacher.value = draft.preacher || "";
+  theme.value = draft.theme || "";
+  title.value = draft.title || "";
+  scriptures.value = draft.scriptures || "";
+  mainNotes.value = draft.mainNotes || "";
+  revelation.value = draft.revelation || "";
+  prayer.value = draft.prayer || "";
+  actionStep.value = draft.actionStep || "";
+  verseLookup.value = draft.verseLookup || "";
+
+  selectedVersion = draft.selectedVersion || selectedVersion;
+  localStorage.setItem(SELECTED_VERSION_KEY, selectedVersion);
+  renderVersionButtons();
+
+  formTitle.textContent = draft.noteId ? "Recovered edit draft" : "Recovered unsaved draft";
+
+  isRestoringDraft = false;
+
+  showTabById(draft.activeTabId || "serviceTab");
+
+  draftStatus.textContent = "Unsaved draft restored from " + formatTime(draft.savedAt) + ".";
+  draftStatus.classList.add("warning");
+  draftStatus.classList.remove("saved");
+
+  showToast("Draft restored");
+}
+
+function saveNoteLocally(noteData){
+  const localNotes = getLocalNotes();
+
+  localNotes.unshift({
+    id: "local_" + Date.now(),
+    serviceDate: noteData.service_date || todayISO(),
+    serviceType: noteData.service_type || "Sunday Service",
+    preacher: noteData.preacher || "",
+    theme: noteData.theme || "",
+    title: noteData.title || "Untitled service",
+    scriptures: noteData.scriptures || "",
+    mainNotes: noteData.main_notes || "",
+    revelation: noteData.revelation || "",
+    prayer: noteData.prayer || "",
+    actionStep: noteData.action_step || "",
+    createdAt: new Date().toISOString()
+  });
+
+  setLocalNotes(localNotes);
 }
 
 async function loadNotes(){
@@ -970,6 +1147,8 @@ function escapeHtml(text){
 }
 
 function showTab(tabId, button){
+  activeTabId = tabId;
+
   document.querySelectorAll(".tab-panel").forEach(panel => {
     panel.classList.remove("active");
   });
@@ -980,6 +1159,7 @@ function showTab(tabId, button){
 
   document.getElementById(tabId).classList.add("active");
   button.classList.add("active");
+  saveDraftNow();
 }
 
 function showTabById(tabId){
@@ -988,6 +1168,12 @@ function showTabById(tabId){
     notesTab:1,
     reflectTab:2
   };
+
+  if(!buttonMap.hasOwnProperty(tabId)){
+    tabId = "serviceTab";
+  }
+
+  activeTabId = tabId;
 
   const buttons = document.querySelectorAll(".tab-btn");
 
@@ -1005,11 +1191,7 @@ function showTabById(tabId){
 
 noteForm.addEventListener("submit", async function(event){
   event.preventDefault();
-
-  if(!db){
-    showToast("Supabase not connected");
-    return;
-  }
+  saveDraftNow();
 
   const existingId = noteId.value;
 
@@ -1028,6 +1210,14 @@ noteForm.addEventListener("submit", async function(event){
 
   if(!noteData.title){
     showToast("Add a title first");
+    return;
+  }
+
+  if(!db){
+    saveNoteLocally(noteData);
+    showToast("Saved locally");
+    syncStatus.textContent = "Supabase is not connected. Note saved locally.";
+    resetForm({ afterSave:true });
     return;
   }
 
@@ -1052,13 +1242,15 @@ noteForm.addEventListener("submit", async function(event){
 
   if(result.error){
     console.error(result.error);
-    syncStatus.textContent = "Save failed.";
-    showToast("Save failed");
+    saveNoteLocally(noteData);
+    syncStatus.textContent = "Supabase save failed. Note saved locally instead.";
+    showToast("Saved locally");
+    resetForm({ afterSave:true });
     return;
   }
 
   showToast(existingId ? "Note updated" : "Note saved");
-  resetForm();
+  resetForm({ afterSave:true });
   await loadNotes();
 });
 
@@ -1081,6 +1273,7 @@ function editNote(id){
 
   formTitle.textContent = "Edit service note";
   showTabById("serviceTab");
+  saveDraftNow();
 
   window.scrollTo({
     top:0,
@@ -1144,6 +1337,7 @@ function openFirstScripture(id){
 
   verseLookup.value = parts.join(" ");
   renderVersionButtons();
+  saveDraftNow();
   openSelectedVerse();
 }
 
@@ -1229,16 +1423,28 @@ async function importLocalNotes(){
     return;
   }
 
+  localStorage.removeItem(LOCAL_STORAGE_KEY);
+
   showToast("Local notes imported");
+  syncStatus.textContent = "Local notes imported into Supabase.";
   await loadNotes();
 }
 
-function resetForm(){
+function resetForm(options = {}){
+  const afterSave = Boolean(options.afterSave);
+
+  if(!afterSave && hasCurrentFormContent()){
+    const confirmed = confirm("Clear this form and remove the autosaved draft?");
+
+    if(!confirmed) return;
+  }
+
   noteForm.reset();
   noteId.value = "";
   serviceDate.value = todayISO();
   serviceType.value = "Sunday Service";
   formTitle.textContent = "New service note";
+  clearSavedDraft();
   showTabById("serviceTab");
 }
 
@@ -1250,8 +1456,22 @@ verseLookup.addEventListener("keydown", function(event){
   }
 });
 
+noteForm.addEventListener("input", scheduleDraftSave);
+noteForm.addEventListener("change", scheduleDraftSave);
+verseLookup.addEventListener("input", scheduleDraftSave);
+
+window.addEventListener("pagehide", saveDraftNow);
+window.addEventListener("beforeunload", saveDraftNow);
+
+document.addEventListener("visibilitychange", function(){
+  if(document.visibilityState === "hidden"){
+    saveDraftNow();
+  }
+});
+
 serviceDate.value = todayISO();
 renderVersionButtons();
+restoreDraft();
 
 if(initSupabase()){
   loadNotes();
