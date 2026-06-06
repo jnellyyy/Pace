@@ -408,6 +408,39 @@ textarea{
   border:1px solid rgba(255,255,255,0.08);
 }
 
+.billItem.paid,
+.transaction.paid{
+  border-color:rgba(34,197,94,0.46);
+  background:linear-gradient(180deg, rgba(34,197,94,0.13), rgba(255,255,255,0.045));
+}
+
+.billItem.unpaid,
+.transaction.unpaid{
+  border-color:rgba(239,68,68,0.36);
+  background:linear-gradient(180deg, rgba(239,68,68,0.11), rgba(255,255,255,0.045));
+}
+
+.statusChip{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:4px 7px;
+  margin-left:6px;
+  font-size:11px;
+  font-weight:850;
+}
+
+.statusChip.paid{
+  color:#bbf7d0;
+  border-color:rgba(34,197,94,0.36);
+}
+
+.statusChip.unpaid{
+  color:#fecaca;
+  border-color:rgba(239,68,68,0.36);
+}
+
 .billTop{
   display:flex;
   justify-content:space-between;
@@ -1238,7 +1271,8 @@ let state = {
   months: {},
   fixedBills: [],
   spends: [],
-  trickles: []
+  trickles: [],
+  billPaid: {}
 };
 
 function uid(){
@@ -1299,7 +1333,8 @@ function load(){
       months: parsed.months || {},
       fixedBills: parsed.fixedBills || [],
       spends: parsed.spends || [],
-      trickles: parsed.trickles || []
+      trickles: parsed.trickles || [],
+      billPaid: parsed.billPaid || {}
     };
 
     state.fixedBills = state.fixedBills.map(bill => ({
@@ -1334,6 +1369,7 @@ function load(){
   }catch(error){
     state.selectedMonth = getCurrentMonth();
     state.trickles = [];
+    state.billPaid = {};
   }
 }
 
@@ -1354,6 +1390,14 @@ function getMonthSpends(){
 
 function getMonthTrickles(){
   return state.trickles.filter(trickle => trickle.month === state.selectedMonth);
+}
+
+function billPaidKey(id){
+  return `${state.selectedMonth}:${id}`;
+}
+
+function isBillPaid(id){
+  return Boolean(state.billPaid?.[billPaidKey(id)]);
 }
 
 function getEmailPaymentActions(){
@@ -1509,9 +1553,18 @@ function addBill(){
 
 function deleteBill(id){
   state.fixedBills = state.fixedBills.filter(bill => bill.id !== id);
+  delete state.billPaid[billPaidKey(id)];
   save();
   render();
   showToast("Bill deleted.");
+}
+
+function toggleBillPaid(id){
+  const key = billPaidKey(id);
+  state.billPaid[key] = !state.billPaid[key];
+  save();
+  render();
+  showToast(state.billPaid[key] ? "Marked paid." : "Marked unpaid.");
 }
 
 function editBill(id){
@@ -1670,6 +1723,7 @@ function loadJunePlan(askFirst = true){
     id:uid(),
     ...bill
   }));
+  state.billPaid = {};
 
   state.trickles = state.trickles.filter(trickle => trickle.month !== JUNE_PLAN.month);
   state.trickles.push(...JUNE_PLAN.trickles.map(trickle => ({
@@ -1742,19 +1796,24 @@ function renderBills(){
     }
 
     bills.forEach(bill => {
+      const paid = isBillPaid(bill.id);
       const item = document.createElement("div");
-      item.className = "billItem";
+      item.className = paid ? "billItem paid" : "billItem unpaid";
 
       item.innerHTML = `
         <div class="billTop">
           <div>
             <div class="billName">${escapeHtml(bill.name)}</div>
-            <div class="billMeta">${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)}</div>
+            <div class="billMeta">
+              ${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)}
+              <span class="statusChip ${paid ? "paid" : "unpaid"}">${paid ? "paid" : "not paid"}</span>
+            </div>
           </div>
           <div class="billAmount">${money(bill.amount)}</div>
         </div>
 
         <div class="billButtons">
+          <button type="button" class="iconBtn" data-toggle-bill-paid="${bill.id}">${paid ? "unpaid" : "paid"}</button>
           <button type="button" class="iconBtn" data-edit-bill="${bill.id}">edit</button>
           <button type="button" class="iconBtn danger" data-delete-bill="${bill.id}">delete</button>
         </div>
@@ -1856,12 +1915,15 @@ function renderPayOrder(){
 
   ordered.forEach((item,index) => {
     const row = document.createElement("div");
-    row.className = "transaction";
+    row.className = item.paid ? "transaction paid" : "transaction unpaid";
 
     row.innerHTML = `
       <div class="transactionLeft">
         <strong>${index + 1}. ${escapeHtml(item.name)}</strong>
-        <span>${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}</span>
+        <span>
+          ${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}
+          <span class="statusChip ${item.paid ? "paid" : "unpaid"}">${item.paid ? "paid" : "not paid"}</span>
+        </span>
       </div>
 
       <div class="transactionRight">
@@ -1900,12 +1962,15 @@ function renderTrickles(){
 
   trickles.forEach(trickle => {
     const item = document.createElement("div");
-    item.className = "transaction";
+    item.className = trickle.paid ? "transaction paid" : "transaction unpaid";
 
     item.innerHTML = `
       <div class="transactionLeft">
         <strong>${escapeHtml(trickle.name)}</strong>
-        <span>${escapeHtml(getPriorityLabel(trickle.priority))} • ${escapeHtml(trickle.source)}${trickle.dueDate ? " • due " + escapeHtml(trickle.dueDate) : ""}</span>
+        <span>
+          ${escapeHtml(getPriorityLabel(trickle.priority))} • ${escapeHtml(trickle.source)}${trickle.dueDate ? " • due " + escapeHtml(trickle.dueDate) : ""}
+          <span class="statusChip ${trickle.paid ? "paid" : "unpaid"}">${trickle.paid ? "paid" : "not paid"}</span>
+        </span>
       </div>
 
       <div class="transactionRight">
@@ -2039,6 +2104,7 @@ els.highSpendTab.addEventListener("click", () => setActiveTab("high"));
 document.addEventListener("click", event => {
   const editBillId = event.target.getAttribute("data-edit-bill");
   const deleteBillId = event.target.getAttribute("data-delete-bill");
+  const toggleBillPaidId = event.target.getAttribute("data-toggle-bill-paid");
   const deleteSpendId = event.target.getAttribute("data-delete-spend");
   const importEmailPaymentId = event.target.getAttribute("data-import-email-payment");
   const toggleTrickleId = event.target.getAttribute("data-toggle-trickle");
@@ -2050,6 +2116,10 @@ document.addEventListener("click", event => {
 
   if(deleteBillId){
     deleteBill(deleteBillId);
+  }
+
+  if(toggleBillPaidId){
+    toggleBillPaid(toggleBillPaidId);
   }
 
   if(deleteSpendId){
