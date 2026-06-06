@@ -201,7 +201,7 @@ body{
   flex:1;
   min-height:0;
   display:grid;
-  grid-template-columns:1.15fr 0.85fr;
+  grid-template-columns:1.2fr 0.8fr;
   gap:14px;
 }
 
@@ -302,7 +302,29 @@ textarea{
 }
 
 textarea.big{
-  min-height:210px;
+  min-height:62vh;
+  height:62vh;
+  resize:vertical;
+  font-size:16px;
+  line-height:1.6;
+  padding:18px;
+  border-radius:24px;
+  background:rgba(0,0,0,0.32);
+}
+
+.notes-writing-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.notes-writing-header p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
 }
 
 input::placeholder,
@@ -498,6 +520,28 @@ button.danger{
   bottom:28px;
 }
 
+body.focus-writing .hero,
+body.focus-writing aside.card{
+  display:none;
+}
+
+body.focus-writing .main{
+  grid-template-columns:1fr;
+}
+
+body.focus-writing .app{
+  max-width:980px;
+}
+
+body.focus-writing textarea.big{
+  min-height:calc(100vh - 260px);
+  height:calc(100vh - 260px);
+}
+
+body.focus-writing .card{
+  padding:18px;
+}
+
 @media(max-width:880px){
   .hero{
     grid-template-columns:1fr;
@@ -509,6 +553,11 @@ button.danger{
 
   .notes-list{
     max-height:none;
+  }
+
+  textarea.big{
+    min-height:58vh;
+    height:58vh;
   }
 }
 
@@ -550,7 +599,15 @@ button.danger{
   }
 
   textarea.big{
-    min-height:180px;
+    min-height:65vh;
+    height:65vh;
+    font-size:16px;
+    padding:17px;
+  }
+
+  body.focus-writing textarea.big{
+    min-height:calc(100vh - 285px);
+    height:calc(100vh - 285px);
   }
 }
 </style>
@@ -664,8 +721,21 @@ button.danger{
 
         <div id="notesTab" class="tab-panel">
           <div class="field">
-            <label for="mainNotes">Main notes</label>
-            <textarea class="big" id="mainNotes" placeholder="Write the main points from the message. Keep it simple and clear."></textarea>
+            <div class="notes-writing-header">
+              <label for="mainNotes">Main notes</label>
+              <p>Big writing space</p>
+            </div>
+
+            <textarea class="big" id="mainNotes" placeholder="Write the main points from the message here.
+
+You can type properly in this space now.
+
+It will autosave as you type, even before you press save."></textarea>
+
+            <div class="actions">
+              <button class="purple" type="button" onclick="toggleWritingMode()">Big writing mode</button>
+              <button class="gold" type="button" onclick="showTabById('reflectTab')">Go to reflect</button>
+            </div>
           </div>
         </div>
 
@@ -920,6 +990,23 @@ function copyVerseLink(){
   });
 }
 
+function toggleWritingMode(){
+  document.body.classList.toggle("focus-writing");
+
+  if(document.body.classList.contains("focus-writing")){
+    showTabById("notesTab");
+    showToast("Big writing mode on");
+  }else{
+    showToast("Big writing mode off");
+  }
+
+  saveDraftNow();
+
+  setTimeout(() => {
+    mainNotes.focus();
+  }, 100);
+}
+
 function getCurrentFormData(){
   return {
     noteId: noteId.value || "",
@@ -1030,7 +1117,7 @@ function restoreDraft(){
 
   isRestoringDraft = false;
 
-  showTabById(draft.activeTabId || "serviceTab");
+  showTabById(draft.activeTabId || "notesTab");
 
   draftStatus.textContent = "Unsaved draft restored from " + formatTime(draft.savedAt) + ".";
   draftStatus.classList.add("warning");
@@ -1160,6 +1247,12 @@ function showTab(tabId, button){
   document.getElementById(tabId).classList.add("active");
   button.classList.add("active");
   saveDraftNow();
+
+  if(tabId === "notesTab"){
+    setTimeout(() => {
+      mainNotes.focus();
+    }, 100);
+  }
 }
 
 function showTabById(tabId){
@@ -1187,6 +1280,12 @@ function showTabById(tabId){
 
   document.getElementById(tabId).classList.add("active");
   buttons[buttonMap[tabId]].classList.add("active");
+
+  if(tabId === "notesTab"){
+    setTimeout(() => {
+      mainNotes.focus();
+    }, 100);
+  }
 }
 
 noteForm.addEventListener("submit", async function(event){
@@ -1272,7 +1371,7 @@ function editNote(id){
   actionStep.value = note.action_step || "";
 
   formTitle.textContent = "Edit service note";
-  showTabById("serviceTab");
+  showTabById("notesTab");
   saveDraftNow();
 
   window.scrollTo({
@@ -1445,6 +1544,7 @@ function resetForm(options = {}){
   serviceType.value = "Sunday Service";
   formTitle.textContent = "New service note";
   clearSavedDraft();
+  document.body.classList.remove("focus-writing");
   showTabById("serviceTab");
 }
 
