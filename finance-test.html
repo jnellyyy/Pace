@@ -420,6 +420,11 @@ textarea{
   background:linear-gradient(180deg, rgba(239,68,68,0.11), rgba(255,255,255,0.045));
 }
 
+.transaction.deliveroo{
+  border-color:rgba(245,158,11,0.48);
+  background:linear-gradient(180deg, rgba(245,158,11,0.14), rgba(255,255,255,0.045));
+}
+
 .statusChip{
   display:inline-flex;
   align-items:center;
@@ -439,6 +444,11 @@ textarea{
 .statusChip.unpaid{
   color:#fecaca;
   border-color:rgba(239,68,68,0.36);
+}
+
+.statusChip.deliveroo{
+  color:#fde7b0;
+  border-color:rgba(245,158,11,0.40);
 }
 
 .billTop{
@@ -533,7 +543,7 @@ textarea{
 
 .plannerStrip{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
   gap:10px;
   margin-bottom:14px;
 }
@@ -556,6 +566,174 @@ textarea{
   display:block;
   font-size:20px;
   letter-spacing:-0.04em;
+}
+
+.allocationLayout{
+  display:grid;
+  grid-template-columns:minmax(250px,0.72fr) minmax(0,1.28fr);
+  gap:18px;
+  align-items:start;
+}
+
+.piePanel{
+  display:grid;
+  place-items:center;
+  gap:14px;
+  min-width:0;
+}
+
+.pieChart{
+  width:min(260px,72vw);
+  aspect-ratio:1;
+  border-radius:50%;
+  position:relative;
+  background:conic-gradient(rgba(255,255,255,0.10) 0 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12), 0 18px 45px rgba(0,0,0,0.28);
+}
+
+.pieChart::after{
+  content:"";
+  position:absolute;
+  inset:24%;
+  border-radius:50%;
+  background:#171a20;
+  border:1px solid var(--line);
+}
+
+.pieCenter{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  pointer-events:none;
+}
+
+.pieCenter span{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.pieCenter strong{
+  margin-top:4px;
+  font-size:22px;
+  letter-spacing:-0.04em;
+}
+
+.allocationLegend{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.legendItem{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.045);
+  border-radius:14px;
+  padding:9px;
+  min-width:0;
+}
+
+.legendName{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.legendDot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  flex:0 0 auto;
+}
+
+.legendValue{
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.accountSplit{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.potGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.potField{
+  display:grid;
+  grid-template-columns:1fr minmax(96px,0.55fr);
+  gap:8px;
+  align-items:center;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.045);
+  border-radius:16px;
+  padding:9px 10px;
+}
+
+.potLabel{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  font-size:13px;
+  font-weight:850;
+}
+
+.potField input{
+  width:100%;
+  min-width:0;
+  border:1px solid var(--line);
+  outline:0;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:12px;
+  padding:9px;
+  text-align:right;
+}
+
+.allocationNote{
+  margin-top:12px;
+  border:1px solid rgba(245,158,11,0.28);
+  background:rgba(245,158,11,0.08);
+  border-radius:16px;
+  padding:11px 12px;
+  color:#fde7b0;
+  font-size:13px;
+  line-height:1.45;
+}
+
+.clearedGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+}
+
+.clearedItem{
+  border:1px solid rgba(34,197,94,0.34);
+  background:rgba(34,197,94,0.10);
+  border-radius:16px;
+  padding:11px;
+  color:#bbf7d0;
+  font-size:13px;
+  font-weight:850;
 }
 
 .tabs{
@@ -659,6 +837,10 @@ textarea{
   .billsGrid{
     grid-template-columns:1fr;
   }
+
+  .allocationLayout{
+    grid-template-columns:1fr;
+  }
 }
 
 @media(max-width:620px){
@@ -675,6 +857,16 @@ textarea{
   .plannerStrip,
   .formGrid,
   .formGrid.three{
+    grid-template-columns:1fr;
+  }
+
+  .accountSplit,
+  .potGrid,
+  .clearedGrid{
+    grid-template-columns:1fr;
+  }
+
+  .allocationLegend{
     grid-template-columns:1fr;
   }
 
@@ -728,7 +920,7 @@ textarea{
         </div>
 
         <div class="heroMoney">
-          <span>money left after fixed bills, spending and trickles</span>
+          <span>money protected in HSBC after the Revolut allocation</span>
           <strong id="leftAmount">£0.00</strong>
           <small id="monthStatus">Set your income to start.</small>
         </div>
@@ -740,7 +932,7 @@ textarea{
           </div>
 
           <div class="summaryBox">
-            <span>fixed bills</span>
+            <span>HSBC protected</span>
             <strong id="fixedSummary">£0.00</strong>
           </div>
 
@@ -750,13 +942,120 @@ textarea{
           </div>
 
           <div class="summaryBox">
-            <span>trickles</span>
+            <span>still outstanding</span>
             <strong id="trickleSummary">£0.00</strong>
           </div>
 
           <div class="summaryBox">
-            <span>safe daily spend</span>
+            <span>fun + misc per day</span>
             <strong id="dailySummary">£0.00</strong>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="card" style="grid-column:1 / -1;">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>salary allocation</h2>
+            <p>Protect HSBC first, then split the Revolut transfer across the pots below.</p>
+          </div>
+          <span class="pill" id="allocationStatusPill">balanced</span>
+        </div>
+
+        <div class="accountSplit">
+          <div class="plannerBox">
+            <span>salary</span>
+            <strong id="allocationIncome">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>leave protected in HSBC</span>
+            <strong id="hsbcProtected">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>exact Revolut allocation</span>
+            <strong id="revolutExact">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>recommended Revolut transfer</span>
+            <strong id="revolutRecommended">£0.00</strong>
+          </div>
+        </div>
+
+        <div class="allocationLayout">
+          <div class="piePanel">
+            <div class="pieChart" id="allocationPie">
+              <div class="pieCenter">
+                <span>Revolut pots</span>
+                <strong id="pieTotal">£0.00</strong>
+              </div>
+            </div>
+
+            <div class="allocationLegend" id="allocationLegend"></div>
+          </div>
+
+          <div>
+            <div class="potGrid">
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#60a5fa;"></span>Bills</span>
+                <input id="potBills" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#ef4444;"></span>Debt</span>
+                <input id="potDebt" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#a78bfa;"></span>BNPL</span>
+                <input id="potBnpl" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#f59e0b;"></span>Commute</span>
+                <input id="potCommute" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#22c55e;"></span>Savings</span>
+                <input id="potSavings" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#fb7185;"></span>Emergency</span>
+                <input id="potEmergency" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#2dd4bf;"></span>Fun</span>
+                <input id="potFun" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#94a3b8;"></span>Miscellaneous</span>
+                <input id="potMisc" type="number" min="0" step="0.01">
+              </label>
+            </div>
+
+            <div class="formGrid" style="margin-top:10px;">
+              <div class="field">
+                <label>small transfer buffer</label>
+                <input id="transferBufferInput" type="number" min="0" step="0.01">
+              </div>
+
+              <div class="field">
+                <label>allocation note</label>
+                <input id="allocationNoteInput" type="text" placeholder="June is tight: protect bills first">
+              </div>
+            </div>
+
+            <div class="allocationNote" id="allocationMessage"></div>
           </div>
         </div>
 
@@ -911,29 +1210,72 @@ textarea{
         <div class="sectionTitle">
           <div>
             <h2>pay order</h2>
-            <p>Clear these in this order before payday, then put anything left into buffer.</p>
+            <p>Outstanding Revolut payments, grouped in a logical order: essentials, debt, BNPL, then commute.</p>
           </div>
           <span class="pill" id="payOrderCountPill">0 left</span>
         </div>
 
         <div class="plannerStrip">
           <div class="plannerBox">
-            <span>pre-payday total</span>
+            <span>total still outstanding</span>
             <strong id="prePaydayTotal">£0.00</strong>
           </div>
 
           <div class="plannerBox">
-            <span>safe Deliveroo target</span>
-            <strong id="safeDeliverooTarget">£275.00</strong>
+            <span>exact Revolut transfer</span>
+            <strong id="safeDeliverooTarget">£0.00</strong>
           </div>
 
           <div class="plannerBox">
-            <span>peace target</span>
-            <strong id="peaceDeliverooTarget">£300.00</strong>
+            <span>recommended transfer</span>
+            <strong id="peaceDeliverooTarget">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>marked for Deliveroo</span>
+            <strong id="deliverooNeededSummary">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>still to earn</span>
+            <strong id="deliverooRemainingSummary">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>needed per work day</span>
+            <strong id="deliverooDailySummary">£0.00</strong>
           </div>
         </div>
 
         <div class="list" id="payOrderList"></div>
+
+        <div class="formGrid" style="margin-top:12px;">
+          <div class="field">
+            <label>Deliveroo earned so far this month</label>
+            <input id="deliverooEarnedInput" type="number" min="0" step="0.01" placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label>Deliveroo work days remaining</label>
+            <input id="deliverooDaysInput" type="number" min="1" step="1" placeholder="days">
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="card" style="grid-column:1 / -1;">
+      <div class="cardInner">
+
+        <div class="sectionTitle">
+          <div>
+            <h2>cleared this month</h2>
+            <p>Already handled. These stay visible as reassurance, but do not count against the outstanding total.</p>
+          </div>
+          <span class="pill" id="clearedCountPill">0 cleared</span>
+        </div>
+
+        <div class="clearedGrid" id="clearedList"></div>
 
       </div>
     </section>
@@ -1148,6 +1490,26 @@ const els = {
   resetMonthBtn: document.getElementById("resetMonthBtn"),
   restorePlanBtn: document.getElementById("restorePlanBtn"),
 
+  allocationStatusPill: document.getElementById("allocationStatusPill"),
+  allocationIncome: document.getElementById("allocationIncome"),
+  hsbcProtected: document.getElementById("hsbcProtected"),
+  revolutExact: document.getElementById("revolutExact"),
+  revolutRecommended: document.getElementById("revolutRecommended"),
+  allocationPie: document.getElementById("allocationPie"),
+  pieTotal: document.getElementById("pieTotal"),
+  allocationLegend: document.getElementById("allocationLegend"),
+  allocationMessage: document.getElementById("allocationMessage"),
+  potBills: document.getElementById("potBills"),
+  potDebt: document.getElementById("potDebt"),
+  potBnpl: document.getElementById("potBnpl"),
+  potCommute: document.getElementById("potCommute"),
+  potSavings: document.getElementById("potSavings"),
+  potEmergency: document.getElementById("potEmergency"),
+  potFun: document.getElementById("potFun"),
+  potMisc: document.getElementById("potMisc"),
+  transferBufferInput: document.getElementById("transferBufferInput"),
+  allocationNoteInput: document.getElementById("allocationNoteInput"),
+
   billNameInput: document.getElementById("billNameInput"),
   billAmountInput: document.getElementById("billAmountInput"),
   billDueInput: document.getElementById("billDueInput"),
@@ -1185,6 +1547,11 @@ const els = {
   prePaydayTotal: document.getElementById("prePaydayTotal"),
   safeDeliverooTarget: document.getElementById("safeDeliverooTarget"),
   peaceDeliverooTarget: document.getElementById("peaceDeliverooTarget"),
+  deliverooNeededSummary: document.getElementById("deliverooNeededSummary"),
+  deliverooRemainingSummary: document.getElementById("deliverooRemainingSummary"),
+  deliverooDailySummary: document.getElementById("deliverooDailySummary"),
+  deliverooEarnedInput: document.getElementById("deliverooEarnedInput"),
+  deliverooDaysInput: document.getElementById("deliverooDaysInput"),
 
   standingOrderList: document.getElementById("standingOrderList"),
   directDebitList: document.getElementById("directDebitList"),
@@ -1201,6 +1568,8 @@ const els = {
   spendList: document.getElementById("spendList"),
   trickleList: document.getElementById("trickleList"),
   payOrderList: document.getElementById("payOrderList"),
+  clearedCountPill: document.getElementById("clearedCountPill"),
+  clearedList: document.getElementById("clearedList"),
   emailPaymentList: document.getElementById("emailPaymentList"),
 
   allSpendTab: document.getElementById("allSpendTab"),
@@ -1216,45 +1585,68 @@ let emailActions = [];
 const JUNE_PLAN = {
   month:"2026-06",
   income:1826.55,
-  deliverooTargets:{
-    minimum:245,
-    safe:275,
-    peace:300
+  planVersion:3,
+  allocations:{
+    bills:69.43,
+    debt:382.53,
+    bnpl:110.18,
+    commute:21.29,
+    savings:0,
+    emergency:0,
+    fun:0,
+    misc:0,
+    transferBuffer:0.45,
+    deliverooEarned:0,
+    deliverooDays:0,
+    note:"June is tight: protect HSBC bills first. No savings, fun or emergency from salary unless extra money comes in."
   },
   fixedBills:[
     { name:"Cityrise rent", amount:740, dueDay:1, type:"standingOrder", category:"home" },
     { name:"Sheffield Credit Union", amount:200, dueDay:1, type:"standingOrder", category:"debt" },
     { name:"Credit Spring", amount:60, dueDay:1, type:"directDebit", category:"debt" },
     { name:"E.ON", amount:106.21, dueDay:1, type:"directDebit", category:"home" },
-    { name:"Rotherham Borough", amount:97, dueDay:1, type:"directDebit", category:"home" },
+    { name:"Rotherham Council", amount:97, dueDay:1, type:"directDebit", category:"home" },
     { name:"EE phone", amount:37.46, dueDay:1, type:"directDebit", category:"phone" },
-    { name:"Plusnet", amount:29.99, dueDay:1, type:"directDebit", category:"phone" },
+    { name:"Broadband", amount:27.99, dueDay:1, type:"directDebit", category:"phone" },
     { name:"Zero Deposit", amount:17.98, dueDay:1, type:"directDebit", category:"home" },
     { name:"Water", amount:48.46, dueDay:2, type:"directDebit", category:"home" },
-    { name:"Mr Lender", amount:109.16, dueDay:19, type:"manualPayment", category:"debt" },
+    { name:"Very", amount:288, dueDay:1, type:"manualPayment", category:"debt" },
     { name:"Zable", amount:60, dueDay:1, type:"manualPayment", category:"debt" },
     { name:"Capital One", amount:34.53, dueDay:23, type:"manualPayment", category:"debt" },
-    { name:"Brum charging costs", amount:60, dueDay:1, type:"manualPayment", category:"transport" }
+    { name:"Klarna June", amount:110.18, dueDay:1, type:"manualPayment", category:"debt" },
+    { name:"Commute buffer", amount:21.29, dueDay:1, type:"manualPayment", category:"transport" }
   ],
   trickles:[
-    { name:"Water", amount:48.46, priority:"must", dueDate:"2026-06-02", source:"Due now", paid:false, note:"Due now" },
-    { name:"Mini charging", amount:46.50, priority:"must", dueDate:"2026-06-05", source:"Car", paid:false, note:"Car related, clear before more charging stress" },
-    { name:"Electroverse balance", amount:28, priority:"must", dueDate:"2026-06-05", source:"Charging", paid:false, note:"Clear before more long trips" },
-    { name:"Subscription charge", amount:10.50, priority:"must", dueDate:"2026-06-05", source:"Subscription", paid:false, note:"Small, clear so it does not keep hanging" },
-    { name:"Mr Lender", amount:109.16, priority:"must", dueDate:"2026-06-19", source:"Debt", paid:false, note:"Due before payday, so this is the big one" },
-    { name:"Klarna June", amount:110.18, priority:"must", dueDate:"2026-06-20", source:"BNPL", paid:false, note:"Needs BNPL pot" },
-    { name:"Clearpay", amount:58.21, priority:"soon", dueDate:"2026-06-20", source:"BNPL", paid:false, note:"Approx amount. Wait until hold ends and confirm in app" },
-    { name:"Capital One", amount:34.53, priority:"soon", dueDate:"2026-06-23", source:"Debt", paid:false, note:"Can be handled from payday if needed" }
+    { name:"Remaining water", amount:23.46, priority:"must", dueDate:"", source:"Bills pot", paid:false, note:"Water balance still outstanding" },
+    { name:"Broadband", amount:27.99, priority:"must", dueDate:"", source:"Bills pot", paid:false, note:"Outstanding broadband payment" },
+    { name:"Zero Deposit", amount:17.98, priority:"must", dueDate:"", source:"Bills pot", paid:false, note:"Current Zero Deposit payment" },
+    { name:"Very", amount:288, priority:"must", dueDate:"", source:"Debt pot", paid:false, note:"Largest outstanding debt payment" },
+    { name:"Zable", amount:60, priority:"must", dueDate:"", source:"Debt pot", paid:false, note:"Outstanding debt payment" },
+    { name:"Capital One", amount:34.53, priority:"must", dueDate:"", source:"Debt pot", paid:false, note:"Outstanding card payment" },
+    { name:"Klarna June", amount:110.18, priority:"must", dueDate:"", source:"BNPL pot", paid:false, note:"June BNPL allocation" },
+    { name:"Commute buffer", amount:21.29, priority:"soon", dueDate:"", source:"Commute pot", paid:false, note:"Charging starter and travel buffer" }
   ],
   payOrder:[
-    "Water",
-    "Mini charging",
-    "Electroverse balance",
-    "Subscription charge",
-    "Mr Lender",
+    "Remaining water",
+    "Broadband",
+    "Zero Deposit",
+    "Very",
+    "Zable",
+    "Capital One",
     "Klarna June",
+    "Commute buffer"
+  ],
+  cleared:[
+    "Phone",
+    "Previous Zero Deposit",
+    "Mini charging",
+    "Mr Lender",
     "Clearpay",
-    "Capital One"
+    "Payback £11",
+    "Water £25 paid",
+    "Tascam",
+    "Tripod",
+    "Hard drive"
   ],
   nextMonth:{
     fixed:1600.79,
@@ -1266,13 +1658,26 @@ const JUNE_PLAN = {
   }
 };
 
+const POT_CONFIG = [
+  { key:"bills", label:"Bills", color:"#60a5fa", input:"potBills" },
+  { key:"debt", label:"Debt", color:"#ef4444", input:"potDebt" },
+  { key:"bnpl", label:"BNPL", color:"#a78bfa", input:"potBnpl" },
+  { key:"commute", label:"Commute", color:"#f59e0b", input:"potCommute" },
+  { key:"savings", label:"Savings", color:"#22c55e", input:"potSavings" },
+  { key:"emergency", label:"Emergency", color:"#fb7185", input:"potEmergency" },
+  { key:"fun", label:"Fun", color:"#2dd4bf", input:"potFun" },
+  { key:"misc", label:"Miscellaneous", color:"#94a3b8", input:"potMisc" }
+];
+
 let state = {
   selectedMonth: getCurrentMonth(),
   months: {},
   fixedBills: [],
   spends: [],
   trickles: [],
-  billPaid: {}
+  billPaid: {},
+  allocations: {},
+  planVersion:0
 };
 
 function uid(){
@@ -1334,7 +1739,9 @@ function load(){
       fixedBills: parsed.fixedBills || [],
       spends: parsed.spends || [],
       trickles: parsed.trickles || [],
-      billPaid: parsed.billPaid || {}
+      billPaid: parsed.billPaid || {},
+      allocations: parsed.allocations || {},
+      planVersion:Number(parsed.planVersion) || 0
     };
 
     state.fixedBills = state.fixedBills.map(bill => ({
@@ -1363,13 +1770,16 @@ function load(){
       dueDate: trickle.dueDate || "",
       source: trickle.source || "Deliveroo",
       month: trickle.month || (trickle.dueDate || getToday()).slice(0,7),
-      paid: Boolean(trickle.paid)
+      paid: Boolean(trickle.paid),
+      deliveroo:Boolean(trickle.deliveroo)
     }));
 
   }catch(error){
     state.selectedMonth = getCurrentMonth();
     state.trickles = [];
     state.billPaid = {};
+    state.allocations = {};
+    state.planVersion = 0;
   }
 }
 
@@ -1382,6 +1792,37 @@ function getMonthData(){
   }
 
   return state.months[state.selectedMonth];
+}
+
+function getAllocationData(){
+  if(!state.allocations[state.selectedMonth]){
+    state.allocations[state.selectedMonth] = {
+      bills:0,
+      debt:0,
+      bnpl:0,
+      commute:0,
+      savings:0,
+      emergency:0,
+      fun:0,
+      misc:0,
+      transferBuffer:0,
+      deliverooEarned:0,
+      deliverooDays:daysLeftInMonth(),
+      note:""
+    };
+  }
+
+  const allocation = state.allocations[state.selectedMonth];
+
+  if(!numberValue(allocation.deliverooDays)){
+    allocation.deliverooDays = daysLeftInMonth();
+  }
+
+  return allocation;
+}
+
+function allocationTotal(allocation = getAllocationData()){
+  return POT_CONFIG.reduce((sum,pot) => sum + numberValue(allocation[pot.key]),0);
 }
 
 function getMonthSpends(){
@@ -1398,6 +1839,19 @@ function billPaidKey(id){
 
 function isBillPaid(id){
   return Boolean(state.billPaid?.[billPaidKey(id)]);
+}
+
+function normalizePaymentName(value){
+  return String(value || "")
+    .toLowerCase()
+    .replace(/remaining|full bill|current|june/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function matchingTrickles(name){
+  const normalized = normalizePaymentName(name);
+  return getMonthTrickles().filter(item => normalizePaymentName(item.name) === normalized);
 }
 
 function getEmailPaymentActions(){
@@ -1562,6 +2016,19 @@ function deleteBill(id){
 function toggleBillPaid(id){
   const key = billPaidKey(id);
   state.billPaid[key] = !state.billPaid[key];
+
+  const bill = state.fixedBills.find(item => item.id === id);
+
+  if(bill){
+    matchingTrickles(bill.name).forEach(trickle => {
+      trickle.paid = state.billPaid[key];
+
+      if(trickle.paid){
+        trickle.deliveroo = false;
+      }
+    });
+  }
+
   save();
   render();
   showToast(state.billPaid[key] ? "Marked paid." : "Marked unpaid.");
@@ -1650,7 +2117,8 @@ function addTrickle(){
     dueDate,
     source,
     month,
-    paid:false
+    paid:false,
+    deliveroo:false
   });
 
   save();
@@ -1678,7 +2146,8 @@ function importEmailPayment(id){
     dueDate,
     source: "Email",
     month: (dueDate || `${state.selectedMonth}-01`).slice(0,7),
-    paid:false
+    paid:false,
+    deliveroo:false
   });
 
   action.financeImported = true;
@@ -1694,9 +2163,32 @@ function toggleTricklePaid(id){
   if(!trickle) return;
 
   trickle.paid = !trickle.paid;
+
+  if(trickle.paid){
+    trickle.deliveroo = false;
+  }
+
+  state.fixedBills
+    .filter(bill => normalizePaymentName(bill.name) === normalizePaymentName(trickle.name))
+    .forEach(bill => {
+      state.billPaid[billPaidKey(bill.id)] = trickle.paid;
+    });
+
   save();
   render();
   showToast(trickle.paid ? "Marked paid." : "Marked unpaid.");
+}
+
+function toggleTrickleDeliveroo(id){
+  const trickle = state.trickles.find(item => item.id === id);
+
+  if(!trickle) return;
+
+  trickle.paid = false;
+  trickle.deliveroo = !trickle.deliveroo;
+  save();
+  render();
+  showToast(trickle.deliveroo ? "Marked for Deliveroo." : "Removed from Deliveroo target.");
 }
 
 function deleteTrickle(id){
@@ -1724,6 +2216,8 @@ function loadJunePlan(askFirst = true){
     ...bill
   }));
   state.billPaid = {};
+  state.allocations[JUNE_PLAN.month] = { ...JUNE_PLAN.allocations };
+  state.planVersion = JUNE_PLAN.planVersion;
 
   state.trickles = state.trickles.filter(trickle => trickle.month !== JUNE_PLAN.month);
   state.trickles.push(...JUNE_PLAN.trickles.map(trickle => ({
@@ -1738,6 +2232,10 @@ function loadJunePlan(askFirst = true){
 }
 
 function shouldAutoLoadJunePlan(){
+  if(state.planVersion !== JUNE_PLAN.planVersion){
+    return true;
+  }
+
   const monthData = state.months[JUNE_PLAN.month] || {};
   const hasIncome = numberValue(monthData.income) > 0;
   const hasBills = state.fixedBills.length > 0;
@@ -1894,17 +2392,38 @@ function getOrderedJuneTrickles(){
     .sort((a,b) => order.get(a.name) - order.get(b.name));
 }
 
+function getTrickleStatus(item){
+  if(item.paid){
+    return { className:"paid", label:"paid" };
+  }
+
+  if(item.deliveroo){
+    return { className:"deliveroo", label:"use Deliveroo" };
+  }
+
+  return { className:"unpaid", label:"not paid" };
+}
+
 function renderPayOrder(){
   const ordered = getOrderedJuneTrickles();
   const remaining = ordered.filter(item => !item.paid);
-  const prePaydayNames = new Set(["Water", "Mini charging", "Electroverse balance", "Subscription charge", "Mr Lender"]);
-  const prePaydayTotal = remaining
-    .filter(item => prePaydayNames.has(item.name))
+  const outstandingTotal = remaining.reduce((sum,item) => sum + numberValue(item.amount),0);
+  const deliverooTotal = remaining
+    .filter(item => item.deliveroo)
     .reduce((sum,item) => sum + numberValue(item.amount),0);
+  const allocation = getAllocationData();
+  const exactTransfer = allocationTotal(allocation);
+  const recommendedTransfer = exactTransfer + numberValue(allocation.transferBuffer);
+  const deliverooRemaining = Math.max(deliverooTotal - numberValue(allocation.deliverooEarned),0);
+  const workDays = Math.max(1,numberValue(allocation.deliverooDays));
+  const deliverooDaily = deliverooRemaining / workDays;
 
-  els.prePaydayTotal.textContent = money(prePaydayTotal);
-  els.safeDeliverooTarget.textContent = money(JUNE_PLAN.deliverooTargets.safe);
-  els.peaceDeliverooTarget.textContent = money(JUNE_PLAN.deliverooTargets.peace);
+  els.prePaydayTotal.textContent = money(outstandingTotal);
+  els.safeDeliverooTarget.textContent = money(exactTransfer);
+  els.peaceDeliverooTarget.textContent = money(recommendedTransfer);
+  els.deliverooNeededSummary.textContent = money(deliverooTotal);
+  els.deliverooRemainingSummary.textContent = money(deliverooRemaining);
+  els.deliverooDailySummary.textContent = money(deliverooDaily);
   els.payOrderCountPill.textContent = remaining.length === 1 ? "1 left" : `${remaining.length} left`;
   els.payOrderList.innerHTML = "";
 
@@ -1914,21 +2433,23 @@ function renderPayOrder(){
   }
 
   ordered.forEach((item,index) => {
+    const status = getTrickleStatus(item);
     const row = document.createElement("div");
-    row.className = item.paid ? "transaction paid" : "transaction unpaid";
+    row.className = `transaction ${status.className}`;
 
     row.innerHTML = `
       <div class="transactionLeft">
         <strong>${index + 1}. ${escapeHtml(item.name)}</strong>
         <span>
           ${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}
-          <span class="statusChip ${item.paid ? "paid" : "unpaid"}">${item.paid ? "paid" : "not paid"}</span>
+          <span class="statusChip ${status.className}">${status.label}</span>
         </span>
       </div>
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(item.amount)}</div>
-        <button type="button" class="iconBtn" data-toggle-trickle="${item.id}">${item.paid ? "unpaid" : "paid"}</button>
+        <button type="button" class="iconBtn" data-toggle-deliveroo="${item.id}">${item.deliveroo ? "remove Deliveroo" : "use Deliveroo"}</button>
+        <button type="button" class="iconBtn" data-toggle-trickle="${item.id}">${item.paid ? "mark unpaid" : "mark paid"}</button>
       </div>
     `;
 
@@ -1961,21 +2482,23 @@ function renderTrickles(){
   }
 
   trickles.forEach(trickle => {
+    const status = getTrickleStatus(trickle);
     const item = document.createElement("div");
-    item.className = trickle.paid ? "transaction paid" : "transaction unpaid";
+    item.className = `transaction ${status.className}`;
 
     item.innerHTML = `
       <div class="transactionLeft">
         <strong>${escapeHtml(trickle.name)}</strong>
         <span>
           ${escapeHtml(getPriorityLabel(trickle.priority))} • ${escapeHtml(trickle.source)}${trickle.dueDate ? " • due " + escapeHtml(trickle.dueDate) : ""}
-          <span class="statusChip ${trickle.paid ? "paid" : "unpaid"}">${trickle.paid ? "paid" : "not paid"}</span>
+          <span class="statusChip ${status.className}">${status.label}</span>
         </span>
       </div>
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(trickle.amount)}</div>
-        <button type="button" class="iconBtn" data-toggle-trickle="${trickle.id}">${trickle.paid ? "unpaid" : "paid"}</button>
+        <button type="button" class="iconBtn" data-toggle-deliveroo="${trickle.id}">${trickle.deliveroo ? "remove Deliveroo" : "use Deliveroo"}</button>
+        <button type="button" class="iconBtn" data-toggle-trickle="${trickle.id}">${trickle.paid ? "mark unpaid" : "mark paid"}</button>
         <button type="button" class="iconBtn danger" data-delete-trickle="${trickle.id}">delete</button>
       </div>
     `;
@@ -2017,35 +2540,144 @@ function renderEmailPayments(){
   });
 }
 
+function setInputValueUnlessEditing(input, value){
+  if(document.activeElement !== input){
+    input.value = numberValue(value) || "";
+  }
+}
+
+function renderAllocation(){
+  const allocation = getAllocationData();
+  const monthData = getMonthData();
+  const income = numberValue(monthData.income);
+  const total = allocationTotal(allocation);
+  const protectedAmount = income - total;
+  const recommended = total + numberValue(allocation.transferBuffer);
+
+  els.allocationIncome.textContent = money(income);
+  els.hsbcProtected.textContent = money(protectedAmount);
+  els.revolutExact.textContent = money(total);
+  els.revolutRecommended.textContent = money(recommended);
+  els.pieTotal.textContent = money(total);
+
+  POT_CONFIG.forEach(pot => {
+    setInputValueUnlessEditing(els[pot.input], allocation[pot.key]);
+  });
+
+  setInputValueUnlessEditing(els.transferBufferInput, allocation.transferBuffer);
+  setInputValueUnlessEditing(els.deliverooEarnedInput, allocation.deliverooEarned);
+  setInputValueUnlessEditing(els.deliverooDaysInput, allocation.deliverooDays);
+
+  if(document.activeElement !== els.allocationNoteInput){
+    els.allocationNoteInput.value = allocation.note || "";
+  }
+
+  const activePots = POT_CONFIG.filter(pot => numberValue(allocation[pot.key]) > 0);
+  let cursor = 0;
+  const segments = activePots.map(pot => {
+    const start = cursor;
+    cursor += total > 0 ? numberValue(allocation[pot.key]) / total * 100 : 0;
+    return `${pot.color} ${start}% ${cursor}%`;
+  });
+
+  els.allocationPie.style.background = segments.length
+    ? `conic-gradient(${segments.join(",")})`
+    : "conic-gradient(rgba(255,255,255,0.10) 0 100%)";
+
+  els.allocationLegend.innerHTML = "";
+
+  activePots.forEach(pot => {
+    const amount = numberValue(allocation[pot.key]);
+    const percent = total > 0 ? amount / total * 100 : 0;
+    const item = document.createElement("div");
+    item.className = "legendItem";
+    item.innerHTML = `
+      <div class="legendName">
+        <span class="legendDot" style="background:${pot.color};"></span>
+        <span>${pot.label}</span>
+      </div>
+      <div class="legendValue">${money(amount)} • ${percent.toFixed(1)}%</div>
+    `;
+    els.allocationLegend.appendChild(item);
+  });
+
+  if(total <= 0){
+    els.allocationStatusPill.textContent = "not allocated";
+    els.allocationMessage.textContent = "Enter pot amounts to build the split.";
+  }else if(protectedAmount < 0){
+    els.allocationStatusPill.textContent = "over allocated";
+    els.allocationMessage.textContent = `${money(Math.abs(protectedAmount))} is allocated beyond the available salary.`;
+  }else{
+    els.allocationStatusPill.textContent = "balanced";
+    els.allocationMessage.textContent = allocation.note || `Leave ${money(protectedAmount)} protected and transfer ${money(recommended)} to Revolut.`;
+  }
+}
+
+function updateAllocationFromInputs(){
+  const allocation = getAllocationData();
+
+  POT_CONFIG.forEach(pot => {
+    allocation[pot.key] = numberValue(els[pot.input].value);
+  });
+
+  allocation.transferBuffer = numberValue(els.transferBufferInput.value);
+  allocation.deliverooEarned = numberValue(els.deliverooEarnedInput.value);
+  allocation.deliverooDays = Math.max(1, Math.round(numberValue(els.deliverooDaysInput.value) || 1));
+  allocation.note = els.allocationNoteInput.value.trim();
+
+  save();
+  renderAllocation();
+  renderPayOrder();
+  renderSummary();
+}
+
+function renderCleared(){
+  const rows = state.selectedMonth === JUNE_PLAN.month ? JUNE_PLAN.cleared : [];
+  els.clearedCountPill.textContent = rows.length === 1 ? "1 cleared" : `${rows.length} cleared`;
+  els.clearedList.innerHTML = "";
+
+  if(!rows.length){
+    els.clearedList.innerHTML = `<div class="empty">No cleared-item record for this month.</div>`;
+    return;
+  }
+
+  rows.forEach(name => {
+    const item = document.createElement("div");
+    item.className = "clearedItem";
+    item.textContent = `✓ ${name}`;
+    els.clearedList.appendChild(item);
+  });
+}
+
 function renderSummary(){
   const monthData = getMonthData();
-  const fixed = totalFixedBills();
+  const allocation = getAllocationData();
+  const allocated = allocationTotal(allocation);
   const spent = totalSpending();
-  const trickles = outstandingTrickles();
+  const outstanding = outstandingTrickles();
   const available = numberValue(monthData.income) + numberValue(monthData.startingBalance);
-  const left = available - fixed - spent - trickles;
-  const daily = left > 0 ? left / daysLeftInMonth() : 0;
+  const protectedAmount = available - allocated;
+  const flexible = numberValue(allocation.fun) + numberValue(allocation.misc);
+  const daily = flexible > 0 ? flexible / daysLeftInMonth() : 0;
 
   els.incomeInput.value = monthData.income || "";
   els.balanceInput.value = monthData.startingBalance || "";
 
   els.incomeSummary.textContent = money(monthData.income);
-  els.fixedSummary.textContent = money(fixed);
+  els.fixedSummary.textContent = money(protectedAmount);
   els.spentSummary.textContent = money(spent);
-  els.trickleSummary.textContent = money(trickles);
-  els.leftAmount.textContent = money(left);
+  els.trickleSummary.textContent = money(outstanding);
+  els.leftAmount.textContent = money(protectedAmount);
   els.dailySummary.textContent = money(daily);
 
   if(available <= 0){
-    els.monthStatus.textContent = "Add your income so Pace can calculate what is safe to spend.";
-  }else if(left < 0){
-    els.monthStatus.textContent = `${money(Math.abs(left))} needs covering before the month is clear.`;
-  }else if(state.selectedMonth === JUNE_PLAN.month && trickles > 0){
-    els.monthStatus.textContent = `${money(daily)} safe per day after June pressure. July is already tight before Clearpay.`;
-  }else if(trickles > 0){
-    els.monthStatus.textContent = `${money(daily)} safe per day after covering ${money(trickles)} of extras.`;
+    els.monthStatus.textContent = "Add your income so Pace can calculate the account split.";
+  }else if(protectedAmount < 0){
+    els.monthStatus.textContent = `${money(Math.abs(protectedAmount))} is allocated beyond the available income.`;
+  }else if(outstanding > 0){
+    els.monthStatus.textContent = `Leave ${money(protectedAmount)} in HSBC. ${money(outstanding)} remains outstanding in the pay list.`;
   }else{
-    els.monthStatus.textContent = `${money(daily)} safe to spend per day for the rest of the month.`;
+    els.monthStatus.textContent = `Leave ${money(protectedAmount)} in HSBC. All listed outstanding items are cleared.`;
   }
 }
 
@@ -2061,9 +2693,11 @@ function setActiveTab(type){
 
 function render(){
   els.monthInput.value = state.selectedMonth;
+  renderAllocation();
   renderSummary();
   renderBills();
   renderPayOrder();
+  renderCleared();
   renderEmailPayments();
   renderTrickles();
   renderSpends();
@@ -2088,6 +2722,16 @@ els.saveSetupBtn.addEventListener("click", saveSetup);
 els.resetMonthBtn.addEventListener("click", resetMonth);
 els.restorePlanBtn.addEventListener("click", loadJunePlan);
 
+[
+  ...POT_CONFIG.map(pot => els[pot.input]),
+  els.transferBufferInput,
+  els.allocationNoteInput,
+  els.deliverooEarnedInput,
+  els.deliverooDaysInput
+].forEach(input => {
+  input.addEventListener("input", updateAllocationFromInputs);
+});
+
 els.addBillBtn.addEventListener("click", addBill);
 els.clearBillBtn.addEventListener("click", clearBillForm);
 
@@ -2108,6 +2752,7 @@ document.addEventListener("click", event => {
   const deleteSpendId = event.target.getAttribute("data-delete-spend");
   const importEmailPaymentId = event.target.getAttribute("data-import-email-payment");
   const toggleTrickleId = event.target.getAttribute("data-toggle-trickle");
+  const toggleDeliverooId = event.target.getAttribute("data-toggle-deliveroo");
   const deleteTrickleId = event.target.getAttribute("data-delete-trickle");
 
   if(editBillId){
@@ -2132,6 +2777,10 @@ document.addEventListener("click", event => {
 
   if(toggleTrickleId){
     toggleTricklePaid(toggleTrickleId);
+  }
+
+  if(toggleDeliverooId){
+    toggleTrickleDeliveroo(toggleDeliverooId);
   }
 
   if(deleteTrickleId){
