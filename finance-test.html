@@ -451,6 +451,19 @@ textarea{
   border-color:rgba(245,158,11,0.40);
 }
 
+.accountRoute{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid rgba(96,165,250,0.34);
+  background:rgba(96,165,250,0.10);
+  color:#bfdbfe;
+  border-radius:999px;
+  padding:4px 7px;
+  margin-top:6px;
+  font-size:11px;
+  font-weight:850;
+}
+
 .billTop{
   display:flex;
   justify-content:space-between;
@@ -1130,7 +1143,7 @@ textarea{
           </div>
         </div>
 
-        <div class="formGrid three" style="margin-top:10px;">
+        <div class="formGrid" style="margin-top:10px;">
           <div class="field">
             <label>payment type</label>
             <select id="billTypeInput">
@@ -1154,9 +1167,20 @@ textarea{
           </div>
 
           <div class="field">
-            <label>paid from</label>
-            <select id="billPotInput">
+            <label>account</label>
+            <select id="billAccountInput">
               <option value="HSBC">HSBC</option>
+              <option value="Revolut">Revolut</option>
+              <option value="Cash">Cash</option>
+              <option value="Other">Other</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>pot</label>
+            <select id="billPotInput">
+              <option value="Protected bills">Protected bills</option>
               <option value="Bills pot">Bills pot</option>
               <option value="Debt pot">Debt pot</option>
               <option value="BNPL pot">BNPL pot</option>
@@ -1165,6 +1189,7 @@ textarea{
               <option value="Emergency pot">Emergency pot</option>
               <option value="Fun pot">Fun pot</option>
               <option value="Miscellaneous pot">Miscellaneous pot</option>
+              <option value="Unassigned">Unassigned</option>
             </select>
           </div>
         </div>
@@ -1216,6 +1241,33 @@ textarea{
           <div class="field">
             <label>date</label>
             <input id="spendDateInput" type="date">
+          </div>
+
+          <div class="field">
+            <label>account</label>
+            <select id="spendAccountInput">
+              <option value="Revolut">Revolut</option>
+              <option value="HSBC">HSBC</option>
+              <option value="Cash">Cash</option>
+              <option value="Other">Other</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>pot</label>
+            <select id="spendPotInput">
+              <option value="Bills pot">Bills pot</option>
+              <option value="Debt pot">Debt pot</option>
+              <option value="BNPL pot">BNPL pot</option>
+              <option value="Commute pot">Commute pot</option>
+              <option value="Savings pot">Savings pot</option>
+              <option value="Emergency pot">Emergency pot</option>
+              <option value="Fun pot">Fun pot</option>
+              <option value="Miscellaneous pot">Miscellaneous pot</option>
+              <option value="Protected bills">Protected bills</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
           </div>
         </div>
 
@@ -1310,6 +1362,33 @@ textarea{
             <label>amount, if known</label>
             <input id="clearedAmountInput" type="number" min="0" step="0.01" placeholder="optional">
           </div>
+
+          <div class="field">
+            <label>account</label>
+            <select id="clearedAccountInput">
+              <option value="Revolut">Revolut</option>
+              <option value="HSBC">HSBC</option>
+              <option value="Cash">Cash</option>
+              <option value="Other">Other</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>pot</label>
+            <select id="clearedPotInput">
+              <option value="Bills pot">Bills pot</option>
+              <option value="Debt pot">Debt pot</option>
+              <option value="BNPL pot">BNPL pot</option>
+              <option value="Commute pot">Commute pot</option>
+              <option value="Savings pot">Savings pot</option>
+              <option value="Emergency pot">Emergency pot</option>
+              <option value="Fun pot">Fun pot</option>
+              <option value="Miscellaneous pot">Miscellaneous pot</option>
+              <option value="Protected bills">Protected bills</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+          </div>
         </div>
 
         <div class="actions">
@@ -1385,24 +1464,36 @@ textarea{
           </div>
         </div>
 
-        <div class="formGrid" style="margin-top:10px;">
+        <div class="formGrid three" style="margin-top:10px;">
           <div class="field">
             <label>due date</label>
             <input id="trickleDueInput" type="date">
           </div>
 
           <div class="field">
-            <label>pot / account</label>
+            <label>account</label>
+            <select id="trickleAccountInput">
+              <option value="Revolut">Revolut</option>
+              <option value="HSBC">HSBC</option>
+              <option value="Cash">Cash</option>
+              <option value="Other">Other</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>pot</label>
             <select id="trickleSourceInput">
               <option value="Bills pot">Bills pot</option>
               <option value="Debt pot">Debt pot</option>
               <option value="BNPL pot">BNPL pot</option>
               <option value="Commute pot">Commute pot</option>
-              <option value="HSBC">HSBC</option>
+              <option value="Protected bills">Protected bills</option>
               <option value="Savings pot">Savings pot</option>
               <option value="Emergency pot">Emergency pot</option>
               <option value="Fun pot">Fun pot</option>
               <option value="Miscellaneous pot">Miscellaneous pot</option>
+              <option value="Unassigned">Unassigned</option>
             </select>
           </div>
         </div>
@@ -1560,6 +1651,7 @@ const els = {
   billDueInput: document.getElementById("billDueInput"),
   billTypeInput: document.getElementById("billTypeInput"),
   billCategoryInput: document.getElementById("billCategoryInput"),
+  billAccountInput: document.getElementById("billAccountInput"),
   billPotInput: document.getElementById("billPotInput"),
   addBillBtn: document.getElementById("addBillBtn"),
   clearBillBtn: document.getElementById("clearBillBtn"),
@@ -1568,6 +1660,8 @@ const els = {
   spendAmountInput: document.getElementById("spendAmountInput"),
   spendCategoryInput: document.getElementById("spendCategoryInput"),
   spendDateInput: document.getElementById("spendDateInput"),
+  spendAccountInput: document.getElementById("spendAccountInput"),
+  spendPotInput: document.getElementById("spendPotInput"),
   addSpendBtn: document.getElementById("addSpendBtn"),
   clearSpendBtn: document.getElementById("clearSpendBtn"),
 
@@ -1575,6 +1669,7 @@ const els = {
   trickleAmountInput: document.getElementById("trickleAmountInput"),
   tricklePriorityInput: document.getElementById("tricklePriorityInput"),
   trickleDueInput: document.getElementById("trickleDueInput"),
+  trickleAccountInput: document.getElementById("trickleAccountInput"),
   trickleSourceInput: document.getElementById("trickleSourceInput"),
   addTrickleBtn: document.getElementById("addTrickleBtn"),
   clearTrickleBtn: document.getElementById("clearTrickleBtn"),
@@ -1618,6 +1713,8 @@ const els = {
   clearedList: document.getElementById("clearedList"),
   clearedNameInput: document.getElementById("clearedNameInput"),
   clearedAmountInput: document.getElementById("clearedAmountInput"),
+  clearedAccountInput: document.getElementById("clearedAccountInput"),
+  clearedPotInput: document.getElementById("clearedPotInput"),
   addClearedBtn: document.getElementById("addClearedBtn"),
   clearClearedBtn: document.getElementById("clearClearedBtn"),
   emailPaymentList: document.getElementById("emailPaymentList"),
@@ -1635,7 +1732,7 @@ let emailActions = [];
 const JUNE_PLAN = {
   month:"2026-06",
   income:1826.55,
-  planVersion:4,
+  planVersion:5,
   allocations:{
     bills:69.43,
     debt:382.53,
@@ -1651,30 +1748,30 @@ const JUNE_PLAN = {
     note:"June is tight: protect HSBC bills first. No savings, fun or emergency from salary unless extra money comes in."
   },
   fixedBills:[
-    { name:"Cityrise rent", amount:740, dueDay:1, type:"standingOrder", category:"home", pot:"HSBC" },
-    { name:"Sheffield Credit Union", amount:200, dueDay:1, type:"standingOrder", category:"debt", pot:"HSBC" },
-    { name:"Credit Spring", amount:60, dueDay:1, type:"directDebit", category:"debt", pot:"HSBC" },
-    { name:"E.ON", amount:106.21, dueDay:1, type:"directDebit", category:"home", pot:"HSBC" },
-    { name:"Rotherham Council", amount:97, dueDay:1, type:"directDebit", category:"home", pot:"HSBC" },
-    { name:"EE phone", amount:37.46, dueDay:1, type:"directDebit", category:"phone", pot:"HSBC" },
-    { name:"Broadband", amount:27.99, dueDay:1, type:"directDebit", category:"phone", pot:"Bills pot" },
-    { name:"Zero Deposit", amount:17.98, dueDay:1, type:"directDebit", category:"home", pot:"Bills pot" },
-    { name:"Water", amount:48.46, dueDay:2, type:"directDebit", category:"home", pot:"Bills pot" },
-    { name:"Very", amount:288, dueDay:1, type:"manualPayment", category:"debt", pot:"Debt pot" },
-    { name:"Zable", amount:60, dueDay:1, type:"manualPayment", category:"debt", pot:"Debt pot" },
-    { name:"Capital One", amount:34.53, dueDay:23, type:"manualPayment", category:"debt", pot:"Debt pot" },
-    { name:"Klarna June", amount:110.18, dueDay:1, type:"manualPayment", category:"debt", pot:"BNPL pot" },
-    { name:"Commute buffer", amount:21.29, dueDay:1, type:"manualPayment", category:"transport", pot:"Commute pot" }
+    { name:"Cityrise rent", amount:740, dueDay:1, type:"standingOrder", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"Sheffield Credit Union", amount:200, dueDay:1, type:"standingOrder", category:"debt", account:"HSBC", pot:"Protected bills" },
+    { name:"Credit Spring", amount:60, dueDay:1, type:"directDebit", category:"debt", account:"HSBC", pot:"Protected bills" },
+    { name:"E.ON", amount:106.21, dueDay:1, type:"directDebit", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"Rotherham Council", amount:97, dueDay:1, type:"directDebit", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"EE phone", amount:37.46, dueDay:1, type:"directDebit", category:"phone", account:"HSBC", pot:"Protected bills" },
+    { name:"Broadband", amount:27.99, dueDay:1, type:"directDebit", category:"phone", account:"Revolut", pot:"Bills pot" },
+    { name:"Zero Deposit", amount:17.98, dueDay:1, type:"directDebit", category:"home", account:"Revolut", pot:"Bills pot" },
+    { name:"Water", amount:48.46, dueDay:2, type:"directDebit", category:"home", account:"Revolut", pot:"Bills pot" },
+    { name:"Very", amount:288, dueDay:1, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Zable", amount:60, dueDay:1, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Capital One", amount:34.53, dueDay:23, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Klarna June", amount:110.18, dueDay:1, type:"manualPayment", category:"debt", account:"Revolut", pot:"BNPL pot" },
+    { name:"Commute buffer", amount:21.29, dueDay:1, type:"manualPayment", category:"transport", account:"Revolut", pot:"Commute pot" }
   ],
   trickles:[
-    { name:"Remaining water", amount:23.46, priority:"must", dueDate:"", source:"Bills pot", paid:false, note:"Water balance still outstanding" },
-    { name:"Broadband", amount:27.99, priority:"must", dueDate:"", source:"Bills pot", paid:false, note:"Outstanding broadband payment" },
-    { name:"Zero Deposit", amount:17.98, priority:"must", dueDate:"", source:"Bills pot", paid:false, note:"Current Zero Deposit payment" },
-    { name:"Very", amount:288, priority:"must", dueDate:"", source:"Debt pot", paid:false, note:"Largest outstanding debt payment" },
-    { name:"Zable", amount:60, priority:"must", dueDate:"", source:"Debt pot", paid:false, note:"Outstanding debt payment" },
-    { name:"Capital One", amount:34.53, priority:"must", dueDate:"", source:"Debt pot", paid:false, note:"Outstanding card payment" },
-    { name:"Klarna June", amount:110.18, priority:"must", dueDate:"", source:"BNPL pot", paid:false, note:"June BNPL allocation" },
-    { name:"Commute buffer", amount:21.29, priority:"soon", dueDate:"", source:"Commute pot", paid:false, note:"Charging starter and travel buffer" }
+    { name:"Remaining water", amount:23.46, priority:"must", dueDate:"", account:"Revolut", source:"Bills pot", paid:false, note:"Water balance still outstanding" },
+    { name:"Broadband", amount:27.99, priority:"must", dueDate:"", account:"Revolut", source:"Bills pot", paid:false, note:"Outstanding broadband payment" },
+    { name:"Zero Deposit", amount:17.98, priority:"must", dueDate:"", account:"Revolut", source:"Bills pot", paid:false, note:"Current Zero Deposit payment" },
+    { name:"Very", amount:288, priority:"must", dueDate:"", account:"Revolut", source:"Debt pot", paid:false, note:"Largest outstanding debt payment" },
+    { name:"Zable", amount:60, priority:"must", dueDate:"", account:"Revolut", source:"Debt pot", paid:false, note:"Outstanding debt payment" },
+    { name:"Capital One", amount:34.53, priority:"must", dueDate:"", account:"Revolut", source:"Debt pot", paid:false, note:"Outstanding card payment" },
+    { name:"Klarna June", amount:110.18, priority:"must", dueDate:"", account:"Revolut", source:"BNPL pot", paid:false, note:"June BNPL allocation" },
+    { name:"Commute buffer", amount:21.29, priority:"soon", dueDate:"", account:"Revolut", source:"Commute pot", paid:false, note:"Charging starter and travel buffer" }
   ],
   payOrder:[
     "Remaining water",
@@ -1808,7 +1905,8 @@ function load(){
       dueDay: bill.dueDay || "",
       type: bill.type || "manualPayment",
       category: bill.category || "other",
-      pot:bill.pot || "HSBC"
+      account:bill.account || (bill.pot === "HSBC" ? "HSBC" : "Unassigned"),
+      pot:bill.pot === "HSBC" ? "Protected bills" : (bill.pot || "Unassigned")
     }));
 
     state.spends = state.spends.map(spend => ({
@@ -1817,7 +1915,9 @@ function load(){
       amount: numberValue(spend.amount),
       category: spend.category || "other",
       date: spend.date || getToday(),
-      month: spend.month || (spend.date || getToday()).slice(0,7)
+      month: spend.month || (spend.date || getToday()).slice(0,7),
+      account:spend.account || "Unassigned",
+      pot:spend.pot || "Unassigned"
     }));
 
     state.trickles = state.trickles.map(trickle => ({
@@ -1826,11 +1926,22 @@ function load(){
       amount: numberValue(trickle.amount),
       priority: trickle.priority || "soon",
       dueDate: trickle.dueDate || "",
-      source: trickle.source || "Deliveroo",
+      account:trickle.account || "Unassigned",
+      source: trickle.source || "Unassigned",
       month: trickle.month || (trickle.dueDate || getToday()).slice(0,7),
       paid: Boolean(trickle.paid),
       deliveroo:Boolean(trickle.deliveroo)
     }));
+
+    Object.keys(state.cleared).forEach(month => {
+      state.cleared[month] = (state.cleared[month] || []).map(record => ({
+        id:record.id || uid(),
+        name:record.name || "Cleared item",
+        amount:numberValue(record.amount),
+        account:record.account || "Unassigned",
+        pot:record.pot || "Unassigned"
+      }));
+    });
 
   }catch(error){
     state.selectedMonth = getCurrentMonth();
@@ -2011,7 +2122,8 @@ function clearBillForm(){
   els.billDueInput.value = "";
   els.billTypeInput.value = "standingOrder";
   els.billCategoryInput.value = "home";
-  els.billPotInput.value = "HSBC";
+  els.billAccountInput.value = "HSBC";
+  els.billPotInput.value = "Protected bills";
   els.addBillBtn.textContent = "add fixed bill";
 }
 
@@ -2021,6 +2133,8 @@ function clearSpendForm(){
   els.spendAmountInput.value = "";
   els.spendCategoryInput.value = "food";
   els.spendDateInput.value = getToday();
+  els.spendAccountInput.value = "Revolut";
+  els.spendPotInput.value = "Miscellaneous pot";
   els.addSpendBtn.textContent = "add spend";
 }
 
@@ -2030,6 +2144,7 @@ function clearTrickleForm(){
   els.trickleAmountInput.value = "";
   els.tricklePriorityInput.value = "must";
   els.trickleDueInput.value = "";
+  els.trickleAccountInput.value = "Revolut";
   els.trickleSourceInput.value = "Bills pot";
   els.addTrickleBtn.textContent = "add trickle";
 }
@@ -2037,7 +2152,7 @@ function clearTrickleForm(){
 function getClearedRecords(){
   if(!state.cleared[state.selectedMonth]){
     state.cleared[state.selectedMonth] = state.selectedMonth === JUNE_PLAN.month
-      ? JUNE_PLAN.cleared.map(name => ({ id:uid(), name, amount:0 }))
+      ? JUNE_PLAN.cleared.map(name => ({ id:uid(), name, amount:0, account:"Unassigned", pot:"Unassigned" }))
       : [];
   }
 
@@ -2048,12 +2163,16 @@ function clearClearedForm(){
   editingClearedId = null;
   els.clearedNameInput.value = "";
   els.clearedAmountInput.value = "";
+  els.clearedAccountInput.value = "Unassigned";
+  els.clearedPotInput.value = "Unassigned";
   els.addClearedBtn.textContent = "add cleared item";
 }
 
 function saveClearedItem(){
   const name = els.clearedNameInput.value.trim();
   const amount = numberValue(els.clearedAmountInput.value);
+  const account = els.clearedAccountInput.value;
+  const pot = els.clearedPotInput.value;
 
   if(!name){
     showToast("Add the cleared item name.");
@@ -2066,10 +2185,10 @@ function saveClearedItem(){
     const record = records.find(item => item.id === editingClearedId);
 
     if(record){
-      Object.assign(record, { name, amount });
+      Object.assign(record, { name, amount, account, pot });
     }
   }else{
-    records.push({ id:uid(), name, amount });
+    records.push({ id:uid(), name, amount, account, pot });
   }
 
   save();
@@ -2086,6 +2205,8 @@ function editClearedItem(id){
   editingClearedId = id;
   els.clearedNameInput.value = record.name;
   els.clearedAmountInput.value = record.amount || "";
+  els.clearedAccountInput.value = record.account || "Unassigned";
+  els.clearedPotInput.value = record.pot || "Unassigned";
   els.addClearedBtn.textContent = "save cleared changes";
   els.clearedNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
   els.clearedNameInput.focus();
@@ -2104,6 +2225,7 @@ function addBill(){
   const dueDay = Number(els.billDueInput.value);
   const type = els.billTypeInput.value;
   const category = els.billCategoryInput.value;
+  const account = els.billAccountInput.value;
   const pot = els.billPotInput.value;
 
   if(!name){
@@ -2125,7 +2247,7 @@ function addBill(){
     const bill = state.fixedBills.find(item => item.id === editingBillId);
 
     if(bill){
-      Object.assign(bill, { name, amount, dueDay, type, category, pot });
+      Object.assign(bill, { name, amount, dueDay, type, category, account, pot });
     }
   }else{
     state.fixedBills.push({
@@ -2135,6 +2257,7 @@ function addBill(){
       dueDay,
       type,
       category,
+      account,
       pot
     });
   }
@@ -2184,7 +2307,8 @@ function editBill(id){
   els.billDueInput.value = bill.dueDay;
   els.billTypeInput.value = bill.type;
   els.billCategoryInput.value = bill.category;
-  els.billPotInput.value = bill.pot || "HSBC";
+  els.billAccountInput.value = bill.account || "Unassigned";
+  els.billPotInput.value = bill.pot || "Unassigned";
   editingBillId = id;
   els.addBillBtn.textContent = "save bill changes";
   els.billNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
@@ -2197,6 +2321,8 @@ function addSpend(){
   const category = els.spendCategoryInput.value;
   const date = els.spendDateInput.value || getToday();
   const month = date.slice(0,7);
+  const account = els.spendAccountInput.value;
+  const pot = els.spendPotInput.value;
 
   if(!name){
     showToast("Add what you spent on.");
@@ -2212,7 +2338,7 @@ function addSpend(){
     const spend = state.spends.find(item => item.id === editingSpendId);
 
     if(spend){
-      Object.assign(spend, { name, amount, category, date, month });
+      Object.assign(spend, { name, amount, category, date, month, account, pot });
     }
   }else{
     state.spends.push({
@@ -2221,7 +2347,9 @@ function addSpend(){
       amount,
       category,
       date,
-      month
+      month,
+      account,
+      pot
     });
   }
 
@@ -2241,6 +2369,8 @@ function editSpend(id){
   els.spendAmountInput.value = spend.amount;
   els.spendCategoryInput.value = spend.category;
   els.spendDateInput.value = spend.date;
+  els.spendAccountInput.value = spend.account || "Unassigned";
+  els.spendPotInput.value = spend.pot || "Unassigned";
   els.addSpendBtn.textContent = "save spend changes";
   els.spendNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
   els.spendNameInput.focus();
@@ -2258,6 +2388,7 @@ function addTrickle(){
   const amount = numberValue(els.trickleAmountInput.value);
   const priority = els.tricklePriorityInput.value;
   const dueDate = els.trickleDueInput.value;
+  const account = els.trickleAccountInput.value;
   const source = els.trickleSourceInput.value;
   const month = (dueDate || `${state.selectedMonth}-01`).slice(0,7);
 
@@ -2275,7 +2406,7 @@ function addTrickle(){
     const trickle = state.trickles.find(item => item.id === editingTrickleId);
 
     if(trickle){
-      Object.assign(trickle, { name, amount, priority, dueDate, source, month });
+      Object.assign(trickle, { name, amount, priority, dueDate, account, source, month });
     }
   }else{
     state.trickles.push({
@@ -2284,6 +2415,7 @@ function addTrickle(){
       amount,
       priority,
       dueDate,
+      account,
       source,
       month,
       paid:false,
@@ -2307,6 +2439,7 @@ function editTrickle(id){
   els.trickleAmountInput.value = trickle.amount;
   els.tricklePriorityInput.value = trickle.priority;
   els.trickleDueInput.value = trickle.dueDate || "";
+  els.trickleAccountInput.value = trickle.account || "Unassigned";
   els.trickleSourceInput.value = trickle.source || "Bills pot";
   els.addTrickleBtn.textContent = "save outstanding changes";
   els.trickleNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
@@ -2330,7 +2463,8 @@ function importEmailPayment(id){
     amount,
     priority: action.priority === "must" ? "must" : "soon",
     dueDate,
-    source: "Email",
+    account:"Unassigned",
+    source:"Unassigned",
     month: (dueDate || `${state.selectedMonth}-01`).slice(0,7),
     paid:false,
     deliveroo:false
@@ -2406,7 +2540,9 @@ function loadJunePlan(askFirst = true){
   state.cleared[JUNE_PLAN.month] = JUNE_PLAN.cleared.map(name => ({
     id:uid(),
     name,
-    amount:0
+    amount:0,
+    account:"Unassigned",
+    pot:"Unassigned"
   }));
   state.planVersion = JUNE_PLAN.planVersion;
 
@@ -2494,9 +2630,10 @@ function renderBills(){
           <div>
             <div class="billName">${escapeHtml(bill.name)}</div>
             <div class="billMeta">
-              ${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)} • ${escapeHtml(bill.pot || "HSBC")}
+              ${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)}
               <span class="statusChip ${paid ? "paid" : "unpaid"}">${paid ? "paid" : "not paid"}</span>
             </div>
+            <div class="accountRoute">${escapeHtml(bill.account || "Unassigned")} → ${escapeHtml(bill.pot || "Unassigned")}</div>
           </div>
           <div class="billAmount">${money(bill.amount)}</div>
         </div>
@@ -2549,6 +2686,7 @@ function renderSpends(){
       <div class="transactionLeft">
         <strong>${escapeHtml(spend.name)}</strong>
         <span>${escapeHtml(spend.category)} • ${spend.date}</span>
+        <div class="accountRoute">${escapeHtml(spend.account || "Unassigned")} → ${escapeHtml(spend.pot || "Unassigned")}</div>
       </div>
 
       <div class="transactionRight">
@@ -2633,9 +2771,10 @@ function renderPayOrder(){
       <div class="transactionLeft">
         <strong>${index + 1}. ${escapeHtml(item.name)}</strong>
         <span>
-          ${escapeHtml(item.source || "No pot set")} • ${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}
+          ${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}
           <span class="statusChip ${status.className}">${status.label}</span>
         </span>
+        <div class="accountRoute">${escapeHtml(item.account || "Unassigned")} → ${escapeHtml(item.source || "Unassigned")}</div>
       </div>
 
       <div class="transactionRight">
@@ -2683,9 +2822,10 @@ function renderTrickles(){
       <div class="transactionLeft">
         <strong>${escapeHtml(trickle.name)}</strong>
         <span>
-          ${escapeHtml(getPriorityLabel(trickle.priority))} • ${escapeHtml(trickle.source)}${trickle.dueDate ? " • due " + escapeHtml(trickle.dueDate) : ""}
+          ${escapeHtml(getPriorityLabel(trickle.priority))}${trickle.dueDate ? " • due " + escapeHtml(trickle.dueDate) : ""}
           <span class="statusChip ${status.className}">${status.label}</span>
         </span>
+        <div class="accountRoute">${escapeHtml(trickle.account || "Unassigned")} → ${escapeHtml(trickle.source || "Unassigned")}</div>
       </div>
 
       <div class="transactionRight">
@@ -2842,6 +2982,7 @@ function renderCleared(){
       <div>
         <div>✓ ${escapeHtml(record.name)}</div>
         ${record.amount ? `<div class="billMeta">${money(record.amount)}</div>` : ""}
+        <div class="accountRoute">${escapeHtml(record.account || "Unassigned")} → ${escapeHtml(record.pot || "Unassigned")}</div>
       </div>
       <div class="billButtons">
         <button type="button" class="iconBtn" data-edit-cleared="${record.id}">edit</button>
