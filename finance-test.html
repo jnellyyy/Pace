@@ -185,6 +185,37 @@ textarea{
   color:var(--text);
 }
 
+.monthControls{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.monthStep{
+  min-width:42px;
+  min-height:42px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  cursor:pointer;
+  font-size:18px;
+  font-weight:900;
+}
+
+.monthCurrent{
+  min-height:42px;
+  border:1px solid rgba(255,59,48,0.32);
+  border-radius:14px;
+  padding:0 12px;
+  background:rgba(255,59,48,0.12);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:850;
+}
+
 .heroMoney{
   margin-top:28px;
   position:relative;
@@ -886,6 +917,25 @@ textarea{
     font-size:38px;
   }
 
+  .monthRow{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .monthControls{
+    width:100%;
+    justify-content:flex-start;
+  }
+
+  .monthPicker{
+    flex:1;
+  }
+
+  .monthPicker input{
+    width:100%;
+    min-width:0;
+  }
+
   .summaryGrid,
   .plannerStrip,
   .formGrid,
@@ -954,9 +1004,14 @@ textarea{
             <div class="pill">monthly view</div>
           </div>
 
-          <div class="monthPicker">
-            <span>📅</span>
-            <input id="monthInput" type="month">
+          <div class="monthControls" aria-label="Choose finance month">
+            <button type="button" class="monthStep" id="previousMonthBtn" aria-label="Previous month">‹</button>
+            <button type="button" class="monthCurrent" id="currentMonthBtn">this month</button>
+            <button type="button" class="monthStep" id="nextMonthBtn" aria-label="Next month">›</button>
+            <div class="monthPicker">
+              <span>📅</span>
+              <input id="monthInput" type="month" aria-label="Selected month">
+            </div>
           </div>
         </div>
 
@@ -1654,9 +1709,13 @@ textarea{
 <script>
 const STORAGE_KEY = "pace_finance_v3";
 const EMAIL_ACTIONS_KEY = "pace_email_command_v1";
+const HAD_SAVED_FINANCE = Boolean(localStorage.getItem(STORAGE_KEY));
 
 const els = {
   monthInput: document.getElementById("monthInput"),
+  previousMonthBtn: document.getElementById("previousMonthBtn"),
+  currentMonthBtn: document.getElementById("currentMonthBtn"),
+  nextMonthBtn: document.getElementById("nextMonthBtn"),
   incomeInput: document.getElementById("incomeInput"),
   balanceInput: document.getElementById("balanceInput"),
   saveSetupBtn: document.getElementById("saveSetupBtn"),
@@ -1944,6 +2003,18 @@ function uid(){
 function getCurrentMonth(){
   const now = new Date();
   return now.toISOString().slice(0,7);
+}
+
+function shiftMonth(monthValue, amount){
+  const [year, month] = monthValue.split("-").map(Number);
+  const shifted = new Date(Date.UTC(year, month - 1 + amount, 1));
+  return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2,"0")}`;
+}
+
+function openMonth(monthValue){
+  state.selectedMonth = monthValue;
+  save();
+  render();
 }
 
 function getToday(){
@@ -3359,9 +3430,19 @@ function escapeHtml(text){
 }
 
 els.monthInput.addEventListener("change", () => {
-  state.selectedMonth = els.monthInput.value || getCurrentMonth();
-  save();
-  render();
+  openMonth(els.monthInput.value || getCurrentMonth());
+});
+
+els.previousMonthBtn.addEventListener("click", () => {
+  openMonth(shiftMonth(state.selectedMonth, -1));
+});
+
+els.currentMonthBtn.addEventListener("click", () => {
+  openMonth(getCurrentMonth());
+});
+
+els.nextMonthBtn.addEventListener("click", () => {
+  openMonth(shiftMonth(state.selectedMonth, 1));
 });
 
 els.saveSetupBtn.addEventListener("click", saveSetup);
@@ -3472,21 +3553,16 @@ document.addEventListener("click", event => {
 
 load();
 
-if(shouldAutoLoadJunePlan()){
+if(!HAD_SAVED_FINANCE){
   loadJunePlan(false);
 }
 
-if(shouldAutoLoadJulyPlan()){
-  loadJulyPlan(false);
-}
+state.selectedMonth = getCurrentMonth();
+save();
 
 loadEmailActions();
 
 els.spendDateInput.value = getToday();
-
-if(!state.selectedMonth){
-  state.selectedMonth = getCurrentMonth();
-}
 
 render();
 </script>
@@ -3572,6 +3648,12 @@ async function syncJulyReminders(){
     }
 
     const wanted = await buildJulyReminderRows(user.id);
+
+    if(!wanted.length){
+      status.textContent = "Your saved finance data is safe. Set up July when you are ready to create its reminders.";
+      return;
+    }
+
     const { data:existing, error:loadError } = await financeSupabase
       .from("reminders")
       .select("id,source_id,done")
