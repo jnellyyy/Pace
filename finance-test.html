@@ -425,6 +425,12 @@ textarea{
   background:linear-gradient(180deg, rgba(245,158,11,0.14), rgba(255,255,255,0.045));
 }
 
+.billItem.funded,
+.transaction.funded{
+  border-color:rgba(96,165,250,0.48);
+  background:linear-gradient(180deg, rgba(96,165,250,0.14), rgba(255,255,255,0.045));
+}
+
 .statusChip{
   display:inline-flex;
   align-items:center;
@@ -449,6 +455,11 @@ textarea{
 .statusChip.deliveroo{
   color:#fde7b0;
   border-color:rgba(245,158,11,0.40);
+}
+
+.statusChip.funded{
+  color:#bfdbfe;
+  border-color:rgba(96,165,250,0.42);
 }
 
 .accountRoute{
@@ -1297,6 +1308,16 @@ textarea{
           </div>
 
           <div class="plannerBox">
+            <span>funded and waiting</span>
+            <strong id="fundedWaitingSummary">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
+            <span>still needs funding</span>
+            <strong id="needsFundingSummary">£0.00</strong>
+          </div>
+
+          <div class="plannerBox">
             <span>exact Revolut transfer</span>
             <strong id="safeDeliverooTarget">£0.00</strong>
           </div>
@@ -1686,6 +1707,8 @@ const els = {
   earnPerDaySummary: document.getElementById("earnPerDaySummary"),
   payOrderCountPill: document.getElementById("payOrderCountPill"),
   prePaydayTotal: document.getElementById("prePaydayTotal"),
+  fundedWaitingSummary: document.getElementById("fundedWaitingSummary"),
+  needsFundingSummary: document.getElementById("needsFundingSummary"),
   safeDeliverooTarget: document.getElementById("safeDeliverooTarget"),
   peaceDeliverooTarget: document.getElementById("peaceDeliverooTarget"),
   deliverooNeededSummary: document.getElementById("deliverooNeededSummary"),
@@ -1823,6 +1846,7 @@ let state = {
   spends: [],
   trickles: [],
   billPaid: {},
+  billFunded: {},
   allocations: {},
   cleared: {},
   planVersion:0
@@ -1893,6 +1917,7 @@ function load(){
       spends: parsed.spends || [],
       trickles: parsed.trickles || [],
       billPaid: parsed.billPaid || {},
+      billFunded: parsed.billFunded || {},
       allocations: parsed.allocations || {},
       cleared: parsed.cleared || {},
       planVersion:Number(parsed.planVersion) || 0
@@ -1930,6 +1955,7 @@ function load(){
       source: trickle.source || "Unassigned",
       month: trickle.month || (trickle.dueDate || getToday()).slice(0,7),
       paid: Boolean(trickle.paid),
+      funded:Boolean(trickle.funded),
       deliveroo:Boolean(trickle.deliveroo)
     }));
 
@@ -1947,6 +1973,7 @@ function load(){
     state.selectedMonth = getCurrentMonth();
     state.trickles = [];
     state.billPaid = {};
+    state.billFunded = {};
     state.allocations = {};
     state.cleared = {};
     state.planVersion = 0;
@@ -2009,6 +2036,10 @@ function billPaidKey(id){
 
 function isBillPaid(id){
   return Boolean(state.billPaid?.[billPaidKey(id)]);
+}
+
+function isBillFunded(id){
+  return Boolean(state.billFunded?.[billPaidKey(id)]);
 }
 
 function normalizePaymentName(value){
@@ -2271,6 +2302,7 @@ function addBill(){
 function deleteBill(id){
   state.fixedBills = state.fixedBills.filter(bill => bill.id !== id);
   delete state.billPaid[billPaidKey(id)];
+  delete state.billFunded[billPaidKey(id)];
   save();
   render();
   showToast("Bill deleted.");
@@ -2280,6 +2312,10 @@ function toggleBillPaid(id){
   const key = billPaidKey(id);
   state.billPaid[key] = !state.billPaid[key];
 
+  if(state.billPaid[key]){
+    state.billFunded[key] = false;
+  }
+
   const bill = state.fixedBills.find(item => item.id === id);
 
   if(bill){
@@ -2287,6 +2323,7 @@ function toggleBillPaid(id){
       trickle.paid = state.billPaid[key];
 
       if(trickle.paid){
+        trickle.funded = false;
         trickle.deliveroo = false;
       }
     });
@@ -2295,6 +2332,26 @@ function toggleBillPaid(id){
   save();
   render();
   showToast(state.billPaid[key] ? "Marked paid." : "Marked unpaid.");
+}
+
+function toggleBillFunded(id){
+  const key = billPaidKey(id);
+  state.billPaid[key] = false;
+  state.billFunded[key] = !state.billFunded[key];
+
+  const bill = state.fixedBills.find(item => item.id === id);
+
+  if(bill){
+    matchingTrickles(bill.name).forEach(trickle => {
+      trickle.paid = false;
+      trickle.deliveroo = false;
+      trickle.funded = state.billFunded[key];
+    });
+  }
+
+  save();
+  render();
+  showToast(state.billFunded[key] ? "Money marked in account." : "Funding removed.");
 }
 
 function editBill(id){
@@ -2419,6 +2476,7 @@ function addTrickle(){
       source,
       month,
       paid:false,
+      funded:false,
       deliveroo:false
     });
   }
@@ -2467,6 +2525,7 @@ function importEmailPayment(id){
     source:"Unassigned",
     month: (dueDate || `${state.selectedMonth}-01`).slice(0,7),
     paid:false,
+    funded:false,
     deliveroo:false
   });
 
@@ -2485,6 +2544,7 @@ function toggleTricklePaid(id){
   trickle.paid = !trickle.paid;
 
   if(trickle.paid){
+    trickle.funded = false;
     trickle.deliveroo = false;
   }
 
@@ -2492,6 +2552,7 @@ function toggleTricklePaid(id){
     .filter(bill => normalizePaymentName(bill.name) === normalizePaymentName(trickle.name))
     .forEach(bill => {
       state.billPaid[billPaidKey(bill.id)] = trickle.paid;
+      state.billFunded[billPaidKey(bill.id)] = false;
     });
 
   save();
@@ -2505,10 +2566,32 @@ function toggleTrickleDeliveroo(id){
   if(!trickle) return;
 
   trickle.paid = false;
+  trickle.funded = false;
   trickle.deliveroo = !trickle.deliveroo;
   save();
   render();
   showToast(trickle.deliveroo ? "Marked for Deliveroo." : "Removed from Deliveroo target.");
+}
+
+function toggleTrickleFunded(id){
+  const trickle = state.trickles.find(item => item.id === id);
+
+  if(!trickle) return;
+
+  trickle.paid = false;
+  trickle.deliveroo = false;
+  trickle.funded = !trickle.funded;
+
+  state.fixedBills
+    .filter(bill => normalizePaymentName(bill.name) === normalizePaymentName(trickle.name))
+    .forEach(bill => {
+      state.billPaid[billPaidKey(bill.id)] = false;
+      state.billFunded[billPaidKey(bill.id)] = trickle.funded;
+    });
+
+  save();
+  render();
+  showToast(trickle.funded ? "Money marked in pot." : "Funding removed.");
 }
 
 function deleteTrickle(id){
@@ -2536,6 +2619,7 @@ function loadJunePlan(askFirst = true){
     ...bill
   }));
   state.billPaid = {};
+  state.billFunded = {};
   state.allocations[JUNE_PLAN.month] = { ...JUNE_PLAN.allocations };
   state.cleared[JUNE_PLAN.month] = JUNE_PLAN.cleared.map(name => ({
     id:uid(),
@@ -2622,8 +2706,11 @@ function renderBills(){
 
     bills.forEach(bill => {
       const paid = isBillPaid(bill.id);
+      const funded = isBillFunded(bill.id);
+      const statusClass = paid ? "paid" : funded ? "funded" : "unpaid";
+      const statusLabel = paid ? "paid" : funded ? "money in account" : "not paid";
       const item = document.createElement("div");
-      item.className = paid ? "billItem paid" : "billItem unpaid";
+      item.className = `billItem ${statusClass}`;
 
       item.innerHTML = `
         <div class="billTop">
@@ -2631,7 +2718,7 @@ function renderBills(){
             <div class="billName">${escapeHtml(bill.name)}</div>
             <div class="billMeta">
               ${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)}
-              <span class="statusChip ${paid ? "paid" : "unpaid"}">${paid ? "paid" : "not paid"}</span>
+              <span class="statusChip ${statusClass}">${statusLabel}</span>
             </div>
             <div class="accountRoute">${escapeHtml(bill.account || "Unassigned")} → ${escapeHtml(bill.pot || "Unassigned")}</div>
           </div>
@@ -2639,6 +2726,7 @@ function renderBills(){
         </div>
 
         <div class="billButtons">
+          <button type="button" class="iconBtn" data-toggle-bill-funded="${bill.id}">${funded ? "remove funding" : "money in account"}</button>
           <button type="button" class="iconBtn" data-toggle-bill-paid="${bill.id}">${paid ? "unpaid" : "paid"}</button>
           <button type="button" class="iconBtn" data-edit-bill="${bill.id}">edit</button>
           <button type="button" class="iconBtn danger" data-delete-bill="${bill.id}">delete</button>
@@ -2727,6 +2815,10 @@ function getTrickleStatus(item){
     return { className:"paid", label:"paid" };
   }
 
+  if(item.funded){
+    return { className:"funded", label:"money in pot" };
+  }
+
   if(item.deliveroo){
     return { className:"deliveroo", label:"use Deliveroo" };
   }
@@ -2738,6 +2830,12 @@ function renderPayOrder(){
   const ordered = getOrderedJuneTrickles();
   const remaining = ordered.filter(item => !item.paid);
   const outstandingTotal = remaining.reduce((sum,item) => sum + numberValue(item.amount),0);
+  const fundedTotal = remaining
+    .filter(item => item.funded)
+    .reduce((sum,item) => sum + numberValue(item.amount),0);
+  const needsFundingTotal = remaining
+    .filter(item => !item.funded)
+    .reduce((sum,item) => sum + numberValue(item.amount),0);
   const deliverooTotal = remaining
     .filter(item => item.deliveroo)
     .reduce((sum,item) => sum + numberValue(item.amount),0);
@@ -2749,6 +2847,8 @@ function renderPayOrder(){
   const deliverooDaily = deliverooRemaining / workDays;
 
   els.prePaydayTotal.textContent = money(outstandingTotal);
+  els.fundedWaitingSummary.textContent = money(fundedTotal);
+  els.needsFundingSummary.textContent = money(needsFundingTotal);
   els.safeDeliverooTarget.textContent = money(exactTransfer);
   els.peaceDeliverooTarget.textContent = money(recommendedTransfer);
   els.deliverooNeededSummary.textContent = money(deliverooTotal);
@@ -2779,6 +2879,7 @@ function renderPayOrder(){
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(item.amount)}</div>
+        <button type="button" class="iconBtn" data-toggle-funded="${item.id}">${item.funded ? "remove from pot" : "money in pot"}</button>
         <button type="button" class="iconBtn" data-toggle-deliveroo="${item.id}">${item.deliveroo ? "remove Deliveroo" : "use Deliveroo"}</button>
         <button type="button" class="iconBtn" data-toggle-trickle="${item.id}">${item.paid ? "mark unpaid" : "mark paid"}</button>
         <button type="button" class="iconBtn" data-edit-trickle="${item.id}">edit</button>
@@ -2830,6 +2931,7 @@ function renderTrickles(){
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(trickle.amount)}</div>
+        <button type="button" class="iconBtn" data-toggle-funded="${trickle.id}">${trickle.funded ? "remove from pot" : "money in pot"}</button>
         <button type="button" class="iconBtn" data-toggle-deliveroo="${trickle.id}">${trickle.deliveroo ? "remove Deliveroo" : "use Deliveroo"}</button>
         <button type="button" class="iconBtn" data-toggle-trickle="${trickle.id}">${trickle.paid ? "mark unpaid" : "mark paid"}</button>
         <button type="button" class="iconBtn" data-edit-trickle="${trickle.id}">edit</button>
@@ -3095,10 +3197,12 @@ document.addEventListener("click", event => {
   const editBillId = event.target.getAttribute("data-edit-bill");
   const deleteBillId = event.target.getAttribute("data-delete-bill");
   const toggleBillPaidId = event.target.getAttribute("data-toggle-bill-paid");
+  const toggleBillFundedId = event.target.getAttribute("data-toggle-bill-funded");
   const editSpendId = event.target.getAttribute("data-edit-spend");
   const deleteSpendId = event.target.getAttribute("data-delete-spend");
   const importEmailPaymentId = event.target.getAttribute("data-import-email-payment");
   const toggleTrickleId = event.target.getAttribute("data-toggle-trickle");
+  const toggleFundedId = event.target.getAttribute("data-toggle-funded");
   const toggleDeliverooId = event.target.getAttribute("data-toggle-deliveroo");
   const editTrickleId = event.target.getAttribute("data-edit-trickle");
   const deleteTrickleId = event.target.getAttribute("data-delete-trickle");
@@ -3117,6 +3221,10 @@ document.addEventListener("click", event => {
     toggleBillPaid(toggleBillPaidId);
   }
 
+  if(toggleBillFundedId){
+    toggleBillFunded(toggleBillFundedId);
+  }
+
   if(editSpendId){
     editSpend(editSpendId);
   }
@@ -3131,6 +3239,10 @@ document.addEventListener("click", event => {
 
   if(toggleTrickleId){
     toggleTricklePaid(toggleTrickleId);
+  }
+
+  if(toggleFundedId){
+    toggleTrickleFunded(toggleFundedId);
   }
 
   if(toggleDeliverooId){
