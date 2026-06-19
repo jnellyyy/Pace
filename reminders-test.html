@@ -636,6 +636,17 @@ input::placeholder{
 
     <aside class="stack">
 
+      <div class="card panel">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Device alerts</h2>
+            <p class="panel-copy">Allow Pace to alert this browser or phone when a payment is close.</p>
+          </div>
+        </div>
+        <button type="button" class="secondary-btn" id="enableNotificationsBtn">Enable device alerts</button>
+        <div id="notificationStatus" class="notice">Alerts are not enabled on this device yet.</div>
+      </div>
+
       <div class="card panel add-form" id="addForm">
         <div class="panel-head">
           <div>
@@ -718,6 +729,15 @@ input::placeholder{
             </div>
             <div class="source-arrow">›</div>
           </div>
+
+          <div class="source-row" id="source-finance" onclick="setSource('finance')">
+            <div class="source-icon" style="background:rgba(167,139,250,0.22);">£</div>
+            <div class="source-main">
+              <div class="source-name">Finance</div>
+              <div class="source-count" id="financeCount">0 open</div>
+            </div>
+            <div class="source-arrow">›</div>
+          </div>
         </div>
       </div>
 
@@ -755,6 +775,8 @@ const reminderList = document.getElementById("reminderList");
 const viewTitle = document.getElementById("viewTitle");
 const msg = document.getElementById("msg");
 const kpisEl = document.getElementById("kpis");
+const notificationStatus = document.getElementById("notificationStatus");
+const enableNotificationsBtn = document.getElementById("enableNotificationsBtn");
 
 function today(){
   const now = new Date();
@@ -794,6 +816,7 @@ function sourceLabel(source){
   if(source === "list") return "List";
   if(source === "booking") return "Booking";
   if(source === "creator") return "Creator";
+  if(source === "finance") return "Finance";
   return "Manual";
 }
 
@@ -827,6 +850,7 @@ function updateCounts(){
   document.getElementById("bookingCount").textContent = `${active.filter(r => r.source === "booking").length} open`;
   document.getElementById("manualCount").textContent = `${active.filter(r => r.source === "manual").length} open`;
   document.getElementById("creatorCount").textContent = `${active.filter(r => r.source === "creator").length} open`;
+  document.getElementById("financeCount").textContent = `${active.filter(r => r.source === "finance").length} open`;
 }
 
 function renderKpis(){
@@ -950,6 +974,79 @@ async function getUser(){
   return data.user;
 }
 
+function updateNotificationStatus(){
+  if(!("Notification" in window) || !("serviceWorker" in navigator)){
+    notificationStatus.textContent = "This browser does not support Pace device alerts. Use the phone calendar option in Finance.";
+    enableNotificationsBtn.disabled = true;
+    return;
+  }
+
+  if(Notification.permission === "granted"){
+    notificationStatus.textContent = "Device alerts are enabled. Pace checks payments whenever you open the app.";
+    enableNotificationsBtn.textContent = "Device alerts enabled";
+    return;
+  }
+
+  if(Notification.permission === "denied"){
+    notificationStatus.textContent = "Alerts are blocked in this browser's settings. The phone calendar reminders will still work.";
+    return;
+  }
+
+  notificationStatus.textContent = "Alerts are not enabled on this device yet.";
+}
+
+async function getServiceWorkerRegistration(){
+  return navigator.serviceWorker.register("sw.js", { scope:"./" });
+}
+
+async function showUpcomingFinanceNotifications(){
+  if(!("Notification" in window) || Notification.permission !== "granted") return;
+
+  const registration = await getServiceWorkerRegistration();
+  const start = new Date(`${today()}T00:00:00`);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 3);
+
+  const upcoming = reminders.filter(row => {
+    if(row.done || row.source !== "finance" || !row.reminder_date) return false;
+    const due = new Date(`${row.reminder_date}T00:00:00`);
+    return due >= start && due <= end;
+  });
+
+  for(const row of upcoming){
+    const notificationKey = `pace-payment-notified:${row.id}:${today()}`;
+    if(localStorage.getItem(notificationKey)) continue;
+
+    await registration.showNotification("Pace payment reminder", {
+      body:`${row.title} · ${formatDate(row.reminder_date,row.reminder_time)}`,
+      icon:"icon-192.png",
+      badge:"icon-192.png",
+      tag:`pace-finance-${row.id}`,
+      data:{ url:"reminders-test.html" }
+    });
+    localStorage.setItem(notificationKey, "1");
+  }
+}
+
+enableNotificationsBtn.addEventListener("click", async () => {
+  if(!("Notification" in window) || !("serviceWorker" in navigator)){
+    updateNotificationStatus();
+    return;
+  }
+
+  try{
+    await getServiceWorkerRegistration();
+    const permission = await Notification.requestPermission();
+    updateNotificationStatus();
+
+    if(permission === "granted"){
+      await showUpcomingFinanceNotifications();
+    }
+  }catch(error){
+    notificationStatus.textContent = `Could not enable alerts: ${error.message || "unknown error"}`;
+  }
+});
+
 async function loadReminderRows(){
   const { data, error } = await supabase
     .from("reminders")
@@ -1037,6 +1134,13 @@ async function load(){
   allRows = [...reminderRows, ...bookingRows];
 
   render();
+  updateNotificationStatus();
+
+  try{
+    await showUpcomingFinanceNotifications();
+  }catch(error){
+    notificationStatus.textContent = `Alerts need attention: ${error.message || "unknown error"}`;
+  }
 }
 
 window.addManualReminder = async function(){

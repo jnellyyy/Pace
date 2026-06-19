@@ -314,6 +314,7 @@ textarea{
 
 .actions{
   display:flex;
+  flex-wrap:wrap;
   gap:10px;
   margin-top:12px;
 }
@@ -898,6 +899,14 @@ textarea{
     grid-template-columns:1fr;
   }
 
+  .actions{
+    flex-direction:column;
+  }
+
+  .actions .btn{
+    width:100%;
+  }
+
   .allocationLegend{
     grid-template-columns:1fr;
   }
@@ -1121,7 +1130,14 @@ textarea{
           <button type="button" class="btn btnPrimary" id="saveSetupBtn">save setup</button>
           <button type="button" class="btn btnSoft" id="resetMonthBtn">reset month</button>
           <button type="button" class="btn btnSoft" id="restorePlanBtn">load June plan</button>
+          <button type="button" class="btn btnSoft" id="loadJulyPlanBtn">set up July</button>
         </div>
+
+        <div class="actions">
+          <button type="button" class="btn btnPrimary" id="syncJulyRemindersBtn">sync July reminders</button>
+          <button type="button" class="btn btnSoft" id="downloadJulyCalendarBtn">add July to phone calendar</button>
+        </div>
+        <div class="billMeta" id="reminderSyncStatus">July reminders can appear in Pace on web and in your phone calendar.</div>
 
       </div>
     </section>
@@ -1646,6 +1662,10 @@ const els = {
   saveSetupBtn: document.getElementById("saveSetupBtn"),
   resetMonthBtn: document.getElementById("resetMonthBtn"),
   restorePlanBtn: document.getElementById("restorePlanBtn"),
+  loadJulyPlanBtn: document.getElementById("loadJulyPlanBtn"),
+  syncJulyRemindersBtn: document.getElementById("syncJulyRemindersBtn"),
+  downloadJulyCalendarBtn: document.getElementById("downloadJulyCalendarBtn"),
+  reminderSyncStatus: document.getElementById("reminderSyncStatus"),
 
   allocationStatusPill: document.getElementById("allocationStatusPill"),
   allocationIncome: document.getElementById("allocationIncome"),
@@ -1828,6 +1848,65 @@ const JUNE_PLAN = {
   }
 };
 
+const JULY_PLAN = {
+  month:"2026-07",
+  income:1826.55,
+  planVersion:1,
+  allocations:{
+    bills:94.43,
+    debt:487.53,
+    bnpl:222.40,
+    commute:0,
+    savings:0,
+    emergency:0,
+    fun:0,
+    misc:0,
+    transferBuffer:0,
+    deliverooEarned:0,
+    deliverooDays:31,
+    note:"July commitments are £2,045.03, which is £218.48 more than salary before variable payments. Keep variable payments open and update them as they become known."
+  },
+  fixedBills:[
+    { name:"Cityrise rent", amount:740, dueDay:20, type:"standingOrder", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"Sheffield Credit Union", amount:200, dueDay:20, type:"standingOrder", category:"debt", account:"HSBC", pot:"Protected bills" },
+    { name:"Credit Spring", amount:60, dueDay:20, type:"directDebit", category:"debt", account:"HSBC", pot:"Protected bills" },
+    { name:"E.ON", amount:106.21, dueDay:20, type:"directDebit", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"Rotherham Council", amount:97, dueDay:20, type:"directDebit", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"EE phone", amount:37.46, dueDay:20, type:"directDebit", category:"phone", account:"HSBC", pot:"Protected bills" },
+    { name:"Broadband", amount:27.99, dueDay:20, type:"directDebit", category:"phone", account:"Revolut", pot:"Bills pot" },
+    { name:"Zero Deposit", amount:17.98, dueDay:20, type:"directDebit", category:"home", account:"Revolut", pot:"Bills pot" },
+    { name:"Water", amount:48.46, dueDay:20, type:"directDebit", category:"home", account:"Revolut", pot:"Bills pot" },
+    { name:"Very", amount:288, dueDay:20, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Zable", amount:60, dueDay:20, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Capital One", amount:34.53, dueDay:20, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Mr Lender", amount:105, dueDay:20, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" }
+  ],
+  klarna:[
+    { day:1, amount:5.40 },
+    { day:2, amount:7.00 },
+    { day:4, amount:42.50 },
+    { day:5, amount:3.50 },
+    { day:6, amount:8.70 },
+    { day:7, amount:1.70 },
+    { day:10, amount:27.60 },
+    { day:11, amount:5.40 },
+    { day:12, amount:5.20 },
+    { day:13, amount:2.20 },
+    { day:14, amount:3.00 },
+    { day:15, amount:1.70 },
+    { day:16, amount:1.20 },
+    { day:17, amount:1.70 },
+    { day:19, amount:1.70 },
+    { day:20, amount:42.10 },
+    { day:22, amount:11.80 },
+    { day:24, amount:6.70 },
+    { day:25, amount:30.20 },
+    { day:26, amount:5.80 },
+    { day:30, amount:2.00 },
+    { day:31, amount:5.30 }
+  ]
+};
+
 const POT_CONFIG = [
   { key:"bills", label:"Bills", color:"#60a5fa", input:"potBills" },
   { key:"debt", label:"Debt", color:"#ef4444", input:"potDebt" },
@@ -1849,7 +1928,8 @@ let state = {
   billFunded: {},
   allocations: {},
   cleared: {},
-  planVersion:0
+  planVersion:0,
+  julyPlanVersion:0
 };
 
 let editingBillId = null;
@@ -1920,7 +2000,8 @@ function load(){
       billFunded: parsed.billFunded || {},
       allocations: parsed.allocations || {},
       cleared: parsed.cleared || {},
-      planVersion:Number(parsed.planVersion) || 0
+      planVersion:Number(parsed.planVersion) || 0,
+      julyPlanVersion:Number(parsed.julyPlanVersion) || 0
     };
 
     state.fixedBills = state.fixedBills.map(bill => ({
@@ -1931,7 +2012,8 @@ function load(){
       type: bill.type || "manualPayment",
       category: bill.category || "other",
       account:bill.account || (bill.pot === "HSBC" ? "HSBC" : "Unassigned"),
-      pot:bill.pot === "HSBC" ? "Protected bills" : (bill.pot || "Unassigned")
+      pot:bill.pot === "HSBC" ? "Protected bills" : (bill.pot || "Unassigned"),
+      month:bill.month || JUNE_PLAN.month
     }));
 
     state.spends = state.spends.map(spend => ({
@@ -1956,7 +2038,8 @@ function load(){
       month: trickle.month || (trickle.dueDate || getToday()).slice(0,7),
       paid: Boolean(trickle.paid),
       funded:Boolean(trickle.funded),
-      deliveroo:Boolean(trickle.deliveroo)
+      deliveroo:Boolean(trickle.deliveroo),
+      kind:trickle.kind || "variable"
     }));
 
     Object.keys(state.cleared).forEach(month => {
@@ -1977,6 +2060,7 @@ function load(){
     state.allocations = {};
     state.cleared = {};
     state.planVersion = 0;
+    state.julyPlanVersion = 0;
   }
 }
 
@@ -2028,6 +2112,10 @@ function getMonthSpends(){
 
 function getMonthTrickles(){
   return state.trickles.filter(trickle => trickle.month === state.selectedMonth);
+}
+
+function getMonthBills(){
+  return state.fixedBills.filter(bill => bill.month === state.selectedMonth);
 }
 
 function billPaidKey(id){
@@ -2099,13 +2187,13 @@ function getBillTypeEmoji(type){
 }
 
 function billTotalByType(type){
-  return state.fixedBills
+  return getMonthBills()
     .filter(bill => bill.type === type)
     .reduce((sum,bill) => sum + numberValue(bill.amount),0);
 }
 
 function totalFixedBills(){
-  return state.fixedBills.reduce((sum,bill) => sum + numberValue(bill.amount),0);
+  return getMonthBills().reduce((sum,bill) => sum + numberValue(bill.amount),0);
 }
 
 function totalSpending(){
@@ -2289,7 +2377,8 @@ function addBill(){
       type,
       category,
       account,
-      pot
+      pot,
+      month:state.selectedMonth
     });
   }
 
@@ -2477,7 +2566,8 @@ function addTrickle(){
       month,
       paid:false,
       funded:false,
-      deliveroo:false
+      deliveroo:false,
+      kind:"variable"
     });
   }
 
@@ -2526,7 +2616,8 @@ function importEmailPayment(id){
     month: (dueDate || `${state.selectedMonth}-01`).slice(0,7),
     paid:false,
     funded:false,
-    deliveroo:false
+    deliveroo:false,
+    kind:"variable"
   });
 
   action.financeImported = true;
@@ -2548,7 +2639,7 @@ function toggleTricklePaid(id){
     trickle.deliveroo = false;
   }
 
-  state.fixedBills
+  getMonthBills()
     .filter(bill => normalizePaymentName(bill.name) === normalizePaymentName(trickle.name))
     .forEach(bill => {
       state.billPaid[billPaidKey(bill.id)] = trickle.paid;
@@ -2582,7 +2673,7 @@ function toggleTrickleFunded(id){
   trickle.deliveroo = false;
   trickle.funded = !trickle.funded;
 
-  state.fixedBills
+  getMonthBills()
     .filter(bill => normalizePaymentName(bill.name) === normalizePaymentName(trickle.name))
     .forEach(bill => {
       state.billPaid[billPaidKey(bill.id)] = false;
@@ -2614,12 +2705,18 @@ function loadJunePlan(askFirst = true){
     startingBalance:0
   };
 
-  state.fixedBills = JUNE_PLAN.fixedBills.map(bill => ({
+  state.fixedBills = state.fixedBills.filter(bill => bill.month !== JUNE_PLAN.month);
+  state.fixedBills.push(...JUNE_PLAN.fixedBills.map(bill => ({
     id:uid(),
-    ...bill
-  }));
-  state.billPaid = {};
-  state.billFunded = {};
+    ...bill,
+    month:JUNE_PLAN.month
+  })));
+  Object.keys(state.billPaid).forEach(key => {
+    if(key.startsWith(`${JUNE_PLAN.month}:`)) delete state.billPaid[key];
+  });
+  Object.keys(state.billFunded).forEach(key => {
+    if(key.startsWith(`${JUNE_PLAN.month}:`)) delete state.billFunded[key];
+  });
   state.allocations[JUNE_PLAN.month] = { ...JUNE_PLAN.allocations };
   state.cleared[JUNE_PLAN.month] = JUNE_PLAN.cleared.map(name => ({
     id:uid(),
@@ -2642,6 +2739,86 @@ function loadJunePlan(askFirst = true){
   showToast("June plan loaded.");
 }
 
+function buildJulyTrickles(){
+  const fixedItems = JULY_PLAN.fixedBills.map(bill => ({
+    name:bill.name,
+    amount:bill.amount,
+    priority:"must",
+    dueDate:`${JULY_PLAN.month}-20`,
+    account:bill.account,
+    source:bill.pot,
+    paid:false,
+    funded:false,
+    deliveroo:false,
+    kind:"fixed",
+    note:`${getBillTypeLabel(bill.type)} due 20 July`
+  }));
+
+  const klarnaItems = JULY_PLAN.klarna.map(item => ({
+    name:`Klarna · ${item.day} July`,
+    amount:item.amount,
+    priority:"must",
+    dueDate:`${JULY_PLAN.month}-${String(item.day).padStart(2,"0")}`,
+    account:"Revolut",
+    source:"BNPL pot",
+    paid:false,
+    funded:false,
+    deliveroo:false,
+    kind:"klarna",
+    note:"Klarna July instalment"
+  }));
+
+  return [...fixedItems, ...klarnaItems];
+}
+
+function loadJulyPlan(askFirst = true){
+  if(askFirst){
+    const confirmed = confirm("Set up the July budget? This replaces only July's saved fixed and dated payment items. June and spending history stay unchanged.");
+
+    if(!confirmed) return;
+  }
+
+  state.selectedMonth = JULY_PLAN.month;
+  state.months[JULY_PLAN.month] = {
+    income:JULY_PLAN.income,
+    startingBalance:0
+  };
+
+  state.fixedBills = state.fixedBills.filter(bill => bill.month !== JULY_PLAN.month);
+  state.fixedBills.push(...JULY_PLAN.fixedBills.map(bill => ({
+    id:uid(),
+    ...bill,
+    month:JULY_PLAN.month
+  })));
+
+  Object.keys(state.billPaid).forEach(key => {
+    if(key.startsWith(`${JULY_PLAN.month}:`)) delete state.billPaid[key];
+  });
+  Object.keys(state.billFunded).forEach(key => {
+    if(key.startsWith(`${JULY_PLAN.month}:`)) delete state.billFunded[key];
+  });
+
+  state.allocations[JULY_PLAN.month] = { ...JULY_PLAN.allocations };
+  state.cleared[JULY_PLAN.month] = [];
+  state.trickles = state.trickles.filter(trickle => trickle.month !== JULY_PLAN.month);
+  state.trickles.push(...buildJulyTrickles().map(trickle => ({
+    id:uid(),
+    ...trickle,
+    month:JULY_PLAN.month
+  })));
+  state.julyPlanVersion = JULY_PLAN.planVersion;
+
+  save();
+  render();
+  showToast("July plan is ready. Variable payments are open for you to add.");
+}
+
+function shouldAutoLoadJulyPlan(){
+  const hasJulyBills = state.fixedBills.some(bill => bill.month === JULY_PLAN.month);
+  const hasJulyPayments = state.trickles.some(trickle => trickle.month === JULY_PLAN.month);
+  return state.julyPlanVersion !== JULY_PLAN.planVersion || !hasJulyBills || !hasJulyPayments;
+}
+
 function shouldAutoLoadJunePlan(){
   if(state.planVersion !== JUNE_PLAN.planVersion){
     return true;
@@ -2649,7 +2826,7 @@ function shouldAutoLoadJunePlan(){
 
   const monthData = state.months[JUNE_PLAN.month] || {};
   const hasIncome = numberValue(monthData.income) > 0;
-  const hasBills = state.fixedBills.length > 0;
+  const hasBills = state.fixedBills.some(bill => bill.month === JUNE_PLAN.month);
   const hasJunePressure = state.trickles.some(trickle => trickle.month === JUNE_PLAN.month);
 
   return !hasIncome && !hasBills && !hasJunePressure;
@@ -2693,7 +2870,7 @@ function renderBills(){
 
   Object.keys(lists).forEach(type => {
     const container = lists[type];
-    const bills = state.fixedBills
+    const bills = getMonthBills()
       .filter(bill => bill.type === type)
       .sort((a,b) => Number(a.dueDay) - Number(b.dueDay));
 
@@ -2741,7 +2918,7 @@ function renderBills(){
   els.directDebitTotal.textContent = money(billTotalByType("directDebit"));
   els.manualPaymentTotal.textContent = money(billTotalByType("manualPayment"));
 
-  const billCount = state.fixedBills.length;
+  const billCount = getMonthBills().length;
   els.billCountPill.textContent = billCount === 1 ? "1 bill" : `${billCount} bills`;
 }
 
@@ -2801,13 +2978,24 @@ function getPriorityLabel(priority){
   return labels[priority] || "soon";
 }
 
-function getOrderedJuneTrickles(){
-  const order = new Map(JUNE_PLAN.payOrder.map((name,index) => [name,index]));
+function getOrderedPaymentTrickles(){
+  const rows = getMonthTrickles().slice();
 
-  return getMonthTrickles()
-    .filter(trickle => order.has(trickle.name))
-    .slice()
-    .sort((a,b) => order.get(a.name) - order.get(b.name));
+  if(state.selectedMonth === JUNE_PLAN.month){
+    const order = new Map(JUNE_PLAN.payOrder.map((name,index) => [name,index]));
+    return rows.sort((a,b) => {
+      const aOrder = order.has(a.name) ? order.get(a.name) : Number.MAX_SAFE_INTEGER;
+      const bOrder = order.has(b.name) ? order.get(b.name) : Number.MAX_SAFE_INTEGER;
+      if(aOrder !== bOrder) return aOrder - bOrder;
+      return String(a.dueDate || "9999").localeCompare(String(b.dueDate || "9999"));
+    });
+  }
+
+  return rows.sort((a,b) => {
+    const dateCompare = String(a.dueDate || "9999").localeCompare(String(b.dueDate || "9999"));
+    if(dateCompare !== 0) return dateCompare;
+    return String(a.name).localeCompare(String(b.name));
+  });
 }
 
 function getTrickleStatus(item){
@@ -2827,7 +3015,7 @@ function getTrickleStatus(item){
 }
 
 function renderPayOrder(){
-  const ordered = getOrderedJuneTrickles();
+  const ordered = getOrderedPaymentTrickles();
   const remaining = ordered.filter(item => !item.paid);
   const outstandingTotal = remaining.reduce((sum,item) => sum + numberValue(item.amount),0);
   const fundedTotal = remaining
@@ -2858,7 +3046,7 @@ function renderPayOrder(){
   els.payOrderList.innerHTML = "";
 
   if(ordered.length === 0){
-    els.payOrderList.innerHTML = `<div class="empty">Load the June plan to see the pay order.</div>`;
+    els.payOrderList.innerHTML = `<div class="empty">No dated payments are set for this month yet.</div>`;
     return;
   }
 
@@ -2987,7 +3175,11 @@ function renderAllocation(){
   const monthData = getMonthData();
   const income = numberValue(monthData.income);
   const total = allocationTotal(allocation);
-  const protectedAmount = income - total;
+  const protectedTarget = getMonthBills()
+    .filter(bill => bill.account === "HSBC")
+    .reduce((sum,bill) => sum + numberValue(bill.amount),0);
+  const protectedAmount = state.selectedMonth === JULY_PLAN.month ? protectedTarget : income - total;
+  const plannedTotal = protectedAmount + total;
   const recommended = total + numberValue(allocation.transferBuffer);
 
   els.allocationIncome.textContent = money(income);
@@ -3040,6 +3232,9 @@ function renderAllocation(){
   if(total <= 0){
     els.allocationStatusPill.textContent = "not allocated";
     els.allocationMessage.textContent = "Enter pot amounts to build the split.";
+  }else if(state.selectedMonth === JULY_PLAN.month && plannedTotal > income){
+    els.allocationStatusPill.textContent = "salary gap";
+    els.allocationMessage.textContent = `${money(plannedTotal - income)} still needs covering before variable payments. ${allocation.note}`;
   }else if(protectedAmount < 0){
     els.allocationStatusPill.textContent = "over allocated";
     els.allocationMessage.textContent = `${money(Math.abs(protectedAmount))} is allocated beyond the available salary.`;
@@ -3102,7 +3297,10 @@ function renderSummary(){
   const spent = totalSpending();
   const outstanding = outstandingTrickles();
   const available = numberValue(monthData.income) + numberValue(monthData.startingBalance);
-  const protectedAmount = available - allocated;
+  const protectedTarget = getMonthBills()
+    .filter(bill => bill.account === "HSBC")
+    .reduce((sum,bill) => sum + numberValue(bill.amount),0);
+  const protectedAmount = state.selectedMonth === JULY_PLAN.month ? protectedTarget : available - allocated;
   const flexible = numberValue(allocation.fun) + numberValue(allocation.misc);
   const daily = flexible > 0 ? flexible / daysLeftInMonth() : 0;
 
@@ -3120,6 +3318,8 @@ function renderSummary(){
     els.monthStatus.textContent = "Add your income so Pace can calculate the account split.";
   }else if(protectedAmount < 0){
     els.monthStatus.textContent = `${money(Math.abs(protectedAmount))} is allocated beyond the available income.`;
+  }else if(state.selectedMonth === JULY_PLAN.month && outstanding > available){
+    els.monthStatus.textContent = `July commitments are ${money(outstanding)}. Salary is short by ${money(outstanding - available)} before variable payments.`;
   }else if(outstanding > 0){
     els.monthStatus.textContent = `Leave ${money(protectedAmount)} in HSBC. ${money(outstanding)} remains outstanding in the pay list.`;
   }else{
@@ -3167,6 +3367,10 @@ els.monthInput.addEventListener("change", () => {
 els.saveSetupBtn.addEventListener("click", saveSetup);
 els.resetMonthBtn.addEventListener("click", resetMonth);
 els.restorePlanBtn.addEventListener("click", loadJunePlan);
+els.loadJulyPlanBtn.addEventListener("click", loadJulyPlan);
+els.downloadJulyCalendarBtn.addEventListener("click", () => {
+  window.location.href = "pace-july-payments.ics";
+});
 
 [
   ...POT_CONFIG.map(pot => els[pot.input]),
@@ -3272,6 +3476,10 @@ if(shouldAutoLoadJunePlan()){
   loadJunePlan(false);
 }
 
+if(shouldAutoLoadJulyPlan()){
+  loadJulyPlan(false);
+}
+
 loadEmailActions();
 
 els.spendDateInput.value = getToday();
@@ -3281,6 +3489,145 @@ if(!state.selectedMonth){
 }
 
 render();
+</script>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const financeSupabase = createClient(
+  "https://grgagroautlpphjsjpjh.supabase.co",
+  "sb_publishable_bMxF7jf1q1EwpacieP62DQ_i8D9JPbn",
+  {
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:true,
+      storage:localStorage
+    }
+  }
+);
+
+function financeReminderMoney(value){
+  return new Intl.NumberFormat("en-GB", {
+    style:"currency",
+    currency:"GBP"
+  }).format(Number(value) || 0);
+}
+
+async function reminderSourceId(key){
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(key)));
+  digest[6] = (digest[6] & 0x0f) | 0x50;
+  digest[8] = (digest[8] & 0x3f) | 0x80;
+  const hex = [...digest.slice(0,16)].map(byte => byte.toString(16).padStart(2,"0")).join("");
+  return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+}
+
+async function buildJulyReminderRows(userId){
+  const saved = JSON.parse(localStorage.getItem("pace_finance_v3") || "{}");
+  const julyItems = (saved.trickles || []).filter(item => item.month === "2026-07");
+  const fixedItems = julyItems.filter(item => item.kind === "fixed");
+  const klarnaItems = julyItems.filter(item => item.kind === "klarna");
+  const fixedTotal = fixedItems.reduce((sum,item) => sum + Number(item.amount || 0),0);
+  const rows = [];
+
+  if(fixedItems.length){
+    rows.push({
+      key:"finance-july-fixed-payday",
+      title:`July payday plan · ${financeReminderMoney(fixedTotal)} fixed payments due`,
+      reminder_date:"2026-07-20"
+    });
+  }
+
+  klarnaItems.forEach(item => {
+    rows.push({
+      key:`finance-july-${item.dueDate}-klarna`,
+      title:`Klarna · ${financeReminderMoney(item.amount)} due`,
+      reminder_date:item.dueDate
+    });
+  });
+
+  return Promise.all(rows.map(async row => ({
+    user_id:userId,
+    source:"finance",
+    source_id:await reminderSourceId(row.key),
+    title:row.title,
+    reminder_date:row.reminder_date,
+    reminder_time:"09:00",
+    done:false
+  })));
+}
+
+async function syncJulyReminders(){
+  const button = document.getElementById("syncJulyRemindersBtn");
+  const status = document.getElementById("reminderSyncStatus");
+  button.disabled = true;
+  status.textContent = "Syncing July payment reminders...";
+
+  try{
+    const { data:{ user } } = await financeSupabase.auth.getUser();
+
+    if(!user){
+      status.textContent = "Sign in to Pace first, then sync the reminders.";
+      return;
+    }
+
+    const wanted = await buildJulyReminderRows(user.id);
+    const { data:existing, error:loadError } = await financeSupabase
+      .from("reminders")
+      .select("id,source_id,done")
+      .eq("user_id", user.id)
+      .eq("source", "finance")
+      .gte("reminder_date", "2026-07-01")
+      .lte("reminder_date", "2026-07-31");
+
+    if(loadError) throw loadError;
+
+    const existingBySource = new Map((existing || []).map(row => [String(row.source_id), row]));
+    const wantedIds = new Set(wanted.map(row => String(row.source_id)));
+
+    for(const row of wanted){
+      const current = existingBySource.get(String(row.source_id));
+
+      if(current){
+        const { error } = await financeSupabase
+          .from("reminders")
+          .update({
+            title:row.title,
+            reminder_date:row.reminder_date,
+            reminder_time:row.reminder_time
+          })
+          .eq("id", current.id)
+          .eq("user_id", user.id);
+        if(error) throw error;
+      }else{
+        const { error } = await financeSupabase.from("reminders").insert([row]);
+        if(error) throw error;
+      }
+    }
+
+    const staleIds = (existing || [])
+      .filter(row => !wantedIds.has(String(row.source_id)))
+      .map(row => row.id);
+
+    if(staleIds.length){
+      const { error } = await financeSupabase
+        .from("reminders")
+        .delete()
+        .in("id", staleIds)
+        .eq("user_id", user.id);
+      if(error) throw error;
+    }
+
+    status.textContent = `${wanted.length} July payment reminders synced to Pace.`;
+  }catch(error){
+    status.textContent = `Reminder sync failed: ${error.message || "unknown error"}`;
+  }finally{
+    button.disabled = false;
+  }
+}
+
+document.getElementById("syncJulyRemindersBtn").addEventListener("click", syncJulyReminders);
+syncJulyReminders();
 </script>
 
 </body>
