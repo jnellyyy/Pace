@@ -734,6 +734,14 @@ textarea{
   color:#bbf7d0;
   font-size:13px;
   font-weight:850;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.clearedItem .billButtons{
+  margin-top:0;
 }
 
 .tabs{
@@ -1122,7 +1130,7 @@ textarea{
           </div>
         </div>
 
-        <div class="formGrid" style="margin-top:10px;">
+        <div class="formGrid three" style="margin-top:10px;">
           <div class="field">
             <label>payment type</label>
             <select id="billTypeInput">
@@ -1142,6 +1150,21 @@ textarea{
               <option value="debt">debt</option>
               <option value="savings">savings</option>
               <option value="other">other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>paid from</label>
+            <select id="billPotInput">
+              <option value="HSBC">HSBC</option>
+              <option value="Bills pot">Bills pot</option>
+              <option value="Debt pot">Debt pot</option>
+              <option value="BNPL pot">BNPL pot</option>
+              <option value="Commute pot">Commute pot</option>
+              <option value="Savings pot">Savings pot</option>
+              <option value="Emergency pot">Emergency pot</option>
+              <option value="Fun pot">Fun pot</option>
+              <option value="Miscellaneous pot">Miscellaneous pot</option>
             </select>
           </div>
         </div>
@@ -1277,6 +1300,23 @@ textarea{
 
         <div class="clearedGrid" id="clearedList"></div>
 
+        <div class="formGrid" style="margin-top:12px;">
+          <div class="field">
+            <label>cleared item</label>
+            <input id="clearedNameInput" type="text" placeholder="payment or item cleared">
+          </div>
+
+          <div class="field">
+            <label>amount, if known</label>
+            <input id="clearedAmountInput" type="number" min="0" step="0.01" placeholder="optional">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btnPrimary" id="addClearedBtn">add cleared item</button>
+          <button type="button" class="btn btnSoft" id="clearClearedBtn">cancel</button>
+        </div>
+
       </div>
     </section>
 
@@ -1352,12 +1392,17 @@ textarea{
           </div>
 
           <div class="field">
-            <label>earn from</label>
+            <label>pot / account</label>
             <select id="trickleSourceInput">
-              <option value="Deliveroo">Deliveroo</option>
-              <option value="Creator work">Creator work</option>
-              <option value="Main income">Main income</option>
-              <option value="Other">Other</option>
+              <option value="Bills pot">Bills pot</option>
+              <option value="Debt pot">Debt pot</option>
+              <option value="BNPL pot">BNPL pot</option>
+              <option value="Commute pot">Commute pot</option>
+              <option value="HSBC">HSBC</option>
+              <option value="Savings pot">Savings pot</option>
+              <option value="Emergency pot">Emergency pot</option>
+              <option value="Fun pot">Fun pot</option>
+              <option value="Miscellaneous pot">Miscellaneous pot</option>
             </select>
           </div>
         </div>
@@ -1515,6 +1560,7 @@ const els = {
   billDueInput: document.getElementById("billDueInput"),
   billTypeInput: document.getElementById("billTypeInput"),
   billCategoryInput: document.getElementById("billCategoryInput"),
+  billPotInput: document.getElementById("billPotInput"),
   addBillBtn: document.getElementById("addBillBtn"),
   clearBillBtn: document.getElementById("clearBillBtn"),
 
@@ -1570,6 +1616,10 @@ const els = {
   payOrderList: document.getElementById("payOrderList"),
   clearedCountPill: document.getElementById("clearedCountPill"),
   clearedList: document.getElementById("clearedList"),
+  clearedNameInput: document.getElementById("clearedNameInput"),
+  clearedAmountInput: document.getElementById("clearedAmountInput"),
+  addClearedBtn: document.getElementById("addClearedBtn"),
+  clearClearedBtn: document.getElementById("clearClearedBtn"),
   emailPaymentList: document.getElementById("emailPaymentList"),
 
   allSpendTab: document.getElementById("allSpendTab"),
@@ -1585,7 +1635,7 @@ let emailActions = [];
 const JUNE_PLAN = {
   month:"2026-06",
   income:1826.55,
-  planVersion:3,
+  planVersion:4,
   allocations:{
     bills:69.43,
     debt:382.53,
@@ -1601,20 +1651,20 @@ const JUNE_PLAN = {
     note:"June is tight: protect HSBC bills first. No savings, fun or emergency from salary unless extra money comes in."
   },
   fixedBills:[
-    { name:"Cityrise rent", amount:740, dueDay:1, type:"standingOrder", category:"home" },
-    { name:"Sheffield Credit Union", amount:200, dueDay:1, type:"standingOrder", category:"debt" },
-    { name:"Credit Spring", amount:60, dueDay:1, type:"directDebit", category:"debt" },
-    { name:"E.ON", amount:106.21, dueDay:1, type:"directDebit", category:"home" },
-    { name:"Rotherham Council", amount:97, dueDay:1, type:"directDebit", category:"home" },
-    { name:"EE phone", amount:37.46, dueDay:1, type:"directDebit", category:"phone" },
-    { name:"Broadband", amount:27.99, dueDay:1, type:"directDebit", category:"phone" },
-    { name:"Zero Deposit", amount:17.98, dueDay:1, type:"directDebit", category:"home" },
-    { name:"Water", amount:48.46, dueDay:2, type:"directDebit", category:"home" },
-    { name:"Very", amount:288, dueDay:1, type:"manualPayment", category:"debt" },
-    { name:"Zable", amount:60, dueDay:1, type:"manualPayment", category:"debt" },
-    { name:"Capital One", amount:34.53, dueDay:23, type:"manualPayment", category:"debt" },
-    { name:"Klarna June", amount:110.18, dueDay:1, type:"manualPayment", category:"debt" },
-    { name:"Commute buffer", amount:21.29, dueDay:1, type:"manualPayment", category:"transport" }
+    { name:"Cityrise rent", amount:740, dueDay:1, type:"standingOrder", category:"home", pot:"HSBC" },
+    { name:"Sheffield Credit Union", amount:200, dueDay:1, type:"standingOrder", category:"debt", pot:"HSBC" },
+    { name:"Credit Spring", amount:60, dueDay:1, type:"directDebit", category:"debt", pot:"HSBC" },
+    { name:"E.ON", amount:106.21, dueDay:1, type:"directDebit", category:"home", pot:"HSBC" },
+    { name:"Rotherham Council", amount:97, dueDay:1, type:"directDebit", category:"home", pot:"HSBC" },
+    { name:"EE phone", amount:37.46, dueDay:1, type:"directDebit", category:"phone", pot:"HSBC" },
+    { name:"Broadband", amount:27.99, dueDay:1, type:"directDebit", category:"phone", pot:"Bills pot" },
+    { name:"Zero Deposit", amount:17.98, dueDay:1, type:"directDebit", category:"home", pot:"Bills pot" },
+    { name:"Water", amount:48.46, dueDay:2, type:"directDebit", category:"home", pot:"Bills pot" },
+    { name:"Very", amount:288, dueDay:1, type:"manualPayment", category:"debt", pot:"Debt pot" },
+    { name:"Zable", amount:60, dueDay:1, type:"manualPayment", category:"debt", pot:"Debt pot" },
+    { name:"Capital One", amount:34.53, dueDay:23, type:"manualPayment", category:"debt", pot:"Debt pot" },
+    { name:"Klarna June", amount:110.18, dueDay:1, type:"manualPayment", category:"debt", pot:"BNPL pot" },
+    { name:"Commute buffer", amount:21.29, dueDay:1, type:"manualPayment", category:"transport", pot:"Commute pot" }
   ],
   trickles:[
     { name:"Remaining water", amount:23.46, priority:"must", dueDate:"", source:"Bills pot", paid:false, note:"Water balance still outstanding" },
@@ -1677,8 +1727,14 @@ let state = {
   trickles: [],
   billPaid: {},
   allocations: {},
+  cleared: {},
   planVersion:0
 };
+
+let editingBillId = null;
+let editingSpendId = null;
+let editingTrickleId = null;
+let editingClearedId = null;
 
 function uid(){
   return Date.now().toString(36) + Math.random().toString(36).slice(2);
@@ -1741,6 +1797,7 @@ function load(){
       trickles: parsed.trickles || [],
       billPaid: parsed.billPaid || {},
       allocations: parsed.allocations || {},
+      cleared: parsed.cleared || {},
       planVersion:Number(parsed.planVersion) || 0
     };
 
@@ -1750,7 +1807,8 @@ function load(){
       amount: numberValue(bill.amount),
       dueDay: bill.dueDay || "",
       type: bill.type || "manualPayment",
-      category: bill.category || "other"
+      category: bill.category || "other",
+      pot:bill.pot || "HSBC"
     }));
 
     state.spends = state.spends.map(spend => ({
@@ -1779,6 +1837,7 @@ function load(){
     state.trickles = [];
     state.billPaid = {};
     state.allocations = {};
+    state.cleared = {};
     state.planVersion = 0;
   }
 }
@@ -1946,26 +2005,97 @@ function showToast(message){
 }
 
 function clearBillForm(){
+  editingBillId = null;
   els.billNameInput.value = "";
   els.billAmountInput.value = "";
   els.billDueInput.value = "";
   els.billTypeInput.value = "standingOrder";
   els.billCategoryInput.value = "home";
+  els.billPotInput.value = "HSBC";
+  els.addBillBtn.textContent = "add fixed bill";
 }
 
 function clearSpendForm(){
+  editingSpendId = null;
   els.spendNameInput.value = "";
   els.spendAmountInput.value = "";
   els.spendCategoryInput.value = "food";
   els.spendDateInput.value = getToday();
+  els.addSpendBtn.textContent = "add spend";
 }
 
 function clearTrickleForm(){
+  editingTrickleId = null;
   els.trickleNameInput.value = "";
   els.trickleAmountInput.value = "";
   els.tricklePriorityInput.value = "must";
   els.trickleDueInput.value = "";
-  els.trickleSourceInput.value = "Deliveroo";
+  els.trickleSourceInput.value = "Bills pot";
+  els.addTrickleBtn.textContent = "add trickle";
+}
+
+function getClearedRecords(){
+  if(!state.cleared[state.selectedMonth]){
+    state.cleared[state.selectedMonth] = state.selectedMonth === JUNE_PLAN.month
+      ? JUNE_PLAN.cleared.map(name => ({ id:uid(), name, amount:0 }))
+      : [];
+  }
+
+  return state.cleared[state.selectedMonth];
+}
+
+function clearClearedForm(){
+  editingClearedId = null;
+  els.clearedNameInput.value = "";
+  els.clearedAmountInput.value = "";
+  els.addClearedBtn.textContent = "add cleared item";
+}
+
+function saveClearedItem(){
+  const name = els.clearedNameInput.value.trim();
+  const amount = numberValue(els.clearedAmountInput.value);
+
+  if(!name){
+    showToast("Add the cleared item name.");
+    return;
+  }
+
+  const records = getClearedRecords();
+
+  if(editingClearedId){
+    const record = records.find(item => item.id === editingClearedId);
+
+    if(record){
+      Object.assign(record, { name, amount });
+    }
+  }else{
+    records.push({ id:uid(), name, amount });
+  }
+
+  save();
+  clearClearedForm();
+  renderCleared();
+  showToast("Cleared item saved.");
+}
+
+function editClearedItem(id){
+  const record = getClearedRecords().find(item => item.id === id);
+
+  if(!record) return;
+
+  editingClearedId = id;
+  els.clearedNameInput.value = record.name;
+  els.clearedAmountInput.value = record.amount || "";
+  els.addClearedBtn.textContent = "save cleared changes";
+  els.clearedNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
+  els.clearedNameInput.focus();
+}
+
+function deleteClearedItem(id){
+  state.cleared[state.selectedMonth] = getClearedRecords().filter(item => item.id !== id);
+  save();
+  renderCleared();
+  showToast("Cleared item deleted.");
 }
 
 function addBill(){
@@ -1974,6 +2104,7 @@ function addBill(){
   const dueDay = Number(els.billDueInput.value);
   const type = els.billTypeInput.value;
   const category = els.billCategoryInput.value;
+  const pot = els.billPotInput.value;
 
   if(!name){
     showToast("Add a bill name.");
@@ -1990,19 +2121,28 @@ function addBill(){
     return;
   }
 
-  state.fixedBills.push({
-    id: uid(),
-    name,
-    amount,
-    dueDay,
-    type,
-    category
-  });
+  if(editingBillId){
+    const bill = state.fixedBills.find(item => item.id === editingBillId);
+
+    if(bill){
+      Object.assign(bill, { name, amount, dueDay, type, category, pot });
+    }
+  }else{
+    state.fixedBills.push({
+      id:uid(),
+      name,
+      amount,
+      dueDay,
+      type,
+      category,
+      pot
+    });
+  }
 
   save();
   clearBillForm();
   render();
-  showToast("Fixed bill added.");
+  showToast("Fixed bill saved.");
 }
 
 function deleteBill(id){
@@ -2044,12 +2184,11 @@ function editBill(id){
   els.billDueInput.value = bill.dueDay;
   els.billTypeInput.value = bill.type;
   els.billCategoryInput.value = bill.category;
-
-  state.fixedBills = state.fixedBills.filter(item => item.id !== id);
-
-  save();
-  render();
-  showToast("Bill loaded for editing.");
+  els.billPotInput.value = bill.pot || "HSBC";
+  editingBillId = id;
+  els.addBillBtn.textContent = "save bill changes";
+  els.billNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
+  els.billNameInput.focus();
 }
 
 function addSpend(){
@@ -2069,19 +2208,42 @@ function addSpend(){
     return;
   }
 
-  state.spends.push({
-    id: uid(),
-    name,
-    amount,
-    category,
-    date,
-    month
-  });
+  if(editingSpendId){
+    const spend = state.spends.find(item => item.id === editingSpendId);
+
+    if(spend){
+      Object.assign(spend, { name, amount, category, date, month });
+    }
+  }else{
+    state.spends.push({
+      id:uid(),
+      name,
+      amount,
+      category,
+      date,
+      month
+    });
+  }
 
   save();
   clearSpendForm();
   render();
-  showToast("Spend added.");
+  showToast("Spend saved.");
+}
+
+function editSpend(id){
+  const spend = state.spends.find(item => item.id === id);
+
+  if(!spend) return;
+
+  editingSpendId = id;
+  els.spendNameInput.value = spend.name;
+  els.spendAmountInput.value = spend.amount;
+  els.spendCategoryInput.value = spend.category;
+  els.spendDateInput.value = spend.date;
+  els.addSpendBtn.textContent = "save spend changes";
+  els.spendNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
+  els.spendNameInput.focus();
 }
 
 function deleteSpend(id){
@@ -2109,22 +2271,46 @@ function addTrickle(){
     return;
   }
 
-  state.trickles.push({
-    id: uid(),
-    name,
-    amount,
-    priority,
-    dueDate,
-    source,
-    month,
-    paid:false,
-    deliveroo:false
-  });
+  if(editingTrickleId){
+    const trickle = state.trickles.find(item => item.id === editingTrickleId);
+
+    if(trickle){
+      Object.assign(trickle, { name, amount, priority, dueDate, source, month });
+    }
+  }else{
+    state.trickles.push({
+      id:uid(),
+      name,
+      amount,
+      priority,
+      dueDate,
+      source,
+      month,
+      paid:false,
+      deliveroo:false
+    });
+  }
 
   save();
   clearTrickleForm();
   render();
-  showToast("Trickle added.");
+  showToast("Outstanding item saved.");
+}
+
+function editTrickle(id){
+  const trickle = state.trickles.find(item => item.id === id);
+
+  if(!trickle) return;
+
+  editingTrickleId = id;
+  els.trickleNameInput.value = trickle.name;
+  els.trickleAmountInput.value = trickle.amount;
+  els.tricklePriorityInput.value = trickle.priority;
+  els.trickleDueInput.value = trickle.dueDate || "";
+  els.trickleSourceInput.value = trickle.source || "Bills pot";
+  els.addTrickleBtn.textContent = "save outstanding changes";
+  els.trickleNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
+  els.trickleNameInput.focus();
 }
 
 function importEmailPayment(id){
@@ -2217,6 +2403,11 @@ function loadJunePlan(askFirst = true){
   }));
   state.billPaid = {};
   state.allocations[JUNE_PLAN.month] = { ...JUNE_PLAN.allocations };
+  state.cleared[JUNE_PLAN.month] = JUNE_PLAN.cleared.map(name => ({
+    id:uid(),
+    name,
+    amount:0
+  }));
   state.planVersion = JUNE_PLAN.planVersion;
 
   state.trickles = state.trickles.filter(trickle => trickle.month !== JUNE_PLAN.month);
@@ -2303,7 +2494,7 @@ function renderBills(){
           <div>
             <div class="billName">${escapeHtml(bill.name)}</div>
             <div class="billMeta">
-              ${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)}
+              ${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)} • ${escapeHtml(bill.pot || "HSBC")}
               <span class="statusChip ${paid ? "paid" : "unpaid"}">${paid ? "paid" : "not paid"}</span>
             </div>
           </div>
@@ -2362,6 +2553,7 @@ function renderSpends(){
 
       <div class="transactionRight">
         <div class="transactionAmount">${money(spend.amount)}</div>
+        <button type="button" class="iconBtn" data-edit-spend="${spend.id}">edit</button>
         <button type="button" class="iconBtn danger" data-delete-spend="${spend.id}">delete</button>
       </div>
     `;
@@ -2441,7 +2633,7 @@ function renderPayOrder(){
       <div class="transactionLeft">
         <strong>${index + 1}. ${escapeHtml(item.name)}</strong>
         <span>
-          ${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}
+          ${escapeHtml(item.source || "No pot set")} • ${escapeHtml(item.note || getPriorityLabel(item.priority))}${item.dueDate ? " • due " + escapeHtml(item.dueDate) : ""}
           <span class="statusChip ${status.className}">${status.label}</span>
         </span>
       </div>
@@ -2450,6 +2642,7 @@ function renderPayOrder(){
         <div class="transactionAmount">${money(item.amount)}</div>
         <button type="button" class="iconBtn" data-toggle-deliveroo="${item.id}">${item.deliveroo ? "remove Deliveroo" : "use Deliveroo"}</button>
         <button type="button" class="iconBtn" data-toggle-trickle="${item.id}">${item.paid ? "mark unpaid" : "mark paid"}</button>
+        <button type="button" class="iconBtn" data-edit-trickle="${item.id}">edit</button>
       </div>
     `;
 
@@ -2499,6 +2692,7 @@ function renderTrickles(){
         <div class="transactionAmount">${money(trickle.amount)}</div>
         <button type="button" class="iconBtn" data-toggle-deliveroo="${trickle.id}">${trickle.deliveroo ? "remove Deliveroo" : "use Deliveroo"}</button>
         <button type="button" class="iconBtn" data-toggle-trickle="${trickle.id}">${trickle.paid ? "mark unpaid" : "mark paid"}</button>
+        <button type="button" class="iconBtn" data-edit-trickle="${trickle.id}">edit</button>
         <button type="button" class="iconBtn danger" data-delete-trickle="${trickle.id}">delete</button>
       </div>
     `;
@@ -2632,7 +2826,7 @@ function updateAllocationFromInputs(){
 }
 
 function renderCleared(){
-  const rows = state.selectedMonth === JUNE_PLAN.month ? JUNE_PLAN.cleared : [];
+  const rows = getClearedRecords();
   els.clearedCountPill.textContent = rows.length === 1 ? "1 cleared" : `${rows.length} cleared`;
   els.clearedList.innerHTML = "";
 
@@ -2641,10 +2835,19 @@ function renderCleared(){
     return;
   }
 
-  rows.forEach(name => {
+  rows.forEach(record => {
     const item = document.createElement("div");
     item.className = "clearedItem";
-    item.textContent = `✓ ${name}`;
+    item.innerHTML = `
+      <div>
+        <div>✓ ${escapeHtml(record.name)}</div>
+        ${record.amount ? `<div class="billMeta">${money(record.amount)}</div>` : ""}
+      </div>
+      <div class="billButtons">
+        <button type="button" class="iconBtn" data-edit-cleared="${record.id}">edit</button>
+        <button type="button" class="iconBtn danger" data-delete-cleared="${record.id}">delete</button>
+      </div>
+    `;
     els.clearedList.appendChild(item);
   });
 }
@@ -2740,6 +2943,8 @@ els.clearSpendBtn.addEventListener("click", clearSpendForm);
 
 els.addTrickleBtn.addEventListener("click", addTrickle);
 els.clearTrickleBtn.addEventListener("click", clearTrickleForm);
+els.addClearedBtn.addEventListener("click", saveClearedItem);
+els.clearClearedBtn.addEventListener("click", clearClearedForm);
 
 els.allSpendTab.addEventListener("click", () => setActiveTab("all"));
 els.todaySpendTab.addEventListener("click", () => setActiveTab("today"));
@@ -2749,11 +2954,15 @@ document.addEventListener("click", event => {
   const editBillId = event.target.getAttribute("data-edit-bill");
   const deleteBillId = event.target.getAttribute("data-delete-bill");
   const toggleBillPaidId = event.target.getAttribute("data-toggle-bill-paid");
+  const editSpendId = event.target.getAttribute("data-edit-spend");
   const deleteSpendId = event.target.getAttribute("data-delete-spend");
   const importEmailPaymentId = event.target.getAttribute("data-import-email-payment");
   const toggleTrickleId = event.target.getAttribute("data-toggle-trickle");
   const toggleDeliverooId = event.target.getAttribute("data-toggle-deliveroo");
+  const editTrickleId = event.target.getAttribute("data-edit-trickle");
   const deleteTrickleId = event.target.getAttribute("data-delete-trickle");
+  const editClearedId = event.target.getAttribute("data-edit-cleared");
+  const deleteClearedId = event.target.getAttribute("data-delete-cleared");
 
   if(editBillId){
     editBill(editBillId);
@@ -2765,6 +2974,10 @@ document.addEventListener("click", event => {
 
   if(toggleBillPaidId){
     toggleBillPaid(toggleBillPaidId);
+  }
+
+  if(editSpendId){
+    editSpend(editSpendId);
   }
 
   if(deleteSpendId){
@@ -2783,8 +2996,20 @@ document.addEventListener("click", event => {
     toggleTrickleDeliveroo(toggleDeliverooId);
   }
 
+  if(editTrickleId){
+    editTrickle(editTrickleId);
+  }
+
   if(deleteTrickleId){
     deleteTrickle(deleteTrickleId);
+  }
+
+  if(editClearedId){
+    editClearedItem(editClearedId);
+  }
+
+  if(deleteClearedId){
+    deleteClearedItem(deleteClearedId);
   }
 });
 
