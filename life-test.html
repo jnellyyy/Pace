@@ -562,6 +562,109 @@ select option{
   font-size:14px;
 }
 
+.editDialog{
+  width:min(560px, calc(100% - 24px));
+  max-height:calc(100vh - 24px);
+  overflow:auto;
+  border:1px solid var(--line2);
+  border-radius:24px;
+  padding:0;
+  color:var(--text);
+  background:rgba(23,26,32,0.96);
+  box-shadow:0 28px 90px rgba(0,0,0,0.62);
+  backdrop-filter:blur(28px);
+}
+
+.editDialog::backdrop{
+  background:rgba(5,7,10,0.72);
+  backdrop-filter:blur(8px);
+}
+
+.editDialogInner{
+  padding:18px;
+}
+
+.editDialogHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.editDialogTitle{
+  margin:0;
+  font-size:22px;
+  line-height:1.1;
+}
+
+.editDialogCopy{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.dialogClose{
+  width:38px;
+  height:38px;
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  cursor:pointer;
+  font-size:20px;
+}
+
+.editStatusRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:46px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px 12px;
+  background:rgba(255,255,255,0.06);
+  color:var(--text);
+  font-size:13px;
+  font-weight:850;
+}
+
+.editStatusRow input{
+  width:20px;
+  height:20px;
+  margin:0;
+  accent-color:var(--green);
+}
+
+.editDialogActions{
+  display:grid;
+  grid-template-columns:1fr 1.5fr;
+  gap:9px;
+  margin-top:4px;
+}
+
+.dialogCancel,
+.dialogSave{
+  min-height:46px;
+  border-radius:16px;
+  padding:11px 13px;
+  cursor:pointer;
+  font-weight:900;
+}
+
+.dialogCancel{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  color:var(--muted);
+}
+
+.dialogSave{
+  border:0;
+  background:var(--accent);
+  color:white;
+}
+
 .emptyState{
   min-height:220px;
   display:flex;
@@ -691,6 +794,10 @@ select option{
     grid-column:1 / 3;
     flex-direction:row;
     justify-content:flex-end;
+  }
+
+  .editDialogActions{
+    grid-template-columns:1fr;
   }
 }
 </style>
@@ -869,6 +976,66 @@ select option{
     </a>
   </section>
 
+  <dialog class="editDialog" id="taskEditDialog">
+    <div class="editDialogInner">
+      <div class="editDialogHead">
+        <div>
+          <h2 class="editDialogTitle">Edit task</h2>
+          <p class="editDialogCopy">Change the task and its reminder in one place.</p>
+        </div>
+        <button type="button" class="dialogClose" id="closeTaskEditBtn" aria-label="Close task editor">×</button>
+      </div>
+
+      <form class="formGrid" id="taskEditForm">
+        <div class="field">
+          <label for="editTaskTitle">Task</label>
+          <input id="editTaskTitle" type="text" autocomplete="off" required>
+        </div>
+
+        <div class="field">
+          <label for="editTaskCategory">Category</label>
+          <select id="editTaskCategory">
+            <option>Life</option>
+            <option>Business</option>
+            <option>Church</option>
+            <option>Household</option>
+            <option>Work</option>
+            <option>Health</option>
+            <option>Errands</option>
+            <option>Admin</option>
+          </select>
+        </div>
+
+        <div class="twoCol">
+          <div class="field">
+            <label for="editReminderDate">Reminder date</label>
+            <input id="editReminderDate" type="date">
+          </div>
+
+          <div class="field">
+            <label for="editReminderTime">Reminder time</label>
+            <input id="editReminderTime" type="time">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="editTaskNotes">Notes for this device</label>
+          <textarea id="editTaskNotes" placeholder="Optional details..."></textarea>
+        </div>
+
+        <label class="editStatusRow" for="editTaskDone">
+          <input id="editTaskDone" type="checkbox">
+          <span>Task is completed</span>
+        </label>
+
+        <div class="editDialogActions">
+          <button type="button" class="dialogCancel" id="cancelTaskEditBtn">Cancel</button>
+          <button type="submit" class="dialogSave" id="saveTaskEditBtn">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
 </div>
 
 <script type="module">
@@ -893,6 +1060,17 @@ const taskCategory = document.getElementById("taskCategory");
 const reminderDateInput = document.getElementById("reminderDateInput");
 const reminderTimeInput = document.getElementById("reminderTimeInput");
 const taskNotes = document.getElementById("taskNotes");
+const taskEditDialog = document.getElementById("taskEditDialog");
+const taskEditForm = document.getElementById("taskEditForm");
+const editTaskTitle = document.getElementById("editTaskTitle");
+const editTaskCategory = document.getElementById("editTaskCategory");
+const editReminderDate = document.getElementById("editReminderDate");
+const editReminderTime = document.getElementById("editReminderTime");
+const editTaskNotes = document.getElementById("editTaskNotes");
+const editTaskDone = document.getElementById("editTaskDone");
+const closeTaskEditBtn = document.getElementById("closeTaskEditBtn");
+const cancelTaskEditBtn = document.getElementById("cancelTaskEditBtn");
+const saveTaskEditBtn = document.getElementById("saveTaskEditBtn");
 const taskList = document.getElementById("taskList");
 const searchInput = document.getElementById("searchInput");
 const refreshBtn = document.getElementById("refreshBtn");
@@ -926,6 +1104,7 @@ let reminders = [];
 let activeFilter = "All";
 let extras = loadExtras();
 let showDoneDrawer = false;
+let editingTaskId = null;
 
 function loadExtras(){
   try{
@@ -1407,56 +1586,141 @@ async function toggleTask(id, done){
   await load();
 }
 
-async function editTask(id){
+function closeTaskEditor(){
+  editingTaskId = null;
+  taskEditForm.reset();
+
+  if(taskEditDialog.open){
+    taskEditDialog.close();
+  }
+}
+
+function editTask(id){
   const task = tasks.find(item => String(item.id) === String(id));
 
   if(!task){
     return;
   }
 
-  const updatedTitle = prompt("Edit task", task.title || "");
+  const reminder = getTaskReminder(task.id);
+  editingTaskId = task.id;
+  editTaskTitle.value = task.title || "";
+  editTaskCategory.value = task.category || "Life";
+  editReminderDate.value = reminder?.reminder_date || "";
+  editReminderTime.value = reminder?.reminder_time ? String(reminder.reminder_time).slice(0,5) : "";
+  editTaskNotes.value = getTaskNotes(task.id);
+  editTaskDone.checked = Boolean(task.done);
+  taskEditDialog.showModal();
+  requestAnimationFrame(() => editTaskTitle.focus());
+}
 
-  if(updatedTitle === null){
+taskEditForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const task = tasks.find(item => String(item.id) === String(editingTaskId));
+
+  if(!task || !user){
+    closeTaskEditor();
     return;
   }
 
-  const cleanTitle = updatedTitle.trim();
+  const cleanTitle = editTaskTitle.value.trim();
+  const cleanCategory = editTaskCategory.value || "Life";
+  const reminderDate = editReminderDate.value;
+  const reminderTime = reminderDate ? (editReminderTime.value || null) : null;
+  const notes = editTaskNotes.value.trim();
+  const done = editTaskDone.checked;
 
   if(!cleanTitle){
-    setNotice("Task cannot be empty.");
+    editTaskTitle.focus();
     return;
   }
 
-  const updatedCategory = prompt("Edit category", task.category || "Life");
-
-  if(updatedCategory === null){
-    return;
-  }
-
-  const cleanCategory = updatedCategory.trim() || "Life";
+  saveTaskEditBtn.disabled = true;
+  saveTaskEditBtn.textContent = "Saving...";
 
   const { error } = await supabase
     .from("tasks")
     .update({
       title:cleanTitle,
-      category:cleanCategory
+      category:cleanCategory,
+      done:done
     })
-    .eq("id", id);
+    .eq("id", task.id)
+    .eq("user_id", user.id);
 
   if(error){
     setNotice(error.message);
+    saveTaskEditBtn.disabled = false;
+    saveTaskEditBtn.textContent = "Save changes";
     return;
   }
 
-  await supabase
-    .from("reminders")
-    .update({ title:cleanTitle })
-    .eq("source", "to do")
-    .eq("source_id", id);
+  if(notes){
+    extras[task.id] = { ...(extras[task.id] || {}), notes };
+  }else{
+    delete extras[task.id];
+  }
+  saveExtras();
+
+  const existingReminder = getTaskReminder(task.id);
+  let reminderError = null;
+
+  if(reminderDate && existingReminder){
+    const response = await supabase
+      .from("reminders")
+      .update({
+        title:cleanTitle,
+        reminder_date:reminderDate,
+        reminder_time:reminderTime,
+        done:done
+      })
+      .eq("id", existingReminder.id)
+      .eq("user_id", user.id);
+    reminderError = response.error;
+  }else if(reminderDate){
+    const response = await supabase
+      .from("reminders")
+      .insert([{
+        user_id:user.id,
+        source:"to do",
+        source_id:task.id,
+        title:cleanTitle,
+        reminder_date:reminderDate,
+        reminder_time:reminderTime,
+        done:done
+      }]);
+    reminderError = response.error;
+  }else if(existingReminder){
+    const response = await supabase
+      .from("reminders")
+      .delete()
+      .eq("id", existingReminder.id)
+      .eq("user_id", user.id);
+    reminderError = response.error;
+  }
+
+  saveTaskEditBtn.disabled = false;
+  saveTaskEditBtn.textContent = "Save changes";
+
+  if(reminderError){
+    setNotice(`Task saved, but the reminder could not update: ${reminderError.message}`);
+    return;
+  }
 
   setNotice("Task updated.", true);
+  closeTaskEditor();
   await load();
-}
+});
+
+closeTaskEditBtn.addEventListener("click", closeTaskEditor);
+cancelTaskEditBtn.addEventListener("click", closeTaskEditor);
+
+taskEditDialog.addEventListener("click", event => {
+  if(event.target === taskEditDialog){
+    closeTaskEditor();
+  }
+});
 
 async function deleteTask(id){
   const confirmed = confirm("Delete this task?");

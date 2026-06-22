@@ -830,6 +830,66 @@ textarea{
   display:none;
 }
 
+.financeEditDialog{
+  width:min(620px,calc(100% - 24px));
+  max-height:calc(100vh - 24px);
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:0;
+  color:var(--text);
+  background:rgba(23,26,32,0.97);
+  box-shadow:0 28px 90px rgba(0,0,0,0.62);
+  backdrop-filter:blur(28px);
+}
+
+.financeEditDialog::backdrop{
+  background:rgba(5,7,10,0.72);
+  backdrop-filter:blur(8px);
+}
+
+.financeEditInner{
+  padding:18px;
+}
+
+.financeEditHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.financeEditHead h2{
+  margin:0;
+  font-size:22px;
+}
+
+.financeEditHead p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.financeEditClose{
+  width:38px;
+  height:38px;
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  cursor:pointer;
+  font-size:20px;
+}
+
+.financeEditActions{
+  display:grid;
+  grid-template-columns:1fr 1.5fr;
+  gap:10px;
+  margin-top:14px;
+}
+
 .bottomNav{
   position:fixed;
   left:50%;
@@ -955,6 +1015,10 @@ textarea{
 
   .actions .btn{
     width:100%;
+  }
+
+  .financeEditActions{
+    grid-template-columns:1fr;
   }
 
   .allocationLegend{
@@ -1704,6 +1768,112 @@ textarea{
   </a>
 </nav>
 
+<dialog class="financeEditDialog" id="financeEditDialog">
+  <div class="financeEditInner">
+    <div class="financeEditHead">
+      <div>
+        <h2 id="financeEditTitle">Edit item</h2>
+        <p>Make changes here without disturbing the add-new forms.</p>
+      </div>
+      <button type="button" class="financeEditClose" id="financeEditCloseBtn" aria-label="Close editor">×</button>
+    </div>
+
+    <form id="financeEditForm">
+      <div class="formGrid">
+        <div class="field">
+          <label for="financeEditName">Name</label>
+          <input id="financeEditName" type="text" autocomplete="off" required>
+        </div>
+
+        <div class="field">
+          <label for="financeEditAmount">Amount</label>
+          <input id="financeEditAmount" type="number" min="0" step="0.01">
+        </div>
+      </div>
+
+      <div class="formGrid three" style="margin-top:10px;">
+        <div class="field hidden" id="financeEditDueDayField">
+          <label for="financeEditDueDay">Due day</label>
+          <input id="financeEditDueDay" type="number" min="1" max="31">
+        </div>
+
+        <div class="field hidden" id="financeEditDateField">
+          <label for="financeEditDate">Date</label>
+          <input id="financeEditDate" type="date">
+        </div>
+
+        <div class="field hidden" id="financeEditTypeField">
+          <label for="financeEditType">Payment type</label>
+          <select id="financeEditType">
+            <option value="standingOrder">standing order</option>
+            <option value="directDebit">direct debit</option>
+            <option value="manualPayment">manual payment</option>
+          </select>
+        </div>
+
+        <div class="field hidden" id="financeEditCategoryField">
+          <label for="financeEditCategory">Category</label>
+          <select id="financeEditCategory">
+            <option value="home">home</option>
+            <option value="transport">transport</option>
+            <option value="phone">phone</option>
+            <option value="subscription">subscription</option>
+            <option value="debt">debt</option>
+            <option value="savings">savings</option>
+            <option value="food">food</option>
+            <option value="travel">travel</option>
+            <option value="shopping">shopping</option>
+            <option value="social">social</option>
+            <option value="business">business</option>
+            <option value="other">other</option>
+          </select>
+        </div>
+
+        <div class="field hidden" id="financeEditPriorityField">
+          <label for="financeEditPriority">Priority</label>
+          <select id="financeEditPriority">
+            <option value="must">must pay</option>
+            <option value="soon">soon</option>
+            <option value="wait">can wait</option>
+          </select>
+        </div>
+
+        <div class="field" id="financeEditAccountField">
+          <label for="financeEditAccount">Account</label>
+          <select id="financeEditAccount">
+            <option value="HSBC">HSBC</option>
+            <option value="Revolut">Revolut</option>
+            <option value="Cash">Cash</option>
+            <option value="Other">Other</option>
+            <option value="Unassigned">Unassigned</option>
+          </select>
+        </div>
+
+        <div class="field" id="financeEditPotField">
+          <label for="financeEditPot">Pot</label>
+          <select id="financeEditPot">
+            <option value="Protected bills">Protected bills</option>
+            <option value="Bills pot">Bills pot</option>
+            <option value="Debt pot">Debt pot</option>
+            <option value="BNPL pot">BNPL pot</option>
+            <option value="Commute pot">Commute pot</option>
+            <option value="Savings pot">Savings pot</option>
+            <option value="Emergency pot">Emergency pot</option>
+            <option value="Fun pot">Fun pot</option>
+            <option value="Miscellaneous pot">Miscellaneous pot</option>
+            <option value="Unassigned">Unassigned</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="financeEditActions">
+        <button type="button" class="btn btnSoft" id="financeEditCancelBtn">cancel</button>
+        <button type="submit" class="btn btnPrimary">save changes</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1825,6 +1995,25 @@ const els = {
   todaySpendTab: document.getElementById("todaySpendTab"),
   highSpendTab: document.getElementById("highSpendTab"),
 
+  financeEditDialog: document.getElementById("financeEditDialog"),
+  financeEditForm: document.getElementById("financeEditForm"),
+  financeEditTitle: document.getElementById("financeEditTitle"),
+  financeEditName: document.getElementById("financeEditName"),
+  financeEditAmount: document.getElementById("financeEditAmount"),
+  financeEditDueDay: document.getElementById("financeEditDueDay"),
+  financeEditDate: document.getElementById("financeEditDate"),
+  financeEditType: document.getElementById("financeEditType"),
+  financeEditCategory: document.getElementById("financeEditCategory"),
+  financeEditPriority: document.getElementById("financeEditPriority"),
+  financeEditAccount: document.getElementById("financeEditAccount"),
+  financeEditPot: document.getElementById("financeEditPot"),
+  financeEditDueDayField: document.getElementById("financeEditDueDayField"),
+  financeEditDateField: document.getElementById("financeEditDateField"),
+  financeEditTypeField: document.getElementById("financeEditTypeField"),
+  financeEditCategoryField: document.getElementById("financeEditCategoryField"),
+  financeEditPriorityField: document.getElementById("financeEditPriorityField"),
+  financeEditCloseBtn: document.getElementById("financeEditCloseBtn"),
+  financeEditCancelBtn: document.getElementById("financeEditCancelBtn"),
   toast: document.getElementById("toast")
 };
 
@@ -1995,6 +2184,7 @@ let editingBillId = null;
 let editingSpendId = null;
 let editingTrickleId = null;
 let editingClearedId = null;
+let financeEditing = null;
 
 function uid(){
   return Date.now().toString(36) + Math.random().toString(36).slice(2);
@@ -2305,6 +2495,158 @@ function showToast(message){
   }, 1800);
 }
 
+function setFinanceEditField(field, visible){
+  field.classList.toggle("hidden", !visible);
+}
+
+function closeFinanceEditor(){
+  financeEditing = null;
+  els.financeEditForm.reset();
+
+  if(els.financeEditDialog.open){
+    els.financeEditDialog.close();
+  }
+}
+
+function openFinanceEditor(kind, item){
+  if(!item) return;
+
+  const titles = {
+    bill:"Edit fixed bill",
+    spend:"Edit spending",
+    trickle:"Edit payment",
+    cleared:"Edit cleared item"
+  };
+
+  financeEditing = { kind, id:item.id, month:state.selectedMonth };
+  els.financeEditTitle.textContent = titles[kind] || "Edit item";
+  els.financeEditName.value = item.name || "";
+  els.financeEditAmount.value = numberValue(item.amount) || "";
+  els.financeEditAccount.value = item.account || "Unassigned";
+  els.financeEditPot.value = item.pot || item.source || "Unassigned";
+
+  setFinanceEditField(els.financeEditDueDayField, kind === "bill");
+  setFinanceEditField(els.financeEditDateField, kind === "spend" || kind === "trickle");
+  setFinanceEditField(els.financeEditTypeField, kind === "bill");
+  setFinanceEditField(els.financeEditCategoryField, kind === "bill" || kind === "spend");
+  setFinanceEditField(els.financeEditPriorityField, kind === "trickle");
+
+  els.financeEditDueDay.value = kind === "bill" ? item.dueDay || "" : "";
+  els.financeEditDate.value = kind === "spend" ? item.date || "" : (kind === "trickle" ? item.dueDate || "" : "");
+  els.financeEditType.value = kind === "bill" ? item.type || "manualPayment" : "manualPayment";
+  els.financeEditCategory.value = item.category || "other";
+  els.financeEditPriority.value = kind === "trickle" ? item.priority || "soon" : "soon";
+
+  els.financeEditDialog.showModal();
+  requestAnimationFrame(() => els.financeEditName.focus());
+}
+
+function saveFinanceEditor(event){
+  event.preventDefault();
+
+  if(!financeEditing) return;
+
+  const name = els.financeEditName.value.trim();
+  const amount = numberValue(els.financeEditAmount.value);
+  const { kind, id, month:editMonth } = financeEditing;
+
+  if(!name){
+    showToast("Add a name.");
+    els.financeEditName.focus();
+    return;
+  }
+
+  if(kind !== "cleared" && amount <= 0){
+    showToast("Add an amount.");
+    els.financeEditAmount.focus();
+    return;
+  }
+
+  if(kind === "bill"){
+    const bill = state.fixedBills.find(item => item.id === id);
+    const dueDay = Number(els.financeEditDueDay.value);
+
+    if(!bill) return;
+    if(!dueDay || dueDay < 1 || dueDay > 31){
+      showToast("Due day must be 1 to 31.");
+      return;
+    }
+
+    const linked = state.trickles.filter(item =>
+      item.month === bill.month
+      && item.kind === "fixed"
+      && normalizePaymentName(item.name) === normalizePaymentName(bill.name)
+    );
+
+    Object.assign(bill, {
+      name,
+      amount,
+      dueDay,
+      type:els.financeEditType.value,
+      category:els.financeEditCategory.value,
+      account:els.financeEditAccount.value,
+      pot:els.financeEditPot.value
+    });
+
+    linked.forEach(item => {
+      item.name = name;
+      item.amount = amount;
+      item.account = bill.account;
+      item.source = bill.pot;
+      item.dueDate = `${bill.month}-${String(dueDay).padStart(2,"0")}`;
+    });
+  }
+
+  if(kind === "spend"){
+    const spend = state.spends.find(item => item.id === id);
+    const date = els.financeEditDate.value || getToday();
+    if(!spend) return;
+
+    Object.assign(spend, {
+      name,
+      amount,
+      category:els.financeEditCategory.value,
+      date,
+      month:date.slice(0,7),
+      account:els.financeEditAccount.value,
+      pot:els.financeEditPot.value
+    });
+  }
+
+  if(kind === "trickle"){
+    const trickle = state.trickles.find(item => item.id === id);
+    const dueDate = els.financeEditDate.value;
+    if(!trickle) return;
+
+    Object.assign(trickle, {
+      name,
+      amount,
+      priority:els.financeEditPriority.value,
+      dueDate,
+      month:(dueDate || `${editMonth}-01`).slice(0,7),
+      account:els.financeEditAccount.value,
+      source:els.financeEditPot.value
+    });
+  }
+
+  if(kind === "cleared"){
+    const record = (state.cleared[editMonth] || []).find(item => item.id === id);
+    if(!record) return;
+
+    Object.assign(record, {
+      name,
+      amount,
+      account:els.financeEditAccount.value,
+      pot:els.financeEditPot.value
+    });
+  }
+
+  save();
+  closeFinanceEditor();
+  render();
+  showToast("Changes saved.");
+}
+
 function clearBillForm(){
   editingBillId = null;
   els.billNameInput.value = "";
@@ -2389,17 +2731,7 @@ function saveClearedItem(){
 
 function editClearedItem(id){
   const record = getClearedRecords().find(item => item.id === id);
-
-  if(!record) return;
-
-  editingClearedId = id;
-  els.clearedNameInput.value = record.name;
-  els.clearedAmountInput.value = record.amount || "";
-  els.clearedAccountInput.value = record.account || "Unassigned";
-  els.clearedPotInput.value = record.pot || "Unassigned";
-  els.addClearedBtn.textContent = "save cleared changes";
-  els.clearedNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
-  els.clearedNameInput.focus();
+  openFinanceEditor("cleared", record);
 }
 
 function deleteClearedItem(id){
@@ -2516,20 +2848,7 @@ function toggleBillFunded(id){
 
 function editBill(id){
   const bill = state.fixedBills.find(item => item.id === id);
-
-  if(!bill) return;
-
-  els.billNameInput.value = bill.name;
-  els.billAmountInput.value = bill.amount;
-  els.billDueInput.value = bill.dueDay;
-  els.billTypeInput.value = bill.type;
-  els.billCategoryInput.value = bill.category;
-  els.billAccountInput.value = bill.account || "Unassigned";
-  els.billPotInput.value = bill.pot || "Unassigned";
-  editingBillId = id;
-  els.addBillBtn.textContent = "save bill changes";
-  els.billNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
-  els.billNameInput.focus();
+  openFinanceEditor("bill", bill);
 }
 
 function addSpend(){
@@ -2578,19 +2897,7 @@ function addSpend(){
 
 function editSpend(id){
   const spend = state.spends.find(item => item.id === id);
-
-  if(!spend) return;
-
-  editingSpendId = id;
-  els.spendNameInput.value = spend.name;
-  els.spendAmountInput.value = spend.amount;
-  els.spendCategoryInput.value = spend.category;
-  els.spendDateInput.value = spend.date;
-  els.spendAccountInput.value = spend.account || "Unassigned";
-  els.spendPotInput.value = spend.pot || "Unassigned";
-  els.addSpendBtn.textContent = "save spend changes";
-  els.spendNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
-  els.spendNameInput.focus();
+  openFinanceEditor("spend", spend);
 }
 
 function deleteSpend(id){
@@ -2650,19 +2957,7 @@ function addTrickle(){
 
 function editTrickle(id){
   const trickle = state.trickles.find(item => item.id === id);
-
-  if(!trickle) return;
-
-  editingTrickleId = id;
-  els.trickleNameInput.value = trickle.name;
-  els.trickleAmountInput.value = trickle.amount;
-  els.tricklePriorityInput.value = trickle.priority;
-  els.trickleDueInput.value = trickle.dueDate || "";
-  els.trickleAccountInput.value = trickle.account || "Unassigned";
-  els.trickleSourceInput.value = trickle.source || "Bills pot";
-  els.addTrickleBtn.textContent = "save outstanding changes";
-  els.trickleNameInput.scrollIntoView({ behavior:"smooth", block:"center" });
-  els.trickleNameInput.focus();
+  openFinanceEditor("trickle", trickle);
 }
 
 function importEmailPayment(id){
@@ -3473,6 +3768,20 @@ els.addTrickleBtn.addEventListener("click", addTrickle);
 els.clearTrickleBtn.addEventListener("click", clearTrickleForm);
 els.addClearedBtn.addEventListener("click", saveClearedItem);
 els.clearClearedBtn.addEventListener("click", clearClearedForm);
+els.financeEditForm.addEventListener("submit", saveFinanceEditor);
+els.financeEditCloseBtn.addEventListener("click", closeFinanceEditor);
+els.financeEditCancelBtn.addEventListener("click", closeFinanceEditor);
+
+els.financeEditDialog.addEventListener("click", event => {
+  if(event.target === els.financeEditDialog){
+    closeFinanceEditor();
+  }
+});
+
+els.financeEditDialog.addEventListener("close", () => {
+  financeEditing = null;
+  els.financeEditForm.reset();
+});
 
 els.allSpendTab.addEventListener("click", () => setActiveTab("all"));
 els.todaySpendTab.addEventListener("click", () => setActiveTab("today"));
