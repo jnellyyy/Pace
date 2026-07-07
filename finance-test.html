@@ -624,6 +624,70 @@ textarea{
   letter-spacing:-0.04em;
 }
 
+.targetBoard{
+  display:grid;
+  grid-template-columns:minmax(220px,0.7fr) minmax(0,1.3fr);
+  gap:12px;
+  margin:0 0 14px;
+}
+
+.targetHero,
+.targetList{
+  border:1px solid rgba(245,158,11,0.28);
+  background:linear-gradient(180deg, rgba(245,158,11,0.13), rgba(255,255,255,0.045));
+  border-radius:22px;
+  padding:14px;
+}
+
+.targetHero span,
+.targetRow span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.targetHero strong{
+  display:block;
+  margin-top:6px;
+  font-size:30px;
+  letter-spacing:-0.05em;
+}
+
+.targetHero small{
+  display:block;
+  margin-top:7px;
+  color:#fde7b0;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.targetList{
+  display:grid;
+  gap:9px;
+}
+
+.targetRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.06);
+  border-radius:16px;
+  padding:10px;
+}
+
+.targetRow strong{
+  display:block;
+  margin-top:4px;
+  font-size:14px;
+}
+
+.targetRow b{
+  white-space:nowrap;
+  color:#fde7b0;
+}
+
 .allocationLayout{
   display:grid;
   grid-template-columns:minmax(250px,0.72fr) minmax(0,1.28fr);
@@ -998,6 +1062,7 @@ textarea{
 
   .summaryGrid,
   .plannerStrip,
+  .targetBoard,
   .formGrid,
   .formGrid.three{
     grid-template-columns:1fr;
@@ -1253,10 +1318,10 @@ textarea{
         </div>
 
         <div class="actions">
-          <button type="button" class="btn btnPrimary" id="syncJulyRemindersBtn">sync July reminders</button>
-          <button type="button" class="btn btnSoft" id="downloadJulyCalendarBtn">add July to phone calendar</button>
+          <button type="button" class="btn btnPrimary" id="syncJulyRemindersBtn">sync payment reminders</button>
+          <button type="button" class="btn btnSoft" id="downloadJulyCalendarBtn">download phone calendar</button>
         </div>
-        <div class="billMeta" id="reminderSyncStatus">July reminders can appear in Pace on web and in your phone calendar.</div>
+        <div class="billMeta" id="reminderSyncStatus">The month you are viewing can sync into Pace Reminders and download to your phone calendar.</div>
 
       </div>
     </section>
@@ -1476,6 +1541,16 @@ textarea{
             <span>needed per work day</span>
             <strong id="deliverooDailySummary">£0.00</strong>
           </div>
+        </div>
+
+        <div class="targetBoard">
+          <div class="targetHero">
+            <span>next Deliveroo target</span>
+            <strong id="nextDeliverooTarget">£0.00</strong>
+            <small id="nextDeliverooTargetMeta">Mark payments as use Deliveroo to build a dated target.</small>
+          </div>
+
+          <div class="targetList" id="deliverooTargetList"></div>
         </div>
 
         <div class="list" id="payOrderList"></div>
@@ -1963,6 +2038,9 @@ const els = {
   deliverooNeededSummary: document.getElementById("deliverooNeededSummary"),
   deliverooRemainingSummary: document.getElementById("deliverooRemainingSummary"),
   deliverooDailySummary: document.getElementById("deliverooDailySummary"),
+  nextDeliverooTarget: document.getElementById("nextDeliverooTarget"),
+  nextDeliverooTargetMeta: document.getElementById("nextDeliverooTargetMeta"),
+  deliverooTargetList: document.getElementById("deliverooTargetList"),
   deliverooEarnedInput: document.getElementById("deliverooEarnedInput"),
   deliverooDaysInput: document.getElementById("deliverooDaysInput"),
 
@@ -2484,6 +2562,143 @@ function daysLeftInMonth(){
 
   const end = new Date(year, month, 0).getDate();
   return Math.max(end - today.getDate() + 1, 1);
+}
+
+function formatShortDate(dateValue){
+  if(!dateValue) return "No date set";
+
+  return new Date(`${dateValue}T00:00:00`).toLocaleDateString("en-GB", {
+    day:"numeric",
+    month:"short"
+  });
+}
+
+function daysUntilDate(dateValue){
+  if(!dateValue) return daysLeftInMonth();
+
+  const start = new Date(`${getToday()}T00:00:00`);
+  const end = new Date(`${dateValue}T00:00:00`);
+  const diff = Math.ceil((end - start) / 86400000) + 1;
+  return Math.max(diff, 1);
+}
+
+function getBillDueDate(bill){
+  const [year, month] = bill.month.split("-").map(Number);
+  const lastDay = new Date(year, month, 0).getDate();
+  const day = Math.min(Math.max(Number(bill.dueDay) || 1, 1), lastDay);
+  return `${bill.month}-${String(day).padStart(2,"0")}`;
+}
+
+function getPaymentCalendarRows(){
+  const rows = [];
+  const trickleMatches = new Set();
+
+  getMonthTrickles().forEach(item => {
+    if(item.paid || !item.dueDate) return;
+
+    const matchKey = `${normalizePaymentName(item.name)}:${item.dueDate}`;
+    trickleMatches.add(matchKey);
+    rows.push({
+      id:`trickle-${item.id}`,
+      name:item.name,
+      amount:item.amount,
+      date:item.dueDate,
+      account:item.account || "Unassigned",
+      pot:item.source || "Unassigned",
+      status:item.funded ? "money in pot" : item.deliveroo ? "use Deliveroo" : "not paid"
+    });
+  });
+
+  getMonthBills().forEach(bill => {
+    if(isBillPaid(bill.id)) return;
+
+    const date = getBillDueDate(bill);
+    const matchKey = `${normalizePaymentName(bill.name)}:${date}`;
+    if(trickleMatches.has(matchKey)) return;
+
+    rows.push({
+      id:`bill-${bill.id}`,
+      name:bill.name,
+      amount:bill.amount,
+      date,
+      account:bill.account || "Unassigned",
+      pot:bill.pot || "Unassigned",
+      status:isBillFunded(bill.id) ? "money in account" : "not paid"
+    });
+  });
+
+  return rows.sort((a,b) => {
+    const dateCompare = String(a.date || "9999").localeCompare(String(b.date || "9999"));
+    if(dateCompare !== 0) return dateCompare;
+    return String(a.name).localeCompare(String(b.name));
+  });
+}
+
+function escapeIcs(value){
+  return String(value || "")
+    .replace(/\\/g, "\\\\")
+    .replace(/\n/g, "\\n")
+    .replace(/,/g, "\\,")
+    .replace(/;/g, "\\;");
+}
+
+function downloadPaymentCalendar(){
+  const rows = getPaymentCalendarRows();
+
+  if(!rows.length){
+    showToast("No dated payments to add to calendar.");
+    return;
+  }
+
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Pace//Payment Reminders//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "X-WR-CALNAME:Pace payment reminders"
+  ];
+
+  rows.forEach(row => {
+    const dateStamp = row.date.replaceAll("-", "");
+    const summary = `Pace: ${row.name} ${money(row.amount)} due`;
+    const description = `${row.account} to ${row.pot}. Status: ${row.status}.`;
+
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:pace-${state.selectedMonth}-${row.id}@pace`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;TZID=Europe/London:${dateStamp}T090000`,
+      `DTEND;TZID=Europe/London:${dateStamp}T091500`,
+      `SUMMARY:${escapeIcs(summary)}`,
+      `DESCRIPTION:${escapeIcs(description)}`,
+      "BEGIN:VALARM",
+      "TRIGGER:-P1D",
+      "ACTION:DISPLAY",
+      `DESCRIPTION:${escapeIcs(summary)}`,
+      "END:VALARM",
+      "BEGIN:VALARM",
+      "TRIGGER:-PT2H",
+      "ACTION:DISPLAY",
+      `DESCRIPTION:${escapeIcs(summary)}`,
+      "END:VALARM",
+      "END:VEVENT"
+    );
+  });
+
+  lines.push("END:VCALENDAR");
+
+  const blob = new Blob([lines.join("\r\n")], { type:"text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `pace-payments-${state.selectedMonth}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  showToast("Phone calendar file downloaded.");
 }
 
 function showToast(message){
@@ -3399,6 +3614,29 @@ function renderPayOrder(){
   const deliverooRemaining = Math.max(deliverooTotal - numberValue(allocation.deliverooEarned),0);
   const workDays = Math.max(1,numberValue(allocation.deliverooDays));
   const deliverooDaily = deliverooRemaining / workDays;
+  const deliverooTargets = remaining
+    .filter(item => item.deliveroo)
+    .slice()
+    .sort((a,b) => {
+      const dateCompare = String(a.dueDate || "9999").localeCompare(String(b.dueDate || "9999"));
+      if(dateCompare !== 0) return dateCompare;
+      return String(a.name).localeCompare(String(b.name));
+    });
+  let cumulativeTarget = 0;
+  const targetRows = deliverooTargets.map(item => {
+    cumulativeTarget += numberValue(item.amount);
+    const remainingByThisDate = Math.max(cumulativeTarget - numberValue(allocation.deliverooEarned),0);
+    const days = daysUntilDate(item.dueDate);
+
+    return {
+      ...item,
+      cumulativeTarget,
+      remainingByThisDate,
+      dailyByDueDate:remainingByThisDate / days,
+      days
+    };
+  });
+  const nextTarget = targetRows.find(item => item.remainingByThisDate > 0) || targetRows[0] || null;
 
   els.prePaydayTotal.textContent = money(outstandingTotal);
   els.fundedWaitingSummary.textContent = money(fundedTotal);
@@ -3409,6 +3647,30 @@ function renderPayOrder(){
   els.deliverooRemainingSummary.textContent = money(deliverooRemaining);
   els.deliverooDailySummary.textContent = money(deliverooDaily);
   els.payOrderCountPill.textContent = remaining.length === 1 ? "1 left" : `${remaining.length} left`;
+  els.nextDeliverooTarget.textContent = money(nextTarget ? nextTarget.remainingByThisDate : 0);
+  els.nextDeliverooTargetMeta.textContent = nextTarget
+    ? nextTarget.dueDate
+      ? `${nextTarget.name} by ${formatShortDate(nextTarget.dueDate)}. Aim for ${money(nextTarget.dailyByDueDate)} per day.`
+      : `${nextTarget.name} has no due date yet. Add a due date so Pace can build the target properly.`
+    : "Mark payments as use Deliveroo to build a dated target.";
+  els.deliverooTargetList.innerHTML = "";
+
+  if(!targetRows.length){
+    els.deliverooTargetList.innerHTML = `<div class="empty">No Deliveroo targets yet. Tap use Deliveroo on the payments you want Deliveroo to cover.</div>`;
+  }else{
+    targetRows.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "targetRow";
+      row.innerHTML = `
+        <div>
+          <span>${formatShortDate(item.dueDate)} • ${item.days} day${item.days === 1 ? "" : "s"} to hit it</span>
+          <strong>${escapeHtml(item.name)} · ${money(item.amount)}</strong>
+        </div>
+        <b>${money(item.remainingByThisDate)} left</b>
+      `;
+      els.deliverooTargetList.appendChild(row);
+    });
+  }
   els.payOrderList.innerHTML = "";
 
   if(ordered.length === 0){
@@ -3744,9 +4006,7 @@ els.saveSetupBtn.addEventListener("click", saveSetup);
 els.resetMonthBtn.addEventListener("click", resetMonth);
 els.restorePlanBtn.addEventListener("click", loadJunePlan);
 els.loadJulyPlanBtn.addEventListener("click", loadJulyPlan);
-els.downloadJulyCalendarBtn.addEventListener("click", () => {
-  window.location.href = "pace-july-payments.ics";
-});
+els.downloadJulyCalendarBtn.addEventListener("click", downloadPaymentCalendar);
 
 [
   ...POT_CONFIG.map(pot => els[pot.input]),
@@ -3899,6 +4159,46 @@ function financeReminderMoney(value){
   }).format(Number(value) || 0);
 }
 
+function financeReminderMonthLabel(monthValue){
+  const [year, month] = String(monthValue || "").split("-").map(Number);
+
+  if(!year || !month) return "this month";
+
+  return new Date(year, month - 1, 1).toLocaleDateString("en-GB", {
+    month:"long",
+    year:"numeric"
+  });
+}
+
+function financeReminderTodayMonth(){
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2,"0")}`;
+}
+
+function financeReminderSelectedMonth(){
+  try{
+    const saved = JSON.parse(localStorage.getItem("pace_finance_v3") || "{}");
+    return saved.selectedMonth || financeReminderTodayMonth();
+  }catch(error){
+    return financeReminderTodayMonth();
+  }
+}
+
+function financeReminderNormalize(value){
+  return String(value || "")
+    .toLowerCase()
+    .replace(/remaining|full bill|current|june|july/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function financeReminderDueDate(monthValue, dueDay){
+  const [year, month] = monthValue.split("-").map(Number);
+  const lastDay = new Date(year, month, 0).getDate();
+  const day = Math.min(Math.max(Number(dueDay) || 1, 1), lastDay);
+  return `${monthValue}-${String(day).padStart(2,"0")}`;
+}
+
 async function reminderSourceId(key){
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(key)));
   digest[6] = (digest[6] & 0x0f) | 0x50;
@@ -3907,31 +4207,45 @@ async function reminderSourceId(key){
   return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
 }
 
-async function buildJulyReminderRows(userId){
+async function buildPaymentReminderRows(userId, monthValue){
   const saved = JSON.parse(localStorage.getItem("pace_finance_v3") || "{}");
-  const julyItems = (saved.trickles || []).filter(item => item.month === "2026-07");
-  const fixedItems = julyItems.filter(item => item.kind === "fixed");
-  const klarnaItems = julyItems.filter(item => item.kind === "klarna");
-  const fixedTotal = fixedItems.reduce((sum,item) => sum + Number(item.amount || 0),0);
   const rows = [];
+  const trickleMatches = new Set();
 
-  if(fixedItems.length){
-    rows.push({
-      key:"finance-july-fixed-payday",
-      title:`July payday plan · ${financeReminderMoney(fixedTotal)} fixed payments due`,
-      reminder_date:"2026-07-20"
-    });
-  }
+  (saved.trickles || []).forEach(item => {
+    if(item.month !== monthValue || item.paid || !item.dueDate) return;
 
-  klarnaItems.forEach(item => {
+    const matchKey = `${financeReminderNormalize(item.name)}:${item.dueDate}`;
+    trickleMatches.add(matchKey);
     rows.push({
-      key:`finance-july-${item.dueDate}-klarna`,
-      title:`Klarna · ${financeReminderMoney(item.amount)} due`,
+      key:`finance-${monthValue}-trickle-${item.id || matchKey}`,
+      title:`${item.name || "Payment"} · ${financeReminderMoney(item.amount)} due`,
       reminder_date:item.dueDate
     });
   });
 
-  return Promise.all(rows.map(async row => ({
+  (saved.fixedBills || []).forEach(bill => {
+    if(bill.month !== monthValue) return;
+    if(saved.billPaid?.[`${monthValue}:${bill.id}`]) return;
+
+    const reminderDate = financeReminderDueDate(monthValue, bill.dueDay);
+    const matchKey = `${financeReminderNormalize(bill.name)}:${reminderDate}`;
+    if(trickleMatches.has(matchKey)) return;
+
+    rows.push({
+      key:`finance-${monthValue}-bill-${bill.id || matchKey}`,
+      title:`${bill.name || "Fixed payment"} · ${financeReminderMoney(bill.amount)} due`,
+      reminder_date:reminderDate
+    });
+  });
+
+  const rowsByDate = rows.sort((a,b) => {
+    const dateCompare = String(a.reminder_date).localeCompare(String(b.reminder_date));
+    if(dateCompare !== 0) return dateCompare;
+    return String(a.title).localeCompare(String(b.title));
+  });
+
+  return Promise.all(rowsByDate.map(async row => ({
     user_id:userId,
     source:"finance",
     source_id:await reminderSourceId(row.key),
@@ -3942,11 +4256,17 @@ async function buildJulyReminderRows(userId){
   })));
 }
 
-async function syncJulyReminders(){
+async function syncPaymentReminders(){
   const button = document.getElementById("syncJulyRemindersBtn");
   const status = document.getElementById("reminderSyncStatus");
+  const monthValue = financeReminderSelectedMonth();
+  const monthLabel = financeReminderMonthLabel(monthValue);
+  const monthStart = `${monthValue}-01`;
+  const [year, month] = monthValue.split("-").map(Number);
+  const monthEnd = `${monthValue}-${String(new Date(year, month, 0).getDate()).padStart(2,"0")}`;
+
   button.disabled = true;
-  status.textContent = "Syncing July payment reminders...";
+  status.textContent = `Syncing ${monthLabel} payment reminders...`;
 
   try{
     const { data:{ user } } = await financeSupabase.auth.getUser();
@@ -3956,10 +4276,10 @@ async function syncJulyReminders(){
       return;
     }
 
-    const wanted = await buildJulyReminderRows(user.id);
+    const wanted = await buildPaymentReminderRows(user.id, monthValue);
 
     if(!wanted.length){
-      status.textContent = "Your saved finance data is safe. Set up July when you are ready to create its reminders.";
+      status.textContent = `No dated ${monthLabel} payments are waiting to sync. Add due dates to create reminders.`;
       return;
     }
 
@@ -3968,8 +4288,8 @@ async function syncJulyReminders(){
       .select("id,source_id,done")
       .eq("user_id", user.id)
       .eq("source", "finance")
-      .gte("reminder_date", "2026-07-01")
-      .lte("reminder_date", "2026-07-31");
+      .gte("reminder_date", monthStart)
+      .lte("reminder_date", monthEnd);
 
     if(loadError) throw loadError;
 
@@ -4009,7 +4329,7 @@ async function syncJulyReminders(){
       if(error) throw error;
     }
 
-    status.textContent = `${wanted.length} July payment reminders synced to Pace.`;
+    status.textContent = `${wanted.length} ${monthLabel} payment reminders synced to Pace. Open Reminders to enable pop-up alerts.`;
   }catch(error){
     status.textContent = `Reminder sync failed: ${error.message || "unknown error"}`;
   }finally{
@@ -4017,8 +4337,8 @@ async function syncJulyReminders(){
   }
 }
 
-document.getElementById("syncJulyRemindersBtn").addEventListener("click", syncJulyReminders);
-syncJulyReminders();
+document.getElementById("syncJulyRemindersBtn").addEventListener("click", syncPaymentReminders);
+syncPaymentReminders();
 </script>
 
 </body>

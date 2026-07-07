@@ -534,6 +534,71 @@ input::placeholder{
   margin-top:10px;
 }
 
+.due-popup{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  width:min(520px, calc(100% - 24px));
+  border:1px solid rgba(245,158,11,0.34);
+  background:rgba(23,26,32,0.96);
+  color:var(--text);
+  border-radius:24px;
+  padding:14px;
+  box-shadow:0 24px 75px rgba(0,0,0,0.52);
+  backdrop-filter:blur(24px);
+  z-index:80;
+}
+
+.due-popup[hidden]{
+  display:none;
+}
+
+.due-popup-title{
+  font-weight:950;
+  letter-spacing:-0.02em;
+}
+
+.due-popup-copy{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+.due-popup-list{
+  display:grid;
+  gap:7px;
+  margin-top:11px;
+}
+
+.due-popup-item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.07);
+  border-radius:15px;
+  padding:9px 10px;
+  font-size:13px;
+}
+
+.due-popup-item span{
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+.due-popup-actions{
+  display:grid;
+  grid-template-columns:1.25fr 1fr;
+  gap:9px;
+  margin-top:12px;
+}
+
+.due-popup-actions .primary-btn{
+  margin-top:0;
+}
+
 .empty{
   color:var(--muted);
   padding:14px 0;
@@ -590,6 +655,10 @@ input::placeholder{
   .actions,
   .small-btn{
     width:100%;
+  }
+
+  .due-popup-actions{
+    grid-template-columns:1fr;
   }
 }
 </style>
@@ -747,6 +816,16 @@ input::placeholder{
 
 </div>
 
+<div class="due-popup" id="duePopup" hidden>
+  <div class="due-popup-title" id="duePopupTitle">Reminder due</div>
+  <div class="due-popup-copy" id="duePopupCopy">You have reminders waiting.</div>
+  <div class="due-popup-list" id="duePopupList"></div>
+  <div class="due-popup-actions">
+    <button type="button" class="primary-btn" id="duePopupOpenBtn">Show reminders</button>
+    <button type="button" class="secondary-btn" id="duePopupDismissBtn">Dismiss for now</button>
+  </div>
+</div>
+
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -777,6 +856,12 @@ const msg = document.getElementById("msg");
 const kpisEl = document.getElementById("kpis");
 const notificationStatus = document.getElementById("notificationStatus");
 const enableNotificationsBtn = document.getElementById("enableNotificationsBtn");
+const duePopup = document.getElementById("duePopup");
+const duePopupTitle = document.getElementById("duePopupTitle");
+const duePopupCopy = document.getElementById("duePopupCopy");
+const duePopupList = document.getElementById("duePopupList");
+const duePopupOpenBtn = document.getElementById("duePopupOpenBtn");
+const duePopupDismissBtn = document.getElementById("duePopupDismissBtn");
 
 function today(){
   const now = new Date();
@@ -831,6 +916,50 @@ function badge(row){
 
 function activeRows(){
   return allRows.filter(r => !r.done);
+}
+
+function urgentRows(){
+  return activeRows()
+    .filter(row => statusOf(row) === "overdue" || statusOf(row) === "today")
+    .sort((a,b) => `${a.reminder_date || ""} ${a.reminder_time || ""}`.localeCompare(`${b.reminder_date || ""} ${b.reminder_time || ""}`));
+}
+
+function duePopupDismissKey(){
+  const rows = urgentRows();
+  const ids = rows.map(row => row.id).sort().join("|");
+  return `pace-reminder-popup:${today()}:${ids}`;
+}
+
+function renderDuePopup(){
+  const rows = urgentRows();
+
+  if(!rows.length){
+    duePopup.hidden = true;
+    return;
+  }
+
+  if(localStorage.getItem(duePopupDismissKey()) === "1"){
+    duePopup.hidden = true;
+    return;
+  }
+
+  const overdueCount = rows.filter(row => statusOf(row) === "overdue").length;
+  const todayCount = rows.filter(row => statusOf(row) === "today").length;
+  const visibleRows = rows.slice(0,3);
+
+  duePopupTitle.textContent = overdueCount
+    ? `${overdueCount} overdue reminder${overdueCount === 1 ? "" : "s"}`
+    : `${todayCount} reminder${todayCount === 1 ? "" : "s"} due today`;
+  duePopupCopy.textContent = overdueCount
+    ? "These need attention first so they do not keep rolling over."
+    : "These are waiting today. Open them now or dismiss for this visit.";
+  duePopupList.innerHTML = visibleRows.map(row => `
+    <div class="due-popup-item">
+      <strong>${escapeHTML(row.title)}</strong>
+      <span>${formatDate(row.reminder_date,row.reminder_time)}</span>
+    </div>
+  `).join("");
+  duePopup.hidden = false;
 }
 
 function updateSourceActive(){
@@ -922,6 +1051,7 @@ function render(){
   updateCounts();
   renderKpis();
   updateSourceActive();
+  renderDuePopup();
 
   const rows = filteredRows();
   viewTitle.textContent = currentSource ? sourceLabel(currentSource) : currentView;
@@ -969,6 +1099,19 @@ window.toggleAddForm = function(){
   addForm.style.display = addForm.style.display === "block" ? "none" : "block";
 };
 
+duePopupOpenBtn.addEventListener("click", () => {
+  const hasOverdue = urgentRows().some(row => statusOf(row) === "overdue");
+  localStorage.setItem(duePopupDismissKey(), "1");
+  setView(hasOverdue ? "Overdue" : "Today");
+  duePopup.hidden = true;
+  window.scrollTo({ top:0, behavior:"smooth" });
+});
+
+duePopupDismissBtn.addEventListener("click", () => {
+  localStorage.setItem(duePopupDismissKey(), "1");
+  duePopup.hidden = true;
+});
+
 async function getUser(){
   const { data } = await supabase.auth.getUser();
   return data.user;
@@ -982,8 +1125,8 @@ function updateNotificationStatus(){
   }
 
   if(Notification.permission === "granted"){
-    notificationStatus.textContent = "Device alerts are enabled. Pace checks payments whenever you open the app.";
-    enableNotificationsBtn.textContent = "Device alerts enabled";
+    notificationStatus.textContent = "Device alerts are enabled. Pace pops due reminders when you open the app. Use the phone calendar download for closed-app alarms.";
+    enableNotificationsBtn.textContent = "Check alerts now";
     return;
   }
 
@@ -999,29 +1142,41 @@ async function getServiceWorkerRegistration(){
   return navigator.serviceWorker.register("sw.js", { scope:"./" });
 }
 
-async function showUpcomingFinanceNotifications(){
+function rowsForDeviceNotifications(){
+  const start = new Date(`${today()}T00:00:00`);
+  const soon = new Date(start);
+  soon.setDate(soon.getDate() + 3);
+
+  return activeRows().filter(row => {
+    if(!row.reminder_date) return false;
+
+    const status = statusOf(row);
+    if(status === "overdue" || status === "today") return true;
+
+    if(row.source === "finance"){
+      const due = new Date(`${row.reminder_date}T00:00:00`);
+      return due >= start && due <= soon;
+    }
+
+    return false;
+  });
+}
+
+async function showDueReminderNotifications(){
   if(!("Notification" in window) || Notification.permission !== "granted") return;
 
   const registration = await getServiceWorkerRegistration();
-  const start = new Date(`${today()}T00:00:00`);
-  const end = new Date(start);
-  end.setDate(end.getDate() + 3);
+  const rows = rowsForDeviceNotifications();
 
-  const upcoming = reminders.filter(row => {
-    if(row.done || row.source !== "finance" || !row.reminder_date) return false;
-    const due = new Date(`${row.reminder_date}T00:00:00`);
-    return due >= start && due <= end;
-  });
-
-  for(const row of upcoming){
-    const notificationKey = `pace-payment-notified:${row.id}:${today()}`;
+  for(const row of rows){
+    const notificationKey = `pace-reminder-notified:${row.id}:${row.reminder_date}:${today()}`;
     if(localStorage.getItem(notificationKey)) continue;
 
-    await registration.showNotification("Pace payment reminder", {
+    await registration.showNotification(row.source === "finance" ? "Pace payment reminder" : "Pace reminder due", {
       body:`${row.title} · ${formatDate(row.reminder_date,row.reminder_time)}`,
       icon:"icon-192.png",
       badge:"icon-192.png",
-      tag:`pace-finance-${row.id}`,
+      tag:`pace-${String(row.source).replace(/\s+/g,"-")}-${row.id}`,
       data:{ url:"reminders-test.html" }
     });
     localStorage.setItem(notificationKey, "1");
@@ -1040,7 +1195,7 @@ enableNotificationsBtn.addEventListener("click", async () => {
     updateNotificationStatus();
 
     if(permission === "granted"){
-      await showUpcomingFinanceNotifications();
+      await showDueReminderNotifications();
     }
   }catch(error){
     notificationStatus.textContent = `Could not enable alerts: ${error.message || "unknown error"}`;
@@ -1137,7 +1292,7 @@ async function load(){
   updateNotificationStatus();
 
   try{
-    await showUpcomingFinanceNotifications();
+    await showDueReminderNotifications();
   }catch(error){
     notificationStatus.textContent = `Alerts need attention: ${error.message || "unknown error"}`;
   }
