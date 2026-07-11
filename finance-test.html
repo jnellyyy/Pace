@@ -225,6 +225,18 @@ textarea{
   white-space:nowrap;
 }
 
+.hubSoft{
+  min-height:46px;
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:18px;
+  background:rgba(255,255,255,0.09);
+  color:var(--text);
+  padding:0 14px;
+  cursor:pointer;
+  font-weight:900;
+  white-space:nowrap;
+}
+
 .hubTopCards{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
@@ -632,10 +644,26 @@ textarea{
 
 .hubManageNote{
   grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
   color:var(--muted);
   text-align:center;
   font-size:12px;
   margin-top:-2px;
+}
+
+.legacyFinance{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:1.05fr 0.95fr;
+  gap:16px;
+}
+
+.legacyFinance[hidden]{
+  display:none;
 }
 
 .card{
@@ -1534,6 +1562,10 @@ textarea{
     grid-template-columns:1fr;
   }
 
+  .legacyFinance{
+    grid-template-columns:1fr;
+  }
+
   .hubHeader{
     grid-template-columns:auto 1fr;
   }
@@ -1863,8 +1895,13 @@ textarea{
         </div>
       </div>
 
-      <div class="hubManageNote">Use the setup and edit sections below when you need to change the actual figures.</div>
+      <div class="hubManageNote">
+        <button type="button" class="hubSoft" id="toggleEditorBtn">edit figures</button>
+        <span>Open only when you need to input or rebuild the month.</span>
+      </div>
     </section>
+
+    <div class="legacyFinance" id="financeEditorPanel" hidden>
 
     <section class="card hero">
       <div class="cardInner">
@@ -2554,6 +2591,8 @@ textarea{
       </div>
     </section>
 
+    </div>
+
   </main>
 
 </div>
@@ -2702,6 +2741,8 @@ const els = {
   hubMonthLabel: document.getElementById("hubMonthLabel"),
   hubUpdatedDate: document.getElementById("hubUpdatedDate"),
   hubRefreshBtn: document.getElementById("hubRefreshBtn"),
+  toggleEditorBtn: document.getElementById("toggleEditorBtn"),
+  financeEditorPanel: document.getElementById("financeEditorPanel"),
   clearMonthFullBtn: document.getElementById("clearMonthFullBtn"),
   clearMonthFullSetupBtn: document.getElementById("clearMonthFullSetupBtn"),
   hubIncomeAmount: document.getElementById("hubIncomeAmount"),
@@ -3481,6 +3522,16 @@ function showToast(message){
   setTimeout(() => {
     els.toast.classList.remove("show");
   }, 1800);
+}
+
+function toggleFinanceEditor(){
+  const isHidden = els.financeEditorPanel.hidden;
+  els.financeEditorPanel.hidden = !isHidden;
+  els.toggleEditorBtn.textContent = isHidden ? "hide editor" : "edit figures";
+
+  if(isHidden){
+    els.financeEditorPanel.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
 }
 
 function setFinanceEditField(field, visible){
@@ -5145,6 +5196,7 @@ els.hubRefreshBtn.addEventListener("click", () => {
   render();
   showToast("Finance hub refreshed.");
 });
+els.toggleEditorBtn.addEventListener("click", toggleFinanceEditor);
 els.restorePlanBtn.addEventListener("click", loadJunePlan);
 els.loadJulyPlanBtn.addEventListener("click", loadJulyPlan);
 els.downloadJulyCalendarBtn.addEventListener("click", downloadPaymentCalendar);
