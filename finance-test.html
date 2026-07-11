@@ -126,6 +126,518 @@ textarea{
   gap:16px;
 }
 
+.financeHub{
+  grid-column:1 / -1;
+  display:grid;
+  gap:14px;
+}
+
+.hubHeader{
+  display:grid;
+  grid-template-columns:auto 1fr auto auto;
+  align-items:center;
+  gap:14px;
+}
+
+.hubMenu{
+  width:46px;
+  height:46px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.08);
+  display:grid;
+  place-items:center;
+  font-size:24px;
+  font-weight:900;
+}
+
+.hubTitle h2{
+  margin:0;
+  font-size:32px;
+  line-height:1;
+  letter-spacing:-0.055em;
+}
+
+.hubTitle p{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:750;
+}
+
+.hubUpdated,
+.hubIncomePill{
+  min-height:58px;
+  border-radius:24px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.08);
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.hubControls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.hubUpdated button{
+  border:0;
+  background:transparent;
+  color:var(--text);
+  font-size:22px;
+  cursor:pointer;
+  padding:0;
+}
+
+.hubIncomePill{
+  min-width:180px;
+  flex-direction:column;
+  gap:2px;
+  color:#fff;
+  background:linear-gradient(135deg, rgba(255,59,142,0.78), rgba(124,58,237,0.90));
+  box-shadow:0 18px 45px rgba(124,58,237,0.22);
+}
+
+.hubIncomePill span{
+  font-size:13px;
+}
+
+.hubIncomePill strong{
+  font-size:22px;
+  letter-spacing:-0.03em;
+}
+
+.hubDanger{
+  min-height:46px;
+  border:1px solid rgba(239,68,68,0.32);
+  border-radius:18px;
+  background:rgba(239,68,68,0.13);
+  color:#fecaca;
+  padding:0 13px;
+  cursor:pointer;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.hubTopCards{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+
+.hubTile,
+.hubCard{
+  border:1px solid var(--line);
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.09), transparent 36%),
+    rgba(15,17,24,0.80);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(24px);
+}
+
+.hubTile{
+  min-height:168px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.hubTile.orange{
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.18), transparent 34%),
+    linear-gradient(135deg, rgba(245,158,11,0.85), rgba(255,117,92,0.58));
+  color:#111318;
+}
+
+.hubTileHead{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#ff9fd1;
+  font-weight:900;
+}
+
+.hubTile.orange .hubTileHead{
+  color:#111318;
+}
+
+.hubIcon{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,0.13);
+  border:1px solid rgba(255,255,255,0.16);
+  flex:0 0 auto;
+}
+
+.hubTile strong{
+  display:block;
+  font-size:30px;
+  letter-spacing:-0.055em;
+}
+
+.hubTile small{
+  color:var(--muted);
+  line-height:1.45;
+  font-size:13px;
+}
+
+.hubTile.orange small{
+  color:rgba(17,19,24,0.78);
+  font-weight:800;
+}
+
+.hubBar{
+  height:10px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,0.16);
+}
+
+.hubBar span{
+  display:block;
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, #ff5ba7, #c084fc);
+}
+
+.hubTile.orange .hubBar span{
+  background:linear-gradient(90deg, #ff3b30, #ffd39b);
+}
+
+.hubPercent{
+  color:#ff9fd1;
+  font-size:13px;
+  font-weight:900;
+}
+
+.hubTile.orange .hubPercent{
+  color:#111318;
+}
+
+.hubProtectedText{
+  color:var(--muted);
+  line-height:1.5;
+  text-align:center;
+  font-size:14px;
+}
+
+.hubSafePill{
+  display:flex;
+  justify-content:center;
+  border:1px solid rgba(255,159,209,0.38);
+  color:#ffc2e6;
+  border-radius:16px;
+  padding:10px;
+  font-weight:900;
+}
+
+.hubBoard{
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(0,0.92fr);
+  gap:14px;
+  align-items:start;
+}
+
+.hubStack{
+  display:grid;
+  gap:14px;
+}
+
+.hubCard{
+  padding:14px;
+}
+
+.hubCardHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.hubCardTitle{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+
+.hubCardTitle h3{
+  margin:0;
+  font-size:18px;
+  letter-spacing:-0.035em;
+  color:#ff9fd1;
+}
+
+.hubCardTitle span{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(255,91,167,0.16);
+}
+
+.hubPill{
+  border:0;
+  border-radius:999px;
+  padding:8px 12px;
+  background:linear-gradient(135deg,#ff5ba7,#c084fc);
+  color:#111318;
+  font-size:12px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.hubRows{
+  display:grid;
+  gap:8px;
+}
+
+.hubPayRow,
+.hubPotRow,
+.hubPlanRow,
+.hubScheduleRow{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  border:1px solid rgba(255,255,255,0.09);
+  background:rgba(255,255,255,0.055);
+  border-radius:16px;
+  padding:10px;
+  min-width:0;
+}
+
+.hubPayRow{
+  grid-template-columns:64px 42px minmax(0,1fr) auto auto;
+}
+
+.hubScheduleRow{
+  grid-template-columns:42px minmax(0,1fr) auto auto;
+}
+
+.hubDateBox{
+  width:64px;
+  min-height:54px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.07);
+  display:grid;
+  place-items:center;
+  text-align:center;
+  font-weight:900;
+  font-size:13px;
+}
+
+.hubDateBox small{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.hubRowIcon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,91,167,0.18);
+  font-weight:950;
+  flex:0 0 auto;
+}
+
+.hubRowMain{
+  min-width:0;
+}
+
+.hubRowMain strong{
+  display:block;
+  overflow-wrap:anywhere;
+}
+
+.hubRowMain small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+}
+
+.hubAmount{
+  font-weight:950;
+  white-space:nowrap;
+  text-align:right;
+}
+
+.hubTag{
+  display:inline-flex;
+  justify-content:center;
+  min-width:70px;
+  border-radius:12px;
+  padding:8px 10px;
+  background:rgba(124,58,237,0.78);
+  color:#fff;
+  font-size:12px;
+  font-weight:950;
+}
+
+.hubTag.bills{ background:#258bea; }
+.hubTag.debt{ background:#fb923c; color:#111318; }
+.hubTag.commute{ background:#22c55e; color:#111318; }
+.hubTag.paid{ background:#22c55e; color:#111318; }
+.hubTag.funded{ background:#60a5fa; color:#111318; }
+.hubTag.deliveroo{ background:#f59e0b; color:#111318; }
+
+.hubPotRow{
+  grid-template-columns:auto minmax(0,1fr) auto;
+}
+
+.hubPotProgress{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.09);
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.hubPotProgress span{
+  display:block;
+  height:100%;
+  width:0%;
+  border-radius:999px;
+}
+
+.hubOverview{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 190px;
+  gap:16px;
+  align-items:center;
+}
+
+.hubOverviewList{
+  border:1px solid rgba(255,91,167,0.25);
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.hubOverviewLine{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  font-size:13px;
+}
+
+.hubOverviewLine:last-child{
+  border-bottom:0;
+}
+
+.hubOverviewLine strong{
+  white-space:nowrap;
+}
+
+.hubDonut{
+  width:168px;
+  aspect-ratio:1;
+  margin:auto;
+  border-radius:50%;
+  position:relative;
+  background:conic-gradient(#ff5ba7 0 70%, #8b5cf6 70% 90%, #f59e0b 90% 100%);
+}
+
+.hubDonut::after{
+  content:"";
+  position:absolute;
+  inset:30%;
+  border-radius:50%;
+  background:#171a20;
+  border:1px solid var(--line);
+}
+
+.hubDonutCenter{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  pointer-events:none;
+}
+
+.hubDonutCenter strong{
+  display:block;
+  font-size:18px;
+}
+
+.hubDonutCenter span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.hubActionFooter{
+  margin-top:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border:1px solid rgba(255,91,167,0.26);
+  background:rgba(255,91,167,0.12);
+  border-radius:16px;
+  padding:12px;
+  font-weight:950;
+}
+
+.hubActionFooter strong{
+  color:#ff9fd1;
+  font-size:26px;
+}
+
+.hubPlanRow{
+  grid-template-columns:92px 110px minmax(0,1fr) auto;
+}
+
+.hubDayPill{
+  border-radius:12px;
+  padding:10px;
+  color:#111318;
+  font-weight:950;
+  text-align:center;
+  background:#ff5ba7;
+}
+
+.hubDayPill.alt1{ background:#c084fc; }
+.hubDayPill.alt2{ background:#60a5fa; }
+.hubDayPill.alt3{ background:#22c55e; }
+.hubDayPill.alt4{ background:#f59e0b; }
+
+.hubPlanEarn{
+  font-weight:950;
+}
+
+.hubManageNote{
+  grid-column:1 / -1;
+  color:var(--muted);
+  text-align:center;
+  font-size:12px;
+  margin-top:-2px;
+}
+
 .card{
   background:var(--panel);
   border:1px solid var(--line);
@@ -1022,6 +1534,24 @@ textarea{
     grid-template-columns:1fr;
   }
 
+  .hubHeader{
+    grid-template-columns:auto 1fr;
+  }
+
+  .hubControls,
+  .hubIncomePill{
+    grid-column:1 / -1;
+  }
+
+  .hubTopCards,
+  .hubBoard{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hubBoard{
+    align-items:stretch;
+  }
+
   .billsGrid{
     grid-template-columns:1fr;
   }
@@ -1039,6 +1569,60 @@ textarea{
 
   .heroMoney strong{
     font-size:38px;
+  }
+
+  .hubHeader,
+  .hubTopCards,
+  .hubBoard,
+  .hubOverview{
+    grid-template-columns:1fr;
+  }
+
+  .hubControls{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .hubUpdated,
+  .hubIncomePill,
+  .hubDanger{
+    width:100%;
+  }
+
+  .hubTitle h2{
+    font-size:26px;
+  }
+
+  .hubPayRow,
+  .hubPotRow,
+  .hubScheduleRow{
+    grid-template-columns:auto minmax(0,1fr);
+  }
+
+  .hubPayRow .hubRowIcon{
+    display:none;
+  }
+
+  .hubPayRow .hubAmount,
+  .hubPayRow .hubTag,
+  .hubPotRow .hubAmount,
+  .hubScheduleRow .hubAmount{
+    grid-column:2;
+    text-align:left;
+    justify-self:start;
+  }
+
+  .hubScheduleRow .hubTag{
+    grid-column:2;
+    justify-self:start;
+  }
+
+  .hubPlanRow{
+    grid-template-columns:1fr;
+  }
+
+  .hubDayPill{
+    text-align:left;
   }
 
   .monthRow{
@@ -1124,6 +1708,163 @@ textarea{
   </header>
 
   <main class="grid">
+
+    <section class="financeHub" aria-label="Finance hub overview">
+      <div class="hubHeader">
+        <a class="hubMenu" href="dashboard.html" aria-label="Back to dashboard">☰</a>
+
+        <div class="hubTitle">
+          <h2>Janelle's Finance Hub</h2>
+          <p id="hubMonthLabel">Monthly overview</p>
+        </div>
+
+        <div class="hubControls">
+          <div class="hubUpdated">
+            <span id="hubUpdatedDate">Updated today</span>
+            <button type="button" id="hubRefreshBtn" aria-label="Refresh finance hub">↻</button>
+          </div>
+          <button type="button" class="hubDanger" id="clearMonthFullBtn">clear month</button>
+        </div>
+
+        <div class="hubIncomePill">
+          <span>Income</span>
+          <strong id="hubIncomeAmount">£0.00</strong>
+        </div>
+      </div>
+
+      <div class="hubTopCards">
+        <article class="hubTile">
+          <div class="hubTileHead">
+            <div class="hubIcon">💎</div>
+            <span>What stays in HSBC</span>
+          </div>
+          <strong id="hubHsbcAmount">£0.00</strong>
+          <small>Rent, bills and standing orders protected first.</small>
+          <div class="hubBar"><span id="hubHsbcFill"></span></div>
+          <div class="hubPercent" id="hubHsbcPercent">0% of income</div>
+        </article>
+
+        <article class="hubTile">
+          <div class="hubTileHead">
+            <div class="hubIcon">R</div>
+            <span>Transfer to Revolut</span>
+          </div>
+          <strong id="hubRevolutAmount">£0.00</strong>
+          <small>Debt, BNPL, commute, extras and pots.</small>
+          <div class="hubBar"><span id="hubRevolutFill"></span></div>
+          <div class="hubPercent" id="hubRevolutPercent">0% of income</div>
+        </article>
+
+        <article class="hubTile orange">
+          <div class="hubTileHead">
+            <div class="hubIcon">🚲</div>
+            <span>To Earn</span>
+          </div>
+          <strong id="hubDeliverooAmount">£0.00</strong>
+          <small id="hubDeliverooCopy">Mark payments for Deliveroo to build a target.</small>
+          <div class="hubBar"><span id="hubDeliverooFill"></span></div>
+          <div class="hubPercent" id="hubDeliverooPercent">0% of income</div>
+        </article>
+
+        <article class="hubTile">
+          <div class="hubTileHead">
+            <div class="hubIcon">🛎️</div>
+            <span>Protected & Safe</span>
+          </div>
+          <div class="hubProtectedText" id="hubProtectedText">Add income and bills to see what is covered.</div>
+          <div class="hubSafePill" id="hubSafePill">Checking...</div>
+        </article>
+      </div>
+
+      <div class="hubBoard">
+        <div class="hubStack">
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>📅</span>
+                <h3>What needs paying & when</h3>
+              </div>
+              <div class="hubPill" id="hubUpcomingPill">0 upcoming</div>
+            </div>
+            <div class="hubRows" id="hubPaymentList"></div>
+          </section>
+
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>🧾</span>
+                <h3>Quick overview</h3>
+              </div>
+            </div>
+            <div class="hubOverview">
+              <div class="hubOverviewList" id="hubOverviewList"></div>
+              <div class="hubDonut" id="hubOverviewDonut">
+                <div class="hubDonutCenter">
+                  <div>
+                    <strong id="hubDonutTotal">£0.00</strong>
+                    <span>Total</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>🗓️</span>
+                <h3>This week's plan</h3>
+              </div>
+            </div>
+            <div class="hubRows" id="hubWeekPlanList"></div>
+          </section>
+        </div>
+
+        <div class="hubStack">
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>🏦</span>
+                <h3>Pots & balances</h3>
+              </div>
+              <div class="hubPill" id="hubPotsPill">pots</div>
+            </div>
+            <div class="hubRows" id="hubPotsList"></div>
+          </section>
+
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>✅</span>
+                <h3>Today's action plan</h3>
+              </div>
+            </div>
+            <div class="hubRows" id="hubActionList"></div>
+            <div class="hubActionFooter">
+              <span>Today's goal</span>
+              <strong id="hubTodayGoal">£0.00</strong>
+            </div>
+          </section>
+
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>K</span>
+                <h3>BNPL schedule</h3>
+              </div>
+              <div class="hubPill" id="hubSchedulePill">0 due</div>
+            </div>
+            <div class="hubRows" id="hubScheduleList"></div>
+            <div class="hubActionFooter">
+              <span>Total BNPL this month</span>
+              <strong id="hubScheduleTotal">£0.00</strong>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="hubManageNote">Use the setup and edit sections below when you need to change the actual figures.</div>
+    </section>
 
     <section class="card hero">
       <div class="cardInner">
@@ -1313,6 +2054,7 @@ textarea{
         <div class="actions">
           <button type="button" class="btn btnPrimary" id="saveSetupBtn">save setup</button>
           <button type="button" class="btn btnSoft" id="resetMonthBtn">reset month</button>
+          <button type="button" class="btn btnSoft" id="clearMonthFullSetupBtn">clear this month</button>
           <button type="button" class="btn btnSoft" id="restorePlanBtn">load June plan</button>
           <button type="button" class="btn btnSoft" id="loadJulyPlanBtn">set up July</button>
         </div>
@@ -1957,6 +2699,37 @@ const EMAIL_ACTIONS_KEY = "pace_email_command_v1";
 const HAD_SAVED_FINANCE = Boolean(localStorage.getItem(STORAGE_KEY));
 
 const els = {
+  hubMonthLabel: document.getElementById("hubMonthLabel"),
+  hubUpdatedDate: document.getElementById("hubUpdatedDate"),
+  hubRefreshBtn: document.getElementById("hubRefreshBtn"),
+  clearMonthFullBtn: document.getElementById("clearMonthFullBtn"),
+  clearMonthFullSetupBtn: document.getElementById("clearMonthFullSetupBtn"),
+  hubIncomeAmount: document.getElementById("hubIncomeAmount"),
+  hubHsbcAmount: document.getElementById("hubHsbcAmount"),
+  hubHsbcFill: document.getElementById("hubHsbcFill"),
+  hubHsbcPercent: document.getElementById("hubHsbcPercent"),
+  hubRevolutAmount: document.getElementById("hubRevolutAmount"),
+  hubRevolutFill: document.getElementById("hubRevolutFill"),
+  hubRevolutPercent: document.getElementById("hubRevolutPercent"),
+  hubDeliverooAmount: document.getElementById("hubDeliverooAmount"),
+  hubDeliverooCopy: document.getElementById("hubDeliverooCopy"),
+  hubDeliverooFill: document.getElementById("hubDeliverooFill"),
+  hubDeliverooPercent: document.getElementById("hubDeliverooPercent"),
+  hubProtectedText: document.getElementById("hubProtectedText"),
+  hubSafePill: document.getElementById("hubSafePill"),
+  hubUpcomingPill: document.getElementById("hubUpcomingPill"),
+  hubPaymentList: document.getElementById("hubPaymentList"),
+  hubOverviewList: document.getElementById("hubOverviewList"),
+  hubOverviewDonut: document.getElementById("hubOverviewDonut"),
+  hubDonutTotal: document.getElementById("hubDonutTotal"),
+  hubWeekPlanList: document.getElementById("hubWeekPlanList"),
+  hubPotsPill: document.getElementById("hubPotsPill"),
+  hubPotsList: document.getElementById("hubPotsList"),
+  hubActionList: document.getElementById("hubActionList"),
+  hubTodayGoal: document.getElementById("hubTodayGoal"),
+  hubSchedulePill: document.getElementById("hubSchedulePill"),
+  hubScheduleList: document.getElementById("hubScheduleList"),
+  hubScheduleTotal: document.getElementById("hubScheduleTotal"),
   monthInput: document.getElementById("monthInput"),
   previousMonthBtn: document.getElementById("previousMonthBtn"),
   currentMonthBtn: document.getElementById("currentMonthBtn"),
@@ -3442,6 +4215,45 @@ function resetMonth(){
   showToast("Month reset.");
 }
 
+function clearSelectedMonth(){
+  const month = state.selectedMonth;
+  const label = formatMonthLabel(month);
+  const confirmed = confirm(`Clear all finance data for ${label}? This removes this month's bills, payments, pots, spending, paid marks and cleared list so you can input it again.`);
+
+  if(!confirmed) return;
+
+  state.months[month] = {
+    income:0,
+    startingBalance:0
+  };
+
+  state.fixedBills = state.fixedBills.filter(bill => bill.month !== month);
+  state.spends = state.spends.filter(spend => spend.month !== month);
+  state.trickles = state.trickles.filter(trickle => trickle.month !== month);
+  delete state.allocations[month];
+  delete state.cleared[month];
+
+  Object.keys(state.billPaid).forEach(key => {
+    if(key.startsWith(`${month}:`)) delete state.billPaid[key];
+  });
+
+  Object.keys(state.billFunded).forEach(key => {
+    if(key.startsWith(`${month}:`)) delete state.billFunded[key];
+  });
+
+  if(month === JUNE_PLAN.month){
+    state.planVersion = 0;
+  }
+
+  if(month === JULY_PLAN.month){
+    state.julyPlanVersion = 0;
+  }
+
+  save();
+  render();
+  showToast(`${label} cleared. You can input it again.`);
+}
+
 function renderBills(){
   const lists = {
     standingOrder: els.standingOrderList,
@@ -3593,6 +4405,327 @@ function getTrickleStatus(item){
   }
 
   return { className:"unpaid", label:"not paid" };
+}
+
+function formatMonthLabel(monthValue){
+  const [year, month] = String(monthValue || "").split("-").map(Number);
+
+  if(!year || !month) return "Monthly overview";
+
+  return new Date(year, month - 1, 1).toLocaleDateString("en-GB", {
+    month:"long",
+    year:"numeric"
+  });
+}
+
+function formatUpdatedLabel(){
+  return `Updated: ${new Date().toLocaleDateString("en-GB", { day:"numeric", month:"short" })}`;
+}
+
+function percentOf(value,total){
+  if(total <= 0) return 0;
+  return Math.max(0, Math.min(100, value / total * 100));
+}
+
+function compactDueLabel(dateValue){
+  if(!dateValue) return { top:"This", bottom:"Month" };
+
+  const due = new Date(`${dateValue}T00:00:00`);
+  const day = due.toLocaleDateString("en-GB", { day:"numeric" });
+  const weekday = due.toLocaleDateString("en-GB", { weekday:"short" });
+  const month = due.toLocaleDateString("en-GB", { month:"short" });
+
+  return { top:day, bottom:`${weekday} ${month}` };
+}
+
+function friendlyDueText(dateValue){
+  if(!dateValue) return "No date set";
+
+  const todayDate = new Date(`${getToday()}T00:00:00`);
+  const due = new Date(`${dateValue}T00:00:00`);
+  const diff = Math.round((due - todayDate) / 86400000);
+
+  if(diff < 0) return "Overdue";
+  if(diff === 0) return "Due today";
+  if(diff === 1) return "Due tomorrow";
+  if(diff <= 7) return `Due in ${diff} days`;
+  return formatShortDate(dateValue);
+}
+
+function hubIconForPayment(item){
+  const text = `${item.name || ""} ${item.source || ""}`.toLowerCase();
+  if(text.includes("klarna")) return "K";
+  if(text.includes("zable")) return "Z";
+  if(text.includes("capital")) return "💳";
+  if(text.includes("water")) return "💧";
+  if(text.includes("charge") || text.includes("commute")) return "⚡";
+  if(text.includes("very")) return "V";
+  return "£";
+}
+
+function hubTagForPayment(item){
+  const source = String(item.source || item.pot || "").toLowerCase();
+
+  if(item.paid) return { label:"Paid", className:"paid" };
+  if(item.funded) return { label:"In pot", className:"funded" };
+  if(item.deliveroo) return { label:"Deliveroo", className:"deliveroo" };
+  if(source.includes("bill")) return { label:"Bills", className:"bills" };
+  if(source.includes("debt")) return { label:"Debt", className:"debt" };
+  if(source.includes("commute")) return { label:"Commute", className:"commute" };
+  if(source.includes("bnpl")) return { label:"BNPL", className:"bnpl" };
+  return { label:"Due", className:"bnpl" };
+}
+
+function getHubMoneySnapshot(){
+  const monthData = getMonthData();
+  const allocation = getAllocationData();
+  const income = numberValue(monthData.income);
+  const exactTransfer = allocationTotal(allocation);
+  const recommendedTransfer = exactTransfer + numberValue(allocation.transferBuffer);
+  const protectedBills = getMonthBills()
+    .filter(bill => bill.account === "HSBC")
+    .reduce((sum,bill) => sum + numberValue(bill.amount),0);
+  const hsbcStay = income > 0 ? Math.max(income - recommendedTransfer,0) : protectedBills;
+  const remaining = getOrderedPaymentTrickles().filter(item => !item.paid);
+  const fundedTotal = remaining
+    .filter(item => item.funded)
+    .reduce((sum,item) => sum + numberValue(item.amount),0);
+  const deliverooTotal = remaining
+    .filter(item => item.deliveroo)
+    .reduce((sum,item) => sum + numberValue(item.amount),0);
+  const deliverooRemaining = Math.max(deliverooTotal - numberValue(allocation.deliverooEarned),0);
+  const deliverooDaily = deliverooRemaining / Math.max(1, numberValue(allocation.deliverooDays));
+  const outstandingTotal = remaining.reduce((sum,item) => sum + numberValue(item.amount),0);
+  const buffer = income > 0 ? income - protectedBills - recommendedTransfer : 0;
+
+  return {
+    monthData,
+    allocation,
+    income,
+    exactTransfer,
+    recommendedTransfer,
+    protectedBills,
+    hsbcStay,
+    remaining,
+    fundedTotal,
+    deliverooTotal,
+    deliverooRemaining,
+    deliverooDaily,
+    outstandingTotal,
+    buffer
+  };
+}
+
+function renderHubPayments(rows){
+  els.hubPaymentList.innerHTML = "";
+
+  if(!rows.length){
+    els.hubPaymentList.innerHTML = `<div class="empty">No outstanding payments for this month.</div>`;
+    return;
+  }
+
+  rows.slice(0,7).forEach(item => {
+    const due = compactDueLabel(item.dueDate);
+    const tag = hubTagForPayment(item);
+    const row = document.createElement("div");
+    row.className = "hubPayRow";
+    row.innerHTML = `
+      <div class="hubDateBox">${escapeHtml(due.top)}<small>${escapeHtml(due.bottom)}</small></div>
+      <div class="hubRowIcon">${escapeHtml(hubIconForPayment(item))}</div>
+      <div class="hubRowMain">
+        <strong>${escapeHtml(item.name)}</strong>
+        <small>${escapeHtml(friendlyDueText(item.dueDate))}</small>
+      </div>
+      <div class="hubAmount">${money(item.amount)}</div>
+      <div class="hubTag ${tag.className}">${escapeHtml(tag.label)}</div>
+    `;
+    els.hubPaymentList.appendChild(row);
+  });
+}
+
+function renderHubPots(snapshot){
+  const maxDue = Math.max(1, ...POT_CONFIG.map(pot => snapshot.remaining
+    .filter(item => String(item.source || "").toLowerCase().includes(pot.label.toLowerCase()))
+    .reduce((sum,item) => sum + numberValue(item.amount),0)
+  ));
+
+  els.hubPotsPill.textContent = `${POT_CONFIG.filter(pot => numberValue(snapshot.allocation[pot.key]) > 0).length} active`;
+  els.hubPotsList.innerHTML = "";
+
+  POT_CONFIG.slice(0,5).forEach(pot => {
+    const planned = numberValue(snapshot.allocation[pot.key]);
+    const due = snapshot.remaining
+      .filter(item => String(item.source || "").toLowerCase().includes(pot.label.toLowerCase()))
+      .reduce((sum,item) => sum + numberValue(item.amount),0);
+    const valueText = due > 0 ? `${money(due)} due` : `${money(planned)} set`;
+    const row = document.createElement("div");
+    row.className = "hubPotRow";
+    row.innerHTML = `
+      <div class="hubRowIcon" style="background:${pot.color}22;">${pot.label === "Bills" ? "💧" : pot.label === "Debt" ? "💳" : pot.label === "BNPL" ? "K" : pot.label === "Commute" ? "🚗" : "★"}</div>
+      <div class="hubRowMain">
+        <strong>${escapeHtml(pot.label)} Pot</strong>
+        <small>${due > 0 ? "Outstanding from this pot" : "No outstanding item tagged here"}</small>
+        <div class="hubPotProgress"><span style="width:${percentOf(due, maxDue)}%; background:${pot.color};"></span></div>
+      </div>
+      <div class="hubAmount">${valueText}</div>
+    `;
+    els.hubPotsList.appendChild(row);
+  });
+}
+
+function renderHubOverview(snapshot){
+  const hsbcPercent = percentOf(snapshot.hsbcStay, snapshot.income);
+  const revolutPercent = percentOf(snapshot.recommendedTransfer, snapshot.income);
+  const deliverooPercent = percentOf(snapshot.deliverooRemaining, snapshot.income);
+  const cursorOne = hsbcPercent;
+  const cursorTwo = Math.min(100, hsbcPercent + revolutPercent);
+  const cursorThree = Math.min(100, cursorTwo + deliverooPercent);
+
+  els.hubOverviewDonut.style.background = snapshot.income > 0
+    ? `conic-gradient(#ff5ba7 0 ${cursorOne}%, #8b5cf6 ${cursorOne}% ${cursorTwo}%, #f59e0b ${cursorTwo}% ${cursorThree}%, rgba(255,255,255,0.10) ${cursorThree}% 100%)`
+    : "conic-gradient(rgba(255,255,255,0.10) 0 100%)";
+  els.hubDonutTotal.textContent = money(snapshot.income);
+  els.hubOverviewList.innerHTML = [
+    ["Income", money(snapshot.income), ""],
+    ["Stays in HSBC", money(snapshot.hsbcStay), snapshot.hsbcStay < 0 ? "color:#fecaca;" : ""],
+    ["Transfer to Revolut", money(snapshot.recommendedTransfer), "color:#c084fc;"],
+    ["Deliveroo needed", money(snapshot.deliverooRemaining), "color:#f59e0b;"],
+    ["Leftover / buffer", money(snapshot.buffer), snapshot.buffer < 0 ? "color:#fecaca;" : "color:#86efac;"]
+  ].map(([label,value,style]) => `
+    <div class="hubOverviewLine">
+      <span>${label}</span>
+      <strong style="${style}">${value}</strong>
+    </div>
+  `).join("");
+}
+
+function renderHubActions(snapshot){
+  const actions = [];
+  const funded = snapshot.remaining.filter(item => item.funded).slice(0,3);
+  const deliveroo = snapshot.remaining.filter(item => item.deliveroo).slice(0,1);
+  const urgent = snapshot.remaining
+    .filter(item => !item.funded && !item.deliveroo)
+    .slice(0,3);
+
+  funded.forEach(item => actions.push({
+    icon:"✓",
+    title:`Use money in pot for ${item.name}`,
+    amount:item.amount,
+    note:"Money is set aside"
+  }));
+
+  deliveroo.forEach(item => actions.push({
+    icon:"●",
+    title:"Earn on Deliveroo today",
+    amount:snapshot.deliverooDaily,
+    note:`Target for ${item.name}`
+  }));
+
+  urgent.forEach(item => actions.push({
+    icon:"!",
+    title:`Plan ${item.name}`,
+    amount:item.amount,
+    note:friendlyDueText(item.dueDate)
+  }));
+
+  els.hubActionList.innerHTML = actions.length
+    ? actions.slice(0,6).map(action => `
+      <div class="hubScheduleRow">
+        <div class="hubRowIcon">${escapeHtml(action.icon)}</div>
+        <div class="hubRowMain">
+          <strong>${escapeHtml(action.title)}</strong>
+          <small>${escapeHtml(action.note)}</small>
+        </div>
+        <div class="hubAmount">${money(action.amount)}</div>
+      </div>
+    `).join("")
+    : `<div class="empty">No urgent action plan yet.</div>`;
+
+  els.hubTodayGoal.textContent = money(snapshot.deliverooDaily);
+}
+
+function renderHubWeekPlan(snapshot){
+  const rows = snapshot.remaining
+    .filter(item => item.dueDate)
+    .slice(0,8);
+  const colors = ["", "alt1", "alt2", "alt3", "alt4"];
+
+  els.hubWeekPlanList.innerHTML = rows.length
+    ? rows.map((item,index) => {
+      const due = new Date(`${item.dueDate}T00:00:00`);
+      const dayLabel = due.toLocaleDateString("en-GB", { weekday:"short", day:"numeric" });
+      const earnText = item.deliveroo ? `Earn ${money(Math.max(numberValue(item.amount) - numberValue(snapshot.allocation.deliverooEarned),0) / daysUntilDate(item.dueDate))}` : item.funded ? "Use pot" : "Plan";
+      return `
+        <div class="hubPlanRow">
+          <div class="hubDayPill ${colors[index % colors.length]}">${escapeHtml(dayLabel)}</div>
+          <div class="hubPlanEarn">${escapeHtml(earnText)}</div>
+          <div class="hubRowMain"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(friendlyDueText(item.dueDate))}</small></div>
+          <div class="hubAmount">${money(item.amount)}</div>
+        </div>
+      `;
+    }).join("")
+    : `<div class="empty">Add due dates to build the week plan.</div>`;
+}
+
+function renderHubSchedule(snapshot){
+  const rows = snapshot.remaining
+    .filter(item => /klarna|clearpay|bnpl/i.test(`${item.name || ""} ${item.source || ""}`));
+  const total = rows.reduce((sum,item) => sum + numberValue(item.amount),0);
+
+  els.hubSchedulePill.textContent = rows.length === 1 ? "1 due" : `${rows.length} due`;
+  els.hubScheduleTotal.textContent = money(total);
+  els.hubScheduleList.innerHTML = rows.length
+    ? rows.slice(0,6).map(item => `
+      <div class="hubScheduleRow">
+        <div class="hubRowIcon">K</div>
+        <div class="hubRowMain">
+          <strong>${escapeHtml(item.dueDate ? formatShortDate(item.dueDate) : item.name)}</strong>
+          <small>${escapeHtml(item.name)}</small>
+        </div>
+        <div class="hubAmount">${money(item.amount)}</div>
+        <div class="hubTag bnpl">Due</div>
+      </div>
+    `).join("")
+    : `<div class="empty">No BNPL items waiting this month.</div>`;
+}
+
+function renderFinanceHub(){
+  const snapshot = getHubMoneySnapshot();
+  const hsbcPercent = percentOf(snapshot.hsbcStay, snapshot.income);
+  const revolutPercent = percentOf(snapshot.recommendedTransfer, snapshot.income);
+  const deliverooPercent = percentOf(snapshot.deliverooRemaining, snapshot.income);
+  const monthName = formatMonthLabel(state.selectedMonth).split(" ")[0].toLowerCase();
+
+  els.hubMonthLabel.textContent = `${formatMonthLabel(state.selectedMonth)} overview`;
+  els.clearMonthFullBtn.textContent = `clear ${monthName}`;
+  els.clearMonthFullSetupBtn.textContent = `clear ${monthName}`;
+  els.hubUpdatedDate.textContent = formatUpdatedLabel();
+  els.hubIncomeAmount.textContent = money(snapshot.income);
+  els.hubHsbcAmount.textContent = money(snapshot.hsbcStay);
+  els.hubHsbcFill.style.width = `${hsbcPercent}%`;
+  els.hubHsbcPercent.textContent = `${Math.round(hsbcPercent)}% of income`;
+  els.hubRevolutAmount.textContent = money(snapshot.recommendedTransfer);
+  els.hubRevolutFill.style.width = `${revolutPercent}%`;
+  els.hubRevolutPercent.textContent = `${Math.round(revolutPercent)}% of income`;
+  els.hubDeliverooAmount.textContent = money(snapshot.deliverooRemaining);
+  els.hubDeliverooFill.style.width = `${deliverooPercent}%`;
+  els.hubDeliverooPercent.textContent = `${Math.round(deliverooPercent)}% of income`;
+  els.hubDeliverooCopy.textContent = snapshot.deliverooRemaining > 0
+    ? `About ${money(snapshot.deliverooDaily)} per work day from Deliveroo.`
+    : "Mark payments for Deliveroo to build a target.";
+  els.hubProtectedText.textContent = snapshot.protectedBills > 0
+    ? `${money(snapshot.protectedBills)} fixed HSBC bills are protected first.`
+    : "Add fixed HSBC bills to see what is protected.";
+  els.hubSafePill.textContent = snapshot.buffer < 0 ? `${money(Math.abs(snapshot.buffer))} gap` : "You're on track";
+  els.hubSafePill.style.color = snapshot.buffer < 0 ? "#fecaca" : "#ffc2e6";
+  els.hubUpcomingPill.textContent = snapshot.remaining.length === 1 ? "1 upcoming" : `${snapshot.remaining.length} upcoming`;
+
+  renderHubPayments(snapshot.remaining);
+  renderHubPots(snapshot);
+  renderHubOverview(snapshot);
+  renderHubActions(snapshot);
+  renderHubWeekPlan(snapshot);
+  renderHubSchedule(snapshot);
 }
 
 function renderPayOrder(){
@@ -3886,6 +5019,7 @@ function updateAllocationFromInputs(){
 
   save();
   renderAllocation();
+  renderFinanceHub();
   renderPayOrder();
   renderSummary();
 }
@@ -3967,6 +5101,7 @@ function setActiveTab(type){
 
 function render(){
   els.monthInput.value = state.selectedMonth;
+  renderFinanceHub();
   renderAllocation();
   renderSummary();
   renderBills();
@@ -4004,6 +5139,12 @@ els.nextMonthBtn.addEventListener("click", () => {
 
 els.saveSetupBtn.addEventListener("click", saveSetup);
 els.resetMonthBtn.addEventListener("click", resetMonth);
+els.clearMonthFullBtn.addEventListener("click", clearSelectedMonth);
+els.clearMonthFullSetupBtn.addEventListener("click", clearSelectedMonth);
+els.hubRefreshBtn.addEventListener("click", () => {
+  render();
+  showToast("Finance hub refreshed.");
+});
 els.restorePlanBtn.addEventListener("click", loadJunePlan);
 els.loadJulyPlanBtn.addEventListener("click", loadJulyPlan);
 els.downloadJulyCalendarBtn.addEventListener("click", downloadPaymentCalendar);
