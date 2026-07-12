@@ -183,6 +183,8 @@ textarea{
 .hubControls{
   display:flex;
   align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
   gap:10px;
 }
 
@@ -673,31 +675,64 @@ textarea{
   margin-top:-2px;
 }
 
-.hubInputPanel{
-  grid-column:1 / -1;
-}
-
-.hubInputGrid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
-}
-
-.hubMiniForm{
+.hubInlineEditor{
   border:1px solid rgba(255,255,255,0.09);
   background:rgba(255,255,255,0.045);
   border-radius:18px;
   padding:12px;
+  margin-bottom:12px;
 }
 
-.hubMiniForm.wide{
-  grid-column:1 / -1;
+.hubInlineEditor .actions{
+  margin-top:10px;
 }
 
-.hubMiniTitle{
-  color:#ff9fd1;
-  font-weight:950;
-  margin-bottom:10px;
+.hubIncomeEdit,
+.hubInlineInputs{
+  display:grid;
+  gap:7px;
+  width:100%;
+}
+
+.hubIncomeEdit{
+  grid-template-columns:minmax(72px,1fr) minmax(72px,1fr) auto;
+}
+
+.hubInlineInputs{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.hubIncomeEdit input,
+.hubIncomeEdit button,
+.hubInlineInputs input{
+  min-width:0;
+  min-height:36px;
+  border:1px solid rgba(255,255,255,0.18);
+  outline:0;
+  border-radius:12px;
+  background:rgba(255,255,255,0.14);
+  color:#fff;
+  padding:0 9px;
+  font-weight:850;
+}
+
+.hubTile.orange .hubInlineInputs input{
+  color:#111318;
+  background:rgba(255,255,255,0.32);
+  border-color:rgba(17,19,24,0.16);
+}
+
+.hubIncomeEdit input::placeholder,
+.hubInlineInputs input::placeholder{
+  color:rgba(255,255,255,0.72);
+}
+
+.hubTile.orange .hubInlineInputs input::placeholder{
+  color:rgba(17,19,24,0.62);
+}
+
+.hubIncomeEdit button{
+  cursor:pointer;
 }
 
 .hubMonthInline{
@@ -718,10 +753,15 @@ textarea{
   padding:0 10px;
 }
 
+.hubMonthHeader{
+  min-width:min(420px,100%);
+}
+
 .hubPotInputGrid{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
   gap:10px;
+  margin-bottom:12px;
 }
 
 .legacyFinance{
@@ -1686,6 +1726,7 @@ textarea{
 
   .hubUpdated,
   .hubIncomePill,
+  .hubSoft,
   .hubDanger{
     width:100%;
   }
@@ -1728,8 +1769,9 @@ textarea{
     grid-template-columns:1fr;
   }
 
-  .hubInputGrid,
   .hubPotInputGrid,
+  .hubIncomeEdit,
+  .hubInlineInputs,
   .hubMonthInline{
     grid-template-columns:1fr;
   }
@@ -1832,16 +1874,30 @@ textarea{
         </div>
 
         <div class="hubControls">
+          <div class="hubMonthInline hubMonthHeader">
+            <button type="button" class="monthStep" id="hubPreviousMonthBtn" aria-label="Previous month">‹</button>
+            <button type="button" class="monthCurrent" id="hubCurrentMonthBtn">this month</button>
+            <button type="button" class="monthStep" id="hubNextMonthBtn" aria-label="Next month">›</button>
+            <input id="hubMonthInput" type="month" aria-label="Selected month">
+          </div>
           <div class="hubUpdated">
             <span id="hubUpdatedDate">Updated today</span>
             <button type="button" id="hubRefreshBtn" aria-label="Refresh finance hub">↻</button>
           </div>
+          <button type="button" class="hubSoft" id="hubLoadJulyPlanBtn">set up July</button>
+          <button type="button" class="hubSoft" id="hubSyncRemindersBtn">sync reminders</button>
+          <button type="button" class="hubSoft" id="hubDownloadCalendarBtn">phone calendar</button>
           <button type="button" class="hubDanger" id="clearMonthFullBtn">clear month</button>
         </div>
 
         <div class="hubIncomePill">
           <span>Income</span>
           <strong id="hubIncomeAmount">£0.00</strong>
+          <div class="hubIncomeEdit">
+            <input id="hubIncomeInput" type="number" min="0" step="0.01" placeholder="income">
+            <input id="hubBalanceInput" type="number" min="0" step="0.01" placeholder="balance">
+            <button type="button" id="hubSaveSetupBtn">save</button>
+          </div>
         </div>
       </div>
 
@@ -1875,6 +1931,10 @@ textarea{
           </div>
           <strong id="hubDeliverooAmount">£0.00</strong>
           <small id="hubDeliverooCopy">Mark payments for Deliveroo to build a target.</small>
+          <div class="hubInlineInputs">
+            <input id="hubDeliverooEarnedInput" type="number" min="0" step="0.01" placeholder="earned">
+            <input id="hubDeliverooDaysInput" type="number" min="1" step="1" placeholder="days">
+          </div>
           <div class="hubBar"><span id="hubDeliverooFill"></span></div>
           <div class="hubPercent" id="hubDeliverooPercent">0% of income</div>
         </article>
@@ -1894,10 +1954,75 @@ textarea{
           <section class="hubCard">
             <div class="hubCardHead">
               <div class="hubCardTitle">
+                <span>🗓️</span>
+                <h3>This week's plan</h3>
+              </div>
+            </div>
+            <div class="hubRows" id="hubWeekPlanList"></div>
+          </section>
+
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
                 <span>📅</span>
                 <h3>What needs paying & when</h3>
               </div>
               <div class="hubPill" id="hubUpcomingPill">0 upcoming</div>
+            </div>
+            <div class="hubInlineEditor">
+              <div class="formGrid three">
+                <div class="field">
+                  <label>payment</label>
+                  <input id="hubPaymentNameInput" type="text" placeholder="Klarna, rent, water">
+                </div>
+                <div class="field">
+                  <label>amount</label>
+                  <input id="hubPaymentAmountInput" type="number" min="0" step="0.01" placeholder="0.00">
+                </div>
+                <div class="field">
+                  <label>due date</label>
+                  <input id="hubPaymentDueInput" type="date">
+                </div>
+              </div>
+              <div class="formGrid three" style="margin-top:10px;">
+                <div class="field">
+                  <label>priority</label>
+                  <select id="hubPaymentPriorityInput">
+                    <option value="must">must pay</option>
+                    <option value="soon">soon</option>
+                    <option value="wait">can wait</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>account</label>
+                  <select id="hubPaymentAccountInput">
+                    <option value="Revolut">Revolut</option>
+                    <option value="HSBC">HSBC</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Other">Other</option>
+                    <option value="Unassigned">Unassigned</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>pot</label>
+                  <select id="hubPaymentPotInput">
+                    <option value="Bills pot">Bills pot</option>
+                    <option value="Debt pot">Debt pot</option>
+                    <option value="BNPL pot">BNPL pot</option>
+                    <option value="Commute pot">Commute pot</option>
+                    <option value="Protected bills">Protected bills</option>
+                    <option value="Savings pot">Savings pot</option>
+                    <option value="Emergency pot">Emergency pot</option>
+                    <option value="Fun pot">Fun pot</option>
+                    <option value="Miscellaneous pot">Miscellaneous pot</option>
+                    <option value="Unassigned">Unassigned</option>
+                  </select>
+                </div>
+              </div>
+              <div class="actions">
+                <button type="button" class="btn btnPrimary" id="hubAddPaymentBtn">add payment</button>
+                <button type="button" class="btn btnSoft" id="hubClearPaymentBtn">clear</button>
+              </div>
             </div>
             <div class="hubRows" id="hubPaymentList"></div>
           </section>
@@ -1921,30 +2046,9 @@ textarea{
               </div>
             </div>
           </section>
-
-          <section class="hubCard">
-            <div class="hubCardHead">
-              <div class="hubCardTitle">
-                <span>🗓️</span>
-                <h3>This week's plan</h3>
-              </div>
-            </div>
-            <div class="hubRows" id="hubWeekPlanList"></div>
-          </section>
         </div>
 
         <div class="hubStack">
-          <section class="hubCard">
-            <div class="hubCardHead">
-              <div class="hubCardTitle">
-                <span>🏦</span>
-                <h3>Pots & balances</h3>
-              </div>
-              <div class="hubPill" id="hubPotsPill">pots</div>
-            </div>
-            <div class="hubRows" id="hubPotsList"></div>
-          </section>
-
           <section class="hubCard">
             <div class="hubCardHead">
               <div class="hubCardTitle">
@@ -1957,6 +2061,27 @@ textarea{
               <span>Today's goal</span>
               <strong id="hubTodayGoal">£0.00</strong>
             </div>
+          </section>
+
+          <section class="hubCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>🏦</span>
+                <h3>Pots & balances</h3>
+              </div>
+              <div class="hubPill" id="hubPotsPill">pots</div>
+            </div>
+            <div class="hubPotInputGrid">
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#60a5fa;"></span>Bills</span><input id="hubPotBills" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#ef4444;"></span>Debt</span><input id="hubPotDebt" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#a78bfa;"></span>BNPL</span><input id="hubPotBnpl" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#f59e0b;"></span>Commute</span><input id="hubPotCommute" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#22c55e;"></span>Savings</span><input id="hubPotSavings" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#fb7185;"></span>Emergency</span><input id="hubPotEmergency" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#2dd4bf;"></span>Fun</span><input id="hubPotFun" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#94a3b8;"></span>Misc</span><input id="hubPotMisc" type="number" min="0" step="0.01"></label>
+            </div>
+            <div class="hubRows" id="hubPotsList"></div>
           </section>
 
           <section class="hubCard">
@@ -1975,131 +2100,6 @@ textarea{
           </section>
         </div>
       </div>
-
-      <section class="hubCard hubInputPanel">
-        <div class="hubCardHead">
-          <div class="hubCardTitle">
-            <span>＋</span>
-            <h3>Input this month</h3>
-          </div>
-          <div class="hubPill">new setup</div>
-        </div>
-
-        <div class="hubInputGrid">
-          <div class="hubMiniForm">
-            <div class="hubMiniTitle">Month</div>
-            <div class="hubMonthInline">
-              <button type="button" class="monthStep" id="hubPreviousMonthBtn" aria-label="Previous month">‹</button>
-              <button type="button" class="monthCurrent" id="hubCurrentMonthBtn">this month</button>
-              <button type="button" class="monthStep" id="hubNextMonthBtn" aria-label="Next month">›</button>
-              <input id="hubMonthInput" type="month" aria-label="Selected month">
-            </div>
-            <div class="actions">
-              <button type="button" class="btn btnSoft" id="hubLoadJulyPlanBtn">set up July template</button>
-              <button type="button" class="btn btnSoft" id="hubSyncRemindersBtn">sync reminders</button>
-              <button type="button" class="btn btnSoft" id="hubDownloadCalendarBtn">phone calendar</button>
-            </div>
-          </div>
-
-          <div class="hubMiniForm">
-            <div class="hubMiniTitle">Income</div>
-            <div class="formGrid">
-              <div class="field">
-                <label>monthly income</label>
-                <input id="hubIncomeInput" type="number" min="0" step="0.01" placeholder="0.00">
-              </div>
-              <div class="field">
-                <label>starting balance</label>
-                <input id="hubBalanceInput" type="number" min="0" step="0.01" placeholder="optional">
-              </div>
-            </div>
-            <div class="actions">
-              <button type="button" class="btn btnPrimary" id="hubSaveSetupBtn">save income</button>
-            </div>
-          </div>
-
-          <div class="hubMiniForm wide">
-            <div class="hubMiniTitle">Pots</div>
-            <div class="hubPotInputGrid">
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#60a5fa;"></span>Bills</span><input id="hubPotBills" type="number" min="0" step="0.01"></label>
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#ef4444;"></span>Debt</span><input id="hubPotDebt" type="number" min="0" step="0.01"></label>
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#a78bfa;"></span>BNPL</span><input id="hubPotBnpl" type="number" min="0" step="0.01"></label>
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#f59e0b;"></span>Commute</span><input id="hubPotCommute" type="number" min="0" step="0.01"></label>
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#22c55e;"></span>Savings</span><input id="hubPotSavings" type="number" min="0" step="0.01"></label>
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#fb7185;"></span>Emergency</span><input id="hubPotEmergency" type="number" min="0" step="0.01"></label>
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#2dd4bf;"></span>Fun</span><input id="hubPotFun" type="number" min="0" step="0.01"></label>
-              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#94a3b8;"></span>Misc</span><input id="hubPotMisc" type="number" min="0" step="0.01"></label>
-            </div>
-            <div class="formGrid" style="margin-top:10px;">
-              <div class="field">
-                <label>Deliveroo earned</label>
-                <input id="hubDeliverooEarnedInput" type="number" min="0" step="0.01" placeholder="0.00">
-              </div>
-              <div class="field">
-                <label>work days left</label>
-                <input id="hubDeliverooDaysInput" type="number" min="1" step="1" placeholder="days">
-              </div>
-            </div>
-          </div>
-
-          <div class="hubMiniForm wide">
-            <div class="hubMiniTitle">Add payment</div>
-            <div class="formGrid three">
-              <div class="field">
-                <label>payment</label>
-                <input id="hubPaymentNameInput" type="text" placeholder="Klarna, rent, water">
-              </div>
-              <div class="field">
-                <label>amount</label>
-                <input id="hubPaymentAmountInput" type="number" min="0" step="0.01" placeholder="0.00">
-              </div>
-              <div class="field">
-                <label>due date</label>
-                <input id="hubPaymentDueInput" type="date">
-              </div>
-            </div>
-            <div class="formGrid three" style="margin-top:10px;">
-              <div class="field">
-                <label>priority</label>
-                <select id="hubPaymentPriorityInput">
-                  <option value="must">must pay</option>
-                  <option value="soon">soon</option>
-                  <option value="wait">can wait</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>account</label>
-                <select id="hubPaymentAccountInput">
-                  <option value="Revolut">Revolut</option>
-                  <option value="HSBC">HSBC</option>
-                  <option value="Cash">Cash</option>
-                  <option value="Other">Other</option>
-                  <option value="Unassigned">Unassigned</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>pot</label>
-                <select id="hubPaymentPotInput">
-                  <option value="Bills pot">Bills pot</option>
-                  <option value="Debt pot">Debt pot</option>
-                  <option value="BNPL pot">BNPL pot</option>
-                  <option value="Commute pot">Commute pot</option>
-                  <option value="Protected bills">Protected bills</option>
-                  <option value="Savings pot">Savings pot</option>
-                  <option value="Emergency pot">Emergency pot</option>
-                  <option value="Fun pot">Fun pot</option>
-                  <option value="Miscellaneous pot">Miscellaneous pot</option>
-                  <option value="Unassigned">Unassigned</option>
-                </select>
-              </div>
-            </div>
-            <div class="actions">
-              <button type="button" class="btn btnPrimary" id="hubAddPaymentBtn">add payment</button>
-              <button type="button" class="btn btnSoft" id="hubClearPaymentBtn">clear</button>
-            </div>
-          </div>
-        </div>
-      </section>
     </section>
 
     <div class="legacyFinance" id="financeEditorPanel" hidden>
