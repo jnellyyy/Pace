@@ -1876,7 +1876,7 @@ textarea{
         <div class="hubControls">
           <div class="hubMonthInline hubMonthHeader">
             <button type="button" class="monthStep" id="hubPreviousMonthBtn" aria-label="Previous month">‹</button>
-            <button type="button" class="monthCurrent" id="hubCurrentMonthBtn">this month</button>
+            <button type="button" class="monthCurrent" id="hubCurrentMonthBtn">this cycle</button>
             <button type="button" class="monthStep" id="hubNextMonthBtn" aria-label="Next month">›</button>
             <input id="hubMonthInput" type="month" aria-label="Selected month">
           </div>
@@ -2114,7 +2114,7 @@ textarea{
 
           <div class="monthControls" aria-label="Choose finance month">
             <button type="button" class="monthStep" id="previousMonthBtn" aria-label="Previous month">‹</button>
-            <button type="button" class="monthCurrent" id="currentMonthBtn">this month</button>
+            <button type="button" class="monthCurrent" id="currentMonthBtn">this cycle</button>
             <button type="button" class="monthStep" id="nextMonthBtn" aria-label="Next month">›</button>
             <div class="monthPicker">
               <span>📅</span>
@@ -2937,6 +2937,8 @@ textarea{
 const STORAGE_KEY = "pace_finance_v3";
 const EMAIL_ACTIONS_KEY = "pace_email_command_v1";
 const HAD_SAVED_FINANCE = Boolean(localStorage.getItem(STORAGE_KEY));
+const PAYDAY_DAY = 20;
+const DAY_MS = 86400000;
 
 const els = {
   hubMonthLabel: document.getElementById("hubMonthLabel"),
@@ -3218,7 +3220,7 @@ const JUNE_PLAN = {
 const JULY_PLAN = {
   month:"2026-07",
   income:1826.55,
-  planVersion:1,
+  planVersion:2,
   allocations:{
     bills:94.43,
     debt:487.53,
@@ -3309,15 +3311,96 @@ function uid(){
   return Date.now().toString(36) + Math.random().toString(36).slice(2);
 }
 
+function dateKeyFromDate(date){
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+}
+
+function monthKeyFromDate(date){
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,"0")}`;
+}
+
+function parseDateKey(dateValue){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(dateValue || ""))) return null;
+
+  const [year, month, day] = dateValue.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function dateToPayCycleKey(date){
+  if(!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+
+  const cycleDate = new Date(date.getFullYear(), date.getMonth(), 1);
+
+  if(date.getDate() < PAYDAY_DAY){
+    cycleDate.setMonth(cycleDate.getMonth() - 1);
+  }
+
+  return monthKeyFromDate(cycleDate);
+}
+
+function payCycleKeyFromDate(dateValue, fallback = ""){
+  const date = parseDateKey(dateValue);
+  return date ? dateToPayCycleKey(date) : fallback;
+}
+
 function getCurrentMonth(){
-  const now = new Date();
-  return now.toISOString().slice(0,7);
+  return dateToPayCycleKey(new Date());
 }
 
 function shiftMonth(monthValue, amount){
   const [year, month] = monthValue.split("-").map(Number);
-  const shifted = new Date(Date.UTC(year, month - 1 + amount, 1));
-  return `${shifted.getUTCFullYear()}-${String(shifted.getUTCMonth() + 1).padStart(2,"0")}`;
+  const shifted = new Date(year, month - 1 + amount, 1);
+  return monthKeyFromDate(shifted);
+}
+
+function getCycleStartDate(monthValue){
+  const [year, month] = String(monthValue || getCurrentMonth()).split("-").map(Number);
+  return new Date(year, month - 1, PAYDAY_DAY);
+}
+
+function getCycleStartKey(monthValue){
+  return dateKeyFromDate(getCycleStartDate(monthValue));
+}
+
+function getCycleEndDate(monthValue){
+  const end = getCycleStartDate(shiftMonth(monthValue, 1));
+  end.setDate(end.getDate() - 1);
+  return end;
+}
+
+function getCycleEndKey(monthValue){
+  return dateKeyFromDate(getCycleEndDate(monthValue));
+}
+
+function dateIsInCycle(dateValue, monthValue = state.selectedMonth){
+  if(!dateValue) return false;
+
+  const start = getCycleStartKey(monthValue);
+  const endExclusive = getCycleStartKey(shiftMonth(monthValue, 1));
+  return dateValue >= start && dateValue < endExclusive;
+}
+
+function getCycleDateForDay(monthValue, dueDay){
+  const [year, month] = String(monthValue || getCurrentMonth()).split("-").map(Number);
+  const day = Math.min(Math.max(Number(dueDay) || PAYDAY_DAY, 1), 31);
+  const target = new Date(year, day >= PAYDAY_DAY ? month - 1 : month, 1);
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+  target.setDate(Math.min(day, lastDay));
+  return dateKeyFromDate(target);
+}
+
+function datedItemBelongsToSelectedCycle(item, dateField){
+  const dateValue = item?.[dateField];
+
+  if(dateValue){
+    return dateIsInCycle(dateValue);
+  }
+
+  return item?.month === state.selectedMonth;
+}
+
+function getItemPayCycleMonth(item, dateField, fallback = state.selectedMonth){
+  return item?.[dateField] ? payCycleKeyFromDate(item[dateField], fallback) : (item?.month || fallback);
 }
 
 function openMonth(monthValue){
@@ -3327,7 +3410,7 @@ function openMonth(monthValue){
 }
 
 function getToday(){
-  return new Date().toISOString().slice(0,10);
+  return dateKeyFromDate(new Date());
 }
 
 function money(value){
@@ -3402,7 +3485,7 @@ function load(){
       amount: numberValue(spend.amount),
       category: spend.category || "other",
       date: spend.date || getToday(),
-      month: spend.month || (spend.date || getToday()).slice(0,7),
+      month: payCycleKeyFromDate(spend.date || getToday(), spend.month || getCurrentMonth()),
       account:spend.account || "Unassigned",
       pot:spend.pot || "Unassigned"
     }));
@@ -3415,7 +3498,7 @@ function load(){
       dueDate: trickle.dueDate || "",
       account:trickle.account || "Unassigned",
       source: trickle.source || "Unassigned",
-      month: trickle.month || (trickle.dueDate || getToday()).slice(0,7),
+      month: trickle.dueDate ? payCycleKeyFromDate(trickle.dueDate, trickle.month || getCurrentMonth()) : (trickle.month || getCurrentMonth()),
       paid: Boolean(trickle.paid),
       funded:Boolean(trickle.funded),
       deliveroo:Boolean(trickle.deliveroo),
@@ -3487,11 +3570,11 @@ function allocationTotal(allocation = getAllocationData()){
 }
 
 function getMonthSpends(){
-  return state.spends.filter(spend => spend.month === state.selectedMonth);
+  return state.spends.filter(spend => datedItemBelongsToSelectedCycle(spend, "date"));
 }
 
 function getMonthTrickles(){
-  return state.trickles.filter(trickle => trickle.month === state.selectedMonth);
+  return state.trickles.filter(trickle => datedItemBelongsToSelectedCycle(trickle, "dueDate"));
 }
 
 function getMonthBills(){
@@ -3529,7 +3612,8 @@ function getEmailPaymentActions(){
 
   return emailActions.filter(action => {
     const text = `${action.subject || ""} ${action.nextAction || ""} ${action.from || ""}`;
-    const month = (action.due || action.createdAt || getToday()).slice(0,7);
+    const actionDate = String(action.due || action.createdAt || getToday()).slice(0,10);
+    const month = payCycleKeyFromDate(actionDate, state.selectedMonth);
     const alreadyImported = action.financeImported === true;
     const looksActionable = action.moneyStatus === "action_needed"
       || actionWords.test(text)
@@ -3593,16 +3677,14 @@ function mustPayTrickles(){
 }
 
 function daysLeftInMonth(){
-  const [year, month] = state.selectedMonth.split("-").map(Number);
   const today = new Date();
   const selectedIsCurrent = state.selectedMonth === getCurrentMonth();
 
   if(!selectedIsCurrent){
-    return new Date(year, month, 0).getDate();
+    return Math.max(Math.round((getCycleEndDate(state.selectedMonth) - getCycleStartDate(state.selectedMonth)) / DAY_MS) + 1, 1);
   }
 
-  const end = new Date(year, month, 0).getDate();
-  return Math.max(end - today.getDate() + 1, 1);
+  return Math.max(Math.ceil((getCycleEndDate(state.selectedMonth) - today) / DAY_MS) + 1, 1);
 }
 
 function formatShortDate(dateValue){
@@ -3624,10 +3706,7 @@ function daysUntilDate(dateValue){
 }
 
 function getBillDueDate(bill){
-  const [year, month] = bill.month.split("-").map(Number);
-  const lastDay = new Date(year, month, 0).getDate();
-  const day = Math.min(Math.max(Number(bill.dueDay) || 1, 1), lastDay);
-  return `${bill.month}-${String(day).padStart(2,"0")}`;
+  return getCycleDateForDay(bill.month, bill.dueDay);
 }
 
 function getPaymentCalendarRows(){
@@ -3849,7 +3928,8 @@ function saveFinanceEditor(event){
       item.amount = amount;
       item.account = bill.account;
       item.source = bill.pot;
-      item.dueDate = `${bill.month}-${String(dueDay).padStart(2,"0")}`;
+      item.dueDate = getBillDueDate(bill);
+      item.month = getItemPayCycleMonth(item, "dueDate", bill.month);
     });
   }
 
@@ -3863,7 +3943,7 @@ function saveFinanceEditor(event){
       amount,
       category:els.financeEditCategory.value,
       date,
-      month:date.slice(0,7),
+      month:payCycleKeyFromDate(date, editMonth),
       account:els.financeEditAccount.value,
       pot:els.financeEditPot.value
     });
@@ -3879,7 +3959,7 @@ function saveFinanceEditor(event){
       amount,
       priority:els.financeEditPriority.value,
       dueDate,
-      month:(dueDate || `${editMonth}-01`).slice(0,7),
+      month:dueDate ? payCycleKeyFromDate(dueDate, editMonth) : editMonth,
       account:els.financeEditAccount.value,
       source:els.financeEditPot.value
     });
@@ -4112,7 +4192,7 @@ function addSpend(){
   const amount = numberValue(els.spendAmountInput.value);
   const category = els.spendCategoryInput.value;
   const date = els.spendDateInput.value || getToday();
-  const month = date.slice(0,7);
+  const month = payCycleKeyFromDate(date, state.selectedMonth);
   const account = els.spendAccountInput.value;
   const pot = els.spendPotInput.value;
 
@@ -4170,7 +4250,7 @@ function addTrickle(){
   const dueDate = els.trickleDueInput.value;
   const account = els.trickleAccountInput.value;
   const source = els.trickleSourceInput.value;
-  const month = (dueDate || `${state.selectedMonth}-01`).slice(0,7);
+  const month = dueDate ? payCycleKeyFromDate(dueDate, state.selectedMonth) : state.selectedMonth;
 
   if(!name){
     showToast("Add what came up.");
@@ -4235,7 +4315,7 @@ function importEmailPayment(id){
     dueDate,
     account:"Unassigned",
     source:"Unassigned",
-    month: (dueDate || `${state.selectedMonth}-01`).slice(0,7),
+    month: dueDate ? payCycleKeyFromDate(dueDate, state.selectedMonth) : state.selectedMonth,
     paid:false,
     funded:false,
     deliveroo:false,
@@ -4362,19 +4442,23 @@ function loadJunePlan(askFirst = true){
 }
 
 function buildJulyTrickles(){
-  const fixedItems = JULY_PLAN.fixedBills.map(bill => ({
-    name:bill.name,
-    amount:bill.amount,
-    priority:"must",
-    dueDate:`${JULY_PLAN.month}-20`,
-    account:bill.account,
-    source:bill.pot,
-    paid:false,
-    funded:false,
-    deliveroo:false,
-    kind:"fixed",
-    note:`${getBillTypeLabel(bill.type)} due 20 July`
-  }));
+  const fixedItems = JULY_PLAN.fixedBills.map(bill => {
+    const dueDate = getCycleDateForDay(JULY_PLAN.month, bill.dueDay);
+
+    return {
+      name:bill.name,
+      amount:bill.amount,
+      priority:"must",
+      dueDate,
+      account:bill.account,
+      source:bill.pot,
+      paid:false,
+      funded:false,
+      deliveroo:false,
+      kind:"fixed",
+      note:`${getBillTypeLabel(bill.type)} due ${formatShortDate(dueDate)}`
+    };
+  });
 
   const klarnaItems = JULY_PLAN.klarna.map(item => ({
     name:`Klarna · ${item.day} July`,
@@ -4422,11 +4506,23 @@ function loadJulyPlan(askFirst = true){
 
   state.allocations[JULY_PLAN.month] = { ...JULY_PLAN.allocations };
   state.cleared[JULY_PLAN.month] = [];
-  state.trickles = state.trickles.filter(trickle => trickle.month !== JULY_PLAN.month);
-  state.trickles.push(...buildJulyTrickles().map(trickle => ({
+  const julyTrickles = buildJulyTrickles();
+  const affectedCycleMonths = new Set(julyTrickles.map(trickle => payCycleKeyFromDate(trickle.dueDate, JULY_PLAN.month)));
+  const plannedKeys = new Set(julyTrickles.map(trickle => `${trickle.kind}:${normalizePaymentName(trickle.name)}:${trickle.dueDate}`));
+
+  state.trickles = state.trickles.filter(trickle => {
+    const cycleMonth = getItemPayCycleMonth(trickle, "dueDate", trickle.month);
+    const key = `${trickle.kind}:${normalizePaymentName(trickle.name)}:${trickle.dueDate || ""}`;
+
+    if(!affectedCycleMonths.has(cycleMonth)) return true;
+    if(plannedKeys.has(key)) return false;
+    return !((trickle.kind === "fixed" || trickle.kind === "klarna") && cycleMonth === JULY_PLAN.month);
+  });
+
+  state.trickles.push(...julyTrickles.map(trickle => ({
     id:uid(),
     ...trickle,
-    month:JULY_PLAN.month
+    month:payCycleKeyFromDate(trickle.dueDate, JULY_PLAN.month)
   })));
   state.julyPlanVersion = JULY_PLAN.planVersion;
 
@@ -4437,7 +4533,12 @@ function loadJulyPlan(askFirst = true){
 
 function shouldAutoLoadJulyPlan(){
   const hasJulyBills = state.fixedBills.some(bill => bill.month === JULY_PLAN.month);
-  const hasJulyPayments = state.trickles.some(trickle => trickle.month === JULY_PLAN.month);
+  const julyTrickles = buildJulyTrickles();
+  const hasJulyPayments = julyTrickles.every(planItem => state.trickles.some(trickle =>
+    trickle.kind === planItem.kind
+    && normalizePaymentName(trickle.name) === normalizePaymentName(planItem.name)
+    && trickle.dueDate === planItem.dueDate
+  ));
   return state.julyPlanVersion !== JULY_PLAN.planVersion || !hasJulyBills || !hasJulyPayments;
 }
 
@@ -4466,7 +4567,7 @@ function saveSetup(){
 }
 
 function resetMonth(){
-  const confirmed = confirm("Reset this month's income, balance and spending? Fixed bills will stay.");
+  const confirmed = confirm("Reset this pay cycle's income, balance and spending? Fixed bills will stay.");
 
   if(!confirmed) return;
 
@@ -4475,18 +4576,18 @@ function resetMonth(){
     startingBalance: 0
   };
 
-  state.spends = state.spends.filter(spend => spend.month !== state.selectedMonth);
-  state.trickles = state.trickles.filter(trickle => trickle.month !== state.selectedMonth);
+  state.spends = state.spends.filter(spend => !datedItemBelongsToSelectedCycle(spend, "date"));
+  state.trickles = state.trickles.filter(trickle => !datedItemBelongsToSelectedCycle(trickle, "dueDate"));
 
   save();
   render();
-  showToast("Month reset.");
+  showToast("Pay cycle reset.");
 }
 
 function clearSelectedMonth(){
   const month = state.selectedMonth;
   const label = formatMonthLabel(month);
-  const confirmed = confirm(`Clear all finance data for ${label}? This removes this month's bills, payments, pots, spending, paid marks and cleared list so you can input it again.`);
+  const confirmed = confirm(`Clear all finance data for ${label}? This removes this pay cycle's bills, payments, pots, spending, paid marks and cleared list so you can input it again.`);
 
   if(!confirmed) return;
 
@@ -4496,8 +4597,8 @@ function clearSelectedMonth(){
   };
 
   state.fixedBills = state.fixedBills.filter(bill => bill.month !== month);
-  state.spends = state.spends.filter(spend => spend.month !== month);
-  state.trickles = state.trickles.filter(trickle => trickle.month !== month);
+  state.spends = state.spends.filter(spend => !datedItemBelongsToSelectedCycle(spend, "date"));
+  state.trickles = state.trickles.filter(trickle => !datedItemBelongsToSelectedCycle(trickle, "dueDate"));
   delete state.allocations[month];
   delete state.cleared[month];
 
@@ -4579,7 +4680,7 @@ function addHubPayment(){
     dueDate,
     account:els.hubPaymentAccountInput.value,
     source:els.hubPaymentPotInput.value,
-    month:(dueDate || `${state.selectedMonth}-01`).slice(0,7),
+    month:dueDate ? payCycleKeyFromDate(dueDate, state.selectedMonth) : state.selectedMonth,
     paid:false,
     funded:false,
     deliveroo:false,
@@ -4625,7 +4726,7 @@ function renderBills(){
           <div>
             <div class="billName">${escapeHtml(bill.name)}</div>
             <div class="billMeta">
-              ${getBillTypeEmoji(bill.type)} due ${bill.dueDay} • ${escapeHtml(bill.category)}
+              ${getBillTypeEmoji(bill.type)} due ${formatShortDate(getBillDueDate(bill))} • ${escapeHtml(bill.category)}
               <span class="statusChip ${statusClass}">${statusLabel}</span>
             </div>
             <div class="accountRoute">${escapeHtml(bill.account || "Unassigned")} → ${escapeHtml(bill.pot || "Unassigned")}</div>
@@ -4745,15 +4846,29 @@ function getTrickleStatus(item){
   return { className:"unpaid", label:"not paid" };
 }
 
-function formatMonthLabel(monthValue){
+function formatMonthName(monthValue){
   const [year, month] = String(monthValue || "").split("-").map(Number);
 
-  if(!year || !month) return "Monthly overview";
+  if(!year || !month) return "this cycle";
 
   return new Date(year, month - 1, 1).toLocaleDateString("en-GB", {
     month:"long",
     year:"numeric"
   });
+}
+
+function formatCycleRangeLabel(monthValue){
+  if(!monthValue) return "";
+
+  return `${formatShortDate(getCycleStartKey(monthValue))} to ${formatShortDate(getCycleEndKey(monthValue))}`;
+}
+
+function formatMonthLabel(monthValue){
+  const name = formatMonthName(monthValue);
+
+  if(name === "this cycle") return "Pay cycle";
+
+  return `${name} pay cycle`;
 }
 
 function formatUpdatedLabel(){
@@ -4858,7 +4973,7 @@ function renderHubPayments(rows){
   els.hubPaymentList.innerHTML = "";
 
   if(!rows.length){
-    els.hubPaymentList.innerHTML = `<div class="empty">No outstanding payments for this month.</div>`;
+    els.hubPaymentList.innerHTML = `<div class="empty">No outstanding payments for this pay cycle.</div>`;
     return;
   }
 
@@ -5035,7 +5150,7 @@ function renderHubSchedule(snapshot){
         <button type="button" class="iconBtn completeBtn" data-toggle-trickle="${item.id}">complete</button>
       </div>
     `).join("")
-    : `<div class="empty">No BNPL items waiting this month.</div>`;
+    : `<div class="empty">No BNPL items waiting this pay cycle.</div>`;
 }
 
 function renderFinanceHub(){
@@ -5043,9 +5158,9 @@ function renderFinanceHub(){
   const hsbcPercent = percentOf(snapshot.hsbcStay, snapshot.income);
   const revolutPercent = percentOf(snapshot.recommendedTransfer, snapshot.income);
   const deliverooPercent = percentOf(snapshot.deliverooRemaining, snapshot.income);
-  const monthName = formatMonthLabel(state.selectedMonth).split(" ")[0].toLowerCase();
+  const monthName = formatMonthName(state.selectedMonth).split(" ")[0].toLowerCase();
 
-  els.hubMonthLabel.textContent = `${formatMonthLabel(state.selectedMonth)} overview`;
+  els.hubMonthLabel.textContent = `${formatMonthLabel(state.selectedMonth)} · ${formatCycleRangeLabel(state.selectedMonth)}`;
   els.hubMonthInput.value = state.selectedMonth;
   els.clearMonthFullBtn.textContent = `clear ${monthName}`;
   els.clearMonthFullSetupBtn.textContent = `clear ${monthName}`;
@@ -5169,7 +5284,7 @@ function renderPayOrder(){
   els.payOrderList.innerHTML = "";
 
   if(ordered.length === 0){
-    els.payOrderList.innerHTML = `<div class="empty">No dated payments are set for this month yet.</div>`;
+    els.payOrderList.innerHTML = `<div class="empty">No dated payments are set for this pay cycle yet.</div>`;
     return;
   }
 
@@ -5701,17 +5816,71 @@ function financeReminderMoney(value){
 function financeReminderMonthLabel(monthValue){
   const [year, month] = String(monthValue || "").split("-").map(Number);
 
-  if(!year || !month) return "this month";
+  if(!year || !month) return "this pay cycle";
 
-  return new Date(year, month - 1, 1).toLocaleDateString("en-GB", {
+  const name = new Date(year, month - 1, 1).toLocaleDateString("en-GB", {
     month:"long",
     year:"numeric"
   });
+
+  return `${name} pay cycle`;
+}
+
+function financeReminderDateKey(date){
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+}
+
+function financeReminderMonthKey(date){
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,"0")}`;
+}
+
+function financeReminderParseDate(dateValue){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(dateValue || ""))) return null;
+
+  const [year, month, day] = dateValue.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function financeReminderPayCycleFromDate(dateValue, fallback = financeReminderTodayMonth()){
+  const date = financeReminderParseDate(dateValue);
+
+  if(!date) return fallback;
+
+  const cycleDate = new Date(date.getFullYear(), date.getMonth(), 1);
+
+  if(date.getDate() < 20){
+    cycleDate.setMonth(cycleDate.getMonth() - 1);
+  }
+
+  return financeReminderMonthKey(cycleDate);
+}
+
+function financeReminderShiftMonth(monthValue, amount){
+  const [year, month] = monthValue.split("-").map(Number);
+  return financeReminderMonthKey(new Date(year, month - 1 + amount, 1));
+}
+
+function financeReminderCycleStart(monthValue){
+  const [year, month] = String(monthValue || financeReminderTodayMonth()).split("-").map(Number);
+  return financeReminderDateKey(new Date(year, month - 1, 20));
+}
+
+function financeReminderCycleEnd(monthValue){
+  const end = financeReminderParseDate(financeReminderCycleStart(financeReminderShiftMonth(monthValue, 1)));
+  end.setDate(end.getDate() - 1);
+  return financeReminderDateKey(end);
+}
+
+function financeReminderDateInCycle(dateValue, monthValue){
+  if(!dateValue) return false;
+
+  return dateValue >= financeReminderCycleStart(monthValue)
+    && dateValue < financeReminderCycleStart(financeReminderShiftMonth(monthValue, 1));
 }
 
 function financeReminderTodayMonth(){
   const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2,"0")}`;
+  return financeReminderPayCycleFromDate(financeReminderDateKey(now), `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2,"0")}`);
 }
 
 function financeReminderSelectedMonth(){
@@ -5733,9 +5902,11 @@ function financeReminderNormalize(value){
 
 function financeReminderDueDate(monthValue, dueDay){
   const [year, month] = monthValue.split("-").map(Number);
-  const lastDay = new Date(year, month, 0).getDate();
-  const day = Math.min(Math.max(Number(dueDay) || 1, 1), lastDay);
-  return `${monthValue}-${String(day).padStart(2,"0")}`;
+  const day = Math.min(Math.max(Number(dueDay) || 20, 1), 31);
+  const target = new Date(year, day >= 20 ? month - 1 : month, 1);
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+  target.setDate(Math.min(day, lastDay));
+  return financeReminderDateKey(target);
 }
 
 async function reminderSourceId(key){
@@ -5752,7 +5923,7 @@ async function buildPaymentReminderRows(userId, monthValue){
   const trickleMatches = new Set();
 
   (saved.trickles || []).forEach(item => {
-    if(item.month !== monthValue || item.paid || !item.dueDate) return;
+    if(item.paid || !item.dueDate || !financeReminderDateInCycle(item.dueDate, monthValue)) return;
 
     const matchKey = `${financeReminderNormalize(item.name)}:${item.dueDate}`;
     trickleMatches.add(matchKey);
@@ -5800,9 +5971,8 @@ async function syncPaymentReminders(){
   const status = document.getElementById("reminderSyncStatus");
   const monthValue = financeReminderSelectedMonth();
   const monthLabel = financeReminderMonthLabel(monthValue);
-  const monthStart = `${monthValue}-01`;
-  const [year, month] = monthValue.split("-").map(Number);
-  const monthEnd = `${monthValue}-${String(new Date(year, month, 0).getDate()).padStart(2,"0")}`;
+  const monthStart = financeReminderCycleStart(monthValue);
+  const monthEnd = financeReminderCycleEnd(monthValue);
 
   button.disabled = true;
   status.textContent = `Syncing ${monthLabel} payment reminders...`;
