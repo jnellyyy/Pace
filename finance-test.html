@@ -2077,13 +2077,13 @@ textarea{
               <div class="hubBulkEditor">
                 <div class="formGrid three">
                   <div class="field" style="grid-column:1 / -1;">
-                    <label>paste list</label>
-                    <textarea id="hubBulkPaymentInput" placeholder="20 July: £42.11&#10;Park Cameras: £26.34&#10;Amazon: £15.77"></textarea>
+                    <label>paste budget or payment list</label>
+                    <textarea id="hubBulkPaymentInput" placeholder="Income&#10;Salary: £1,826.55&#10;HSBC&#10;Rent: £740.00&#10;Revolut — Bills&#10;Water: £54.37&#10;Revolut — BNPL / Klarna&#10;20 July: £26.34&#10;Money flow&#10;Send to Revolut: £501.88"></textarea>
                   </div>
                 </div>
                 <div class="formGrid three" style="margin-top:10px;">
                   <div class="field">
-                    <label>default name</label>
+                    <label>simple list name</label>
                     <input id="hubBulkPaymentLabelInput" type="text" value="BNPL">
                   </div>
                   <div class="field">
@@ -3723,7 +3723,8 @@ function load(){
       paid: Boolean(trickle.paid),
       funded:Boolean(trickle.funded),
       deliveroo:Boolean(trickle.deliveroo),
-      kind:trickle.kind || "variable"
+      kind:trickle.kind || "variable",
+      note:trickle.note || ""
     }));
 
     Object.keys(state.cleared).forEach(month => {
@@ -5165,6 +5166,518 @@ function parseBulkPaymentList(text, defaultName){
   return { entries, expectedTotal, ignored };
 }
 
+function parseStructuredBudgetHeading(line){
+  const clean = cleanBulkLine(line).replace(/:$/,"");
+
+  if(/^income$/i.test(clean)) return "income";
+  if(/^hsbc$/i.test(clean)) return "hsbc";
+  if(/^revolut\s*[\u2013\u2014-]\s*bills/i.test(clean)) return "revolut-bills";
+  if(/^revolut\s*[\u2013\u2014-]\s*debt/i.test(clean)) return "revolut-debt";
+  if(/^revolut\s*[\u2013\u2014-]\s*(bnpl|klarna|bnpl\s*\/\s*klarna)/i.test(clean)) return "revolut-bnpl";
+  if(/^revolut\s*[\u2013\u2014-]\s*commute/i.test(clean)) return "revolut-commute";
+  if(/^moving(?:$|\s*[\u2013\u2014-])/i.test(clean)) return "moving";
+  if(/^already cleared/i.test(clean)) return "cleared";
+  if(/^money flow/i.test(clean)) return "flow";
+
+  return "";
+}
+
+function isStructuredBudgetList(text){
+  const headings = String(text || "")
+    .split(/\r?\n/)
+    .map(parseStructuredBudgetHeading)
+    .filter(Boolean);
+
+  return headings.length >= 2 && (headings.includes("hsbc") || headings.some(heading => heading.startsWith("revolut")));
+}
+
+function detectStructuredCycleMonth(text){
+  const lines = String(text || "").split(/\r?\n/);
+
+  for(const rawLine of lines){
+    const clean = cleanBulkLine(rawLine);
+    const range = clean.match(/(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)(?:\s+(\d{4}))?\s*(?:to|[\u2013\u2014-])\s*(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)(?:\s+(\d{4}))?/i);
+
+    if(range){
+      const startDate = inferBulkDate(range[1], range[2], range[3]);
+      if(startDate) return payCycleKeyFromDate(startDate, state.selectedMonth);
+    }
+  }
+
+  for(const rawLine of lines){
+    const parsedDate = parseBulkDateLine(rawLine);
+    if(parsedDate?.dueDate) return payCycleKeyFromDate(parsedDate.dueDate, state.selectedMonth);
+  }
+
+  return state.selectedMonth;
+}
+
+function ensureMonthDataFor(monthValue){
+  if(!state.months[monthValue]){
+    state.months[monthValue] = {
+      income:0,
+      startingBalance:0
+    };
+  }
+
+  return state.months[monthValue];
+}
+
+function ensureAllocationDataFor(monthValue){
+  const previousMonth = state.selectedMonth;
+  state.selectedMonth = monthValue;
+  const allocation = getAllocationData();
+  state.selectedMonth = previousMonth;
+  return allocation;
+}
+
+function parseStructuredColonLine(line){
+  const clean = cleanBulkLine(line);
+  const match = clean.match(/^(.+?):\s*(.+)$/);
+
+  if(!match) return null;
+
+  const name = match[1].trim();
+  const value = match[2].trim();
+  const amountMatch = value.match(/£\s*([\d,]+(?:\.\d{1,2})?)/);
+  const status = /^paid\b/i.test(value) ? "paid" : "open";
+  const placeholder = /\btbc\b|only add|if still unpaid|not payable|until confirmed/i.test(value);
+
+  return {
+    name,
+    value,
+    amount:amountMatch ? parseMoneyText(amountMatch[1]) : 0,
+    status,
+    placeholder
+  };
+}
+
+function structuredNamesMatch(first, second){
+  const firstName = normalizePaymentName(first);
+  const secondName = normalizePaymentName(second);
+
+  if(!firstName || !secondName) return false;
+  if(firstName === secondName) return true;
+
+  return firstName.length > 4 && secondName.length > 4 && (firstName.includes(secondName) || secondName.includes(firstName));
+}
+
+function structuredTrickleNamesMatch(first, second){
+  const firstHasCopyNumber = /\s#\d+$/i.test(String(first || ""));
+  const secondHasCopyNumber = /\s#\d+$/i.test(String(second || ""));
+
+  if(firstHasCopyNumber || secondHasCopyNumber){
+    return normalizePaymentName(first) === normalizePaymentName(second);
+  }
+
+  return structuredNamesMatch(first, second);
+}
+
+function getStructuredFixedBillMeta(name){
+  const text = String(name || "").toLowerCase();
+  const debt = /credit union|credit spring|very|zable|capital one|mr lender|klarna|clearpay|lender/.test(text);
+  const phone = /phone|ee|broadband|plusnet/.test(text);
+  const subscription = /subscription|zero deposit/.test(text);
+  const transport = /charging|commute|travel|ev/.test(text);
+  const standingOrder = /rent|credit union/.test(text);
+
+  return {
+    type: standingOrder ? "standingOrder" : "directDebit",
+    category: debt ? "debt" : phone ? "phone" : subscription ? "subscription" : transport ? "transport" : "home"
+  };
+}
+
+function getStructuredPotForSection(section, name){
+  const text = String(name || "").toLowerCase();
+
+  if(section === "revolut-bills") return "Bills pot";
+  if(section === "revolut-debt") return "Debt pot";
+  if(section === "revolut-bnpl") return "BNPL pot";
+  if(section === "revolut-commute") return "Commute pot";
+
+  if(section === "moving"){
+    if(/bed|mattress|furniture|ikea|b&m/.test(text)) return "Furniture pot";
+    if(/bedding|home|energy|water|council|utilities/.test(text)) return "Home Setup pot";
+    return "Move pot";
+  }
+
+  return "Miscellaneous pot";
+}
+
+function getStructuredPaymentLabel(section){
+  if(section === "revolut-bnpl") return "Klarna";
+  if(section === "revolut-bills") return "Bill";
+  if(section === "revolut-debt") return "Debt";
+  if(section === "revolut-commute") return "Commute";
+  return "Payment";
+}
+
+function addOrUpdateStructuredFixedBill(cycleMonth, item, stats){
+  if(!item.name || item.amount <= 0) return null;
+
+  const meta = getStructuredFixedBillMeta(item.name);
+  const existing = state.fixedBills.find(bill =>
+    bill.month === cycleMonth
+    && bill.account === "HSBC"
+    && structuredNamesMatch(bill.name, item.name)
+  );
+
+  if(existing){
+    Object.assign(existing, {
+      name:item.name,
+      amount:item.amount,
+      dueDay:PAYDAY_DAY,
+      type:meta.type,
+      category:meta.category,
+      account:"HSBC",
+      pot:"Protected bills",
+      month:cycleMonth
+    });
+    stats.fixedUpdated += 1;
+    return existing;
+  }
+
+  const bill = {
+    id:uid(),
+    name:item.name,
+    amount:item.amount,
+    dueDay:PAYDAY_DAY,
+    type:meta.type,
+    category:meta.category,
+    account:"HSBC",
+    pot:"Protected bills",
+    month:cycleMonth
+  };
+
+  state.fixedBills.push(bill);
+  stats.fixedAdded += 1;
+  return bill;
+}
+
+function findStructuredTrickle(cycleMonth, entry){
+  return state.trickles.find(trickle =>
+    trickle.month === cycleMonth
+    && String(trickle.dueDate || "") === String(entry.dueDate || "")
+    && String(trickle.source || "") === String(entry.source || "")
+    && structuredTrickleNamesMatch(trickle.name, entry.name)
+  );
+}
+
+function addOrUpdateStructuredTrickle(cycleMonth, entry, stats){
+  if(!entry.name) return null;
+
+  const existing = findStructuredTrickle(cycleMonth, entry);
+  const data = {
+    name:entry.name,
+    amount:numberValue(entry.amount),
+    priority:entry.priority || "must",
+    dueDate:entry.dueDate || "",
+    account:entry.account || "Revolut",
+    source:entry.source || "Miscellaneous pot",
+    month:cycleMonth,
+    kind:"structured-import",
+    note:entry.note || ""
+  };
+
+  if(existing){
+    Object.assign(existing, data);
+    stats.paymentUpdated += 1;
+    return existing;
+  }
+
+  const trickle = {
+    id:uid(),
+    ...data,
+    paid:false,
+    funded:false,
+    deliveroo:false
+  };
+
+  state.trickles.push(trickle);
+  stats.paymentAdded += 1;
+  return trickle;
+}
+
+function addOrUpdateStructuredCleared(cycleMonth, item, stats){
+  if(!item.name) return null;
+
+  if(!state.cleared[cycleMonth]){
+    state.cleared[cycleMonth] = [];
+  }
+
+  const existing = state.cleared[cycleMonth].find(record => structuredNamesMatch(record.name, item.name));
+  const data = {
+    name:item.name,
+    amount:numberValue(item.amount),
+    account:item.account || "Unassigned",
+    pot:item.pot || "Unassigned"
+  };
+
+  if(existing){
+    Object.assign(existing, data);
+    stats.clearedUpdated += 1;
+  }else{
+    state.cleared[cycleMonth].push({ id:uid(), ...data });
+    stats.clearedAdded += 1;
+  }
+
+  state.trickles
+    .filter(trickle => trickle.month === cycleMonth && structuredNamesMatch(trickle.name, item.name))
+    .forEach(trickle => {
+      trickle.paid = true;
+      trickle.funded = false;
+      trickle.deliveroo = false;
+    });
+
+  state.fixedBills
+    .filter(bill => bill.month === cycleMonth && structuredNamesMatch(bill.name, item.name))
+    .forEach(bill => {
+      state.billPaid[`${cycleMonth}:${bill.id}`] = true;
+      state.billFunded[`${cycleMonth}:${bill.id}`] = false;
+    });
+}
+
+function parseStructuredMoneyFlowLine(line, flow){
+  const item = parseStructuredColonLine(line);
+
+  if(!item || item.amount <= 0) return false;
+
+  const text = item.name.toLowerCase();
+
+  if(text.includes("keep") && text.includes("hsbc")){
+    flow.keepHsbc = item.amount;
+    return true;
+  }
+
+  if(text.includes("send") && text.includes("revolut")){
+    flow.sendToRevolut = item.amount;
+    return true;
+  }
+
+  if(text.includes("deliveroo")){
+    flow.deliverooTarget = item.amount;
+    return true;
+  }
+
+  return false;
+}
+
+function applyStructuredDeliverooSplit(cycleMonth, importedIds, sendToRevolut, deliverooTarget, stats){
+  if(sendToRevolut <= 0 && deliverooTarget <= 0) return;
+
+  const eligible = state.trickles
+    .filter(item =>
+      importedIds.includes(item.id)
+      && item.month === cycleMonth
+      && isRevolutPayment(item)
+      && numberValue(item.amount) > 0
+      && !item.paid
+      && !item.funded
+    )
+    .sort((a,b) => {
+      const dateCompare = String(b.dueDate || "0000").localeCompare(String(a.dueDate || "0000"));
+      if(dateCompare !== 0) return dateCompare;
+      return numberValue(b.amount) - numberValue(a.amount);
+    });
+
+  const revolutTotal = eligible.reduce((sum,item) => sum + numberValue(item.amount),0);
+  const targetFromGap = sendToRevolut > 0 ? Math.max(revolutTotal - sendToRevolut,0) : 0;
+  const target = Math.min(revolutTotal, targetFromGap > 0.01 ? targetFromGap : deliverooTarget);
+
+  eligible.forEach(item => {
+    item.deliveroo = false;
+  });
+
+  if(target <= 0) return;
+
+  let marked = 0;
+
+  for(const item of eligible){
+    if(marked >= target - 0.01) break;
+    item.deliveroo = true;
+    item.funded = false;
+    marked += numberValue(item.amount);
+  }
+
+  stats.deliverooMarked = eligible.filter(item => item.deliveroo).length;
+  stats.deliverooAmount = marked;
+}
+
+function syncStructuredTransferBuffer(targetTransfer, allocation){
+  if(targetTransfer <= 0) return 0;
+
+  const remaining = getOrderedPaymentTrickles().filter(item => !item.paid);
+  const automaticTransfer = allocationTotal(getAutomaticRevolutAllocation(remaining));
+  const buffer = Math.max(targetTransfer - automaticTransfer,0);
+  allocation.transferBuffer = buffer;
+  return buffer;
+}
+
+function importStructuredBudgetList(text){
+  const previousMonth = state.selectedMonth;
+  const cycleMonth = detectStructuredCycleMonth(text);
+  const stats = {
+    income:false,
+    fixedAdded:0,
+    fixedUpdated:0,
+    paymentAdded:0,
+    paymentUpdated:0,
+    clearedAdded:0,
+    clearedUpdated:0,
+    ignored:0,
+    deliverooMarked:0,
+    deliverooAmount:0,
+    transferBuffer:0
+  };
+  const flow = {
+    keepHsbc:0,
+    sendToRevolut:0,
+    deliverooTarget:0
+  };
+  const importedIds = [];
+  const dateCounts = {};
+  let section = "";
+
+  state.selectedMonth = cycleMonth;
+  ensureMonthDataFor(cycleMonth);
+  ensureAllocationDataFor(cycleMonth);
+
+  String(text || "").split(/\r?\n/).forEach(rawLine => {
+    const line = cleanBulkLine(rawLine);
+
+    if(!line) return;
+
+    const heading = parseStructuredBudgetHeading(line);
+
+    if(heading){
+      section = heading;
+      return;
+    }
+
+    if(!section) return;
+
+    if(section === "flow"){
+      if(!parseStructuredMoneyFlowLine(line, flow) && parseStructuredColonLine(line)) stats.ignored += 1;
+      return;
+    }
+
+    const item = parseStructuredColonLine(line);
+
+    if(!item){
+      stats.ignored += 1;
+      return;
+    }
+
+    if(section === "income"){
+      if(item.amount > 0 && /salary|income|pay/i.test(item.name)){
+        ensureMonthDataFor(cycleMonth).income = item.amount;
+        stats.income = true;
+        return;
+      }
+
+      stats.ignored += 1;
+      return;
+    }
+
+    if(section === "cleared"){
+      const record = {
+        name:item.name,
+        amount:item.amount,
+        account:"Unassigned",
+        pot:"Unassigned"
+      };
+      addOrUpdateStructuredCleared(cycleMonth, record, stats);
+      return;
+    }
+
+    if(section === "hsbc"){
+      addOrUpdateStructuredFixedBill(cycleMonth, item, stats);
+      return;
+    }
+
+    if(section === "revolut-bnpl"){
+      const dateLine = parseBulkDateLine(line);
+
+      if(dateLine?.dueDate && dateLine.amount > 0){
+        const count = (dateCounts[dateLine.dueDate] || 0) + 1;
+        dateCounts[dateLine.dueDate] = count;
+
+        const baseName = `${getStructuredPaymentLabel(section)} · ${formatShortDate(dateLine.dueDate)}`;
+        const payment = addOrUpdateStructuredTrickle(cycleMonth, {
+          name:count > 1 ? `${baseName} #${count}` : baseName,
+          amount:dateLine.amount,
+          dueDate:dateLine.dueDate,
+          account:"Revolut",
+          source:getStructuredPotForSection(section, item.name),
+          priority:"must",
+          note:"Imported from structured budget paste."
+        }, stats);
+
+        if(payment) importedIds.push(payment.id);
+        return;
+      }
+    }
+
+    if(section.startsWith("revolut") || section === "moving"){
+      const placeholder = item.placeholder || section === "moving" || item.amount <= 0;
+      const amount = placeholder ? 0 : item.amount;
+      const dueDate = placeholder ? "" : getCycleStartKey(cycleMonth);
+      const payment = addOrUpdateStructuredTrickle(cycleMonth, {
+        name:item.name,
+        amount,
+        dueDate,
+        account:section === "moving" ? "Unassigned" : "Revolut",
+        source:getStructuredPotForSection(section, item.name),
+        priority:placeholder ? "wait" : "must",
+        note:placeholder
+          ? `Placeholder from paste: ${item.value}`
+          : "Imported from structured budget paste."
+      }, stats);
+
+      if(payment && !placeholder) importedIds.push(payment.id);
+      return;
+    }
+
+    stats.ignored += 1;
+  });
+
+  const allocation = ensureAllocationDataFor(cycleMonth);
+  const flowNotes = [];
+
+  if(flow.keepHsbc > 0) flowNotes.push(`keep in HSBC ${money(flow.keepHsbc)}`);
+  if(flow.sendToRevolut > 0) flowNotes.push(`send to Revolut ${money(flow.sendToRevolut)}`);
+  if(flow.deliverooTarget > 0) flowNotes.push(`Deliveroo target ${money(flow.deliverooTarget)}`);
+
+  if(flowNotes.length){
+    allocation.note = `Imported money flow: ${flowNotes.join(", ")}.`;
+  }
+
+  applyStructuredDeliverooSplit(cycleMonth, importedIds, flow.sendToRevolut, flow.deliverooTarget, stats);
+  stats.transferBuffer = syncStructuredTransferBuffer(flow.sendToRevolut, allocation);
+
+  state.selectedMonth = cycleMonth || previousMonth;
+  save();
+  render();
+
+  const fixedTotal = stats.fixedAdded + stats.fixedUpdated;
+  const paymentTotal = stats.paymentAdded + stats.paymentUpdated;
+  const clearedTotal = stats.clearedAdded + stats.clearedUpdated;
+  const summaryParts = [
+    stats.income ? `Income set for ${formatMonthLabel(state.selectedMonth)}.` : "",
+    fixedTotal ? `${fixedTotal} HSBC bill${fixedTotal === 1 ? "" : "s"} imported/updated.` : "",
+    paymentTotal ? `${paymentTotal} payment${paymentTotal === 1 ? "" : "s"} split into pots.` : "",
+    clearedTotal ? `${clearedTotal} cleared item${clearedTotal === 1 ? "" : "s"} saved.` : "",
+    flow.sendToRevolut > 0 ? `Money flow says send ${money(flow.sendToRevolut)} to Revolut.` : "",
+    stats.deliverooMarked ? `${stats.deliverooMarked} item${stats.deliverooMarked === 1 ? "" : "s"} marked for Deliveroo (${money(stats.deliverooAmount)}).` : "",
+    stats.transferBuffer > 0 ? `${money(stats.transferBuffer)} transfer buffer added to match the Revolut target.` : "",
+    stats.ignored ? `${stats.ignored} line${stats.ignored === 1 ? "" : "s"} ignored.` : ""
+  ].filter(Boolean);
+
+  els.hubImportSummary.textContent = summaryParts.join(" ");
+  els.hubBulkPaymentInput.value = "";
+  showToast("Budget list imported.");
+}
+
 function bulkPaymentExists(entry, source){
   return state.trickles.some(trickle =>
     trickle.dueDate === entry.dueDate
@@ -5187,6 +5700,11 @@ function importBulkPaymentList(){
 
   if(!text){
     showToast("Paste the list first.");
+    return;
+  }
+
+  if(isStructuredBudgetList(text)){
+    importStructuredBudgetList(text);
     return;
   }
 
