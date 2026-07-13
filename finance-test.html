@@ -687,6 +687,23 @@ textarea{
   margin-top:10px;
 }
 
+.hubBulkEditor{
+  border-top:1px solid rgba(255,255,255,0.08);
+  margin-top:12px;
+  padding-top:12px;
+}
+
+.hubBulkEditor textarea{
+  min-height:112px;
+}
+
+.hubImportSummary{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+  margin-top:8px;
+}
+
 .hubIncomeEdit,
 .hubInlineInputs{
   display:grid;
@@ -2057,6 +2074,54 @@ textarea{
                 <button type="button" class="btn btnPrimary" id="hubAddPaymentBtn">add payment</button>
                 <button type="button" class="btn btnSoft" id="hubClearPaymentBtn">clear</button>
               </div>
+              <div class="hubBulkEditor">
+                <div class="formGrid three">
+                  <div class="field" style="grid-column:1 / -1;">
+                    <label>paste list</label>
+                    <textarea id="hubBulkPaymentInput" placeholder="20 July: £42.11&#10;Park Cameras: £26.34&#10;Amazon: £15.77"></textarea>
+                  </div>
+                </div>
+                <div class="formGrid three" style="margin-top:10px;">
+                  <div class="field">
+                    <label>default name</label>
+                    <input id="hubBulkPaymentLabelInput" type="text" value="BNPL">
+                  </div>
+                  <div class="field">
+                    <label>account</label>
+                    <select id="hubBulkPaymentAccountInput">
+                      <option value="Revolut">Revolut</option>
+                      <option value="HSBC">HSBC</option>
+                      <option value="Cash">Cash</option>
+                      <option value="Other">Other</option>
+                      <option value="Unassigned">Unassigned</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>pot</label>
+                    <select id="hubBulkPaymentPotInput">
+                      <option value="BNPL pot">BNPL pot</option>
+                      <option value="Bills pot">Bills pot</option>
+                      <option value="Debt pot">Debt pot</option>
+                      <option value="Commute pot">Commute pot</option>
+                      <option value="Move pot">Move pot</option>
+                      <option value="Furniture pot">Furniture pot</option>
+                      <option value="Home Setup pot">Home Setup pot</option>
+                      <option value="Business pot">Business pot</option>
+                      <option value="Emergency pot">Emergency pot</option>
+                      <option value="Savings pot">Savings pot</option>
+                      <option value="Fun pot">Fun pot</option>
+                      <option value="Miscellaneous pot">Miscellaneous pot</option>
+                      <option value="Protected bills">Protected bills</option>
+                      <option value="Unassigned">Unassigned</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button type="button" class="btn btnPrimary" id="hubImportPaymentListBtn">import list</button>
+                  <button type="button" class="btn btnSoft" id="hubClearBulkPaymentBtn">clear paste</button>
+                </div>
+                <div class="hubImportSummary" id="hubImportSummary"></div>
+              </div>
             </div>
             <div class="hubRows" id="hubPaymentList"></div>
           </section>
@@ -3054,6 +3119,13 @@ const els = {
   hubPaymentPotInput: document.getElementById("hubPaymentPotInput"),
   hubAddPaymentBtn: document.getElementById("hubAddPaymentBtn"),
   hubClearPaymentBtn: document.getElementById("hubClearPaymentBtn"),
+  hubBulkPaymentInput: document.getElementById("hubBulkPaymentInput"),
+  hubBulkPaymentLabelInput: document.getElementById("hubBulkPaymentLabelInput"),
+  hubBulkPaymentAccountInput: document.getElementById("hubBulkPaymentAccountInput"),
+  hubBulkPaymentPotInput: document.getElementById("hubBulkPaymentPotInput"),
+  hubImportPaymentListBtn: document.getElementById("hubImportPaymentListBtn"),
+  hubClearBulkPaymentBtn: document.getElementById("hubClearBulkPaymentBtn"),
+  hubImportSummary: document.getElementById("hubImportSummary"),
   clearMonthFullBtn: document.getElementById("clearMonthFullBtn"),
   clearMonthFullSetupBtn: document.getElementById("clearMonthFullSetupBtn"),
   hubIncomeAmount: document.getElementById("hubIncomeAmount"),
@@ -4915,6 +4987,268 @@ function clearHubPaymentForm(){
   els.hubPaymentPotInput.value = "Bills pot";
 }
 
+function parseMoneyText(value){
+  const parsed = Number(String(value || "").replace(/,/g, ""));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+const MONTH_NAME_INDEX = {
+  jan:0,
+  january:0,
+  feb:1,
+  february:1,
+  mar:2,
+  march:2,
+  apr:3,
+  april:3,
+  may:4,
+  jun:5,
+  june:5,
+  jul:6,
+  july:6,
+  aug:7,
+  august:7,
+  sep:8,
+  sept:8,
+  september:8,
+  oct:9,
+  october:9,
+  nov:10,
+  november:10,
+  dec:11,
+  december:11
+};
+
+function cleanBulkLine(line){
+  return String(line || "")
+    .replace(/\*\*/g, "")
+    .replace(/^[\s•\-–—]+/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function dateKeyFromParts(year, monthIndex, day){
+  const date = new Date(year, monthIndex, day);
+
+  if(date.getFullYear() !== year || date.getMonth() !== monthIndex || date.getDate() !== day){
+    return "";
+  }
+
+  return dateKeyFromDate(date);
+}
+
+function inferBulkDate(day, monthName, explicitYear){
+  const monthIndex = MONTH_NAME_INDEX[String(monthName || "").toLowerCase()];
+
+  if(monthIndex === undefined) return "";
+
+  if(explicitYear){
+    return dateKeyFromParts(Number(explicitYear), monthIndex, Number(day));
+  }
+
+  const cycleStart = getCycleStartDate(state.selectedMonth);
+  const cycleEnd = getCycleEndDate(state.selectedMonth);
+  const years = [...new Set([
+    cycleStart.getFullYear(),
+    cycleEnd.getFullYear(),
+    cycleStart.getFullYear() - 1,
+    cycleStart.getFullYear() + 1
+  ])];
+
+  for(const year of years){
+    const dateKey = dateKeyFromParts(year, monthIndex, Number(day));
+
+    if(dateKey && dateIsInCycle(dateKey, state.selectedMonth)){
+      return dateKey;
+    }
+  }
+
+  return dateKeyFromParts(cycleStart.getFullYear(), monthIndex, Number(day));
+}
+
+function parseBulkDateLine(line){
+  const clean = cleanBulkLine(line);
+
+  if(/^total\b/i.test(clean)) return null;
+
+  const match = clean.match(/^(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)(?:\s+(\d{4}))?\s*:?\s*(?:£\s*([\d,]+(?:\.\d{1,2})?))?$/i);
+
+  if(!match) return null;
+
+  const dueDate = inferBulkDate(match[1], match[2], match[3]);
+
+  if(!dueDate) return null;
+
+  return {
+    dueDate,
+    amount:parseMoneyText(match[4])
+  };
+}
+
+function parseBulkItemLine(line){
+  const clean = cleanBulkLine(line);
+
+  if(!clean || /^total\b/i.test(clean)) return null;
+
+  const match = clean.match(/^(.+?):\s*£\s*([\d,]+(?:\.\d{1,2})?)$/i);
+
+  if(!match) return null;
+
+  return {
+    name:match[1].trim(),
+    amount:parseMoneyText(match[2])
+  };
+}
+
+function parseBulkTotalLine(line){
+  const clean = cleanBulkLine(line);
+  const match = clean.match(/^total\b.*?£\s*([\d,]+(?:\.\d{1,2})?)/i);
+  return match ? parseMoneyText(match[1]) : 0;
+}
+
+function parseBulkPaymentList(text, defaultName){
+  const groups = [];
+  const ignored = [];
+  let current = null;
+  let expectedTotal = 0;
+
+  String(text || "").split(/\r?\n/).forEach(rawLine => {
+    const line = cleanBulkLine(rawLine);
+
+    if(!line) return;
+
+    const total = parseBulkTotalLine(line);
+
+    if(total){
+      expectedTotal = total;
+      return;
+    }
+
+    const dateLine = parseBulkDateLine(line);
+
+    if(dateLine){
+      current = { ...dateLine, items:[] };
+      groups.push(current);
+      return;
+    }
+
+    const item = parseBulkItemLine(line);
+
+    if(item && current){
+      current.items.push(item);
+      return;
+    }
+
+    ignored.push(line);
+  });
+
+  const entries = groups.flatMap(group => {
+    if(group.items.length){
+      return group.items.map(item => ({
+        name:item.name,
+        amount:item.amount,
+        dueDate:group.dueDate
+      }));
+    }
+
+    if(group.amount <= 0) return [];
+
+    return [{
+      name:`${defaultName} · ${formatShortDate(group.dueDate)}`,
+      amount:group.amount,
+      dueDate:group.dueDate
+    }];
+  });
+
+  return { entries, expectedTotal, ignored };
+}
+
+function bulkPaymentExists(entry, source){
+  return state.trickles.some(trickle =>
+    trickle.dueDate === entry.dueDate
+    && normalizePaymentName(trickle.name) === normalizePaymentName(entry.name)
+    && Math.abs(numberValue(trickle.amount) - numberValue(entry.amount)) < 0.01
+    && String(trickle.source || "") === source
+  );
+}
+
+function clearBulkPaymentImport(){
+  els.hubBulkPaymentInput.value = "";
+  els.hubImportSummary.textContent = "";
+}
+
+function importBulkPaymentList(){
+  const text = els.hubBulkPaymentInput.value.trim();
+  const defaultName = els.hubBulkPaymentLabelInput.value.trim() || "Payment";
+  const account = els.hubBulkPaymentAccountInput.value;
+  const source = els.hubBulkPaymentPotInput.value;
+
+  if(!text){
+    showToast("Paste the list first.");
+    return;
+  }
+
+  const parsed = parseBulkPaymentList(text, defaultName);
+
+  if(!parsed.entries.length){
+    els.hubImportSummary.textContent = "No dated payments found.";
+    showToast("No dated payments found.");
+    return;
+  }
+
+  const added = [];
+  let skipped = 0;
+
+  parsed.entries.forEach(entry => {
+    if(entry.amount <= 0) return;
+
+    if(bulkPaymentExists(entry, source)){
+      skipped += 1;
+      return;
+    }
+
+    state.trickles.push({
+      id:uid(),
+      name:entry.name,
+      amount:entry.amount,
+      priority:"must",
+      dueDate:entry.dueDate,
+      account,
+      source,
+      month:payCycleKeyFromDate(entry.dueDate, state.selectedMonth),
+      paid:false,
+      funded:false,
+      deliveroo:false,
+      kind:"bulk-import",
+      note:`Imported from pasted ${defaultName} list`
+    });
+    added.push(entry);
+  });
+
+  const parsedTotal = parsed.entries.reduce((sum,item) => sum + numberValue(item.amount),0);
+  const totalCheck = parsed.expectedTotal
+    ? Math.abs(parsedTotal - parsed.expectedTotal) <= 0.02
+      ? ` Total matched ${money(parsed.expectedTotal)}.`
+      : ` Total says ${money(parsed.expectedTotal)}, parsed ${money(parsedTotal)}.`
+    : "";
+  const skippedText = skipped ? ` ${skipped} duplicate${skipped === 1 ? "" : "s"} skipped.` : "";
+  const ignoredText = parsed.ignored.length ? ` ${parsed.ignored.length} line${parsed.ignored.length === 1 ? "" : "s"} ignored.` : "";
+
+  if(!added.length){
+    els.hubImportSummary.textContent = `No new payments imported.${skippedText}${totalCheck}${ignoredText}`;
+    showToast("No new payments imported.");
+    return;
+  }
+
+  const importedTotal = added.reduce((sum,item) => sum + numberValue(item.amount),0);
+
+  save();
+  render();
+  els.hubImportSummary.textContent = `Imported ${added.length} payment${added.length === 1 ? "" : "s"} worth ${money(importedTotal)}.${skippedText}${totalCheck}${ignoredText}`;
+  els.hubBulkPaymentInput.value = "";
+  showToast(`Imported ${added.length} payment${added.length === 1 ? "" : "s"}.`);
+}
+
 function addHubPayment(){
   const name = els.hubPaymentNameInput.value.trim();
   const amount = numberValue(els.hubPaymentAmountInput.value);
@@ -5948,6 +6282,8 @@ els.addTrickleBtn.addEventListener("click", addTrickle);
 els.clearTrickleBtn.addEventListener("click", clearTrickleForm);
 els.hubAddPaymentBtn.addEventListener("click", addHubPayment);
 els.hubClearPaymentBtn.addEventListener("click", clearHubPaymentForm);
+els.hubImportPaymentListBtn.addEventListener("click", importBulkPaymentList);
+els.hubClearBulkPaymentBtn.addEventListener("click", clearBulkPaymentImport);
 els.addClearedBtn.addEventListener("click", saveClearedItem);
 els.clearClearedBtn.addEventListener("click", clearClearedForm);
 els.financeEditForm.addEventListener("submit", saveFinanceEditor);
