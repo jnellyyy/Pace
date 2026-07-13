@@ -759,7 +759,7 @@ textarea{
 
 .hubPotInputGrid{
   display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   gap:10px;
   margin-bottom:12px;
 }
@@ -1478,6 +1478,36 @@ textarea{
   text-align:right;
 }
 
+.potField input[type="number"]{
+  appearance:textfield;
+  -moz-appearance:textfield;
+}
+
+.potField input[type="number"]::-webkit-outer-spin-button,
+.potField input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+
+.hubPotInputGrid .potField{
+  grid-template-columns:1fr;
+  align-items:stretch;
+  gap:7px;
+  min-width:0;
+}
+
+.hubPotInputGrid .potLabel{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.hubPotInputGrid .potField input{
+  min-height:36px;
+  text-align:left;
+  padding:8px 10px;
+}
+
 .allocationNote{
   margin-top:12px;
   border:1px solid rgba(245,158,11,0.28);
@@ -1884,7 +1914,7 @@ textarea{
             <span id="hubUpdatedDate">Updated today</span>
             <button type="button" id="hubRefreshBtn" aria-label="Refresh finance hub">↻</button>
           </div>
-          <button type="button" class="hubSoft" id="hubLoadJulyPlanBtn">set up July</button>
+          <button type="button" class="hubSoft" id="hubLoadJulyPlanBtn">set up August move plan</button>
           <button type="button" class="hubSoft" id="hubSyncRemindersBtn">sync reminders</button>
           <button type="button" class="hubSoft" id="hubDownloadCalendarBtn">phone calendar</button>
           <button type="button" class="hubDanger" id="clearMonthFullBtn">clear month</button>
@@ -2013,6 +2043,10 @@ textarea{
                     <option value="Protected bills">Protected bills</option>
                     <option value="Savings pot">Savings pot</option>
                     <option value="Emergency pot">Emergency pot</option>
+                    <option value="Business pot">Business pot</option>
+                    <option value="Move pot">Move pot</option>
+                    <option value="Furniture pot">Furniture pot</option>
+                    <option value="Home Setup pot">Home Setup pot</option>
                     <option value="Fun pot">Fun pot</option>
                     <option value="Miscellaneous pot">Miscellaneous pot</option>
                     <option value="Unassigned">Unassigned</option>
@@ -2078,6 +2112,10 @@ textarea{
               <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#f59e0b;"></span>Commute</span><input id="hubPotCommute" type="number" min="0" step="0.01"></label>
               <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#22c55e;"></span>Savings</span><input id="hubPotSavings" type="number" min="0" step="0.01"></label>
               <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#fb7185;"></span>Emergency</span><input id="hubPotEmergency" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#38bdf8;"></span>Business</span><input id="hubPotBusiness" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#f472b6;"></span>Move</span><input id="hubPotMove" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#c084fc;"></span>Furniture</span><input id="hubPotFurniture" type="number" min="0" step="0.01"></label>
+              <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#fb923c;"></span>Home Setup</span><input id="hubPotHomeSetup" type="number" min="0" step="0.01"></label>
               <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#2dd4bf;"></span>Fun</span><input id="hubPotFun" type="number" min="0" step="0.01"></label>
               <label class="potField"><span class="potLabel"><span class="legendDot" style="background:#94a3b8;"></span>Misc</span><input id="hubPotMisc" type="number" min="0" step="0.01"></label>
             </div>
@@ -2237,6 +2275,26 @@ textarea{
               </label>
 
               <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#38bdf8;"></span>Business</span>
+                <input id="potBusiness" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#f472b6;"></span>Move</span>
+                <input id="potMove" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#c084fc;"></span>Furniture</span>
+                <input id="potFurniture" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
+                <span class="potLabel"><span class="legendDot" style="background:#fb923c;"></span>Home Setup</span>
+                <input id="potHomeSetup" type="number" min="0" step="0.01">
+              </label>
+
+              <label class="potField">
                 <span class="potLabel"><span class="legendDot" style="background:#2dd4bf;"></span>Fun</span>
                 <input id="potFun" type="number" min="0" step="0.01">
               </label>
@@ -2294,7 +2352,7 @@ textarea{
           <button type="button" class="btn btnSoft" id="resetMonthBtn">reset month</button>
           <button type="button" class="btn btnSoft" id="clearMonthFullSetupBtn">clear this month</button>
           <button type="button" class="btn btnSoft" id="restorePlanBtn">load June plan</button>
-          <button type="button" class="btn btnSoft" id="loadJulyPlanBtn">set up July</button>
+          <button type="button" class="btn btnSoft" id="loadJulyPlanBtn">set up August move plan</button>
         </div>
 
         <div class="actions">
@@ -2378,6 +2436,10 @@ textarea{
               <option value="Commute pot">Commute pot</option>
               <option value="Savings pot">Savings pot</option>
               <option value="Emergency pot">Emergency pot</option>
+              <option value="Business pot">Business pot</option>
+              <option value="Move pot">Move pot</option>
+              <option value="Furniture pot">Furniture pot</option>
+              <option value="Home Setup pot">Home Setup pot</option>
               <option value="Fun pot">Fun pot</option>
               <option value="Miscellaneous pot">Miscellaneous pot</option>
               <option value="Unassigned">Unassigned</option>
@@ -2454,6 +2516,10 @@ textarea{
               <option value="Commute pot">Commute pot</option>
               <option value="Savings pot">Savings pot</option>
               <option value="Emergency pot">Emergency pot</option>
+              <option value="Business pot">Business pot</option>
+              <option value="Move pot">Move pot</option>
+              <option value="Furniture pot">Furniture pot</option>
+              <option value="Home Setup pot">Home Setup pot</option>
               <option value="Fun pot">Fun pot</option>
               <option value="Miscellaneous pot">Miscellaneous pot</option>
               <option value="Protected bills">Protected bills</option>
@@ -2594,6 +2660,10 @@ textarea{
               <option value="Commute pot">Commute pot</option>
               <option value="Savings pot">Savings pot</option>
               <option value="Emergency pot">Emergency pot</option>
+              <option value="Business pot">Business pot</option>
+              <option value="Move pot">Move pot</option>
+              <option value="Furniture pot">Furniture pot</option>
+              <option value="Home Setup pot">Home Setup pot</option>
               <option value="Fun pot">Fun pot</option>
               <option value="Miscellaneous pot">Miscellaneous pot</option>
               <option value="Protected bills">Protected bills</option>
@@ -2702,6 +2772,10 @@ textarea{
               <option value="Protected bills">Protected bills</option>
               <option value="Savings pot">Savings pot</option>
               <option value="Emergency pot">Emergency pot</option>
+              <option value="Business pot">Business pot</option>
+              <option value="Move pot">Move pot</option>
+              <option value="Furniture pot">Furniture pot</option>
+              <option value="Home Setup pot">Home Setup pot</option>
               <option value="Fun pot">Fun pot</option>
               <option value="Miscellaneous pot">Miscellaneous pot</option>
               <option value="Unassigned">Unassigned</option>
@@ -2916,6 +2990,10 @@ textarea{
             <option value="Commute pot">Commute pot</option>
             <option value="Savings pot">Savings pot</option>
             <option value="Emergency pot">Emergency pot</option>
+            <option value="Business pot">Business pot</option>
+            <option value="Move pot">Move pot</option>
+            <option value="Furniture pot">Furniture pot</option>
+            <option value="Home Setup pot">Home Setup pot</option>
             <option value="Fun pot">Fun pot</option>
             <option value="Miscellaneous pot">Miscellaneous pot</option>
             <option value="Unassigned">Unassigned</option>
@@ -2960,6 +3038,10 @@ const els = {
   hubPotCommute: document.getElementById("hubPotCommute"),
   hubPotSavings: document.getElementById("hubPotSavings"),
   hubPotEmergency: document.getElementById("hubPotEmergency"),
+  hubPotBusiness: document.getElementById("hubPotBusiness"),
+  hubPotMove: document.getElementById("hubPotMove"),
+  hubPotFurniture: document.getElementById("hubPotFurniture"),
+  hubPotHomeSetup: document.getElementById("hubPotHomeSetup"),
   hubPotFun: document.getElementById("hubPotFun"),
   hubPotMisc: document.getElementById("hubPotMisc"),
   hubDeliverooEarnedInput: document.getElementById("hubDeliverooEarnedInput"),
@@ -3029,6 +3111,10 @@ const els = {
   potCommute: document.getElementById("potCommute"),
   potSavings: document.getElementById("potSavings"),
   potEmergency: document.getElementById("potEmergency"),
+  potBusiness: document.getElementById("potBusiness"),
+  potMove: document.getElementById("potMove"),
+  potFurniture: document.getElementById("potFurniture"),
+  potHomeSetup: document.getElementById("potHomeSetup"),
   potFun: document.getElementById("potFun"),
   potMisc: document.getElementById("potMisc"),
   transferBufferInput: document.getElementById("transferBufferInput"),
@@ -3152,6 +3238,10 @@ const JUNE_PLAN = {
     commute:21.29,
     savings:0,
     emergency:0,
+    business:0,
+    move:0,
+    furniture:0,
+    homeSetup:0,
     fun:0,
     misc:0,
     transferBuffer:0.45,
@@ -3228,6 +3318,10 @@ const JULY_PLAN = {
     commute:0,
     savings:0,
     emergency:0,
+    business:0,
+    move:0,
+    furniture:0,
+    homeSetup:0,
     fun:0,
     misc:0,
     transferBuffer:0,
@@ -3276,15 +3370,68 @@ const JULY_PLAN = {
   ]
 };
 
+const AUGUST_PLAN = {
+  month:"2026-08",
+  income:1826.55,
+  planVersion:1,
+  allocations:{
+    bills:100.34,
+    debt:382.53,
+    bnpl:0,
+    commute:60,
+    savings:0,
+    emergency:0,
+    business:0,
+    move:0,
+    furniture:0,
+    homeSetup:0,
+    fun:0,
+    misc:0,
+    transferBuffer:0,
+    deliverooEarned:0,
+    deliverooDays:31,
+    note:"August move cycle: known commitments are £1,730.54, leaving about £96.01 before Council Tax, Klarna, Clearpay, moving costs, food or emergency. Anything above that needs extra income."
+  },
+  fixedBills:[
+    { name:"Rent - Doncaster", amount:700, dueDay:20, type:"standingOrder", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"Sheffield Credit Union", amount:200, dueDay:20, type:"standingOrder", category:"debt", account:"HSBC", pot:"Protected bills" },
+    { name:"Credit Spring", amount:144, dueDay:20, type:"directDebit", category:"debt", account:"HSBC", pot:"Protected bills" },
+    { name:"Utilities - E.ON currently", amount:106.21, dueDay:20, type:"directDebit", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"Council Tax - Doncaster Band A TBC", amount:0, dueDay:20, type:"directDebit", category:"home", account:"HSBC", pot:"Protected bills" },
+    { name:"EE phone", amount:37.46, dueDay:20, type:"directDebit", category:"phone", account:"HSBC", pot:"Protected bills" },
+    { name:"Water", amount:54.37, dueDay:20, type:"directDebit", category:"home", account:"Revolut", pot:"Bills pot" },
+    { name:"Broadband", amount:27.99, dueDay:20, type:"directDebit", category:"phone", account:"Revolut", pot:"Bills pot" },
+    { name:"Zero Deposit", amount:17.98, dueDay:20, type:"directDebit", category:"home", account:"Revolut", pot:"Bills pot" },
+    { name:"Very", amount:288, dueDay:20, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Zable", amount:60, dueDay:20, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"Capital One", amount:34.53, dueDay:20, type:"manualPayment", category:"debt", account:"Revolut", pot:"Debt pot" },
+    { name:"EV charging / Birmingham", amount:60, dueDay:20, type:"manualPayment", category:"transport", account:"Revolut", pot:"Commute pot" }
+  ],
+  placeholders:[
+    { name:"Klarna August TBC", source:"BNPL pot", priority:"must", note:"Monthly instalments vary - add amount when Klarna confirms." },
+    { name:"Clearpay August TBC", source:"BNPL pot", priority:"must", note:"Monthly instalments vary - add amount when Clearpay confirms." },
+    { name:"Bed", source:"Furniture pot", priority:"must", note:"Moving cost - add target amount." },
+    { name:"Mattress", source:"Furniture pot", priority:"must", note:"Moving cost - add target amount." },
+    { name:"Bedding", source:"Home Setup pot", priority:"soon", note:"Moving cost - add target amount." },
+    { name:"Home essentials", source:"Home Setup pot", priority:"soon", note:"Moving cost - add target amount." },
+    { name:"Moving supplies", source:"Move pot", priority:"soon", note:"Boxes, bags and move-day bits - add target amount." },
+    { name:"IKEA/B&M budget", source:"Move pot", priority:"soon", note:"Home setup shop - add target amount." }
+  ]
+};
+
 const POT_CONFIG = [
-  { key:"bills", label:"Bills", color:"#60a5fa", input:"potBills" },
-  { key:"debt", label:"Debt", color:"#ef4444", input:"potDebt" },
-  { key:"bnpl", label:"BNPL", color:"#a78bfa", input:"potBnpl" },
-  { key:"commute", label:"Commute", color:"#f59e0b", input:"potCommute" },
-  { key:"savings", label:"Savings", color:"#22c55e", input:"potSavings" },
-  { key:"emergency", label:"Emergency", color:"#fb7185", input:"potEmergency" },
-  { key:"fun", label:"Fun", color:"#2dd4bf", input:"potFun" },
-  { key:"misc", label:"Miscellaneous", color:"#94a3b8", input:"potMisc" }
+  { key:"bills", label:"Bills", color:"#60a5fa", input:"potBills", hubInput:"hubPotBills" },
+  { key:"debt", label:"Debt", color:"#ef4444", input:"potDebt", hubInput:"hubPotDebt" },
+  { key:"bnpl", label:"BNPL", color:"#a78bfa", input:"potBnpl", hubInput:"hubPotBnpl" },
+  { key:"commute", label:"Commute", color:"#f59e0b", input:"potCommute", hubInput:"hubPotCommute" },
+  { key:"savings", label:"Savings", color:"#22c55e", input:"potSavings", hubInput:"hubPotSavings" },
+  { key:"emergency", label:"Emergency", color:"#fb7185", input:"potEmergency", hubInput:"hubPotEmergency" },
+  { key:"business", label:"Business", color:"#38bdf8", input:"potBusiness", hubInput:"hubPotBusiness" },
+  { key:"move", label:"Move", color:"#f472b6", input:"potMove", hubInput:"hubPotMove" },
+  { key:"furniture", label:"Furniture", color:"#c084fc", input:"potFurniture", hubInput:"hubPotFurniture" },
+  { key:"homeSetup", label:"Home Setup", color:"#fb923c", input:"potHomeSetup", hubInput:"hubPotHomeSetup" },
+  { key:"fun", label:"Fun", color:"#2dd4bf", input:"potFun", hubInput:"hubPotFun" },
+  { key:"misc", label:"Miscellaneous", color:"#94a3b8", input:"potMisc", hubInput:"hubPotMisc" }
 ];
 
 let state = {
@@ -3298,7 +3445,8 @@ let state = {
   allocations: {},
   cleared: {},
   planVersion:0,
-  julyPlanVersion:0
+  julyPlanVersion:0,
+  augustPlanVersion:0
 };
 
 let editingBillId = null;
@@ -3464,7 +3612,8 @@ function load(){
       allocations: parsed.allocations || {},
       cleared: parsed.cleared || {},
       planVersion:Number(parsed.planVersion) || 0,
-      julyPlanVersion:Number(parsed.julyPlanVersion) || 0
+      julyPlanVersion:Number(parsed.julyPlanVersion) || 0,
+      augustPlanVersion:Number(parsed.augustPlanVersion) || 0
     };
 
     state.fixedBills = state.fixedBills.map(bill => ({
@@ -3524,6 +3673,7 @@ function load(){
     state.cleared = {};
     state.planVersion = 0;
     state.julyPlanVersion = 0;
+    state.augustPlanVersion = 0;
   }
 }
 
@@ -3547,6 +3697,10 @@ function getAllocationData(){
       commute:0,
       savings:0,
       emergency:0,
+      business:0,
+      move:0,
+      furniture:0,
+      homeSetup:0,
       fun:0,
       misc:0,
       transferBuffer:0,
@@ -4542,6 +4696,109 @@ function shouldAutoLoadJulyPlan(){
   return state.julyPlanVersion !== JULY_PLAN.planVersion || !hasJulyBills || !hasJulyPayments;
 }
 
+function buildAugustTrickles(){
+  const fixedItems = AUGUST_PLAN.fixedBills.map(bill => {
+    const dueDate = getCycleDateForDay(AUGUST_PLAN.month, bill.dueDay);
+
+    return {
+      name:bill.name,
+      amount:bill.amount,
+      priority:"must",
+      dueDate,
+      account:bill.account,
+      source:bill.pot,
+      paid:false,
+      funded:false,
+      deliveroo:false,
+      kind:"august-fixed",
+      note:`${getBillTypeLabel(bill.type)} due ${formatShortDate(dueDate)}`
+    };
+  });
+
+  const moveDate = getCycleStartKey(AUGUST_PLAN.month);
+  const placeholderItems = AUGUST_PLAN.placeholders.map(item => ({
+    name:item.name,
+    amount:0,
+    priority:item.priority,
+    dueDate:moveDate,
+    account:"Revolut",
+    source:item.source,
+    paid:false,
+    funded:false,
+    deliveroo:false,
+    kind:"august-placeholder",
+    note:item.note
+  }));
+
+  return [...fixedItems, ...placeholderItems];
+}
+
+function loadAugustPlan(askFirst = true){
+  if(askFirst){
+    const confirmed = confirm("Set up the August moving budget? This replaces only August's saved fixed and dated template items. June, July and spending history stay unchanged.");
+
+    if(!confirmed) return;
+  }
+
+  state.selectedMonth = AUGUST_PLAN.month;
+  state.months[AUGUST_PLAN.month] = {
+    income:AUGUST_PLAN.income,
+    startingBalance:0
+  };
+
+  state.fixedBills = state.fixedBills.filter(bill => bill.month !== AUGUST_PLAN.month);
+  state.fixedBills.push(...AUGUST_PLAN.fixedBills.map(bill => ({
+    id:uid(),
+    ...bill,
+    month:AUGUST_PLAN.month
+  })));
+
+  Object.keys(state.billPaid).forEach(key => {
+    if(key.startsWith(`${AUGUST_PLAN.month}:`)) delete state.billPaid[key];
+  });
+  Object.keys(state.billFunded).forEach(key => {
+    if(key.startsWith(`${AUGUST_PLAN.month}:`)) delete state.billFunded[key];
+  });
+
+  state.allocations[AUGUST_PLAN.month] = { ...AUGUST_PLAN.allocations };
+  state.cleared[AUGUST_PLAN.month] = [];
+
+  const augustTrickles = buildAugustTrickles();
+  const affectedCycleMonths = new Set(augustTrickles.map(trickle => payCycleKeyFromDate(trickle.dueDate, AUGUST_PLAN.month)));
+  const plannedKeys = new Set(augustTrickles.map(trickle => `${trickle.kind}:${normalizePaymentName(trickle.name)}:${trickle.dueDate}`));
+
+  state.trickles = state.trickles.filter(trickle => {
+    const cycleMonth = getItemPayCycleMonth(trickle, "dueDate", trickle.month);
+    const key = `${trickle.kind}:${normalizePaymentName(trickle.name)}:${trickle.dueDate || ""}`;
+
+    if(!affectedCycleMonths.has(cycleMonth)) return true;
+    if(plannedKeys.has(key)) return false;
+    return !(String(trickle.kind || "").startsWith("august-") && cycleMonth === AUGUST_PLAN.month);
+  });
+
+  state.trickles.push(...augustTrickles.map(trickle => ({
+    id:uid(),
+    ...trickle,
+    month:payCycleKeyFromDate(trickle.dueDate, AUGUST_PLAN.month)
+  })));
+  state.augustPlanVersion = AUGUST_PLAN.planVersion;
+
+  save();
+  render();
+  showToast("August move plan is ready. Add TBC amounts as soon as you know them.");
+}
+
+function shouldAutoLoadAugustPlan(){
+  const hasAugustBills = state.fixedBills.some(bill => bill.month === AUGUST_PLAN.month);
+  const augustTrickles = buildAugustTrickles();
+  const hasAugustPayments = augustTrickles.every(planItem => state.trickles.some(trickle =>
+    trickle.kind === planItem.kind
+    && normalizePaymentName(trickle.name) === normalizePaymentName(planItem.name)
+    && trickle.dueDate === planItem.dueDate
+  ));
+  return state.augustPlanVersion !== AUGUST_PLAN.planVersion || !hasAugustBills || !hasAugustPayments;
+}
+
 function shouldAutoLoadJunePlan(){
   if(state.planVersion !== JUNE_PLAN.planVersion){
     return true;
@@ -4618,6 +4875,10 @@ function clearSelectedMonth(){
     state.julyPlanVersion = 0;
   }
 
+  if(month === AUGUST_PLAN.month){
+    state.augustPlanVersion = 0;
+  }
+
   save();
   render();
   showToast(`${label} cleared. You can input it again.`);
@@ -4634,14 +4895,11 @@ function saveHubSetup(){
 
 function updateHubAllocationFromInputs(){
   const allocation = getAllocationData();
-  allocation.bills = numberValue(els.hubPotBills.value);
-  allocation.debt = numberValue(els.hubPotDebt.value);
-  allocation.bnpl = numberValue(els.hubPotBnpl.value);
-  allocation.commute = numberValue(els.hubPotCommute.value);
-  allocation.savings = numberValue(els.hubPotSavings.value);
-  allocation.emergency = numberValue(els.hubPotEmergency.value);
-  allocation.fun = numberValue(els.hubPotFun.value);
-  allocation.misc = numberValue(els.hubPotMisc.value);
+
+  POT_CONFIG.forEach(pot => {
+    allocation[pot.key] = numberValue(els[pot.hubInput].value);
+  });
+
   allocation.deliverooEarned = numberValue(els.hubDeliverooEarnedInput.value);
   allocation.deliverooDays = Math.max(1, Math.round(numberValue(els.hubDeliverooDaysInput.value) || 1));
   save();
@@ -5011,7 +5269,22 @@ function renderHubPots(snapshot){
   els.hubPotsPill.textContent = `${POT_CONFIG.filter(pot => numberValue(snapshot.allocation[pot.key]) > 0).length} active`;
   els.hubPotsList.innerHTML = "";
 
-  POT_CONFIG.slice(0,5).forEach(pot => {
+  const potIcons = {
+    Bills:"💧",
+    Debt:"💳",
+    BNPL:"K",
+    Commute:"🚗",
+    Savings:"★",
+    Emergency:"!",
+    Business:"B",
+    Move:"M",
+    Furniture:"F",
+    "Home Setup":"H",
+    Fun:"☺",
+    Miscellaneous:"…"
+  };
+
+  POT_CONFIG.forEach(pot => {
     const planned = numberValue(snapshot.allocation[pot.key]);
     const due = snapshot.remaining
       .filter(item => String(item.source || "").toLowerCase().includes(pot.label.toLowerCase()))
@@ -5020,7 +5293,7 @@ function renderHubPots(snapshot){
     const row = document.createElement("div");
     row.className = "hubPotRow";
     row.innerHTML = `
-      <div class="hubRowIcon" style="background:${pot.color}22;">${pot.label === "Bills" ? "💧" : pot.label === "Debt" ? "💳" : pot.label === "BNPL" ? "K" : pot.label === "Commute" ? "🚗" : "★"}</div>
+      <div class="hubRowIcon" style="background:${pot.color}22;">${escapeHtml(potIcons[pot.label] || "£")}</div>
       <div class="hubRowMain">
         <strong>${escapeHtml(pot.label)} Pot</strong>
         <small>${due > 0 ? "Outstanding from this pot" : "No outstanding item tagged here"}</small>
@@ -5168,14 +5441,9 @@ function renderFinanceHub(){
   els.hubIncomeAmount.textContent = money(snapshot.income);
   setInputValueUnlessEditing(els.hubIncomeInput, snapshot.monthData.income);
   setInputValueUnlessEditing(els.hubBalanceInput, snapshot.monthData.startingBalance);
-  setInputValueUnlessEditing(els.hubPotBills, snapshot.allocation.bills);
-  setInputValueUnlessEditing(els.hubPotDebt, snapshot.allocation.debt);
-  setInputValueUnlessEditing(els.hubPotBnpl, snapshot.allocation.bnpl);
-  setInputValueUnlessEditing(els.hubPotCommute, snapshot.allocation.commute);
-  setInputValueUnlessEditing(els.hubPotSavings, snapshot.allocation.savings);
-  setInputValueUnlessEditing(els.hubPotEmergency, snapshot.allocation.emergency);
-  setInputValueUnlessEditing(els.hubPotFun, snapshot.allocation.fun);
-  setInputValueUnlessEditing(els.hubPotMisc, snapshot.allocation.misc);
+  POT_CONFIG.forEach(pot => {
+    setInputValueUnlessEditing(els[pot.hubInput], snapshot.allocation[pot.key]);
+  });
   setInputValueUnlessEditing(els.hubDeliverooEarnedInput, snapshot.allocation.deliverooEarned);
   setInputValueUnlessEditing(els.hubDeliverooDaysInput, snapshot.allocation.deliverooDays);
   els.hubHsbcAmount.textContent = money(snapshot.hsbcStay);
@@ -5190,10 +5458,17 @@ function renderFinanceHub(){
   els.hubDeliverooCopy.textContent = snapshot.deliverooRemaining > 0
     ? `About ${money(snapshot.deliverooDaily)} per work day from Deliveroo.`
     : "Mark payments for Deliveroo to build a target.";
-  els.hubProtectedText.textContent = snapshot.protectedBills > 0
-    ? `${money(snapshot.protectedBills)} fixed HSBC bills are protected first.`
-    : "Add fixed HSBC bills to see what is protected.";
-  els.hubSafePill.textContent = snapshot.buffer < 0 ? `${money(Math.abs(snapshot.buffer))} gap` : "You're on track";
+
+  if(state.selectedMonth === AUGUST_PLAN.month){
+    els.hubProtectedText.textContent = `Known August costs leave ${money(snapshot.buffer)} before Council Tax, BNPL and moving costs.`;
+    els.hubSafePill.textContent = snapshot.buffer < 0 ? `${money(Math.abs(snapshot.buffer))} gap` : `${money(snapshot.buffer)} before TBC`;
+  }else{
+    els.hubProtectedText.textContent = snapshot.protectedBills > 0
+      ? `${money(snapshot.protectedBills)} fixed HSBC bills are protected first.`
+      : "Add fixed HSBC bills to see what is protected.";
+    els.hubSafePill.textContent = snapshot.buffer < 0 ? `${money(Math.abs(snapshot.buffer))} gap` : "You're on track";
+  }
+
   els.hubSafePill.style.color = snapshot.buffer < 0 ? "#fecaca" : "#ffc2e6";
   els.hubUpcomingPill.textContent = snapshot.remaining.length === 1 ? "1 upcoming" : `${snapshot.remaining.length} upcoming`;
 
@@ -5640,20 +5915,13 @@ els.hubRefreshBtn.addEventListener("click", () => {
   showToast("Finance hub refreshed.");
 });
 els.restorePlanBtn.addEventListener("click", loadJunePlan);
-els.loadJulyPlanBtn.addEventListener("click", loadJulyPlan);
-els.hubLoadJulyPlanBtn.addEventListener("click", loadJulyPlan);
+els.loadJulyPlanBtn.addEventListener("click", loadAugustPlan);
+els.hubLoadJulyPlanBtn.addEventListener("click", loadAugustPlan);
 els.downloadJulyCalendarBtn.addEventListener("click", downloadPaymentCalendar);
 els.hubDownloadCalendarBtn.addEventListener("click", downloadPaymentCalendar);
 
 [
-  els.hubPotBills,
-  els.hubPotDebt,
-  els.hubPotBnpl,
-  els.hubPotCommute,
-  els.hubPotSavings,
-  els.hubPotEmergency,
-  els.hubPotFun,
-  els.hubPotMisc,
+  ...POT_CONFIG.map(pot => els[pot.hubInput]),
   els.hubDeliverooEarnedInput,
   els.hubDeliverooDaysInput
 ].forEach(input => {
