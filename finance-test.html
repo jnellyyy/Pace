@@ -1966,7 +1966,7 @@ textarea{
             <span>Transfer to Revolut</span>
           </div>
           <strong id="hubRevolutAmount">£0.00</strong>
-          <small>Debt, BNPL, commute, extras and pots.</small>
+          <small>Auto-adds unpaid Revolut payments plus extra pot targets.</small>
           <div class="hubBar"><span id="hubRevolutFill"></span></div>
           <div class="hubPercent" id="hubRevolutPercent">0% of income</div>
         </article>
@@ -4969,7 +4969,9 @@ function updateHubAllocationFromInputs(){
   const allocation = getAllocationData();
 
   POT_CONFIG.forEach(pot => {
-    allocation[pot.key] = numberValue(els[pot.hubInput].value);
+    if(document.activeElement === els[pot.hubInput]){
+      allocation[pot.key] = numberValue(els[pot.hubInput].value);
+    }
   });
 
   allocation.deliverooEarned = numberValue(els.hubDeliverooEarnedInput.value);
@@ -5521,17 +5523,95 @@ function hubTagForPayment(item){
   return { label:"Due", className:"bnpl" };
 }
 
+function isRevolutPayment(item){
+  return String(item.account || "").toLowerCase() === "revolut";
+}
+
+function potKeyFromSource(source){
+  const text = String(source || "").toLowerCase();
+  const matched = POT_CONFIG.find(pot => text.includes(pot.label.toLowerCase()) || text.includes(pot.key.toLowerCase()));
+  return matched ? matched.key : "misc";
+}
+
+function buildEmptyPotTotals(){
+  return POT_CONFIG.reduce((totals,pot) => {
+    totals[pot.key] = 0;
+    return totals;
+  }, {});
+}
+
+function getAutomaticRevolutItems(remaining){
+  const items = [];
+  const matchedTrickles = new Set();
+
+  remaining.forEach(item => {
+    if(!isRevolutPayment(item) || item.funded || item.deliveroo) return;
+
+    const matchKey = `${normalizePaymentName(item.name)}:${item.dueDate || ""}`;
+    matchedTrickles.add(matchKey);
+    items.push(item);
+  });
+
+  getMonthBills().forEach(bill => {
+    if(!isRevolutPayment(bill) || isBillPaid(bill.id) || isBillFunded(bill.id)) return;
+
+    const dueDate = getBillDueDate(bill);
+    const matchKey = `${normalizePaymentName(bill.name)}:${dueDate}`;
+
+    if(matchedTrickles.has(matchKey)) return;
+
+    items.push({
+      id:`bill-${bill.id}`,
+      name:bill.name,
+      amount:bill.amount,
+      dueDate,
+      account:bill.account,
+      source:bill.pot,
+      funded:false,
+      deliveroo:false,
+      paid:false,
+      kind:"fixed-bill"
+    });
+  });
+
+  return items;
+}
+
+function getAutomaticRevolutAllocation(remaining){
+  const totals = buildEmptyPotTotals();
+
+  getAutomaticRevolutItems(remaining).forEach(item => {
+    const key = potKeyFromSource(item.source || item.pot);
+    totals[key] = numberValue(totals[key]) + numberValue(item.amount);
+  });
+
+  return totals;
+}
+
+function mergeEffectiveAllocation(manualAllocation, automaticAllocation){
+  const effective = { ...manualAllocation };
+
+  POT_CONFIG.forEach(pot => {
+    effective[pot.key] = Math.max(numberValue(manualAllocation[pot.key]), numberValue(automaticAllocation[pot.key]));
+  });
+
+  return effective;
+}
+
 function getHubMoneySnapshot(){
   const monthData = getMonthData();
   const allocation = getAllocationData();
   const income = numberValue(monthData.income);
-  const exactTransfer = allocationTotal(allocation);
+  const remaining = getOrderedPaymentTrickles().filter(item => !item.paid);
+  const automaticRevolutAllocation = getAutomaticRevolutAllocation(remaining);
+  const effectiveAllocation = mergeEffectiveAllocation(allocation, automaticRevolutAllocation);
+  const exactTransfer = allocationTotal(effectiveAllocation);
+  const automaticRevolutTransfer = allocationTotal(automaticRevolutAllocation);
   const recommendedTransfer = exactTransfer + numberValue(allocation.transferBuffer);
   const protectedBills = getMonthBills()
     .filter(bill => bill.account === "HSBC")
     .reduce((sum,bill) => sum + numberValue(bill.amount),0);
   const hsbcStay = income > 0 ? Math.max(income - recommendedTransfer,0) : protectedBills;
-  const remaining = getOrderedPaymentTrickles().filter(item => !item.paid);
   const fundedTotal = remaining
     .filter(item => item.funded)
     .reduce((sum,item) => sum + numberValue(item.amount),0);
@@ -5546,8 +5626,11 @@ function getHubMoneySnapshot(){
   return {
     monthData,
     allocation,
+    automaticRevolutAllocation,
+    effectiveAllocation,
     income,
     exactTransfer,
+    automaticRevolutTransfer,
     recommendedTransfer,
     protectedBills,
     hsbcStay,
@@ -5595,12 +5678,11 @@ function renderHubPayments(rows){
 }
 
 function renderHubPots(snapshot){
-  const maxDue = Math.max(1, ...POT_CONFIG.map(pot => snapshot.remaining
-    .filter(item => String(item.source || "").toLowerCase().includes(pot.label.toLowerCase()))
-    .reduce((sum,item) => sum + numberValue(item.amount),0)
+  const maxDue = Math.max(1, ...POT_CONFIG.map(pot =>
+    numberValue(snapshot.automaticRevolutAllocation[pot.key])
   ));
 
-  els.hubPotsPill.textContent = `${POT_CONFIG.filter(pot => numberValue(snapshot.allocation[pot.key]) > 0).length} active`;
+  els.hubPotsPill.textContent = `${POT_CONFIG.filter(pot => numberValue(snapshot.effectiveAllocation[pot.key]) > 0).length} active`;
   els.hubPotsList.innerHTML = "";
 
   const potIcons = {
@@ -5619,19 +5701,18 @@ function renderHubPots(snapshot){
   };
 
   POT_CONFIG.forEach(pot => {
-    const planned = numberValue(snapshot.allocation[pot.key]);
-    const due = snapshot.remaining
-      .filter(item => String(item.source || "").toLowerCase().includes(pot.label.toLowerCase()))
-      .reduce((sum,item) => sum + numberValue(item.amount),0);
-    const valueText = due > 0 ? `${money(due)} due` : `${money(planned)} set`;
+    const planned = numberValue(snapshot.effectiveAllocation[pot.key]);
+    const automatic = numberValue(snapshot.automaticRevolutAllocation[pot.key]);
+    const manual = numberValue(snapshot.allocation[pot.key]);
+    const valueText = automatic > 0 ? `${money(automatic)} to transfer` : `${money(manual)} set`;
     const row = document.createElement("div");
     row.className = "hubPotRow";
     row.innerHTML = `
       <div class="hubRowIcon" style="background:${pot.color}22;">${escapeHtml(potIcons[pot.label] || "£")}</div>
       <div class="hubRowMain">
         <strong>${escapeHtml(pot.label)} Pot</strong>
-        <small>${due > 0 ? "Outstanding from this pot" : "No outstanding item tagged here"}</small>
-        <div class="hubPotProgress"><span style="width:${percentOf(due, maxDue)}%; background:${pot.color};"></span></div>
+        <small>${automatic > 0 ? "Auto-added from unpaid Revolut payments" : "Manual extra pot amount"}</small>
+        <div class="hubPotProgress"><span style="width:${percentOf(planned, maxDue)}%; background:${pot.color};"></span></div>
       </div>
       <div class="hubAmount">${valueText}</div>
     `;
@@ -5776,7 +5857,7 @@ function renderFinanceHub(){
   setInputValueUnlessEditing(els.hubIncomeInput, snapshot.monthData.income);
   setInputValueUnlessEditing(els.hubBalanceInput, snapshot.monthData.startingBalance);
   POT_CONFIG.forEach(pot => {
-    setInputValueUnlessEditing(els[pot.hubInput], snapshot.allocation[pot.key]);
+    setInputValueUnlessEditing(els[pot.hubInput], snapshot.effectiveAllocation[pot.key]);
   });
   setInputValueUnlessEditing(els.hubDeliverooEarnedInput, snapshot.allocation.deliverooEarned);
   setInputValueUnlessEditing(els.hubDeliverooDaysInput, snapshot.allocation.deliverooDays);
@@ -5785,7 +5866,9 @@ function renderFinanceHub(){
   els.hubHsbcPercent.textContent = `${Math.round(hsbcPercent)}% of income`;
   els.hubRevolutAmount.textContent = money(snapshot.recommendedTransfer);
   els.hubRevolutFill.style.width = `${revolutPercent}%`;
-  els.hubRevolutPercent.textContent = `${Math.round(revolutPercent)}% of income`;
+  els.hubRevolutPercent.textContent = snapshot.automaticRevolutTransfer > 0
+    ? `${money(snapshot.automaticRevolutTransfer)} auto from Revolut payments`
+    : `${Math.round(revolutPercent)}% of income`;
   els.hubDeliverooAmount.textContent = money(snapshot.deliverooRemaining);
   els.hubDeliverooFill.style.width = `${deliverooPercent}%`;
   els.hubDeliverooPercent.textContent = `${Math.round(deliverooPercent)}% of income`;
