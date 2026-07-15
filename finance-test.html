@@ -704,6 +704,115 @@ textarea{
   margin-top:8px;
 }
 
+.movePrivateCard{
+  overflow:hidden;
+}
+
+.movePrivateMetrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.moveMetric{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.05);
+  border-radius:16px;
+  padding:10px 11px;
+  min-width:0;
+}
+
+.moveMetric span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+.moveMetric strong{
+  display:block;
+  margin-top:5px;
+  font-size:22px;
+  letter-spacing:-0.03em;
+}
+
+.movePrivateForms{
+  display:grid;
+  gap:12px;
+}
+
+.movePrivateBlock{
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:12px;
+}
+
+.movePrivateSubhead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.movePrivateSubhead h4{
+  margin:0;
+  font-size:14px;
+  color:#ffc2e6;
+}
+
+.movePrivateList{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+
+.movePrivateRow{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.055);
+  border-radius:16px;
+  padding:10px;
+}
+
+.movePrivateRow strong{
+  display:block;
+  font-size:14px;
+}
+
+.movePrivateRow small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+.movePrivateRight{
+  display:grid;
+  justify-items:end;
+  gap:7px;
+  text-align:right;
+}
+
+.movePrivateAmount{
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.movePrivateActions{
+  display:flex;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.movePrivateStatus{
+  color:#fde7b0;
+}
+
 .hubIncomeEdit,
 .hubInlineInputs{
   display:grid;
@@ -1819,8 +1928,22 @@ textarea{
   .hubPotInputGrid,
   .hubIncomeEdit,
   .hubInlineInputs,
-  .hubMonthInline{
+  .hubMonthInline,
+  .movePrivateMetrics{
     grid-template-columns:1fr;
+  }
+
+  .movePrivateRow{
+    grid-template-columns:1fr;
+  }
+
+  .movePrivateRight{
+    justify-items:start;
+    text-align:left;
+  }
+
+  .movePrivateActions{
+    justify-content:flex-start;
   }
 
   .hubDayPill{
@@ -2142,6 +2265,146 @@ textarea{
                     <span>Total</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="hubCard movePrivateCard">
+            <div class="hubCardHead">
+              <div class="hubCardTitle">
+                <span>🏠</span>
+                <h3>The Move</h3>
+              </div>
+              <div class="hubPill" id="movePrivatePill">private</div>
+            </div>
+
+            <div class="movePrivateMetrics">
+              <div class="moveMetric">
+                <span>Move costs</span>
+                <strong id="movePrivateCostTotal">£0.00</strong>
+              </div>
+              <div class="moveMetric">
+                <span>Still needed</span>
+                <strong id="movePrivateNeededTotal">£0.00</strong>
+              </div>
+              <div class="moveMetric">
+                <span>New fixed bills</span>
+                <strong id="movePrivateMonthlyTotal">£0.00</strong>
+              </div>
+              <div class="moveMetric">
+                <span>Left after bills</span>
+                <strong id="movePrivateLeftAfterBills">£0.00</strong>
+              </div>
+            </div>
+
+            <div class="movePrivateForms">
+              <div class="movePrivateBlock">
+                <div class="movePrivateSubhead">
+                  <h4>Move costs</h4>
+                  <span class="hubPill" id="movePrivateItemCount">0 items</span>
+                </div>
+                <div class="formGrid three">
+                  <div class="field">
+                    <label>thing</label>
+                    <input id="movePrivateItemNameInput" type="text" placeholder="Bed, deposit, boxes">
+                  </div>
+                  <div class="field">
+                    <label>cost</label>
+                    <input id="movePrivateItemCostInput" type="number" min="0" step="0.01" placeholder="0.00">
+                  </div>
+                  <div class="field">
+                    <label>in pot</label>
+                    <input id="movePrivateItemSavedInput" type="number" min="0" step="0.01" placeholder="0.00">
+                  </div>
+                </div>
+                <div class="formGrid three" style="margin-top:10px;">
+                  <div class="field">
+                    <label>pot</label>
+                    <select id="movePrivateItemPotInput">
+                      <option value="Move pot">Move pot</option>
+                      <option value="Furniture pot">Furniture pot</option>
+                      <option value="Home Setup pot">Home Setup pot</option>
+                      <option value="Emergency pot">Emergency pot</option>
+                      <option value="Miscellaneous pot">Miscellaneous pot</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>status</label>
+                    <select id="movePrivateItemStatusInput">
+                      <option value="needed">needed</option>
+                      <option value="inPot">money in pot</option>
+                      <option value="bought">bought</option>
+                      <option value="later">later</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>date</label>
+                    <input id="movePrivateItemDateInput" type="date">
+                  </div>
+                </div>
+                <div class="actions">
+                  <button type="button" class="btn btnPrimary" id="movePrivateAddItemBtn">save cost</button>
+                  <button type="button" class="btn btnSoft" id="movePrivateClearItemBtn">clear</button>
+                </div>
+                <div class="movePrivateList" id="movePrivateItemList"></div>
+              </div>
+
+              <div class="movePrivateBlock">
+                <div class="movePrivateSubhead">
+                  <h4>New monthly fixed bills</h4>
+                  <span class="hubPill" id="movePrivateBillCount">0 bills</span>
+                </div>
+                <div class="formGrid three">
+                  <div class="field">
+                    <label>bill</label>
+                    <input id="movePrivateBillNameInput" type="text" placeholder="Rent, council tax, water">
+                  </div>
+                  <div class="field">
+                    <label>amount</label>
+                    <input id="movePrivateBillAmountInput" type="number" min="0" step="0.01" placeholder="0.00">
+                  </div>
+                  <div class="field">
+                    <label>due day</label>
+                    <input id="movePrivateBillDueInput" type="number" min="1" max="31" step="1" value="20">
+                  </div>
+                </div>
+                <div class="formGrid three" style="margin-top:10px;">
+                  <div class="field">
+                    <label>type</label>
+                    <select id="movePrivateBillTypeInput">
+                      <option value="standingOrder">standing order</option>
+                      <option value="directDebit">direct debit</option>
+                      <option value="manualPayment">manual payment</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>account</label>
+                    <select id="movePrivateBillAccountInput">
+                      <option value="HSBC">HSBC</option>
+                      <option value="Revolut">Revolut</option>
+                      <option value="Cash">Cash</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>pot</label>
+                    <select id="movePrivateBillPotInput">
+                      <option value="Protected bills">Protected bills</option>
+                      <option value="Bills pot">Bills pot</option>
+                      <option value="Debt pot">Debt pot</option>
+                      <option value="Commute pot">Commute pot</option>
+                      <option value="Move pot">Move pot</option>
+                      <option value="Home Setup pot">Home Setup pot</option>
+                      <option value="Miscellaneous pot">Miscellaneous pot</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button type="button" class="btn btnPrimary" id="movePrivateAddBillBtn">save bill</button>
+                  <button type="button" class="btn btnSoft" id="movePrivateApplyBillsBtn">add bills to this cycle</button>
+                  <button type="button" class="btn btnSoft" id="movePrivateClearBillBtn">clear</button>
+                </div>
+                <div class="movePrivateList" id="movePrivateBillList"></div>
               </div>
             </div>
           </section>
@@ -3154,6 +3417,32 @@ const els = {
   hubSchedulePill: document.getElementById("hubSchedulePill"),
   hubScheduleList: document.getElementById("hubScheduleList"),
   hubScheduleTotal: document.getElementById("hubScheduleTotal"),
+  movePrivatePill: document.getElementById("movePrivatePill"),
+  movePrivateCostTotal: document.getElementById("movePrivateCostTotal"),
+  movePrivateNeededTotal: document.getElementById("movePrivateNeededTotal"),
+  movePrivateMonthlyTotal: document.getElementById("movePrivateMonthlyTotal"),
+  movePrivateLeftAfterBills: document.getElementById("movePrivateLeftAfterBills"),
+  movePrivateItemCount: document.getElementById("movePrivateItemCount"),
+  movePrivateItemNameInput: document.getElementById("movePrivateItemNameInput"),
+  movePrivateItemCostInput: document.getElementById("movePrivateItemCostInput"),
+  movePrivateItemSavedInput: document.getElementById("movePrivateItemSavedInput"),
+  movePrivateItemPotInput: document.getElementById("movePrivateItemPotInput"),
+  movePrivateItemStatusInput: document.getElementById("movePrivateItemStatusInput"),
+  movePrivateItemDateInput: document.getElementById("movePrivateItemDateInput"),
+  movePrivateAddItemBtn: document.getElementById("movePrivateAddItemBtn"),
+  movePrivateClearItemBtn: document.getElementById("movePrivateClearItemBtn"),
+  movePrivateItemList: document.getElementById("movePrivateItemList"),
+  movePrivateBillCount: document.getElementById("movePrivateBillCount"),
+  movePrivateBillNameInput: document.getElementById("movePrivateBillNameInput"),
+  movePrivateBillAmountInput: document.getElementById("movePrivateBillAmountInput"),
+  movePrivateBillDueInput: document.getElementById("movePrivateBillDueInput"),
+  movePrivateBillTypeInput: document.getElementById("movePrivateBillTypeInput"),
+  movePrivateBillAccountInput: document.getElementById("movePrivateBillAccountInput"),
+  movePrivateBillPotInput: document.getElementById("movePrivateBillPotInput"),
+  movePrivateAddBillBtn: document.getElementById("movePrivateAddBillBtn"),
+  movePrivateApplyBillsBtn: document.getElementById("movePrivateApplyBillsBtn"),
+  movePrivateClearBillBtn: document.getElementById("movePrivateClearBillBtn"),
+  movePrivateBillList: document.getElementById("movePrivateBillList"),
   monthInput: document.getElementById("monthInput"),
   previousMonthBtn: document.getElementById("previousMonthBtn"),
   currentMonthBtn: document.getElementById("currentMonthBtn"),
@@ -3516,6 +3805,10 @@ let state = {
   billFunded: {},
   allocations: {},
   cleared: {},
+  movePrivate: {
+    items: [],
+    bills: []
+  },
   planVersion:0,
   julyPlanVersion:0,
   augustPlanVersion:0
@@ -3525,6 +3818,8 @@ let editingBillId = null;
 let editingSpendId = null;
 let editingTrickleId = null;
 let editingClearedId = null;
+let editingMoveItemId = null;
+let editingMoveBillId = null;
 let financeEditing = null;
 
 function uid(){
@@ -3683,6 +3978,7 @@ function load(){
       billFunded: parsed.billFunded || {},
       allocations: parsed.allocations || {},
       cleared: parsed.cleared || {},
+      movePrivate: parsed.movePrivate || { items: [], bills: [] },
       planVersion:Number(parsed.planVersion) || 0,
       julyPlanVersion:Number(parsed.julyPlanVersion) || 0,
       augustPlanVersion:Number(parsed.augustPlanVersion) || 0
@@ -3737,6 +4033,28 @@ function load(){
       }));
     });
 
+    state.movePrivate = state.movePrivate || { items: [], bills: [] };
+    state.movePrivate.items = (state.movePrivate.items || []).map(item => ({
+      id:item.id || uid(),
+      name:item.name || "Move item",
+      cost:numberValue(item.cost ?? item.amount),
+      saved:numberValue(item.saved),
+      pot:item.pot || item.source || "Move pot",
+      status:item.status || "needed",
+      dueDate:item.dueDate || ""
+    }));
+    state.movePrivate.bills = (state.movePrivate.bills || []).map(bill => ({
+      id:bill.id || uid(),
+      name:bill.name || "New bill",
+      amount:numberValue(bill.amount),
+      dueDay:Math.min(Math.max(Number(bill.dueDay) || PAYDAY_DAY,1),31),
+      type:bill.type || "directDebit",
+      category:bill.category || "home",
+      account:bill.account || "HSBC",
+      pot:bill.pot || (bill.account === "Revolut" ? "Bills pot" : "Protected bills"),
+      active:Boolean(bill.active)
+    }));
+
   }catch(error){
     state.selectedMonth = getCurrentMonth();
     state.trickles = [];
@@ -3744,6 +4062,7 @@ function load(){
     state.billFunded = {};
     state.allocations = {};
     state.cleared = {};
+    state.movePrivate = { items: [], bills: [] };
     state.planVersion = 0;
     state.julyPlanVersion = 0;
     state.augustPlanVersion = 0;
@@ -4302,6 +4621,290 @@ function deleteClearedItem(id){
   save();
   renderCleared();
   showToast("Cleared item deleted.");
+}
+
+function getMovePrivateData(){
+  if(!state.movePrivate){
+    state.movePrivate = { items: [], bills: [] };
+  }
+
+  state.movePrivate.items = state.movePrivate.items || [];
+  state.movePrivate.bills = state.movePrivate.bills || [];
+
+  return state.movePrivate;
+}
+
+function getMoveItemStatusLabel(status){
+  const labels = {
+    needed:"needed",
+    inPot:"money in pot",
+    bought:"bought",
+    later:"later"
+  };
+
+  return labels[status] || "needed";
+}
+
+function getMoveItemRemaining(item){
+  if(item.status === "bought" || item.status === "later") return 0;
+  return Math.max(numberValue(item.cost) - numberValue(item.saved),0);
+}
+
+function getMovePrivateSnapshot(){
+  const data = getMovePrivateData();
+  const costTotal = data.items.reduce((sum,item) => sum + numberValue(item.cost),0);
+  const savedTotal = data.items.reduce((sum,item) => sum + Math.min(numberValue(item.saved), numberValue(item.cost)),0);
+  const neededTotal = data.items.reduce((sum,item) => sum + getMoveItemRemaining(item),0);
+  const monthlyTotal = data.bills.reduce((sum,bill) => sum + numberValue(bill.amount),0);
+  const income = numberValue(getMonthData().income);
+
+  return {
+    data,
+    costTotal,
+    savedTotal,
+    neededTotal,
+    monthlyTotal,
+    leftAfterBills: income ? income - monthlyTotal : 0
+  };
+}
+
+function clearMovePrivateItemForm(){
+  editingMoveItemId = null;
+  els.movePrivateItemNameInput.value = "";
+  els.movePrivateItemCostInput.value = "";
+  els.movePrivateItemSavedInput.value = "";
+  els.movePrivateItemPotInput.value = "Move pot";
+  els.movePrivateItemStatusInput.value = "needed";
+  els.movePrivateItemDateInput.value = "";
+  els.movePrivateAddItemBtn.textContent = "save cost";
+}
+
+function clearMovePrivateBillForm(){
+  editingMoveBillId = null;
+  els.movePrivateBillNameInput.value = "";
+  els.movePrivateBillAmountInput.value = "";
+  els.movePrivateBillDueInput.value = PAYDAY_DAY;
+  els.movePrivateBillTypeInput.value = "standingOrder";
+  els.movePrivateBillAccountInput.value = "HSBC";
+  els.movePrivateBillPotInput.value = "Protected bills";
+  els.movePrivateAddBillBtn.textContent = "save bill";
+}
+
+function saveMovePrivateItem(){
+  const data = getMovePrivateData();
+  const name = els.movePrivateItemNameInput.value.trim();
+  const cost = numberValue(els.movePrivateItemCostInput.value);
+  const savedAmount = numberValue(els.movePrivateItemSavedInput.value);
+  const pot = els.movePrivateItemPotInput.value;
+  const status = els.movePrivateItemStatusInput.value;
+  const dueDate = els.movePrivateItemDateInput.value;
+
+  if(!name){
+    showToast("Add the move item.");
+    return;
+  }
+
+  if(cost <= 0){
+    showToast("Add the cost.");
+    return;
+  }
+
+  if(editingMoveItemId){
+    const item = data.items.find(entry => entry.id === editingMoveItemId);
+
+    if(item){
+      Object.assign(item, { name, cost, saved:savedAmount, pot, status, dueDate });
+    }
+  }else{
+    data.items.push({
+      id:uid(),
+      name,
+      cost,
+      saved:savedAmount,
+      pot,
+      status,
+      dueDate
+    });
+  }
+
+  save();
+  clearMovePrivateItemForm();
+  renderMovePrivate();
+  showToast("Move cost saved.");
+}
+
+function editMovePrivateItem(id){
+  const item = getMovePrivateData().items.find(entry => entry.id === id);
+
+  if(!item) return;
+
+  editingMoveItemId = id;
+  els.movePrivateItemNameInput.value = item.name || "";
+  els.movePrivateItemCostInput.value = numberValue(item.cost) || "";
+  els.movePrivateItemSavedInput.value = numberValue(item.saved) || "";
+  els.movePrivateItemPotInput.value = item.pot || "Move pot";
+  els.movePrivateItemStatusInput.value = item.status || "needed";
+  els.movePrivateItemDateInput.value = item.dueDate || "";
+  els.movePrivateAddItemBtn.textContent = "update cost";
+  els.movePrivateItemNameInput.focus();
+}
+
+function deleteMovePrivateItem(id){
+  const data = getMovePrivateData();
+  data.items = data.items.filter(item => item.id !== id);
+  save();
+  renderMovePrivate();
+  showToast("Move cost deleted.");
+}
+
+function inferMoveBillCategory(name, type){
+  const text = `${name || ""} ${type || ""}`.toLowerCase();
+
+  if(/phone|broadband|internet|ee/.test(text)) return "phone";
+  if(/credit|debt|loan|lender|zable|capital|klarna|clearpay/.test(text)) return "debt";
+  if(/travel|car|charging|commute|ev/.test(text)) return "transport";
+  if(/subscription|netflix|spotify|deposit/.test(text)) return "subscription";
+  return "home";
+}
+
+function saveMovePrivateBill(){
+  const data = getMovePrivateData();
+  const name = els.movePrivateBillNameInput.value.trim();
+  const amount = numberValue(els.movePrivateBillAmountInput.value);
+  const dueDay = Number(els.movePrivateBillDueInput.value);
+  const type = els.movePrivateBillTypeInput.value;
+  const account = els.movePrivateBillAccountInput.value;
+  const pot = els.movePrivateBillPotInput.value;
+  const category = inferMoveBillCategory(name, type);
+
+  if(!name){
+    showToast("Add the bill name.");
+    return;
+  }
+
+  if(amount <= 0){
+    showToast("Add the bill amount.");
+    return;
+  }
+
+  if(!dueDay || dueDay < 1 || dueDay > 31){
+    showToast("Due day must be 1 to 31.");
+    return;
+  }
+
+  if(editingMoveBillId){
+    const bill = data.bills.find(entry => entry.id === editingMoveBillId);
+
+    if(bill){
+      Object.assign(bill, { name, amount, dueDay, type, category, account, pot });
+    }
+  }else{
+    data.bills.push({
+      id:uid(),
+      name,
+      amount,
+      dueDay,
+      type,
+      category,
+      account,
+      pot,
+      active:false
+    });
+  }
+
+  save();
+  clearMovePrivateBillForm();
+  renderMovePrivate();
+  showToast("New monthly bill saved.");
+}
+
+function editMovePrivateBill(id){
+  const bill = getMovePrivateData().bills.find(entry => entry.id === id);
+
+  if(!bill) return;
+
+  editingMoveBillId = id;
+  els.movePrivateBillNameInput.value = bill.name || "";
+  els.movePrivateBillAmountInput.value = numberValue(bill.amount) || "";
+  els.movePrivateBillDueInput.value = bill.dueDay || PAYDAY_DAY;
+  els.movePrivateBillTypeInput.value = bill.type || "directDebit";
+  els.movePrivateBillAccountInput.value = bill.account || "HSBC";
+  els.movePrivateBillPotInput.value = bill.pot || "Protected bills";
+  els.movePrivateAddBillBtn.textContent = "update bill";
+  els.movePrivateBillNameInput.focus();
+}
+
+function deleteMovePrivateBill(id){
+  const data = getMovePrivateData();
+  data.bills = data.bills.filter(bill => bill.id !== id);
+  save();
+  renderMovePrivate();
+  showToast("Move bill deleted.");
+}
+
+function upsertMovePrivateBillIntoCycle(bill){
+  const existing = state.fixedBills.find(item =>
+    item.month === state.selectedMonth
+    && normalizePaymentName(item.name) === normalizePaymentName(bill.name)
+    && item.account === bill.account
+  );
+
+  const data = {
+    name:bill.name,
+    amount:numberValue(bill.amount),
+    dueDay:bill.dueDay || PAYDAY_DAY,
+    type:bill.type || "directDebit",
+    category:bill.category || inferMoveBillCategory(bill.name, bill.type),
+    account:bill.account || "HSBC",
+    pot:bill.pot || "Protected bills",
+    month:state.selectedMonth
+  };
+
+  if(existing){
+    Object.assign(existing, data);
+    return "updated";
+  }
+
+  state.fixedBills.push({
+    id:uid(),
+    ...data
+  });
+  return "added";
+}
+
+function applyMovePrivateBillToCycle(id){
+  const bill = getMovePrivateData().bills.find(entry => entry.id === id);
+
+  if(!bill) return;
+
+  const result = upsertMovePrivateBillIntoCycle(bill);
+  bill.active = true;
+  save();
+  render();
+  showToast(result === "updated" ? "Move bill updated in this cycle." : "Move bill added to this cycle.");
+}
+
+function applyMovePrivateBillsToCycle(){
+  const bills = getMovePrivateData().bills.filter(bill => numberValue(bill.amount) > 0);
+
+  if(!bills.length){
+    showToast("Add new monthly bills first.");
+    return;
+  }
+
+  let added = 0;
+  let updated = 0;
+
+  bills.forEach(bill => {
+    const result = upsertMovePrivateBillIntoCycle(bill);
+    bill.active = true;
+    if(result === "updated") updated += 1;
+    if(result === "added") added += 1;
+  });
+
+  save();
+  render();
+  showToast(`${added} added, ${updated} updated for this cycle.`);
 }
 
 function addBill(){
@@ -6359,6 +6962,90 @@ function renderHubSchedule(snapshot){
     : `<div class="empty">No BNPL items waiting this pay cycle.</div>`;
 }
 
+function renderMovePrivate(){
+  const snapshot = getMovePrivateSnapshot();
+  const { data } = snapshot;
+
+  els.movePrivatePill.textContent = `${data.items.length} costs · ${data.bills.length} bills`;
+  els.movePrivateCostTotal.textContent = money(snapshot.costTotal);
+  els.movePrivateNeededTotal.textContent = money(snapshot.neededTotal);
+  els.movePrivateMonthlyTotal.textContent = money(snapshot.monthlyTotal);
+  els.movePrivateLeftAfterBills.textContent = money(snapshot.leftAfterBills);
+  els.movePrivateLeftAfterBills.style.color = snapshot.leftAfterBills < 0 ? "#fecaca" : "#bbf7d0";
+  els.movePrivateItemCount.textContent = data.items.length === 1 ? "1 item" : `${data.items.length} items`;
+  els.movePrivateBillCount.textContent = data.bills.length === 1 ? "1 bill" : `${data.bills.length} bills`;
+  els.movePrivateItemList.innerHTML = "";
+  els.movePrivateBillList.innerHTML = "";
+
+  if(!data.items.length){
+    els.movePrivateItemList.innerHTML = `<div class="empty">No move costs saved yet.</div>`;
+  }else{
+    data.items
+      .slice()
+      .sort((a,b) => {
+        const statusOrder = { needed:0, inPot:1, later:2, bought:3 };
+        const statusCompare = (statusOrder[a.status] ?? 0) - (statusOrder[b.status] ?? 0);
+        if(statusCompare !== 0) return statusCompare;
+        return String(a.dueDate || "9999").localeCompare(String(b.dueDate || "9999"));
+      })
+      .forEach(item => {
+        const row = document.createElement("div");
+        const remaining = getMoveItemRemaining(item);
+        row.className = "movePrivateRow";
+        row.innerHTML = `
+          <div>
+            <strong>${escapeHtml(item.name)}</strong>
+            <small>
+              ${escapeHtml(item.pot || "Move pot")}
+              <span class="movePrivateStatus">• ${escapeHtml(getMoveItemStatusLabel(item.status))}</span>
+              ${item.dueDate ? " • " + escapeHtml(formatShortDate(item.dueDate)) : ""}
+            </small>
+          </div>
+          <div class="movePrivateRight">
+            <div class="movePrivateAmount">${money(item.cost)}</div>
+            <small>${money(item.saved)} in pot · ${money(remaining)} left</small>
+            <div class="movePrivateActions">
+              <button type="button" class="iconBtn" data-edit-move-item="${item.id}">edit</button>
+              <button type="button" class="iconBtn danger" data-delete-move-item="${item.id}">delete</button>
+            </div>
+          </div>
+        `;
+        els.movePrivateItemList.appendChild(row);
+      });
+  }
+
+  if(!data.bills.length){
+    els.movePrivateBillList.innerHTML = `<div class="empty">No new monthly bills saved yet.</div>`;
+  }else{
+    data.bills
+      .slice()
+      .sort((a,b) => Number(a.dueDay) - Number(b.dueDay) || String(a.name).localeCompare(String(b.name)))
+      .forEach(bill => {
+        const row = document.createElement("div");
+        row.className = "movePrivateRow";
+        row.innerHTML = `
+          <div>
+            <strong>${escapeHtml(bill.name)}</strong>
+            <small>
+              ${escapeHtml(getBillTypeLabel(bill.type))} • due day ${escapeHtml(bill.dueDay)}
+              <span class="movePrivateStatus">• ${escapeHtml(bill.account)} → ${escapeHtml(bill.pot)}</span>
+            </small>
+          </div>
+          <div class="movePrivateRight">
+            <div class="movePrivateAmount">${money(bill.amount)}</div>
+            <small>${bill.active ? "added before" : "planned"}</small>
+            <div class="movePrivateActions">
+              <button type="button" class="iconBtn" data-apply-move-bill="${bill.id}">add to cycle</button>
+              <button type="button" class="iconBtn" data-edit-move-bill="${bill.id}">edit</button>
+              <button type="button" class="iconBtn danger" data-delete-move-bill="${bill.id}">delete</button>
+            </div>
+          </div>
+        `;
+        els.movePrivateBillList.appendChild(row);
+      });
+  }
+}
+
 function renderFinanceHub(){
   const snapshot = getHubMoneySnapshot();
   const hsbcPercent = percentOf(snapshot.hsbcStay, snapshot.income);
@@ -6413,6 +7100,7 @@ function renderFinanceHub(){
   renderHubActions(snapshot);
   renderHubWeekPlan(snapshot);
   renderHubSchedule(snapshot);
+  renderMovePrivate();
 }
 
 function renderPayOrder(){
@@ -6885,6 +7573,14 @@ els.hubAddPaymentBtn.addEventListener("click", addHubPayment);
 els.hubClearPaymentBtn.addEventListener("click", clearHubPaymentForm);
 els.hubImportPaymentListBtn.addEventListener("click", importBulkPaymentList);
 els.hubClearBulkPaymentBtn.addEventListener("click", clearBulkPaymentImport);
+els.movePrivateAddItemBtn.addEventListener("click", saveMovePrivateItem);
+els.movePrivateClearItemBtn.addEventListener("click", clearMovePrivateItemForm);
+els.movePrivateAddBillBtn.addEventListener("click", saveMovePrivateBill);
+els.movePrivateApplyBillsBtn.addEventListener("click", applyMovePrivateBillsToCycle);
+els.movePrivateClearBillBtn.addEventListener("click", clearMovePrivateBillForm);
+els.movePrivateBillAccountInput.addEventListener("change", () => {
+  els.movePrivateBillPotInput.value = els.movePrivateBillAccountInput.value === "Revolut" ? "Bills pot" : "Protected bills";
+});
 els.addClearedBtn.addEventListener("click", saveClearedItem);
 els.clearClearedBtn.addEventListener("click", clearClearedForm);
 els.financeEditForm.addEventListener("submit", saveFinanceEditor);
@@ -6921,6 +7617,11 @@ document.addEventListener("click", event => {
   const deleteTrickleId = event.target.getAttribute("data-delete-trickle");
   const editClearedId = event.target.getAttribute("data-edit-cleared");
   const deleteClearedId = event.target.getAttribute("data-delete-cleared");
+  const editMoveItemId = event.target.getAttribute("data-edit-move-item");
+  const deleteMoveItemId = event.target.getAttribute("data-delete-move-item");
+  const editMoveBillId = event.target.getAttribute("data-edit-move-bill");
+  const deleteMoveBillId = event.target.getAttribute("data-delete-move-bill");
+  const applyMoveBillId = event.target.getAttribute("data-apply-move-bill");
 
   if(editBillId){
     editBill(editBillId);
@@ -6976,6 +7677,26 @@ document.addEventListener("click", event => {
 
   if(deleteClearedId){
     deleteClearedItem(deleteClearedId);
+  }
+
+  if(editMoveItemId){
+    editMovePrivateItem(editMoveItemId);
+  }
+
+  if(deleteMoveItemId){
+    deleteMovePrivateItem(deleteMoveItemId);
+  }
+
+  if(editMoveBillId){
+    editMovePrivateBill(editMoveBillId);
+  }
+
+  if(deleteMoveBillId){
+    deleteMovePrivateBill(deleteMoveBillId);
+  }
+
+  if(applyMoveBillId){
+    applyMovePrivateBillToCycle(applyMoveBillId);
   }
 });
 
