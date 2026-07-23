@@ -2,7 +2,7 @@
 
 This is the secure Gmail catcher for Pace.
 
-It lets Gmail stay messy while Pace pulls out likely money and due-soon emails into Email Command. Finance can then turn those pulled actions into mid-month trickles.
+It lets Gmail stay messy while Pace pulls out likely money and due-soon emails into Email Command. It also pulls purchase, receipt and delivery emails into the Purchase Tracker so orders can be checked off when received.
 
 ## Free Hosting
 
@@ -16,8 +16,10 @@ Cloudflare currently lists Workers Free as including 100,000 requests per day an
 - Stores the Gmail refresh token in Cloudflare KV, not in the browser.
 - Checks Gmail every 6 hours.
 - Searches likely money/due-soon emails.
-- Stores the pulled actions in Cloudflare KV.
-- Lets `email-command-test.html` pull those actions into Pace.
+- Searches likely purchase, receipt, dispatch and delivery emails.
+- Stores the pulled actions and purchases in Cloudflare KV.
+- Lets `email-command-test.html` pull money actions into Pace.
+- Lets `purchases-test.html` pull purchases into Pace and save received/edit/hide status.
 
 ## Google Setup
 
@@ -68,8 +70,10 @@ wrangler deploy
 3. Paste the private key you used for `PACE_ACCESS_KEY`.
 4. Press `Connect Gmail`.
 5. After Google sends you back, press `Sync now`.
+6. Open `purchases-test.html` and press `Sync purchases`.
 
 Pulled Gmail money actions will appear in Email Command and then in Finance under `from email`.
+Pulled purchase emails will appear in Purchase Tracker with expected dates where Gmail gives enough detail. Missing or messy items can be edited in place, then marked `received` when they arrive.
 
 ## Important Notes
 

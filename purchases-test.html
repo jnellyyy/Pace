@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pace Purchases</title>
+
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-32.png">
+<meta name="theme-color" content="#0f1115">
+<meta name="robots" content="noindex,nofollow">
+
+<style>
+:root{
+  --bg1:#0f1115;
+  --bg2:#171a20;
+  --panel:rgba(255,255,255,0.06);
+  --line:rgba(255,255,255,0.11);
+  --line2:rgba(255,255,255,0.20);
+  --text:#f5f7fb;
+  --muted:#a7afbe;
+  --pink:#ff5ba7;
+  --blue:#60a5fa;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --shadow:0 22px 58px rgba(0,0,0,0.38);
+  --radius:26px;
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(96,165,250,0.13), transparent 30%),
+    radial-gradient(circle at 90% 6%, rgba(255,91,167,0.14), transparent 30%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+}
+
+a{ color:inherit; text-decoration:none; }
+button,input,select,textarea{ font:inherit; }
+button{ cursor:pointer; }
+
+.wrap{
+  width:min(1180px,100%);
+  margin:0 auto;
+  padding:18px;
+  padding-bottom:40px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:16px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.dot{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  font-weight:900;
+}
+
+h1,h2,h3,p{ margin:0; }
+
+.title h1{
+  font-size:25px;
+  letter-spacing:-0.045em;
+}
+
+.title p{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.topActions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.backBtn,
+.softBtn,
+.primaryBtn,
+.smallBtn,
+.filterBtn{
+  border:1px solid var(--line);
+  border-radius:16px;
+  color:var(--text);
+  background:rgba(255,255,255,0.075);
+  font-weight:850;
+}
+
+.backBtn,
+.softBtn,
+.primaryBtn{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 13px;
+}
+
+.primaryBtn{
+  background:linear-gradient(135deg, rgba(255,91,167,0.90), rgba(96,165,250,0.78));
+  border-color:rgba(255,255,255,0.20);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:0.92fr 1.08fr;
+  gap:14px;
+  align-items:start;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+  padding:16px;
+}
+
+.hero{
+  grid-column:1 / -1;
+  display:grid;
+  grid-template-columns:1.1fr 0.9fr;
+  gap:14px;
+  overflow:hidden;
+  position:relative;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  right:-70px;
+  bottom:-90px;
+  border-radius:50%;
+  background:rgba(96,165,250,0.16);
+}
+
+.heroContent,
+.heroStats{
+  position:relative;
+  z-index:1;
+}
+
+.heroContent h2{
+  font-size:34px;
+  letter-spacing:-0.06em;
+}
+
+.heroContent p{
+  margin-top:9px;
+  color:var(--muted);
+  line-height:1.55;
+  max-width:640px;
+}
+
+.connectionGrid{
+  display:grid;
+  grid-template-columns:1fr .65fr .45fr auto auto;
+  gap:9px;
+  margin-top:14px;
+}
+
+.connectionInput{
+  min-width:0;
+  border:1px solid var(--line);
+  outline:0;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:16px;
+  padding:12px;
+}
+
+.syncStatus{
+  margin-top:9px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+.heroStats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.stat{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.06);
+  border-radius:20px;
+  padding:14px;
+}
+
+.stat span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.stat strong{
+  display:block;
+  margin-top:7px;
+  font-size:30px;
+  letter-spacing:-0.05em;
+}
+
+.sectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:13px;
+}
+
+.sectionTitle h2{
+  font-size:20px;
+  letter-spacing:-0.04em;
+}
+
+.sectionTitle p{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.pill{
+  border:1px solid rgba(255,255,255,0.13);
+  background:rgba(255,255,255,0.08);
+  border-radius:999px;
+  padding:8px 10px;
+  color:#ffc2e6;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.formGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.field{
+  display:grid;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1 / -1;
+}
+
+.field label{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:850;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  min-width:0;
+  border:1px solid var(--line);
+  outline:0;
+  background:rgba(255,255,255,0.07);
+  color:var(--text);
+  border-radius:16px;
+  padding:12px;
+}
+
+.field textarea{
+  min-height:82px;
+  resize:vertical;
+}
+
+.actions,
+.filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.filterBtn{
+  min-height:38px;
+  padding:8px 10px;
+}
+
+.filterBtn.active{
+  border-color:rgba(255,91,167,0.55);
+  background:rgba(255,91,167,0.18);
+  color:#ffd2e8;
+}
+
+.list{
+  display:grid;
+  gap:10px;
+}
+
+.purchase{
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.055);
+  border-radius:20px;
+  padding:13px;
+}
+
+.purchase.received{
+  opacity:.72;
+}
+
+.purchaseTop{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:12px;
+  align-items:start;
+}
+
+.purchaseTitle{
+  font-size:16px;
+  font-weight:950;
+  line-height:1.2;
+}
+
+.meta,
+.snippet{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+
+.snippet{
+  border-left:2px solid rgba(255,255,255,0.12);
+  padding-left:9px;
+}
+
+.tag{
+  border-radius:999px;
+  padding:7px 9px;
+  font-size:12px;
+  font-weight:900;
+  background:rgba(96,165,250,0.18);
+  color:#bfdbfe;
+  white-space:nowrap;
+}
+
+.tag.due{
+  background:rgba(245,158,11,0.20);
+  color:#fde7b0;
+}
+
+.tag.received{
+  background:rgba(34,197,94,0.20);
+  color:#bbf7d0;
+}
+
+.purchaseBottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:11px;
+}
+
+.amount{
+  font-weight:950;
+  color:#ffc2e6;
+}
+
+.purchaseBtns{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:7px;
+}
+
+.smallBtn{
+  min-height:34px;
+  padding:7px 9px;
+  font-size:12px;
+}
+
+.smallBtn.danger{
+  color:#fecaca;
+}
+
+.empty{
+  color:var(--muted);
+  border:1px dashed rgba(255,255,255,0.13);
+  border-radius:18px;
+  padding:18px;
+  text-align:center;
+  font-size:13px;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  transform:translateX(-50%) translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  background:#111318;
+  color:#fff;
+  border:1px solid var(--line2);
+  border-radius:999px;
+  padding:11px 14px;
+  box-shadow:var(--shadow);
+  transition:.18s ease;
+  z-index:20;
+  font-weight:850;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+@media(max-width:900px){
+  .topbar,
+  .hero,
+  .grid,
+  .connectionGrid{
+    grid-template-columns:1fr;
+  }
+
+  .topActions{
+    justify-content:flex-start;
+  }
+}
+
+@media(max-width:620px){
+  .wrap{
+    padding:12px;
+    padding-bottom:88px;
+  }
+
+  .heroContent h2{
+    font-size:29px;
+  }
+
+  .heroStats,
+  .formGrid,
+  .purchaseTop{
+    grid-template-columns:1fr;
+  }
+
+  .purchaseBtns,
+  .purchaseBottom{
+    justify-content:flex-start;
+  }
+
+  .actions .primaryBtn,
+  .actions .softBtn{
+    width:100%;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <a class="backBtn" href="dashboard.html">Dashboard</a>
+      <div class="dot">P</div>
+      <div class="title">
+        <h1>Purchase Tracker</h1>
+        <p>Orders, delivery dates and received check-offs.</p>
+      </div>
+    </div>
+
+    <div class="topActions">
+      <a class="softBtn" href="email-command-test.html">Email Command</a>
+      <a class="softBtn" href="finance-test.html">Finance</a>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card hero">
+      <div class="heroContent">
+        <h2>Pull purchases out of messy email.</h2>
+        <p>Sync order confirmations, receipts and delivery updates from Gmail, then mark items as received when they actually arrive.</p>
+
+        <div class="connectionGrid">
+          <input class="connectionInput" id="workerUrlInput" placeholder="Cloudflare Worker URL">
+          <input class="connectionInput" id="workerKeyInput" placeholder="Private key">
+          <select class="connectionInput" id="syncDaysInput">
+            <option value="90">90 days</option>
+            <option value="180">180 days</option>
+            <option value="365" selected>365 days</option>
+          </select>
+          <button class="primaryBtn" id="syncBtn" type="button">Sync purchases</button>
+          <button class="softBtn" id="loadBtn" type="button">Load</button>
+        </div>
+        <div class="syncStatus" id="syncStatus">Uses the same Gmail Worker connection as Email Command.</div>
+      </div>
+
+      <div class="heroStats">
+        <div class="stat">
+          <span>Awaiting</span>
+          <strong id="awaitingCount">0</strong>
+        </div>
+        <div class="stat">
+          <span>Due soon</span>
+          <strong id="dueSoonCount">0</strong>
+        </div>
+        <div class="stat">
+          <span>No date</span>
+          <strong id="noDateCount">0</strong>
+        </div>
+        <div class="stat">
+          <span>Received</span>
+          <strong id="receivedCount">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sectionHead">
+        <div class="sectionTitle">
+          <h2>Edit or add purchase</h2>
+          <p>Use this when Gmail cannot tell what the item or delivery date is.</p>
+        </div>
+        <div class="pill" id="formPill">manual</div>
+      </div>
+
+      <div class="formGrid">
+        <div class="field">
+          <label>item</label>
+          <input id="itemInput" type="text" placeholder="Tripod, charger, clothes">
+        </div>
+        <div class="field">
+          <label>shop</label>
+          <input id="merchantInput" type="text" placeholder="Amazon, IKEA, Park Cameras">
+        </div>
+        <div class="field">
+          <label>expected date</label>
+          <input id="expectedInput" type="date">
+        </div>
+        <div class="field">
+          <label>amount</label>
+          <input id="amountInput" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+        <div class="field full">
+          <label>note</label>
+          <textarea id="noteInput" placeholder="Tracking note, which room it is for, return window, anything you need to remember"></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primaryBtn" id="saveBtn" type="button">save purchase</button>
+        <button class="softBtn" id="clearBtn" type="button">clear</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="sectionHead">
+        <div class="sectionTitle">
+          <h2>Purchase list</h2>
+          <p>Use received as the final check, not the email delivery status.</p>
+        </div>
+        <div class="pill" id="listPill">0 items</div>
+      </div>
+
+      <div class="field">
+        <label>search</label>
+        <input id="searchInput" type="search" placeholder="Search item, shop, subject">
+      </div>
+
+      <div class="filters">
+        <button type="button" class="filterBtn active" data-filter="awaiting">awaiting</button>
+        <button type="button" class="filterBtn" data-filter="due">due soon</button>
+        <button type="button" class="filterBtn" data-filter="nodate">no date</button>
+        <button type="button" class="filterBtn" data-filter="received">received</button>
+        <button type="button" class="filterBtn" data-filter="all">all</button>
+      </div>
+
+      <div class="list" id="purchaseList"></div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PURCHASES_KEY = "pace_purchase_tracker_v1";
+const WORKER_URL_KEY = "pace_gmail_worker_url_v1";
+const WORKER_ACCESS_KEY = "pace_gmail_worker_access_key_v1";
+
+const els = {
+  workerUrlInput:document.getElementById("workerUrlInput"),
+  workerKeyInput:document.getElementById("workerKeyInput"),
+  syncDaysInput:document.getElementById("syncDaysInput"),
+  syncBtn:document.getElementById("syncBtn"),
+  loadBtn:document.getElementById("loadBtn"),
+  syncStatus:document.getElementById("syncStatus"),
+  awaitingCount:document.getElementById("awaitingCount"),
+  dueSoonCount:document.getElementById("dueSoonCount"),
+  noDateCount:document.getElementById("noDateCount"),
+  receivedCount:document.getElementById("receivedCount"),
+  itemInput:document.getElementById("itemInput"),
+  merchantInput:document.getElementById("merchantInput"),
+  expectedInput:document.getElementById("expectedInput"),
+  amountInput:document.getElementById("amountInput"),
+  noteInput:document.getElementById("noteInput"),
+  saveBtn:document.getElementById("saveBtn"),
+  clearBtn:document.getElementById("clearBtn"),
+  formPill:document.getElementById("formPill"),
+  searchInput:document.getElementById("searchInput"),
+  listPill:document.getElementById("listPill"),
+  purchaseList:document.getElementById("purchaseList"),
+  toast:document.getElementById("toast")
+};
+
+let purchases = [];
+let editingId = null;
+let activeFilter = "awaiting";
+
+els.workerUrlInput.value = localStorage.getItem(WORKER_URL_KEY) || "";
+els.workerKeyInput.value = localStorage.getItem(WORKER_ACCESS_KEY) || "";
+
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function todayKey(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function addDays(dateKey, days){
+  const date = new Date(`${dateKey}T00:00:00`);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0,10);
+}
+
+function money(value){
+  return new Intl.NumberFormat("en-GB", {
+    style:"currency",
+    currency:"GBP"
+  }).format(Number(value) || 0);
+}
+
+function numberValue(value){
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function escapeHtml(text){
+  return String(text || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function formatDate(dateValue){
+  if(!dateValue) return "no date";
+  return new Date(`${dateValue}T00:00:00`).toLocaleDateString("en-GB", {
+    day:"numeric",
+    month:"short"
+  });
+}
+
+function savePurchases(){
+  localStorage.setItem(PURCHASES_KEY, JSON.stringify(purchases.slice(0, 300)));
+}
+
+function loadPurchases(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(PURCHASES_KEY) || "[]");
+    purchases = Array.isArray(saved) ? saved.map(normalizePurchase) : [];
+  }catch(error){
+    purchases = [];
+  }
+}
+
+function normalizePurchase(purchase){
+  return {
+    id:purchase.id || `manual-${uid()}`,
+    gmailId:purchase.gmailId || "",
+    type:"purchase",
+    itemName:purchase.itemName || purchase.subject || "Purchase",
+    merchant:purchase.merchant || purchase.from || "Unknown shop",
+    from:purchase.from || "",
+    subject:purchase.subject || purchase.itemName || "Purchase",
+    orderedAt:String(purchase.orderedAt || purchase.createdAt || "").slice(0,10),
+    expectedDate:String(purchase.expectedDate || "").slice(0,10),
+    amount:numberValue(purchase.amount),
+    deliveryStatus:purchase.deliveryStatus || "ordered",
+    snippet:purchase.snippet || "",
+    note:purchase.note || "",
+    gmailUrl:purchase.gmailUrl || "",
+    received:Boolean(purchase.received),
+    receivedAt:purchase.receivedAt || "",
+    hidden:Boolean(purchase.hidden),
+    createdAt:purchase.createdAt || new Date().toISOString(),
+    updatedAt:purchase.updatedAt || ""
+  };
+}
+
+function purchaseKey(purchase){
+  return purchase.gmailId || purchase.id;
+}
+
+function normalizeWorkerUrl(value){
+  const clean = String(value || "").trim().replace(/\/+$/, "");
+
+  if(!clean){
+    return "";
+  }
+
+  return /^https?:\/\//i.test(clean) ? clean : `https://${clean}`;
+}
+
+function getWorkerUrl(){
+  return normalizeWorkerUrl(els.workerUrlInput.value);
+}
+
+function saveWorkerSettings(){
+  const workerUrl = getWorkerUrl();
+  localStorage.setItem(WORKER_URL_KEY, workerUrl);
+  localStorage.setItem(WORKER_ACCESS_KEY, els.workerKeyInput.value.trim());
+  return workerUrl;
+}
+
+function buildWorkerUrl(path, params = {}){
+  const workerUrl = getWorkerUrl();
+  const url = new URL(path, `${workerUrl}/`);
+  const key = els.workerKeyInput.value.trim();
+
+  Object.entries(params).forEach(([name,value]) => {
+    if(value !== undefined && value !== null && value !== ""){
+      url.searchParams.set(name, value);
+    }
+  });
+
+  if(key){
+    url.searchParams.set("key", key);
+  }
+
+  return url.toString();
+}
+
+function setSyncStatus(text){
+  els.syncStatus.textContent = text;
+}
+
+function showToast(message){
+  els.toast.textContent = message;
+  els.toast.classList.add("show");
+  setTimeout(() => els.toast.classList.remove("show"), 1800);
+}
+
+function mergePulledPurchases(pulled){
+  const byId = new Map(purchases.map(purchase => [purchaseKey(purchase), purchase]));
+
+  pulled.map(normalizePurchase).forEach(next => {
+    const key = purchaseKey(next);
+    const existing = byId.get(key);
+
+    if(existing){
+      byId.set(key, {
+        ...next,
+        itemName:existing.itemName || next.itemName,
+        merchant:existing.merchant || next.merchant,
+        expectedDate:existing.expectedDate || next.expectedDate,
+        amount:existing.amount || next.amount,
+        note:existing.note || next.note,
+        received:Boolean(existing.received || next.received),
+        receivedAt:existing.receivedAt || next.receivedAt,
+        hidden:Boolean(existing.hidden || next.hidden),
+        updatedAt:existing.updatedAt || next.updatedAt
+      });
+    }else{
+      byId.set(key, next);
+    }
+  });
+
+  purchases = [...byId.values()].filter(purchase => !purchase.hidden);
+  savePurchases();
+  render();
+}
+
+async function loadFromWorker(){
+  const workerUrl = saveWorkerSettings();
+
+  if(!workerUrl){
+    setSyncStatus("Paste your Cloudflare Worker URL first.");
+    return;
+  }
+
+  setSyncStatus("Loading purchase list from Gmail Worker...");
+
+  try{
+    const response = await fetch(buildWorkerUrl("/purchases"));
+    const data = await response.json();
+
+    if(!response.ok || !data.ok){
+      throw new Error(data.error || "Could not load purchases.");
+    }
+
+    mergePulledPurchases(data.purchases || []);
+    setSyncStatus(`Loaded ${(data.purchases || []).length} purchase${(data.purchases || []).length === 1 ? "" : "s"}.`);
+  }catch(error){
+    setSyncStatus(error.message || "Could not load purchases.");
+  }
+}
+
+async function syncPurchases(){
+  const workerUrl = saveWorkerSettings();
+
+  if(!workerUrl){
+    setSyncStatus("Paste your Cloudflare Worker URL first.");
+    return;
+  }
+
+  setSyncStatus("Scanning Gmail for purchases and delivery updates...");
+
+  try{
+    const response = await fetch(buildWorkerUrl("/sync-purchases", { days:els.syncDaysInput.value }));
+    const data = await response.json();
+
+    if(!response.ok || !data.ok){
+      throw new Error(data.error || "Could not sync purchases.");
+    }
+
+    mergePulledPurchases(data.purchases || []);
+    setSyncStatus(`Synced ${(data.purchases || []).length} purchase${(data.purchases || []).length === 1 ? "" : "s"} from Gmail.`);
+  }catch(error){
+    setSyncStatus(error.message || "Could not sync purchases.");
+  }
+}
+
+async function updateRemotePurchase(purchase){
+  const workerUrl = getWorkerUrl();
+
+  if(!workerUrl || !purchase.gmailId){
+    return;
+  }
+
+  try{
+    await fetch(buildWorkerUrl("/purchases/update"), {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        id:purchase.gmailId || purchase.id,
+        gmailId:purchase.gmailId,
+        itemName:purchase.itemName,
+        merchant:purchase.merchant,
+        expectedDate:purchase.expectedDate,
+        amount:purchase.amount,
+        note:purchase.note,
+        received:purchase.received,
+        receivedAt:purchase.receivedAt,
+        hidden:purchase.hidden
+      })
+    });
+  }catch(error){
+    setSyncStatus("Saved locally. Worker update failed.");
+  }
+}
+
+function clearForm(){
+  editingId = null;
+  els.itemInput.value = "";
+  els.merchantInput.value = "";
+  els.expectedInput.value = "";
+  els.amountInput.value = "";
+  els.noteInput.value = "";
+  els.formPill.textContent = "manual";
+  els.saveBtn.textContent = "save purchase";
+}
+
+function savePurchase(){
+  const itemName = els.itemInput.value.trim();
+
+  if(!itemName){
+    showToast("Add the item name.");
+    return;
+  }
+
+  const data = {
+    itemName,
+    merchant:els.merchantInput.value.trim() || "Unknown shop",
+    expectedDate:els.expectedInput.value,
+    amount:numberValue(els.amountInput.value),
+    note:els.noteInput.value.trim(),
+    updatedAt:new Date().toISOString()
+  };
+
+  let purchase;
+
+  if(editingId){
+    purchase = purchases.find(item => item.id === editingId);
+    if(purchase) Object.assign(purchase, data);
+  }else{
+    purchase = normalizePurchase({
+      id:`manual-${uid()}`,
+      ...data,
+      subject:itemName,
+      orderedAt:todayKey(),
+      createdAt:new Date().toISOString()
+    });
+    purchases.unshift(purchase);
+  }
+
+  savePurchases();
+  clearForm();
+  render();
+  showToast("Purchase saved.");
+
+  if(purchase){
+    updateRemotePurchase(purchase);
+  }
+}
+
+function editPurchase(id){
+  const purchase = purchases.find(item => item.id === id);
+
+  if(!purchase) return;
+
+  editingId = id;
+  els.itemInput.value = purchase.itemName || "";
+  els.merchantInput.value = purchase.merchant || "";
+  els.expectedInput.value = purchase.expectedDate || "";
+  els.amountInput.value = purchase.amount || "";
+  els.noteInput.value = purchase.note || "";
+  els.formPill.textContent = "editing";
+  els.saveBtn.textContent = "update purchase";
+  els.itemInput.focus();
+}
+
+function toggleReceived(id){
+  const purchase = purchases.find(item => item.id === id);
+
+  if(!purchase) return;
+
+  purchase.received = !purchase.received;
+  purchase.receivedAt = purchase.received ? new Date().toISOString() : "";
+  purchase.updatedAt = new Date().toISOString();
+  savePurchases();
+  render();
+  showToast(purchase.received ? "Marked received." : "Marked awaiting.");
+  updateRemotePurchase(purchase);
+}
+
+function hidePurchase(id){
+  const purchase = purchases.find(item => item.id === id);
+
+  if(!purchase) return;
+
+  purchase.hidden = true;
+  purchase.updatedAt = new Date().toISOString();
+  purchases = purchases.filter(item => item.id !== id);
+  savePurchases();
+  render();
+  showToast("Purchase hidden.");
+  updateRemotePurchase(purchase);
+}
+
+function openPurchase(id){
+  const purchase = purchases.find(item => item.id === id);
+
+  if(!purchase) return;
+
+  if(purchase.gmailUrl){
+    window.open(purchase.gmailUrl, "_blank", "noopener");
+    return;
+  }
+
+  const query = encodeURIComponent(`${purchase.merchant || ""} ${purchase.subject || purchase.itemName || ""}`.trim() || "order");
+  window.open(`https://mail.google.com/mail/u/0/#search/${query}`, "_blank", "noopener");
+}
+
+function dueSoon(purchase){
+  return !purchase.received
+    && purchase.expectedDate
+    && purchase.expectedDate >= todayKey()
+    && purchase.expectedDate <= addDays(todayKey(), 7);
+}
+
+function overdue(purchase){
+  return !purchase.received && purchase.expectedDate && purchase.expectedDate < todayKey();
+}
+
+function filteredPurchases(){
+  const search = els.searchInput.value.trim().toLowerCase();
+
+  return purchases
+    .filter(purchase => !purchase.hidden)
+    .filter(purchase => {
+      if(activeFilter === "awaiting") return !purchase.received;
+      if(activeFilter === "due") return dueSoon(purchase) || overdue(purchase);
+      if(activeFilter === "nodate") return !purchase.received && !purchase.expectedDate;
+      if(activeFilter === "received") return purchase.received;
+      return true;
+    })
+    .filter(purchase => {
+      if(!search) return true;
+      return `${purchase.itemName} ${purchase.merchant} ${purchase.subject} ${purchase.snippet} ${purchase.note}`.toLowerCase().includes(search);
+    })
+    .sort((a,b) => {
+      if(a.received !== b.received) return a.received ? 1 : -1;
+      if(overdue(a) !== overdue(b)) return overdue(a) ? -1 : 1;
+      return String(a.expectedDate || "9999").localeCompare(String(b.expectedDate || "9999"))
+        || new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    });
+}
+
+function tagForPurchase(purchase){
+  if(purchase.received) return { label:"received", className:"received" };
+  if(overdue(purchase)) return { label:"check", className:"due" };
+  if(dueSoon(purchase)) return { label:"due soon", className:"due" };
+  if(!purchase.expectedDate) return { label:"needs date", className:"" };
+  return { label:"awaiting", className:"" };
+}
+
+function render(){
+  const visible = purchases.filter(purchase => !purchase.hidden);
+  const awaiting = visible.filter(purchase => !purchase.received);
+  const received = visible.filter(purchase => purchase.received);
+  const noDate = awaiting.filter(purchase => !purchase.expectedDate);
+  const due = awaiting.filter(purchase => dueSoon(purchase) || overdue(purchase));
+
+  els.awaitingCount.textContent = awaiting.length;
+  els.dueSoonCount.textContent = due.length;
+  els.noDateCount.textContent = noDate.length;
+  els.receivedCount.textContent = received.length;
+  els.listPill.textContent = visible.length === 1 ? "1 purchase" : `${visible.length} purchases`;
+
+  const rows = filteredPurchases();
+  els.purchaseList.innerHTML = "";
+
+  if(!rows.length){
+    els.purchaseList.innerHTML = `<div class="empty">No purchases in this view yet.</div>`;
+    return;
+  }
+
+  rows.forEach(purchase => {
+    const tag = tagForPurchase(purchase);
+    const item = document.createElement("div");
+    item.className = `purchase ${purchase.received ? "received" : ""}`;
+    const amount = purchase.amount ? `<span class="amount">${money(purchase.amount)}</span>` : "";
+    const expected = purchase.expectedDate ? `expected ${formatDate(purchase.expectedDate)}` : "expected date missing";
+    const ordered = purchase.orderedAt ? `ordered ${formatDate(purchase.orderedAt)}` : "order date unknown";
+
+    item.innerHTML = `
+      <div class="purchaseTop">
+        <div>
+          <div class="purchaseTitle">${escapeHtml(purchase.itemName)}</div>
+          <div class="meta">${escapeHtml(purchase.merchant)} • ${escapeHtml(ordered)} • ${escapeHtml(expected)} • ${escapeHtml(purchase.deliveryStatus || "ordered")}</div>
+          ${purchase.note ? `<div class="meta">${escapeHtml(purchase.note)}</div>` : ""}
+          ${purchase.snippet ? `<div class="snippet">${escapeHtml(purchase.snippet)}</div>` : ""}
+        </div>
+        <div class="tag ${tag.className}">${escapeHtml(tag.label)}</div>
+      </div>
+
+      <div class="purchaseBottom">
+        <div>${amount}</div>
+        <div class="purchaseBtns">
+          <button type="button" class="smallBtn" data-open="${purchase.id}">open email</button>
+          <button type="button" class="smallBtn" data-received="${purchase.id}">${purchase.received ? "undo received" : "received"}</button>
+          <button type="button" class="smallBtn" data-edit="${purchase.id}">edit</button>
+          <button type="button" class="smallBtn danger" data-hide="${purchase.id}">hide</button>
+        </div>
+      </div>
+    `;
+
+    els.purchaseList.appendChild(item);
+  });
+}
+
+document.querySelectorAll("[data-filter]").forEach(button => {
+  button.addEventListener("click", () => {
+    activeFilter = button.getAttribute("data-filter");
+    document.querySelectorAll("[data-filter]").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+    render();
+  });
+});
+
+els.workerUrlInput.addEventListener("change", saveWorkerSettings);
+els.workerKeyInput.addEventListener("change", saveWorkerSettings);
+els.syncBtn.addEventListener("click", syncPurchases);
+els.loadBtn.addEventListener("click", loadFromWorker);
+els.saveBtn.addEventListener("click", savePurchase);
+els.clearBtn.addEventListener("click", clearForm);
+els.searchInput.addEventListener("input", render);
+
+document.addEventListener("click", event => {
+  const openId = event.target.getAttribute("data-open");
+  const receivedId = event.target.getAttribute("data-received");
+  const editId = event.target.getAttribute("data-edit");
+  const hideId = event.target.getAttribute("data-hide");
+
+  if(openId) openPurchase(openId);
+  if(receivedId) toggleReceived(receivedId);
+  if(editId) editPurchase(editId);
+  if(hideId) hidePurchase(hideId);
+});
+
+loadPurchases();
+render();
+
+if(getWorkerUrl()){
+  loadFromWorker();
+}
+</script>
+</body>
+</html>

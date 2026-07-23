@@ -481,6 +481,7 @@ p{
 
     <div class="topActions">
       <a class="backBtn" href="dashboard.html">Dashboard</a>
+      <a class="backBtn" href="purchases-test.html">Purchases</a>
       <a class="backBtn" href="finance-test.html">Finance</a>
     </div>
   </header>
@@ -495,6 +496,7 @@ p{
           <button type="button" class="gmailBtn" data-query="newer_than:14d (payment OR bill OR invoice OR receipt OR overdue)">Money emails</button>
           <button type="button" class="gmailBtn" data-query="newer_than:14d (reply OR respond OR action OR urgent OR important)">Needs action</button>
           <button type="button" class="gmailBtn" data-query="newer_than:30d (delivery OR booking OR client OR shoot OR invoice)">Creator work</button>
+          <button type="button" class="gmailBtn" data-query="newer_than:90d (&quot;order confirmation&quot; OR &quot;your order&quot; OR &quot;has shipped&quot; OR dispatched OR &quot;out for delivery&quot; OR &quot;tracking number&quot;) -&quot;food order&quot; -&quot;deliveroo order&quot; -&quot;uber eats&quot; -&quot;just eat&quot;">Purchases</button>
           <button type="button" class="gmailBtn" data-query="newer_than:14d is:unread -category:promotions">Unread clean sweep</button>
         </div>
 
@@ -659,8 +661,18 @@ function saveActions(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(actions));
 }
 
+function normalizeWorkerUrl(value){
+  const clean = String(value || "").trim().replace(/\/+$/, "");
+
+  if(!clean){
+    return "";
+  }
+
+  return /^https?:\/\//i.test(clean) ? clean : `https://${clean}`;
+}
+
 function getWorkerUrl(){
-  return els.workerUrlInput.value.trim().replace(/\/+$/, "");
+  return normalizeWorkerUrl(els.workerUrlInput.value);
 }
 
 function saveWorkerUrl(){
