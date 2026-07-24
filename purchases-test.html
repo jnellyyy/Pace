@@ -520,7 +520,7 @@ h1,h2,h3,p{ margin:0; }
           <button class="primaryBtn" id="syncBtn" type="button">Sync purchases</button>
           <button class="softBtn" id="loadBtn" type="button">Load</button>
         </div>
-        <div class="syncStatus" id="syncStatus">Uses the same Gmail Worker connection as Email Command.</div>
+        <div class="syncStatus" id="syncStatus">Uses the same Gmail Worker connection as Email Command. Each sync scans a safe batch; press again to continue through older emails.</div>
       </div>
 
       <div class="heroStats">
@@ -846,7 +846,10 @@ async function syncPurchases(){
   setSyncStatus("Scanning Gmail for purchases and delivery updates...");
 
   try{
-    const response = await fetch(buildWorkerUrl("/sync-purchases", { days:els.syncDaysInput.value }));
+    const response = await fetch(buildWorkerUrl("/sync-purchases", {
+      days:els.syncDaysInput.value,
+      limit:18
+    }));
     const data = await response.json();
 
     if(!response.ok || !data.ok){
@@ -854,7 +857,11 @@ async function syncPurchases(){
     }
 
     mergePulledPurchases(data.purchases || []);
-    setSyncStatus(`Synced ${(data.purchases || []).length} purchase${(data.purchases || []).length === 1 ? "" : "s"} from Gmail.`);
+    const scanned = Number(data.scanned) || 0;
+    const imported = Number(data.imported) || 0;
+    const savedTotal = (data.purchases || []).length;
+    const nextText = data.hasMore ? " Press Sync purchases again for the next batch." : " Scan reached the end of this range.";
+    setSyncStatus(`Scanned ${scanned} email${scanned === 1 ? "" : "s"} and added ${imported} new purchase${imported === 1 ? "" : "s"}. ${savedTotal} saved total.${nextText}`);
   }catch(error){
     setSyncStatus(error.message || "Could not sync purchases.");
   }

@@ -1,6 +1,9 @@
 const TOKEN_KEY = "google_tokens";
 const ACTIONS_KEY = "pace_email_actions";
 const PURCHASES_KEY = "pace_email_purchases";
+const PURCHASE_SCAN_CURSOR_KEY = "pace_purchase_scan_cursor";
+const PURCHASE_SYNC_DEFAULT_LIMIT = 18;
+const PURCHASE_SYNC_MAX_LIMIT = 25;
 const SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly"
 ].join(" ");
@@ -64,8 +67,8 @@ export default {
 
       if(url.pathname === "/sync-purchases"){
         requireAppAccess(request, env);
-        const purchases = await syncPurchases(env, url);
-        return corsResponse({ ok:true, purchases }, env);
+        const result = await syncPurchases(env, url);
+        return corsResponse({ ok:true, ...result }, env);
       }
 
       if(url.pathname === "/actions"){
@@ -413,9 +416,21 @@ async function syncGmail(env){
   return actions;
 }
 
-function purchaseQueryFromUrl(url){
+function purchaseDaysFromUrl(url){
   const rawDays = Number(url?.searchParams?.get("days")) || 180;
-  const days = Math.min(Math.max(Math.round(rawDays), 14), 365);
+  return Math.min(Math.max(Math.round(rawDays), 14), 365);
+}
+
+function purchaseLimitFromUrl(url){
+  const rawLimit = Number(url?.searchParams?.get("limit")) || PURCHASE_SYNC_DEFAULT_LIMIT;
+  return Math.min(Math.max(Math.round(rawLimit), 5), PURCHASE_SYNC_MAX_LIMIT);
+}
+
+function purchaseCursorKey(days){
+  return `${PURCHASE_SCAN_CURSOR_KEY}:${days}`;
+}
+
+function purchaseQueryForDays(days){
 
   return [
     `newer_than:${days}d`,
@@ -435,44 +450,61 @@ function purchaseQueryFromUrl(url){
 
 async function syncPurchases(env, url = null){
   const accessToken = await getAccessToken(env);
+  const days = purchaseDaysFromUrl(url);
+  const limit = purchaseLimitFromUrl(url);
+  const cursorKey = purchaseCursorKey(days);
+  const shouldReset = url?.searchParams?.get("reset") === "1";
   const listUrl = new URL("https://gmail.googleapis.com/gmail/v1/users/me/messages");
-  listUrl.searchParams.set("q", purchaseQueryFromUrl(url));
-  listUrl.searchParams.set("maxResults", "100");
+  listUrl.searchParams.set("q", purchaseQueryForDays(days));
+  listUrl.searchParams.set("maxResults", String(limit));
+
+  if(shouldReset){
+    await env.PACE_GMAIL_KV.delete(cursorKey);
+  }
+
+  const savedCursor = shouldReset ? "" : await env.PACE_GMAIL_KV.get(cursorKey);
+
+  if(savedCursor){
+    listUrl.searchParams.set("pageToken", savedCursor);
+  }
+
+  const listResponse = await fetch(listUrl.toString(), {
+    headers:{ Authorization:`Bearer ${accessToken}` }
+  });
+
+  const listData = await listResponse.json();
+
+  if(!listResponse.ok){
+    throw new Error(listData.error?.message || "Could not read Gmail purchases");
+  }
 
   const existing = await getPurchases(env);
   const byId = new Map(existing.map(purchase => [purchase.gmailId || purchase.id, purchase]));
-  const messages = [];
-  let pageToken = "";
-
-  do{
-    const pageUrl = new URL(listUrl.toString());
-
-    if(pageToken){
-      pageUrl.searchParams.set("pageToken", pageToken);
-    }
-
-    const listResponse = await fetch(pageUrl.toString(), {
-      headers:{ Authorization:`Bearer ${accessToken}` }
-    });
-
-    const listData = await listResponse.json();
-
-    if(!listResponse.ok){
-      throw new Error(listData.error?.message || "Could not read Gmail purchases");
-    }
-
-    messages.push(...(listData.messages || []));
-    pageToken = listData.nextPageToken || "";
-  }while(pageToken && messages.length < 250);
+  const messages = (listData.messages || []).slice(0, limit);
+  let imported = 0;
+  let skippedExisting = 0;
 
   for(const message of messages){
     const saved = byId.get(message.id);
+
+    if(saved){
+      skippedExisting += 1;
+      continue;
+    }
+
     const detail = await fetchMessage(accessToken, message.id, "full");
     const purchase = messageToPurchase(detail, saved);
 
     if(purchase){
       byId.set(message.id, purchase);
+      imported += 1;
     }
+  }
+
+  if(listData.nextPageToken){
+    await env.PACE_GMAIL_KV.put(cursorKey, listData.nextPageToken, { expirationTtl:86400 });
+  }else{
+    await env.PACE_GMAIL_KV.delete(cursorKey);
   }
 
   const purchases = [...byId.values()]
@@ -485,7 +517,16 @@ async function syncPurchases(env, url = null){
     .slice(0, 250);
 
   await savePurchases(env, purchases);
-  return purchases;
+
+  return {
+    purchases,
+    scanned:messages.length,
+    imported,
+    skippedExisting,
+    hasMore:Boolean(listData.nextPageToken),
+    days,
+    limit
+  };
 }
 
 async function updatePurchase(request, env){
