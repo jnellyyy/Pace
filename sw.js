@@ -1,4 +1,4 @@
-const CACHE_NAME = "pace-app-v20260805-finance-plan";
+const CACHE_NAME = "pace-app-v20260914-calm-theme";
 const CACHE_PREFIX = "pace-app-";
 const APP_SHELL = [
   "./",
@@ -23,6 +23,10 @@ const APP_SHELL = [
   "creator-day-test.html",
   "weekly-test.html",
   "pace-navigation.js",
+  "pace-theme.css",
+  "pace-shell.js",
+  "finance-dashboard.css",
+  "finance-dashboard.js",
   "site.webmanifest",
   "icon-32.png",
   "icon-180.png",
